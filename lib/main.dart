@@ -9,19 +9,6 @@ void main() {
 
 }
 
-enum EfeitoSelect {
-  blue('Blue', Colors.blue),
-  pink('Pink', Colors.pink),
-  green('Green', Colors.green),
-  yellow('Orange', Colors.orange),
-  grey('Grey', Colors.grey);
-
-  const EfeitoSelect(this.label, this.color);
-  final String label;
-  final Color color;
-}
-
-
 class Poderes extends StatefulWidget {
   const Poderes({super.key});
 
@@ -38,9 +25,6 @@ class _PoderesState extends State<Poderes> {
   TextEditingController inputTextPoder = TextEditingController();
   String EfeitoSelecionado = '';
   @override
-  
-  final TextEditingController colorController = TextEditingController();
-  EfeitoSelect? selectedColor;
 
   void initState() {
     super.initState();
@@ -75,7 +59,7 @@ class _PoderesState extends State<Poderes> {
         });
       }
 
-      EfeitoSelecionado = _poderes.first["efeito"];
+      EfeitoSelecionado = _efeitos.first["efeito"];
     });
   }
 
@@ -118,72 +102,13 @@ class _PoderesState extends State<Poderes> {
         floatingActionButton: FloatingActionButton(
 
           // Ação e PopUP
-          onPressed: ()=> showDialog<void>(
+          onPressed: ()=> {
+            showDialog(
               context: context,
-              barrierDismissible: false,
-              builder: (BuildContext context) {
-                return AlertDialog(
-                  title: const Text('Adicionar Poder'),
-                  content: SingleChildScrollView(
-                    child: ListBody(
-                      children: <Widget>[
-
-                        //* Entrada do Nome
-                        TextField(
-                          controller: inputTextPoder,
-                          decoration: const InputDecoration(
-                            border: OutlineInputBorder(),
-                            hintText: 'Nome do poder',
-                          ),
-                        ),
-
-                        const SizedBox(height: 15,),
-
-                        DropdownButton<String>(
-                          value: EfeitoSelecionado,
-                          icon: const Icon(Icons.arrow_downward),
-                          elevation: 16,
-                          style: const TextStyle(color: Colors.deepPurple),
-                          underline: Container(
-                            height: 2,
-                            color: Colors.deepPurpleAccent,
-                          ),
-                          onChanged: (String? value) {
-                            // This is called when the user selects an item.
-                            setState(() {
-                              EfeitoSelecionado = value!;
-                            });
-                          },
-                          items: _efeitos.map<DropdownMenuItem<String>>((value) {
-                            return DropdownMenuItem<String>(
-                              value: value["efeito"],
-                              child: Text(value["efeito"].toString()),
-                            );
-                          }).toList(),
-                        )
-                      ],
-                    )
-                  ),
-                  actions: <Widget>[
-                    TextButton(
-                      child: const Text('Adicionar'),
-                      onPressed: () {                        
-                        Navigator.of(context).pop();
-                      },
-                    ),
-                    TextButton(
-                      child: const Text('Cancelar'),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                    ),
-                  ],
-                );
-                
-              },
-              
-            ),
-          
+              builder: ((BuildContext context) {
+                return DynamicDialog();
+              }))
+          },
           tooltip: 'Increment',
           child: const Icon(Icons.add),
         ),
@@ -191,3 +116,102 @@ class _PoderesState extends State<Poderes> {
   }
 }
 
+//
+// Dialogo Adicionar Poderes
+//
+
+class DynamicDialog extends StatefulWidget {
+  @override
+  _DynamicDialogState createState() => _DynamicDialogState();
+}
+
+class _DynamicDialogState extends State<DynamicDialog> {
+  //String _title;A
+  // Declaração de Variáveis
+  List _poderes = [];
+  List _efeitos = [];
+
+  TextEditingController inputTextPoder = TextEditingController();
+  String EfeitoSelecionado = '';
+  @override
+  
+  void initState() {
+    // _title = widget.title;
+    super.initState();
+  _carregarDados(); // Carrega os dados ao iniciar o estado
+  }
+  Future<void> _carregarDados() async {
+    // Carrega o Poderes text
+    String jsonPoderes = await rootBundle.loadString('assets/poderes.json');
+    List<dynamic> objPoderes = jsonDecode(jsonPoderes);
+
+    // Carrega o Efeitos
+    String jsonEfeitos = await rootBundle.loadString('assets/poderes/efeitos.json');
+    List<dynamic> objEfeitos = jsonDecode(jsonEfeitos);
+
+    // Converte o JSON em objetos
+    setState(() {
+      //? Texte Poder
+      Map poder = {};
+      for(poder in objPoderes){
+        _poderes.add({
+          "nome": poder["nome"],
+          "efeito": poder["efeito"],
+          "graduacao": poder["graduacao"],
+        });
+      }
+
+      Map efeito = {};
+      for(efeito in objEfeitos){
+        _efeitos.add({
+          "e_id": efeito["e_id"],
+          "efeito": efeito["efeito"] 
+        });
+      }
+
+      EfeitoSelecionado = _efeitos.first["efeito"];
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Text('Adicionar Poderes'),
+      actions: <Widget>[
+        
+        //* Entrada do Nome
+        TextField(
+          controller: inputTextPoder,
+          decoration: const InputDecoration(
+            border: OutlineInputBorder(),
+            hintText: 'Nome do poder',
+          ),
+        ),
+
+        const SizedBox(height: 15,),
+
+        DropdownButton<String>(
+          value: EfeitoSelecionado,
+          icon: const Icon(Icons.arrow_downward),
+          elevation: 16,
+          style: const TextStyle(color: Colors.deepPurple),
+          underline: Container(
+            height: 2,
+            color: Colors.deepPurpleAccent,
+          ),
+          onChanged: (String? value) {
+            setState(() {
+              EfeitoSelecionado = value!;
+            });
+          },
+          items: _efeitos.map<DropdownMenuItem<String>>((value) {
+            return DropdownMenuItem<String>(
+              value: value["efeito"].toString(),
+              child: Text(value["efeito"].toString()),
+            );
+          }).toList(),
+        )
+      ],
+    );
+  }
+}
