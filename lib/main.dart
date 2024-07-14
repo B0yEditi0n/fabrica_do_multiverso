@@ -177,41 +177,62 @@ class _DynamicDialogState extends State<DynamicDialog> {
   Widget build(BuildContext context) {
     return AlertDialog(
       title: const Text('Adicionar Poderes'),
-      actions: <Widget>[
-        
-        //* Entrada do Nome
-        TextField(
-          controller: inputTextPoder,
-          decoration: const InputDecoration(
-            border: OutlineInputBorder(),
-            hintText: 'Nome do poder',
-          ),
-        ),
+      content: SingleChildScrollView(
+        child: ListBody(
+          children: <Widget>[
+          
+            //* Entrada do Nome
+            TextField(
+              controller: inputTextPoder,
+              decoration: const InputDecoration(
+                border: OutlineInputBorder(),
+                hintText: 'Nome do poder',
+              ),
+            ),
 
-        const SizedBox(height: 15,),
+            const SizedBox(height: 15,),
 
-        DropdownButton<String>(
-          value: EfeitoSelecionado,
-          icon: const Icon(Icons.arrow_downward),
-          elevation: 16,
-          style: const TextStyle(color: Colors.deepPurple),
-          underline: Container(
-            height: 2,
-            color: Colors.deepPurpleAccent,
-          ),
-          onChanged: (String? value) {
-            setState(() {
-              EfeitoSelecionado = value!;
-            });
-          },
-          items: _efeitos.map<DropdownMenuItem<String>>((value) {
-            return DropdownMenuItem<String>(
-              value: value["efeito"].toString(),
-              child: Text(value["efeito"].toString()),
-            );
-          }).toList(),
+            DropdownButton<String>(
+              value: EfeitoSelecionado,
+              icon: const Icon(Icons.arrow_downward),
+              elevation: 16,
+              style: const TextStyle(color: Colors.deepPurple),
+              underline: Container(
+                height: 2,
+                color: Colors.deepPurpleAccent,
+              ),
+              onChanged: (String? value) {
+                setState(() {
+                  EfeitoSelecionado = value!;
+                });
+              },
+              items: _efeitos.map<DropdownMenuItem<String>>((value) {
+                return DropdownMenuItem<String>(
+                  value: value["efeito"].toString(),
+                  child: Text(value["efeito"].toString()),
+                );
+              }).toList(),
+            )
+          ]
         )
+      ),
+      actions: <Widget>[
+        TextButton(
+          child: const Text('Adicionar'),
+          onPressed: () {
+            
+            // Fecha o popup
+            Navigator.of(context).pop();
+          },
+        ),
+        TextButton(
+          child: const Text('Cancelar'),
+          onPressed: () {
+            // Fecha o popup
+            Navigator.of(context).pop();
+          },
+        ),
       ],
-    );
+      );
   }
 }
