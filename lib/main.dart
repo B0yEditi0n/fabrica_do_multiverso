@@ -2,6 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'; 
 import 'dart:convert';
 
+// Instancia de Poderes
+import 'package:fabrica_do_multiverso/script/ficha.dart' ;
+var personagem = Ficha();
+
+
 void main() {
   runApp(const MaterialApp(
     home: Poderes(),
@@ -18,12 +23,7 @@ class Poderes extends StatefulWidget {
 
 class _PoderesState extends State<Poderes> {
   // Declaração de Variáveis
-  List _poderes = [];
-  List _efeitos = [];
-
-  // Controles de input 
-  TextEditingController inputTextPoder = TextEditingController();
-  String EfeitoSelecionado = '';
+  List poderes = [];
   @override
 
   void initState() {
@@ -35,31 +35,17 @@ class _PoderesState extends State<Poderes> {
     String jsonPoderes = await rootBundle.loadString('assets/poderes.json');
     List<dynamic> objPoderes = jsonDecode(jsonPoderes);
 
-    // Carrega o Efeitos
-    String jsonEfeitos = await rootBundle.loadString('assets/poderes/efeitos.json');
-    List<dynamic> objEfeitos = jsonDecode(jsonEfeitos);
-
     // Converte o JSON em objetos
     setState(() {
       //? Texte Poder
       Map poder = {};
       for(poder in objPoderes){
-        _poderes.add({
+        poderes.add({
           "nome": poder["nome"],
           "efeito": poder["efeito"],
           "graduacao": poder["graduacao"],
         });
       }
-
-      Map efeito = {};
-      for(efeito in objEfeitos){
-        _efeitos.add({
-          "e_id": efeito["e_id"],
-          "efeito": efeito["efeito"] 
-        });
-      }
-
-      EfeitoSelecionado = _efeitos.first["efeito"];
     });
   }
 
@@ -72,7 +58,7 @@ class _PoderesState extends State<Poderes> {
         ),
 
         body: ListView.builder(
-          itemCount: _poderes.length,
+          itemCount: poderes.length,
           itemBuilder: (BuildContext context, int index){
             return InkWell(
             onTap: () {
@@ -84,8 +70,8 @@ class _PoderesState extends State<Poderes> {
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
                   ListTile(
-                    title: Text(_poderes[index]['nome']),
-                    subtitle: Text("${_poderes[index]['efeito']} ${_poderes[index]['graduacao']}"),
+                    title: Text(poderes[index]['nome']),
+                    subtitle: Text("${poderes[index]['efeito']} ${poderes[index]['graduacao']}"),
                   ),                  
                 ],
               ),
@@ -128,8 +114,8 @@ class DynamicDialog extends StatefulWidget {
 class _DynamicDialogState extends State<DynamicDialog> {
   //String _title;A
   // Declaração de Variáveis
-  List _poderes = [];
-  List _efeitos = [];
+  //List poderes = [];
+  final efeitos = [];
 
   TextEditingController inputTextPoder = TextEditingController();
   String EfeitoSelecionado = '';
@@ -151,25 +137,15 @@ class _DynamicDialogState extends State<DynamicDialog> {
 
     // Converte o JSON em objetos
     setState(() {
-      //? Texte Poder
-      Map poder = {};
-      for(poder in objPoderes){
-        _poderes.add({
-          "nome": poder["nome"],
-          "efeito": poder["efeito"],
-          "graduacao": poder["graduacao"],
-        });
-      }
-
       Map efeito = {};
       for(efeito in objEfeitos){
-        _efeitos.add({
+        efeitos.add({
           "e_id": efeito["e_id"],
           "efeito": efeito["efeito"] 
         });
       }
 
-      EfeitoSelecionado = _efeitos.first["efeito"];
+      EfeitoSelecionado = efeitos.first["e_id"];
     });
   }
 
@@ -206,9 +182,9 @@ class _DynamicDialogState extends State<DynamicDialog> {
                   EfeitoSelecionado = value!;
                 });
               },
-              items: _efeitos.map<DropdownMenuItem<String>>((value) {
+              items: efeitos.map<DropdownMenuItem<String>>((value) {
                 return DropdownMenuItem<String>(
-                  value: value["efeito"].toString(),
+                  value: value["e_id"].toString(),
                   child: Text(value["efeito"].toString()),
                 );
               }).toList(),
@@ -219,8 +195,9 @@ class _DynamicDialogState extends State<DynamicDialog> {
       actions: <Widget>[
         TextButton(
           child: const Text('Adicionar'),
-          onPressed: () {
-            
+          onPressed: () async{
+            //print('${inputTextPoder.text.toString()}:${EfeitoSelecionado}');
+            await personagem.poder.novoPoder(inputTextPoder.text.toString(), EfeitoSelecionado);
             // Fecha o popup
             Navigator.of(context).pop();
           },

@@ -128,7 +128,7 @@
             },
             {
                 "e_id": "E006",
-                "efeito":"Caracter1stica Aumentada",
+                "efeito":"Característica Aumentada",
                 "ofensivo": false,
                 "acao": 3,
                 "alcance": 0,

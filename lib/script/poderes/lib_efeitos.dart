@@ -1,5 +1,5 @@
 
-import 'dart:io';
+import 'package:flutter/services.dart'; 
 import 'dart:convert';
 
 class Efeito{
@@ -85,8 +85,8 @@ class Efeito{
         Map Json - o Arquivo json
     */
 
-    String currentDirectory = Directory.current.path;
-    var jsonEfeitos = await File('${currentDirectory}/lib/poderes/${json}.json').readAsString();
+    
+    var jsonEfeitos = await rootBundle.loadString('assets/poderes/efeitos.json');
     var objetoJson = jsonDecode(jsonEfeitos);
 
     return(objetoJson);

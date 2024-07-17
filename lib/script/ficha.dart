@@ -1,4 +1,18 @@
+import 'package:fabrica_do_multiverso/script/poderes/lib_efeitos.dart' ;
 
+class Poderes{
+  //Classe de Poderes
+
+  List efeitos = []; 
+
+  novoPoder(nome, id) async{    
+    // Cria um novo Efeito
+    var poder = Efeito();
+    await poder.instanciarMetodo(nome, id);
+    efeitos.add(poder);
+    return 1;
+  }
+}
 
 class Ficha{
   String nomePersonagem = '';
@@ -24,4 +38,6 @@ class Ficha{
 
   List<String> complicacoes = [];
 
+  // Instancia Poderes
+  var poder = Poderes();
 }

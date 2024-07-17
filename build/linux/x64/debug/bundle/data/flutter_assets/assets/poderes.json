@@ -1,0 +1,30 @@
+[
+    {
+        "nome": "Poder01",
+        "e_id": "E004",
+        "efeito": "Camuflagem",
+        "graduacao": 0,
+        "acao": 3,
+        "alcance": 0,
+        "duracao": 2,
+        "modificadores": [
+            {
+                "nome": "Limitado",
+                "descricao": "Seres Vivos",
+                "opcao": "",
+                "fixo": false,
+                "grad": 1,
+                "custo": -1
+            },
+            {
+                "nome": "Peculiaridade",
+                "descricao": "Perde automaticamente contra-ataques de poder",
+                "opcao": "",
+                "fixo": true,
+                "grad": 1,
+                "custo": -1
+            }
+        ],
+        "custo": 1
+    }
+]
