@@ -11,6 +11,10 @@
     {
         "e_id": "E002",
         "efeito": "Alongamento",
+        "custo_base": 1,
+        "acao": 3,
+        "alcance": 0,
+        "duracao": 3,
         "ofensivo": false
     },
     {
@@ -124,7 +128,7 @@
     },
     {
         "e_id": "E006",
-        "efeito": "Caracter1stica Aumentada",
+        "efeito": "Característica Aumentada",
         "ofensivo": false,
         "acao": 3,
         "alcance": 0,
@@ -133,32 +137,50 @@
     {
         "e_id": "E007",
         "efeito": "Compreender",
-        "ofensivo": false
+        "ofensivo": false,
+        "acao": 0,
+        "alcance": 0,
+        "duracao": 0
     },
     {
         "e_id": "E008",
         "efeito": "Comunicação",
-        "ofensivo": false
+        "ofensivo": false,
+        "acao": 3,
+        "alcance": 4,
+        "duracao": 3
     },
     {
         "e_id": "E009",
         "efeito": "Controle de Sorte",
-        "ofensivo": true
+        "ofensivo": true,
+        "acao": 4,
+        "alcance": 3,
+        "duracao": 1
     },
     {
         "e_id": "E010",
         "efeito": "Crescimento",
-        "ofensivo": false
+        "ofensivo": false,
+        "acao": 3,
+        "alcance": 0,
+        "duracao": 3
     },
     {
         "e_id": "E011",
         "efeito": "Criar",
-        "ofensivo": true
+        "ofensivo": true,
+        "acao": 1,
+        "alcance": 2,
+        "duracao": 3
     },
     {
         "e_id": "E012",
         "efeito": "Cura",
-        "tipo": "atk"
+        "tipo": "atk",
+        "acao": 0,
+        "alcance": 0,
+        "duracao": 0
     },
     {
         "e_id": "E013",

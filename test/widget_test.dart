@@ -10,6 +10,11 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:fabrica_do_multiverso/main.dart';
 
-void main() {
+import 'package:fabrica_do_multiverso/script/poderes/lib_efeitos.dart';
 
+void main() {
+  var pkg = Efeito();
+
+  pkg.instanciarMetodo('Poder', 'E001');
+  
 }

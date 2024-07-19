@@ -35,8 +35,10 @@ class Efeito{
     _idEfeito = idEfeito;
 
     // carrega json Base e preenche atributos do objeto
-    var efeitos = await carregaJson('efeitos');
-    var efeitoAtual = efeitos["EFECTS"][efeitos["EFECTS"].indexWhere((efeito) => efeito["e_id"] == idEfeito)];
+    var efeitos = await carregaJson();
+
+    int index = efeitos.indexWhere((efeito) => efeito["e_id"] == idEfeito);
+    Map efeitoAtual = efeitos[index];
     
     _padraoEfeito = efeitoAtual;
 
@@ -67,15 +69,15 @@ class Efeito{
     _alcance = objPoder["alcance"];
     _duracao = objPoder["duracao"];
 
-    var efeitos = await carregaJson('efeitos');
-    var efeitoAtual = efeitos["EFECTS"][efeitos["EFECTS"].indexWhere((efeito) => efeito["e_id"] == objPoder["e_id"])];
+    List efeitos = await carregaJson();
+    Map efeitoAtual = efeitos[efeitos.indexWhere((efeito) => efeito["e_id"] == objPoder["e_id"])];
 
     _nomeEfeito = efeitoAtual["efeito"];
 
     return true;
   }
 
-  Future carregaJson(String json) async{
+  Future carregaJson() async{
     /*
       carrega qualquer arquivo json necessário dentro do projeto
 
@@ -84,7 +86,6 @@ class Efeito{
       Return:
         Map Json - o Arquivo json
     */
-
     
     var jsonEfeitos = await rootBundle.loadString('assets/poderes/efeitos.json');
     var objetoJson = jsonDecode(jsonEfeitos);
