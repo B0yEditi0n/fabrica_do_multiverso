@@ -128,8 +128,9 @@
     },
     {
         "e_id": "E006",
-        "efeito": "Característica Aumentada",
+        "efeito": "Habilidade Aumentada",
         "ofensivo": false,
+        "custo_base": 2,
         "acao": 3,
         "alcance": 0,
         "duracao": 3
@@ -138,6 +139,7 @@
         "e_id": "E007",
         "efeito": "Compreender",
         "ofensivo": false,
+        "custo_base": 2,
         "acao": 0,
         "alcance": 0,
         "duracao": 0
@@ -155,6 +157,7 @@
         "e_id": "E009",
         "efeito": "Controle de Sorte",
         "ofensivo": true,
+        "custo_base": 3,
         "acao": 4,
         "alcance": 3,
         "duracao": 1
@@ -181,6 +184,7 @@
         "e_id": "E012",
         "efeito": "Cura",
         "ofensivo": false,
+        "custo_base": 2,
         "acao": 0,
         "alcance": 0,
         "duracao": 0
@@ -199,12 +203,16 @@
         "efeito": "Deflexão",
         "acao": 1,
         "alcance": 2,
-        "duracao": 1
+        "duracao": 1,
+        "ofensivo": false,
+        "custo_base": 1
 
     },
     {
         "e_id": "E015",
         "efeito": "Encolhimento",
+        "ofensivo": false,
+        "custo_base": 1,
         "acao": 1,
         "alcance": 2,
         "duracao": 1
@@ -213,6 +221,7 @@
         "e_id": "E016",
         "efeito": "Enfraquecer",
         "ofensivo": true,
+        "custo_base": 1,
         "acao": 1,
         "alcance": 1,
         "duracao": 1
@@ -220,6 +229,7 @@
     {
         "e_id": "E017",
         "efeito": "Escavação",
+        "custo_base": 1,
         "acao": 3,
         "alcance": 0,
         "duracao": 3
@@ -228,6 +238,7 @@
         "e_id": "E018",
         "efeito": "Ilusão",
         "ofensivo": true,
+        
         "acao": 3,
         "alcance": 3,
         "duracao": 3
@@ -538,6 +549,7 @@
     {
         "e_id": "E033",
         "efeito": "Salto",
+        "custo_base": 1,
         "acao": 0,
         "alcance": 0,
         "duracao": 0,
