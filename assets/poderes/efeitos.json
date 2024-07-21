@@ -146,6 +146,7 @@
         "e_id": "E008",
         "efeito": "Comunicação",
         "ofensivo": false,
+        "custo_base": 4,
         "acao": 3,
         "alcance": 4,
         "duracao": 3
@@ -162,6 +163,7 @@
         "e_id": "E010",
         "efeito": "Crescimento",
         "ofensivo": false,
+        "custo_base": 2,
         "acao": 3,
         "alcance": 0,
         "duracao": 3
@@ -170,6 +172,7 @@
         "e_id": "E011",
         "efeito": "Criar",
         "ofensivo": true,
+        "custo_base": 2,
         "acao": 1,
         "alcance": 2,
         "duracao": 3
@@ -177,7 +180,7 @@
     {
         "e_id": "E012",
         "efeito": "Cura",
-        "tipo": "atk",
+        "ofensivo": false,
         "acao": 0,
         "alcance": 0,
         "duracao": 0
@@ -185,34 +188,49 @@
     {
         "e_id": "E013",
         "efeito": "Dano",
+        "ofensivo": true,
         "custo_base": 1,
         "acao": 1,
         "alcance": 1,
-        "duracao": 1,
-        "tipo": "atk"
+        "duracao": 1
     },
     {
         "e_id": "E014",
         "efeito": "Deflexão",
-        "tipo": "atk"
+        "acao": 1,
+        "alcance": 2,
+        "duracao": 1
+
     },
     {
         "e_id": "E015",
-        "efeito": "Encolhimento"
+        "efeito": "Encolhimento",
+        "acao": 1,
+        "alcance": 2,
+        "duracao": 1
     },
     {
         "e_id": "E016",
         "efeito": "Enfraquecer",
-        "tipo": "atk"
+        "ofensivo": true,
+        "acao": 1,
+        "alcance": 1,
+        "duracao": 1
     },
     {
         "e_id": "E017",
-        "efeito": "Escavação"
+        "efeito": "Escavação",
+        "acao": 3,
+        "alcance": 0,
+        "duracao": 3
     },
     {
         "e_id": "E018",
         "efeito": "Ilusão",
-        "tipo": "atk"
+        "ofensivo": true,
+        "acao": 3,
+        "alcance": 3,
+        "duracao": 3
     },
     {
         "e_id": "E019",
@@ -386,45 +404,109 @@
     },
     {
         "e_id": "E021",
-        "efeito": "Intangibilidade"
+        "efeito": "Intangibilidade",
+        "custo_base": 5,
+        "acao": 1,
+        "alcance": 0,
+        "duracao": 0,
+        "opt": [
+            {
+                "ID": "OP01",
+                "desc": "Fluida",
+                "valor": 1,
+                "espec": false
+            },
+            {
+                "ID": "OP02",
+                "desc": "Gasosa",
+                "valor": 2,
+                "espec": false
+            },
+            {
+                "ID": "OP03",
+                "desc": "Energética",
+                "valor": 3,
+                "espec": false
+            },
+            {
+                "ID": "OP03",
+                "desc": "Incorpóreo",
+                "valor": 3,
+                "espec": false
+            }
+
+        ]
     },
     {
         "e_id": "E022",
-        "efeito": "Invocar"
+        "efeito": "Invocar",
+        "custo_base": 2,
+        "acao": 1,
+        "alcance": 1,
+        "duracao": 3
     },
     {
         "e_id": "E023",
-        "efeito": "Leitura Mental"
+        "efeito": "Leitura Mental",
+        "custo_base": 2,
+        "acao": 1,
+        "alcance": 1,
+        "duracao": 3,
+        "ofensivo": true
     },
     {
-        "e_id": "E02ã",
-        "efeito": "Membros Extras"
+        "e_id": "E024",
+        "efeito": "Membros Extras",
+        "custo_base": 1,
+        "acao": 0,
+        "alcance": 0,
+        "duracao": 0,
+        "ofensivo": false
     },
     {
         "e_id": "E025",
-        "efeito": "Morfar"
+        "efeito": "Morfar",
+        "custo_base": 5,
+        "acao": 3,
+        "alcance": 0,
+        "duracao": 3,
+        "ofensivo": false
     },
     {
         "e_id": "E026",
         "efeito": "Mover Objetos",
-        "custo_base": 1,
+        "custo_base": 2,
         "acao": 1,
         "alcance": 2,
         "duracao": 3,
-        "tipo": "atk"
+        "ofensivo": true
     },
     {
         "e_id": "E027",
-        "efeito": "Movimento"
+        "efeito": "Movimento",
+        "custo_base": 2,
+        "acao": 0,
+        "alcance": 0,
+        "duracao": 0,
+        "ofensivo": false
     },
     {
         "e_id": "E028",
-        "efeito": "Natação"
+        "efeito": "Natação",
+        "custo_base": 1,
+        "acao": 3,
+        "alcance": 0,
+        "duracao": 3,
+        "ofensivo": false
     },
     {
         "e_id": "E029",
         "efeito": "Nulificar",
-        "tipo": "atk"
+        "custo_base": 1,
+        "acao": 1,
+        "alcance": 2,
+        "duracao": 1,
+        "ofensivo": true
     },
     {
         "e_id": "E030",
@@ -432,50 +514,134 @@
         "custo_base": 1,
         "acao": 0,
         "alcance": 0,
-        "duracao": 0
+        "duracao": 0,
+        "ofensivo": false
     },
     {
         "e_id": "E031",
         "efeito": "Rapidez",
         "custo_base": 1,
-        "acao": 0,
+        "acao": 3,
         "alcance": 0,
-        "duracao": 0
+        "duracao": 3,
+        "ofensivo": false
     },
     {
         "e_id": "E032",
-        "efeito": "Regeneração"
+        "efeito": "Regeneração",
+        "custo_base": 1,
+        "acao": 0,
+        "alcance": 0,
+        "duracao": 0,
+        "ofensivo": false
     },
     {
         "e_id": "E033",
-        "efeito": "Salto"
+        "efeito": "Salto",
+        "acao": 0,
+        "alcance": 0,
+        "duracao": 0,
+        "ofensivo": false
     },
     {
         "e_id": "E034",
-        "efeito": "Sentido Remoto"
+        "efeito": "Sentido Remoto",
+        "custo_base": 1,
+        "acao": 3,
+        "alcance": 4,
+        "duracao": 3,
+        "ofensivo": false,
+        "opt": [
+            {
+                "ID": "OP01",
+                "desc": "um tipo de sentido",
+                "valor": 1,
+                "espec": true
+            },
+            {
+                "ID": "OP02",
+                "desc": "dois tipos de sentidos",
+                "valor": 2,
+                "espec": true
+            },
+            {
+                "ID": "OP03",
+                "desc": "sentido visual",
+                "valor": 2,
+                "espec": false
+            },
+            {
+                "ID": "OP04",
+                "desc": "três tipos de sentidos",
+                "valor": 3,
+                "espec": true
+            },
+            {
+                "ID": "OP05",
+                "desc": "quatro tipos de sentidos",
+                "valor": 4,
+                "espec": true
+            },
+            {
+                "ID": "OP06",
+                "desc": "todos os tipos de sentidos",
+                "valor": 5,
+                "espec": false
+            }
+        ]
     },
     {
         "e_id": "E035",
-        "efeito": "Sentidos"
+        "efeito": "Sentidos",
+        "custo_base": 1,
+        "acao": 3,
+        "alcance": 4,
+        "duracao": 3,
+        "ofensivo": false
     },
     {
         "e_id": "E036",
-        "efeito": "Teleporte"
+        "efeito": "Teleporte",
+        "custo_base": 2,
+        "acao": 2,
+        "alcance": 4,
+        "duracao": 1,
+        "ofensivo": false
     },
     {
         "e_id": "E037",
-        "efeito": "Transformar"
+        "efeito": "Transformar",
+        "custo_base": [2,7],
+        "acao": 1,
+        "alcance": 1,
+        "duracao": 3,
+        "ofensivo": false
     },
     {
         "e_id": "E038",
-        "efeito": "Variável"
+        "efeito": "Variável",
+        "custo_base": 7,
+        "acao": 1,
+        "alcance": 0,
+        "duracao": 3,
+        "ofensivo": false
     },
     {
         "e_id": "E039",
-        "efeito": "Velocidade"
+        "efeito": "Velocidade",
+        "custo_base": 1,
+        "acao": 3,
+        "alcance": 0,
+        "duracao": 3,
+        "ofensivo": false
     },
     {
         "e_id": "E040",
-        "efeito": "Voo"
+        "efeito": "Voo",
+        "custo_base": 2,
+        "acao": 3,
+        "alcance": 0,
+        "duracao": 3,
+        "ofensivo": false
     }
 ]

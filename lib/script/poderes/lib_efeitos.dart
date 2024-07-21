@@ -31,7 +31,7 @@ class Efeito{
         Map Json - o Arquivo json
     */
     
-    nome = nome;
+    this.nome = nome;
     _idEfeito = idEfeito;
 
     // carrega json Base e preenche atributos do objeto
@@ -273,7 +273,7 @@ class Efeito{
       Return:
         Map Json - o Arquivo json
     */
-
+    print(nome);
     return{
       "nome":      nome,
       "e_id":      _idEfeito,

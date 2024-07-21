@@ -31,21 +31,10 @@ class _PoderesState extends State<Poderes> {
     _carregarDados(); // Carrega os dados ao iniciar o estado
   }
   Future<void> _carregarDados() async {
-    // Carrega o Poderes text
-    String jsonPoderes = await rootBundle.loadString('assets/poderes.json');
-    List<dynamic> objPoderes = jsonDecode(jsonPoderes);
-
-    // Converte o JSON em objetos
+    // Carrega poderes já instanciados
     setState(() {
-      //? Texte Poder
-      Map poder = {};
-      for(poder in objPoderes){
-        poderes.add({
-          "nome": poder["nome"],
-          "efeito": poder["efeito"],
-          "graduacao": poder["graduacao"],
-        });
-      }
+      List poderes = [];
+      poderes = personagem.poderes.listaDePoderes();  
     });
   }
 
@@ -88,12 +77,19 @@ class _PoderesState extends State<Poderes> {
         floatingActionButton: FloatingActionButton(
 
           // Ação e PopUP
-          onPressed: ()=> {
-            showDialog(
+          onPressed: () async => {
+            await showDialog(
               context: context,
               builder: ((BuildContext context) {
                 return DynamicDialog();
-              }))
+                
+              })),
+            
+            //! Atualiza a Lista de poderes
+            setState(() {
+              poderes = personagem.poderes.listaDePoderes();
+              print(poderes);
+            })
           },
           tooltip: 'Increment',
           child: const Icon(Icons.add),
@@ -127,10 +123,6 @@ class _DynamicDialogState extends State<DynamicDialog> {
   _carregarDados(); // Carrega os dados ao iniciar o estado
   }
   Future<void> _carregarDados() async {
-    // Carrega o Poderes text
-    String jsonPoderes = await rootBundle.loadString('assets/poderes.json');
-    List<dynamic> objPoderes = jsonDecode(jsonPoderes);
-
     // Carrega o Efeitos
     String jsonEfeitos = await rootBundle.loadString('assets/poderes/efeitos.json');
     List<dynamic> objEfeitos = jsonDecode(jsonEfeitos);
@@ -196,8 +188,8 @@ class _DynamicDialogState extends State<DynamicDialog> {
         TextButton(
           child: const Text('Adicionar'),
           onPressed: () async{
-            //print('${inputTextPoder.text.toString()}:${EfeitoSelecionado}');
-            await personagem.poder.novoPoder(inputTextPoder.text.toString(), EfeitoSelecionado);
+            // Atualiza a Classe
+            await personagem.poderes.novoPoder(inputTextPoder.text.toString(), EfeitoSelecionado);
             // Fecha o popup
             Navigator.of(context).pop();
           },

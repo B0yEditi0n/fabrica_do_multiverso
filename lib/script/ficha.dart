@@ -1,16 +1,33 @@
 import 'package:fabrica_do_multiverso/script/poderes/lib_efeitos.dart' ;
 
-class Poderes{
+class controlPoderes{
   //Classe de Poderes
 
-  List efeitos = []; 
+  List poderesLista = []; 
 
   novoPoder(nome, id) async{    
     // Cria um novo Efeito
     var poder = Efeito();
     await poder.instanciarMetodo(nome, id);
-    efeitos.add(poder);
+    poderesLista.add(poder.retornaObj());
     return 1;
+  }
+
+  List<dynamic> listaDePoderes(){
+    //? Texte Poder
+      //? Chamada de da classe de poderes
+      Map poder = {};
+      List poderes = [];
+      
+      for(poder in poderesLista){
+
+        poderes.add({
+          "nome": poder["nome"],
+          "efeito": poder["efeito"],
+          "graduacao": poder["graduacao"],
+        });
+      }
+    return poderes;
   }
 }
 
@@ -39,5 +56,5 @@ class Ficha{
   List<String> complicacoes = [];
 
   // Instancia Poderes
-  var poder = Poderes();
+  var poderes = controlPoderes();
 }
