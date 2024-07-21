@@ -36,7 +36,7 @@ class _PoderesState extends State<Poderes> {
     return Scaffold(
         appBar: AppBar(
           //backgroundColor: Theme.of(context).colorScheme.inversePrimary,          
-          title: const Text("Modificadores"),
+          title: const Text("Poderes"),
         ),
 
         body: ListView.builder(
