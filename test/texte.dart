@@ -1,4 +1,3 @@
-import 'dart:ui' as ui;
 import 'package:fabrica_do_multiverso/script/poderes/lib_efeitos.dart';
 
 void main() {

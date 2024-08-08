@@ -46,6 +46,7 @@ class Efeito{
     _acao       = efeitoAtual["acao"];
     _alcance    = efeitoAtual["alcance"];
     _duracao    = efeitoAtual["duracao"];
+    graduacao   = 1;
 
     return true;
   }
