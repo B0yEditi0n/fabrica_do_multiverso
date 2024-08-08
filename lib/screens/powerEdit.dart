@@ -5,6 +5,8 @@ import 'package:numberpicker/numberpicker.dart';
 import 'package:fabrica_do_multiverso/script/ficha.dart' ;
 import 'package:fabrica_do_multiverso/script/poderes/lib_efeitos.dart';
 
+// Variável de Manipulação de Poderes
+var poder = Efeito();
 
 class powerEdit extends StatefulWidget {
   final int idPoder;
@@ -17,7 +19,7 @@ class powerEdit extends StatefulWidget {
 class _powerEditState extends State<powerEdit> {
   // Declaração
   TextEditingController inputTextNomePoder = TextEditingController();
-  var poder = Efeito();
+  
   var objPoder = {};
 
   @override
@@ -28,9 +30,9 @@ class _powerEditState extends State<powerEdit> {
   }
 
   void _startPower(){
-    poder.reinstanciarMetodo(objPoder);  
     setState(() {
       objPoder = personagem.poderes.poderesLista[widget.idPoder];
+      poder.reinstanciarMetodo(objPoder);  
       inputTextNomePoder.text = objPoder["nome"];
     });
   }
@@ -64,7 +66,7 @@ class _powerEditState extends State<powerEdit> {
                   SizedBox(
                     width: 350,
                     child: TextField(controller: inputTextNomePoder)
-                  ),
+                  ), 
 
                   TextButton(
                     onPressed: () async => {
@@ -77,6 +79,8 @@ class _powerEditState extends State<powerEdit> {
                       ),
                       //! Atualiza a Lista de poderes
                       setState(() {
+                        print(poder.retornaObj());
+                        var txt = poder.retornaObj();
                         objPoder = poder.retornaObj();
                       })
                     },
@@ -151,17 +155,10 @@ class _GradPowerDialogState extends State<GradPowerDialog> {
       ),
       actions: <Widget>[
         TextButton(
-          child: const Text('Adicionar'),
+          child: const Text('Ok'),
           onPressed: () async{
             // Atualiza a Classe
-
-            // Fecha o popup
-            Navigator.of(context).pop();
-          },
-        ),
-        TextButton(
-          child: const Text('Cancelar'),
-          onPressed: () {
+            poder.graduacao = _gradValue;
             // Fecha o popup
             Navigator.of(context).pop();
           },

@@ -75,6 +75,8 @@ class Efeito{
 
     _nomeEfeito = efeitoAtual["efeito"];
 
+    _padraoEfeito = efeitoAtual;
+
     return true;
   }
 

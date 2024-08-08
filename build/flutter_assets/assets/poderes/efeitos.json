@@ -6,7 +6,9 @@
         "acao": 1,
         "alcance": 1,
         "duracao": 1,
-        "ofensivo": true
+        "ofensivo": true,
+        "classe_manipulacao": "Aflicao"
+
     },
     {
         "e_id": "E002",
@@ -15,7 +17,8 @@
         "acao": 3,
         "alcance": 0,
         "duracao": 3,
-        "ofensivo": false
+        "ofensivo": false,
+        "classe_manipulacao": "Efeito"
     },
     {
         "e_id": "E003",
@@ -74,7 +77,8 @@
                 "valor": 2,
                 "espec": false
             }
-        ]
+        ],
+        "classe_manipulacao": "Efeito"
     },
     {
         "e_id": "E004",
@@ -115,7 +119,8 @@
                 "valor": 1,
                 "espec": true
             }
-        ]
+        ],
+        "classe_manipulacao": "Efeito"
     },
     {
         "e_id": "E005",
@@ -124,7 +129,8 @@
         "custo_base": 1,
         "acao": 0,
         "alcance": 0,
-        "duracao": 0
+        "duracao": 0,
+        "classe_manipulacao": "Efeito"
     },
     {
         "e_id": "E006",
@@ -133,7 +139,8 @@
         "custo_base": 2,
         "acao": 3,
         "alcance": 0,
-        "duracao": 3
+        "duracao": 3,
+        "classe_manipulacao": "Efeito"
     },
     {
         "e_id": "E007",
@@ -142,7 +149,8 @@
         "custo_base": 2,
         "acao": 0,
         "alcance": 0,
-        "duracao": 0
+        "duracao": 0,
+        "classe_manipulacao": "Efeito"
     },
     {
         "e_id": "E008",
