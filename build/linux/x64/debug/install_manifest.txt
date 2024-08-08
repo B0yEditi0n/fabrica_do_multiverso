@@ -10,5 +10,6 @@
 /media/caio/caio.hdd/Documentos/fabrica_do_multiverso/build/linux/x64/debug/bundle/data/flutter_assets/shaders/ink_sparkle.frag
 /media/caio/caio.hdd/Documentos/fabrica_do_multiverso/build/linux/x64/debug/bundle/data/flutter_assets/kernel_blob.bin
 /media/caio/caio.hdd/Documentos/fabrica_do_multiverso/build/linux/x64/debug/bundle/data/flutter_assets/fonts/MaterialIcons-Regular.otf
+/media/caio/caio.hdd/Documentos/fabrica_do_multiverso/build/linux/x64/debug/bundle/data/flutter_assets/fonts/Impact.ttf
 /media/caio/caio.hdd/Documentos/fabrica_do_multiverso/build/linux/x64/debug/bundle/data/flutter_assets/NOTICES.Z
 /media/caio/caio.hdd/Documentos/fabrica_do_multiverso/build/linux/x64/debug/bundle/data/flutter_assets/AssetManifest.bin

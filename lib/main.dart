@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-// Screens
+// Temas
+import 'package:fabrica_do_multiverso/theme/theme.dart';
+
+// Screens de Poderes
 import 'package:fabrica_do_multiverso/screens/poderes.dart';
-
-
-
 
 void main() {
   runApp(FabricaHerois());
@@ -16,9 +16,9 @@ class FabricaHerois extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Fabrica de Heróis',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+      theme: temaPadrao(),//(
+      //   primarySwatch: Colors.blue,
+      // ),
       home: HomePage(),
       routes: {
         '/home': (context) => HomePage(),
@@ -34,32 +34,29 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Home Page'),
+        title: const Text('Home Page'),
       ),
       drawer: Drawer(
         child: ListView(
           padding: EdgeInsets.zero,
           children: <Widget>[
             const DrawerHeader(
-              decoration: BoxDecoration(
+              /*decoration: BoxDecoration(
                 color: Colors.blue,
-              ),
+              ),*/
               child: Text(
                 'Menu',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 24,
-                ),
+                //style: TextStyle(
+                  //color: Colors.white,
+                  //fontSize: 24,
+                //),
               ),
             ),
             ListTile(
-              leading: const Icon(Icons.settings),
+              leading: const Icon(Icons.local_fire_department),
               title: const Text('Poderes'),
               onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const Poderes()),
-                );
+                Navigator.pushNamed(context, '/poderes');
               },
             ),
           ],
@@ -77,9 +74,9 @@ class SettingsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Settings Page'),
+        title: const Text('Settings Page'),
       ),
-      body: Center(
+      body: const Center(
         child: Text('Settings Page Content'),
       ),
     );

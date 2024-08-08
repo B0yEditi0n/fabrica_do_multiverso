@@ -58,3 +58,5 @@ class Ficha{
   // Instancia Poderes
   var poderes = controlPoderes();
 }
+
+var personagem = Ficha();

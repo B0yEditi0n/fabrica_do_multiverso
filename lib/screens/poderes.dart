@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'; 
 import 'dart:convert';
 
+// Screens de poderes
+import 'package:fabrica_do_multiverso/screens/powerEdit.dart';
+
 // Instancia de Poderes
 import 'package:fabrica_do_multiverso/script/ficha.dart' ;
-var personagem = Ficha();
-
 
 class Poderes extends StatefulWidget {
   const Poderes({super.key});
@@ -26,7 +27,7 @@ class _PoderesState extends State<Poderes> {
   Future<void> _carregarDados() async {
     // Carrega poderes já instanciados
     setState(() {
-      List poderes = [];
+      //List poderes = [];
       poderes = personagem.poderes.listaDePoderes();  
     });
   }
@@ -44,8 +45,14 @@ class _PoderesState extends State<Poderes> {
           itemBuilder: (BuildContext context, int index){
             return InkWell(
             onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => powerEdit(idPoder: index)),
+              );
+
               // Ação a ser realizada quando o Card for clicado
-              print('Card $index clicado');
+              print('Id do poder  ${personagem.poderes.poderesLista[index]} clicado');
+              
             },
             child: Card(
               child: Column(
@@ -157,10 +164,9 @@ class _DynamicDialogState extends State<DynamicDialog> {
               value: EfeitoSelecionado,
               icon: const Icon(Icons.arrow_downward),
               elevation: 16,
-              style: const TextStyle(color: Colors.deepPurple),
+              style: const TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
               underline: Container(
                 height: 2,
-                color: Colors.deepPurpleAccent,
               ),
               onChanged: (String? value) {
                 setState(() {
