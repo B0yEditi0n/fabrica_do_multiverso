@@ -48,11 +48,7 @@ class _PoderesState extends State<Poderes> {
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => powerEdit(idPoder: index)),
-              );
-
-              // Ação a ser realizada quando o Card for clicado
-              print('Id do poder  ${personagem.poderes.poderesLista[index]} clicado');
-              
+              );              
             },
             child: Card(
               child: Column(
@@ -88,7 +84,6 @@ class _PoderesState extends State<Poderes> {
             //! Atualiza a Lista de poderes
             setState(() {
               poderes = personagem.poderes.listaDePoderes();
-              print(poderes);
             })
           },
           tooltip: 'Increment',

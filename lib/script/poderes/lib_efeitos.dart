@@ -149,17 +149,12 @@ class Efeito{
           _acao = novaAcao;
         }        
         break;
-      case 3:
-        // Livre
+      case 3 || 4:
+        // Livre ou Reação
         if([1, 2, 3, 4].contains(novaAcao)){
           _acao = novaAcao;
         }        
-        break;
-      case 4:
-        // Reação
-        if([1, 2, 3, 4].contains(novaAcao)){
-          _acao = novaAcao;
-        }        
+        break;     
     }
   }
 
@@ -269,6 +264,10 @@ class Efeito{
     return custoFinal;
   }
 
+  Map returnObjDefault(){
+    return _padraoEfeito;
+  }
+
   String returnStrAcao(){
     String txtAcao = '';
     switch(_acao){
@@ -289,6 +288,7 @@ class Efeito{
         txtAcao    = 'Reação';
         break;
     }
+    print("$_acao, $txtAcao");
     return txtAcao;
   }
 
@@ -347,7 +347,6 @@ class Efeito{
       Return:
         Map Json - o Arquivo json
     */
-    print(nome);
     return{
       "nome":      nome,
       "e_id":      _idEfeito,

@@ -8,6 +8,36 @@ import 'package:fabrica_do_multiverso/script/poderes/lib_efeitos.dart';
 // Variável de Manipulação de Poderes
 var poder = Efeito();
 
+// Function das Classe
+int alteraAcao(int valorAtual, int passo){
+  // passo pode ser positivo ou negativo
+  int acaoID = poder.returnObjDefault()["acao"];
+  List editID = <int>[];
+  int index = -1;
+
+  // Opções de Edião
+  switch(acaoID){
+    case 1:
+      editID = [1, 4];
+      break;
+    case 2:
+      editID = [1, 2];
+      break;
+    case 3 || 4:
+      editID = [1, 2, 3, 4];
+      break;
+  }
+  
+  // Determina a posição do valor Atual
+  index = editID.indexWhere((id) => id == valorAtual);
+  // Progride em um passo
+  if(index + passo < editID.length && (index + passo) >= 0){
+    return editID[index + passo];
+  }
+
+  return valorAtual;
+}
+
 class powerEdit extends StatefulWidget {
   final int idPoder;
   const powerEdit({super.key, required this.idPoder});
@@ -117,21 +147,44 @@ class _powerEditState extends State<powerEdit> {
               child: Wrap(
                 alignment: WrapAlignment.spaceEvenly,
                 children: [
-                  TextButton(
-                    onPressed: () async => {
-                      
-                      await showDialog(
-                        context: context,
-                        builder: ((BuildContext context) {
-                          return EditValue(initValue: objPoder["acao"], tipo: 'A',);
-                        })
+                  Row(
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.arrow_circle_left),
+                        onPressed: (){
+                          // Chama função externa devido ao tamanho
+                          // da lógica de validação
+                          int novoValor = alteraAcao(objPoder["acao"], -1);
+                          setState(() {
+                            poder.alteraAcao(novoValor);
+                            objPoder = poder.retornaObj();
+                            txtAcao = poder.returnStrAcao();
+                          });
+                        }
                       ),
-                      //! Atualiza a Lista de poderes
-                      setState(() {
-                        objPoder = poder.retornaObj();
-                      })
-                    },
-                    child: const Text("Ação"),
+
+                      SizedBox(
+                        width: 80,
+                        child: Text(
+                          txtAcao, // Atual ação
+                          textAlign: TextAlign.center,
+                        ),
+                      ),                      
+
+                      IconButton(
+                        icon: const Icon(Icons.arrow_circle_right),
+                        onPressed: (){
+                          // Chama função externa devido ao tamanho
+                          // da lógica de validação
+                          int novoValor = alteraAcao(objPoder["acao"], 1);
+                          setState(() {
+                            poder.alteraAcao(novoValor);
+                            objPoder = poder.retornaObj();
+                            txtAcao = poder.returnStrAcao();
+                          });
+                        }
+                      ),
+                    ],
                   )
                 ],
               ),
@@ -213,82 +266,3 @@ class _GradPowerDialogState extends State<GradPowerDialog> {
   }
 }
 
-
-//************************************** */
-// Pop Up para editar Ação Duração Alcance
-//************************************** */
-
-
-class EditValue extends StatefulWidget {
-  final int initValue;
-  final String tipo;
-  EditValue({super.key, required this.initValue, required this.tipo});
-
-  @override
-  _EditValueState createState() => _EditValueState();
-}
-
-class _EditValueState extends State<EditValue> {
-  // Declaração de Variáveis  
-  int _valueChange = 1;
-  String titulo = '';
-
-  TextEditingController inputTextPoder = TextEditingController();
-  String EfeitoSelecionado = '';
-  @override
-  
-  void initState() {
-    // _title = widget.title;
-    super.initState();
-    _carregarDados(); // Carrega os dados ao iniciar o estado
-  }
-  Future<void> _carregarDados() async {
-    setState(() {
-      _valueChange = widget.initValue;
-      // Range Iniciais 
-
-      switch (widget.tipo) {
-        case "A": // Ação
-          titulo = "Ação";
-          break;
-        case "D": // Duração
-          titulo = "Duração";
-          break;
-        case "R": // Alacance
-          titulo = "Alcance";
-          break;
-      }
-      
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return AlertDialog(
-      title: Text(titulo),
-      content: SingleChildScrollView(
-        child: ListBody(
-          children: <Widget>[
-            NumberPicker(
-              value: _valueChange,
-              minValue: 1,
-              maxValue: 20, // parametrizar pelo NP posteriormente
-              onChanged: (value) => setState(() => _valueChange = value),
-            ),
-          ]
-        )
-      ),
-      actions: <Widget>[
-        TextButton(
-          child: const Text('Ok'),
-          onPressed: () async{
-            // Atualiza a Classe
-            //poder.graduacao = _gradValue;
-            // Fecha o popup
-            Navigator.of(context).pop();
-          },
-        ),
-      ],
-      );
-  }
-}
