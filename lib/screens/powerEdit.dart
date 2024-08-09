@@ -52,6 +52,7 @@ class _powerEditState extends State<powerEdit> {
   String txtAcao = "";
   String txtAlcance = "";
   String txtDuracao = "";
+  bool EsconderText = false;
   
   // Inputs de controle
   TextEditingController inputTextNomePoder = TextEditingController();
@@ -68,6 +69,7 @@ class _powerEditState extends State<powerEdit> {
 
   void _startPower(){
     setState(() {
+
       objPoder = personagem.poderes.poderesLista[widget.idPoder];
       poder.reinstanciarMetodo(objPoder);  
       inputTextNomePoder.text = objPoder["nome"];
@@ -188,8 +190,18 @@ class _powerEditState extends State<powerEdit> {
                   )
                 ],
               ),
-            )
+            ),
 
+            // Parametrizar Widgets Visiveis e Invisiveis
+            SizedBox(
+              child: Visibility(
+                child: Text("Invisible"),
+                maintainSize: true, 
+                maintainAnimation: true,
+                maintainState: true,
+                visible: EsconderText, 
+              ),
+            )
           ],
         ),
       )
