@@ -18,9 +18,16 @@ class powerEdit extends StatefulWidget {
 
 class _powerEditState extends State<powerEdit> {
   // Declaração
+  var objPoder = {};
+  String txtAcao = "";
+  String txtAlcance = "";
+  String txtDuracao = "";
+  
+  // Inputs de controle
   TextEditingController inputTextNomePoder = TextEditingController();
   
-  var objPoder = {};
+
+  
 
   @override
 
@@ -34,6 +41,11 @@ class _powerEditState extends State<powerEdit> {
       objPoder = personagem.poderes.poderesLista[widget.idPoder];
       poder.reinstanciarMetodo(objPoder);  
       inputTextNomePoder.text = objPoder["nome"];
+
+      // Converte as Variáveis para texto
+      txtAcao    = poder.returnStrAcao();
+      txtAlcance = poder.returnStrAlcance();
+      txtDuracao = poder.returnStrDuracao();
     });
   }
 
@@ -65,7 +77,13 @@ class _powerEditState extends State<powerEdit> {
                 children: [
                   SizedBox(
                     width: 350,
-                    child: TextField(controller: inputTextNomePoder)
+                    child: TextField(
+                      controller: inputTextNomePoder,
+                      onChanged: (String value) async{
+                        poder.nome = value;
+                        objPoder["nome"] = value;
+                      },
+                    )
                   ), 
 
                   TextButton(
@@ -74,13 +92,11 @@ class _powerEditState extends State<powerEdit> {
                       await showDialog(
                         context: context,
                         builder: ((BuildContext context) {
-                          return GradPowerDialog(gradValue: objPoder["graduacao"]);
+                          return GradPowerDialog(gradValue: objPoder["graduacao"], titulo: 'Valor de Graduação  ',);
                         })
                       ),
                       //! Atualiza a Lista de poderes
                       setState(() {
-                        print(poder.retornaObj());
-                        var txt = poder.retornaObj();
                         objPoder = poder.retornaObj();
                       })
                     },
@@ -95,6 +111,32 @@ class _powerEditState extends State<powerEdit> {
                 ],
               ),
             ),
+            // Ação e Duração e Alcance
+            SizedBox(
+              width: double.infinity,
+              child: Wrap(
+                alignment: WrapAlignment.spaceEvenly,
+                children: [
+                  TextButton(
+                    onPressed: () async => {
+                      
+                      await showDialog(
+                        context: context,
+                        builder: ((BuildContext context) {
+                          return EditValue(initValue: objPoder["acao"], tipo: 'A',);
+                        })
+                      ),
+                      //! Atualiza a Lista de poderes
+                      setState(() {
+                        objPoder = poder.retornaObj();
+                      })
+                    },
+                    child: const Text("Ação"),
+                  )
+                ],
+              ),
+            )
+
           ],
         ),
       )
@@ -104,14 +146,15 @@ class _powerEditState extends State<powerEdit> {
 
 
 
-//
-// popup seta nivel da graduação do poder
-//
+//****************************************** */
+// Pop Up Seta Nivel da Graduação do Poder
+//****************************************** */
 
 
 class GradPowerDialog extends StatefulWidget {
   final int gradValue;
-  GradPowerDialog({super.key, required this.gradValue});
+  final String titulo;
+  GradPowerDialog({super.key, required this.gradValue, required this.titulo});
 
   @override
   _GradPowerDialogState createState() => _GradPowerDialogState();
@@ -121,6 +164,7 @@ class _GradPowerDialogState extends State<GradPowerDialog> {
   // Declaração de Variáveis  
   final efeitos = [];
   int _gradValue = 1;
+  String titulo = '';
 
   TextEditingController inputTextPoder = TextEditingController();
   String EfeitoSelecionado = '';
@@ -134,13 +178,14 @@ class _GradPowerDialogState extends State<GradPowerDialog> {
   Future<void> _carregarDados() async {
     setState(() {
       _gradValue = widget.gradValue;
+      titulo     = widget.titulo;
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Nível de Graduação'),
+      title: Text(titulo),
       content: SingleChildScrollView(
         child: ListBody(
           children: <Widget>[
@@ -159,6 +204,86 @@ class _GradPowerDialogState extends State<GradPowerDialog> {
           onPressed: () async{
             // Atualiza a Classe
             poder.graduacao = _gradValue;
+            // Fecha o popup
+            Navigator.of(context).pop();
+          },
+        ),
+      ],
+      );
+  }
+}
+
+
+//************************************** */
+// Pop Up para editar Ação Duração Alcance
+//************************************** */
+
+
+class EditValue extends StatefulWidget {
+  final int initValue;
+  final String tipo;
+  EditValue({super.key, required this.initValue, required this.tipo});
+
+  @override
+  _EditValueState createState() => _EditValueState();
+}
+
+class _EditValueState extends State<EditValue> {
+  // Declaração de Variáveis  
+  int _valueChange = 1;
+  String titulo = '';
+
+  TextEditingController inputTextPoder = TextEditingController();
+  String EfeitoSelecionado = '';
+  @override
+  
+  void initState() {
+    // _title = widget.title;
+    super.initState();
+    _carregarDados(); // Carrega os dados ao iniciar o estado
+  }
+  Future<void> _carregarDados() async {
+    setState(() {
+      _valueChange = widget.initValue;
+      // Range Iniciais 
+
+      switch (widget.tipo) {
+        case "A": // Ação
+          titulo = "Ação";
+          break;
+        case "D": // Duração
+          titulo = "Duração";
+          break;
+        case "R": // Alacance
+          titulo = "Alcance";
+          break;
+      }
+      
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Text(titulo),
+      content: SingleChildScrollView(
+        child: ListBody(
+          children: <Widget>[
+            NumberPicker(
+              value: _valueChange,
+              minValue: 1,
+              maxValue: 20, // parametrizar pelo NP posteriormente
+              onChanged: (value) => setState(() => _valueChange = value),
+            ),
+          ]
+        )
+      ),
+      actions: <Widget>[
+        TextButton(
+          child: const Text('Ok'),
+          onPressed: () async{
+            // Atualiza a Classe
+            //poder.graduacao = _gradValue;
             // Fecha o popup
             Navigator.of(context).pop();
           },

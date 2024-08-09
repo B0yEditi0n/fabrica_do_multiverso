@@ -193,6 +193,10 @@ class Efeito{
     _modificador.add(objModificador);
   }
 
+  // ################################
+  // # Methodos de Retorno do objto #
+  // ################################
+
   int CustearAlteracoes(){
     /*
       Processa o custo de alterações feitas em (Ação, Duração e Alcance)  
@@ -265,9 +269,76 @@ class Efeito{
     return custoFinal;
   }
 
-  // ################################
-  // # Methodos de Retorno do objto #
-  // ################################
+  String returnStrAcao(){
+    String txtAcao = '';
+    switch(_acao){
+      
+      case 0:
+        txtAcao    = 'Nenhuma';
+        break;
+      case 1:
+        txtAcao    = 'Padrão'; 
+        break;
+      case 2:
+        txtAcao    = 'Movimento'; 
+        break;
+      case 3:
+        txtAcao    = 'Livre'; 
+        break;
+      case 4:
+        txtAcao    = 'Reação';
+        break;
+    }
+    return txtAcao;
+  }
+
+  String returnStrAlcance(){
+    String txtAlcance = '';
+    
+    switch(_alcance){
+      case 0:
+        txtAlcance  = "Pessoal";
+        break;
+      case 1:
+        txtAlcance  = "Perto";
+        break;
+      case 2:
+        txtAlcance  = "A Distância";
+        break;
+      case 3:
+        txtAlcance  = "Percepção";
+        break;
+      case 4:
+        txtAlcance  = "Graduação";
+        break;
+    }
+
+    return txtAlcance;
+  }
+
+  String returnStrDuracao(){
+    String txtDuracao = '';
+    
+    switch(_duracao){
+      case 0:
+        txtDuracao = "Permente";
+        break;
+      case 1:
+        txtDuracao = "Instantanêo";
+        break;
+      case 2:
+        txtDuracao = "Concentração";
+        break;
+      case 3:
+        txtDuracao = "Sustentado";
+        break;
+      case 4:
+        txtDuracao = "txtDuracao";
+        break;
+    }
+
+    return txtDuracao;
+  }
 
   Map<String, dynamic> retornaObj(){
     /*
