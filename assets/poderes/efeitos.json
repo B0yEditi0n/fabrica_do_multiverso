@@ -624,7 +624,7 @@
         "efeito": "Teleporte",
         "custo_base": 2,
         "acao": 2,
-        "alcance": 4,
+        "alcance": 0,
         "duracao": 1,
         "ofensivo": false
     },

@@ -71,6 +71,7 @@ class Efeito{
     _acao = objPoder["acao"];
     _alcance = objPoder["alcance"];
     _duracao = objPoder["duracao"];
+    _modificador = objPoder["modificador"];
 
     List efeitos = await carregaJson();
     Map efeitoAtual = efeitos[efeitos.indexWhere((efeito) => efeito["e_id"] == objPoder["e_id"])];
@@ -204,11 +205,16 @@ class Efeito{
     _modificador.add(objModificador);
   }
 
-  definirComoAtaque(){
-    if(_acao == 0){
+  definirComoAtaque(eAtaque){
+    if(_acao == 0 && eAtaque){
       _acao = 1;
       _alcance = 1;
       defAtaque = true;
+    }else{
+      _acao = _padraoEfeito["acao"];
+      _alcance = _padraoEfeito["_alcance"];
+      defAtaque = false;
+
     }
   }
 
@@ -396,3 +402,6 @@ class Efeito{
 
     
 }
+
+// Variável de Manipulação de Poderes
+var poder = Efeito();

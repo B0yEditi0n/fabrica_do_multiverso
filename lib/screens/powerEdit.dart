@@ -5,96 +5,10 @@ import 'package:numberpicker/numberpicker.dart';
 import 'package:fabrica_do_multiverso/script/ficha.dart' ;
 import 'package:fabrica_do_multiverso/script/poderes/lib_efeitos.dart';
 
-// Variável de Manipulação de Poderes
-var poder = Efeito();
+// Funções e Pops adicionais
+import 'package:fabrica_do_multiverso/screens/powerEdit/popup_GradPicker.dart';
+import 'package:fabrica_do_multiverso/screens/powerEdit/functions_controlEdition.dart';
 
-// Function para auxiliar a manipulação da Tela
-int alteraAcao(int valorAtual, int passo){
-  // passo pode ser positivo ou negativo
-  int acaoID = poder.returnObjDefault()["acao"];
-  List editID = <int>[];
-  int index = -1;
-
-  // Opções de Edião
-  switch(acaoID){
-    case 0:
-      editID = [1, 2, 3];
-    case 1:
-      editID = [1, 4];
-      break;
-    case 2:
-      editID = [1, 2];
-      break;
-    case 3 || 4:
-      editID = [1, 2, 3, 4];
-      break;
-  }
-  
-  // Determina a posição do valor Atual
-  index = editID.indexWhere((id) => id == valorAtual);
-  // Progride em um passo
-  if(index + passo < editID.length && (index + passo) >= 0){
-    return editID[index + passo];
-  }
-
-  return valorAtual;
-}
-
-int alteraDuracao(int valorAtual, int passo){
-  // passo pode ser positivo ou negativo
-  int duracaoID = poder.returnObjDefault()["duracao"];
-  List editID = <int>[];
-  int index = -1;
-
-  // Opções de Edião
-  switch(duracaoID){
-    case 1 || 2: 
-      editID = [1, 2];
-      break;
-    case 0 || 3 || 4:
-      editID = [0, 2, 3, 4];
-      break;
-  }
-  
-  
-  
-
-  // Determina a posição do valor Atual
-  index = editID.indexWhere((id) => id == valorAtual);
-  print(index + passo < editID.length && (index + passo) >= 0);
-  // Progride em um passo
-  if(index + passo < editID.length && (index + passo) >= 0){
-    print(editID[index + passo]);
-    return editID[index + passo];
-  }
-
-  return valorAtual;
-
-}
-
-int alteraAlcance(int valorAtual, int passo){
-  // passo pode ser positivo ou negativo
-  int alcanceID = poder.returnObjDefault()["alcance"];
-  List editID = <int>[];
-  int index = -1;
-
-  // Opções de Edião
-  switch(alcanceID){
-    case 1 || 2 || 3:
-      editID = [1, 2, 3];
-      break;
-  }
-
-  // Determina a posição do valor Atual
-  index = editID.indexWhere((id) => id == valorAtual);
-  // Progride em um passo
-  if(index + passo < editID.length && (index + passo) >= 0){
-    return editID[index + passo];
-  }
-
-  return valorAtual;
-
-}
 
 class powerEdit extends StatefulWidget {
   final int idPoder;
@@ -116,12 +30,11 @@ class _powerEditState extends State<powerEdit> {
   }];
 
   bool EsconderText = false;
+  bool efeitoPessoal = false;
+  bool efeitoOfensivo = false;
   
   // Inputs de controle
   TextEditingController inputTextNomePoder = TextEditingController();
-  
-
-  
 
   @override
 
@@ -132,6 +45,9 @@ class _powerEditState extends State<powerEdit> {
 
   void _startPower(){
     setState(() {
+      // Reinstancia para zerar Objeto
+      poder = Efeito();
+
       objPoder = personagem.poderes.poderesLista[widget.idPoder];
       poder.reinstanciarMetodo(objPoder);  
       inputTextNomePoder.text = objPoder["nome"];
@@ -140,6 +56,12 @@ class _powerEditState extends State<powerEdit> {
       txtAcao    = poder.returnStrAcao();
       txtAlcance = poder.returnStrAlcance();
       txtDuracao = poder.returnStrDuracao();
+
+      // Define os Widgets que irão aparecer
+      efeitoPessoal = (objPoder["alcance"] == 0);
+      print(efeitoPessoal);
+      print(objPoder["alcance"]);
+
     });
   }
 
@@ -154,7 +76,7 @@ class _powerEditState extends State<powerEdit> {
         centerTitle: true,
         title: const Text('Edição do Poder'),
         leading: IconButton(
-        icon: Icon(Icons.arrow_back),
+        icon: const Icon(Icons.arrow_back),
           onPressed: () async => {
             // Salva Alterações
             setState(() {
@@ -168,324 +90,328 @@ class _powerEditState extends State<powerEdit> {
       ),
 
 
-      body: Padding(padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-
-            // Nome Efeito e Graduação
-            SizedBox(
-              width: double.infinity,
-              child: Wrap(
-                alignment: WrapAlignment.spaceEvenly,
-                
-                spacing: 8.0, // Espaço horizontal entre os itens
-                runSpacing: 5.0, // Espaço vertical entre as linhas
-                children: [
-                  SizedBox(
-                    width: 350,
-                    child: TextField(
-                      controller: inputTextNomePoder,
-                      onChanged: (String value) async{
-                        poder.nome = value;
-                        objPoder["nome"] = value;
-                      },
-                    )
-                  ), 
-
-                  TextButton(
-                    onPressed: () async => {
-                      
-                      await showDialog(
-                        context: context,
-                        builder: ((BuildContext context) {
-                          return GradPowerDialog(gradValue: objPoder["graduacao"], titulo: 'Valor de Graduação  ',);
-                        })
-                      ),
-                      //! Atualiza a Lista de poderes
-                      setState(() {
-                        objPoder = poder.retornaObj();
-                      })
-                    },
-
-                    child: Text('${objPoder["efeito"]} ${objPoder["graduacao"]}',
-                      style: const TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
+      body: SingleChildScrollView(
+        child: Padding(
+          
+          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              // Nome Efeito e Graduação
+              SizedBox(
+                width: double.infinity,
+                child: Wrap(
+                  alignment: WrapAlignment.spaceEvenly,
+                  spacing: 8.0, // Espaço horizontal entre os itens
+                  runSpacing: 5.0, // Espaço vertical entre as linhas
+                  children: [
+                    SizedBox(
+                      width: 350,
+                      child: TextField(
+                        controller: inputTextNomePoder,
+                        onChanged: (String value) async{
+                          poder.nome = value;
+                          objPoder["nome"] = value;
+                        },
                       )
-                    )
-                  ),
-                ],
-              ),
-            ),
-            // Ação, Alcance e Duração
-            
-            SizedBox(
-              width: double.infinity,
-              child: Wrap(
-                alignment: WrapAlignment.spaceEvenly,
-                spacing: 8.0, // Espaço horizontal entre os itens
-                runSpacing: 5.0, // Espaço vertical entre as linhas
-                direction: Axis.horizontal,
-                children: [
-                // *****************
-                //      Ação
-                // *****************
-                Wrap(                  
-                  alignment: WrapAlignment.center,
-                  crossAxisAlignment: WrapCrossAlignment.center,
-                  children: [
-                    IconButton(
-                      icon: const Icon(Icons.arrow_circle_left),
-                      onPressed: (){
-                        // Chama função externa devido ao tamanho
-                        // da lógica de validação
-                        int novoValor = alteraAcao(objPoder["acao"], -1);
-                        setState(() {
-                          poder.alteraAcao(novoValor);
-                          objPoder = poder.retornaObj();
-                          txtAcao = poder.returnStrAcao();
-                        });
-                      }
                     ),
-              
-                    SizedBox(
-                      width: 80,
-                      child: Text(
-                        txtAcao, // Atual ação
-                        textAlign: TextAlign.center,
-                      ),
-                    ),                      
-              
-                    IconButton(
-                      icon: const Icon(Icons.arrow_circle_right),
-                      onPressed: (){
-                        // Chama função externa devido ao tamanho
-                        // da lógica de validação
-                        int novoValor = alteraAcao(objPoder["acao"], 1);
+                     
+                    TextButton(
+                      onPressed: () async => {
+                        
+                        await showDialog(
+                          context: context,
+                          builder: ((BuildContext context) {
+                            return GradPowerDialog(gradValue: objPoder["graduacao"], titulo: 'Valor de Graduação  ',);
+                          })
+                        ),
+                        //! Atualiza a Lista de poderes
                         setState(() {
-                          poder.alteraAcao(novoValor);
                           objPoder = poder.retornaObj();
-                          txtAcao = poder.returnStrAcao();
-                        });
-                      }
-                    ),
-                  ],
-                ),
-              
-                // *****************
-                //     Alcance
-                // *****************
-              
-                Wrap(
-                  alignment: WrapAlignment.center,
-                  crossAxisAlignment: WrapCrossAlignment.center,
-                  children: [
-                    IconButton(
-                      icon: const Icon(Icons.arrow_circle_left),
-                      onPressed: (){
-                        int novoValor = alteraAlcance(objPoder["alcance"], -1);
-                        setState(() {
-                          poder.alteraAlcance(novoValor);
-                          objPoder = poder.retornaObj();
-                          txtAlcance = poder.returnStrAlcance();
-                        });
-                      }
-                    ),
-              
-                    SizedBox(
-                      width: 80,
-                      child: Text(
-                        txtAlcance, // Atual Alcance
-                        textAlign: TextAlign.center,
-                      ),
-                    ),                      
-              
-                    IconButton(
-                      icon: const Icon(Icons.arrow_circle_right),
-                      onPressed: (){
-                        // Chama função externa devido ao tamanho
-                        // da lógica de validação
-                        int novoValor = alteraAlcance(objPoder["alcance"], 1);
-                        setState(() {
-                          poder.alteraAlcance(novoValor);
-                          objPoder = poder.retornaObj();
-                          txtAlcance = poder.returnStrAlcance();
-                        });
-                      }
-                    ),
-                  ],
-                ),
-                
-                // *****************
-                //     Duração
-                // *****************
-                Wrap(
-                  alignment: WrapAlignment.center,
-                  crossAxisAlignment: WrapCrossAlignment.center,
-                  children: [
-                    IconButton(
-                      icon: const Icon(Icons.arrow_circle_left),
-                      onPressed: (){
-                        int novoValor = alteraDuracao(objPoder["duracao"], -1);
-                        setState(() {
-                          poder.alteraDuracao(novoValor);
-                          objPoder = poder.retornaObj();
-                          txtDuracao = poder.returnStrDuracao();
-                          // Talvez altere a ação
-                          txtAcao = poder.returnStrAcao();
-                        });
-                      }
-                    ),
-              
-                    SizedBox(
-                      width: 100,
-                      child: Text(
-                        txtDuracao, // Atual Duracao
-                        textAlign: TextAlign.center,
-                      ),
-                    ),                      
-              
-                    IconButton(
-                      icon: const Icon(Icons.arrow_circle_right),
-                      onPressed: (){
-                        // Chama função externa devido ao tamanho
-                        // da lógica de validação
-                        int novoValor = alteraDuracao(objPoder["duracao"], 1);
-                        setState(() {
-                          poder.alteraDuracao(novoValor);
-                          objPoder = poder.retornaObj();
-                          txtDuracao = poder.returnStrDuracao();
-                          // Talvez altere a ação
-                          txtAcao = poder.returnStrAcao();
-                        });
-                      }
-                    ),
-                  ],
-                )],
-              ),
-            ),
-            SizedBox(height: 30),
-            //********************************
-            //* Campos de Extra e Falha
-            //********************************
-            Container(
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.blueAccent),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Column(
-                children: [
-                  SizedBox(
-                    height: 150, // Altura da lista
-                    child: ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: modficadores.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        return ListTile(
-                          title: Text(modficadores[index]["nome"]),
-                          trailing: Text('Graduação: ${modficadores[index]["grad"]}'),
-                        );
+                        })
                       },
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: ElevatedButton(
-                      onPressed: () {
-                        setState(() {
-                          // Adiciona um novo item à lista de modificadores
-                          modficadores.add({"nome": "Novo Modificador", "grad": 1});
-                        });
-                      },
-                      child: const Text('Adicionar Modificador'),
-                    ),
-                  ),
-                ],
-              ),
-            ),
+        
+                      child: Wrap(
+                        direction: Axis.vertical,
+                        alignment: WrapAlignment.center,
+                        crossAxisAlignment: WrapCrossAlignment.center,
+                        children: [
+                          Text('${objPoder["efeito"]} ${objPoder["graduacao"]}',
+                            style: const TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                            )
+                          ),
 
-            // Parametrizar Widgets Visiveis e Invisiveis
-            SizedBox(
-              child: Visibility(
-                visible: EsconderText, 
-                child: Text("Invisible"),
-                
+                          // Check Box de Ataque
+                          Visibility(
+                            visible: efeitoPessoal, 
+                            child: Wrap(
+                              alignment: WrapAlignment.center,
+                              crossAxisAlignment: WrapCrossAlignment.center,
+                              
+                              children: [
+                                const Text('Ofensivo: '),
+                                Checkbox(
+                                  //checkColor: Colors.white,
+                                  //fillColor: MaterialStateProperty.resolveWith(getColor),
+                                  value: efeitoOfensivo,
+                                  onChanged: (bool? value) {
+                                    setState(() {
+                                      efeitoOfensivo = value!;
+                                      poder.definirComoAtaque(efeitoOfensivo);
+                                    });
+                                  },
+                                ),
+                              ],
+                            )                        
+                          ),
+                        ],
+                      )
+                    ),
+                  ],
+                ),
               ),
-            )
-          ],
+              // Ação, Alcance e Duração
+              
+              SizedBox(
+                width: double.infinity,
+                child: Wrap(
+                  alignment: WrapAlignment.spaceEvenly,
+                  spacing: 8.0, // Espaço horizontal entre os itens
+                  runSpacing: 5.0, // Espaço vertical entre as linhas
+                  direction: Axis.horizontal,
+                  children: [
+                  // *****************
+                  //      Ação
+                  // *****************
+                  Wrap(                  
+                    alignment: WrapAlignment.center,
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.arrow_circle_left),
+                        onPressed: (){
+                          // Chama função externa devido ao tamanho
+                          // da lógica de validação
+                          int novoValor = alteraAcao(objPoder["acao"], -1);
+                          setState(() {
+                            poder.alteraAcao(novoValor);
+                            objPoder = poder.retornaObj();
+                            txtAcao = poder.returnStrAcao();
+                          });
+                        }
+                      ),
+                
+                      SizedBox(
+                        width: 80,
+                        child: Text(
+                          txtAcao, // Atual ação
+                          textAlign: TextAlign.center,
+                        ),
+                      ),                      
+                
+                      IconButton(
+                        icon: const Icon(Icons.arrow_circle_right),
+                        onPressed: (){
+                          // Chama função externa devido ao tamanho
+                          // da lógica de validação
+                          int novoValor = alteraAcao(objPoder["acao"], 1);
+                          setState(() {
+                            poder.alteraAcao(novoValor);
+                            objPoder = poder.retornaObj();
+                            txtAcao = poder.returnStrAcao();
+                          });
+                        }
+                      ),
+                    ],
+                  ),
+                
+                  // *****************
+                  //     Alcance
+                  // *****************
+                
+                  Wrap(
+                    alignment: WrapAlignment.center,
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.arrow_circle_left),
+                        onPressed: (){
+                          int novoValor = alteraAlcance(objPoder["alcance"], -1);
+                          setState(() {
+                            poder.alteraAlcance(novoValor);
+                            objPoder = poder.retornaObj();
+                            txtAlcance = poder.returnStrAlcance();
+                          });
+                        }
+                      ),
+                
+                      SizedBox(
+                        width: 80,
+                        child: Text(
+                          txtAlcance, // Atual Alcance
+                          textAlign: TextAlign.center,
+                        ),
+                      ),                      
+                
+                      IconButton(
+                        icon: const Icon(Icons.arrow_circle_right),
+                        onPressed: (){
+                          // Chama função externa devido ao tamanho
+                          // da lógica de validação
+                          int novoValor = alteraAlcance(objPoder["alcance"], 1);
+                          setState(() {
+                            poder.alteraAlcance(novoValor);
+                            objPoder = poder.retornaObj();
+                            txtAlcance = poder.returnStrAlcance();
+                          });
+                        }
+                      ),
+                    ],
+                  ),
+                  
+                  // *****************
+                  //     Duração
+                  // *****************
+                  Wrap(
+                    alignment: WrapAlignment.center,
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.arrow_circle_left),
+                        onPressed: (){
+                          int novoValor = alteraDuracao(objPoder["duracao"], -1);
+                          setState(() {
+                            poder.alteraDuracao(novoValor);
+                            objPoder = poder.retornaObj();
+                            txtDuracao = poder.returnStrDuracao();
+                            // Talvez altere a ação
+                            txtAcao = poder.returnStrAcao();
+                          });
+                        }
+                      ),
+                
+                      SizedBox(
+                        width: 100,
+                        child: Text(
+                          txtDuracao, // Atual Duracao
+                          textAlign: TextAlign.center,
+                        ),
+                      ),                      
+                
+                      IconButton(
+                        icon: const Icon(Icons.arrow_circle_right),
+                        onPressed: (){
+                          // Chama função externa devido ao tamanho
+                          // da lógica de validação
+                          int novoValor = alteraDuracao(objPoder["duracao"], 1);
+                          setState(() {
+                            poder.alteraDuracao(novoValor);
+                            objPoder = poder.retornaObj();
+                            txtDuracao = poder.returnStrDuracao();
+                            // Talvez altere a ação
+                            txtAcao = poder.returnStrAcao();
+                          });
+                        }
+                      ),
+                    ],
+                  )],
+                ),
+              ),
+
+              const SizedBox(height: 30),
+
+              //********************************
+              //* Campos de Extra e Falha
+              //********************************
+              Container(
+                decoration: BoxDecoration(
+                  border: Border.all(color: Theme.of(context).colorScheme.primary),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Column(
+                  children: [
+                    SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.40, // 40% da altura da tela,
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: modficadores.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return ListTile(
+                            title: Text('${modficadores[index]["nome"]} ${modficadores[index]["grad"]}'),
+                            trailing: IconButton(
+                              icon: const Icon(Icons.delete),
+                              onPressed: () =>{
+                                print(index)
+                              },
+                              ),
+                          );
+                        },
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: ElevatedButton(
+                        onPressed: () {
+                          setState(() {
+                            // Adiciona um novo item à lista de modificadores
+                            modficadores.add({"nome": "Novo Modificador", "grad": 1});
+                          });
+                        },
+                        child: const Text('Adicionar Modificador'),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+        
+              // Parametrizar Widgets Visiveis e Invisiveis
+              SizedBox(
+                child: Visibility(
+                  visible: EsconderText, 
+                  child: const Text("Invisible"),
+                  
+                ),
+              ),
+
+              const SizedBox(height: 30),
+
+              //* Pontos Gastos */
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    '${objPoder["custo"]} pontos de poder',
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 15)
+                  )
+                ],
+              )
+
+            ],
+          ),
         ),
-      )
+      ),
+      /*floatingActionButton: FloatingActionButton(
+
+        // Ação e PopUP
+        onPressed: () async => {
+          await showDialog(
+            context: context,
+            builder: ((BuildContext context) {
+              return DynamicDialog();
+              
+            })),
+          
+          //! Atualiza a Lista de poderes
+          setState(() {
+            poderes = personagem.poderes.listaDePoderes();
+          })
+        },
+        tooltip: 'Increment',
+        child: const Icon(Icons.add),
+      ),*/
     );
   }
 }
-
-
-
-//****************************************** */
-// Pop Up Seta Nivel da Graduação do Poder
-//****************************************** */
-
-
-class GradPowerDialog extends StatefulWidget {
-  final int gradValue;
-  final String titulo;
-  GradPowerDialog({super.key, required this.gradValue, required this.titulo});
-
-  @override
-  _GradPowerDialogState createState() => _GradPowerDialogState();
-}
-
-class _GradPowerDialogState extends State<GradPowerDialog> {
-  // Declaração de Variáveis  
-  final efeitos = [];
-  int _gradValue = 1;
-  String titulo = '';
-
-  TextEditingController inputTextPoder = TextEditingController();
-  String EfeitoSelecionado = '';
-  @override
-  
-  void initState() {
-    // _title = widget.title;
-    super.initState();
-    _carregarDados(); // Carrega os dados ao iniciar o estado
-  }
-  Future<void> _carregarDados() async {
-    setState(() {
-      _gradValue = widget.gradValue;
-      titulo     = widget.titulo;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return AlertDialog(
-      title: Text(titulo),
-      content: SingleChildScrollView(
-        child: ListBody(
-          children: <Widget>[
-            NumberPicker(
-              value: _gradValue,
-              minValue: 1,
-              maxValue: 20, // parametrizar pelo NP posteriormente
-              onChanged: (value) => setState(() => _gradValue = value),
-            ),
-          ]
-        )
-      ),
-      actions: <Widget>[
-        TextButton(
-          child: const Text('Ok'),
-          onPressed: () async{
-            // Atualiza a Classe
-            poder.graduacao = _gradValue;
-            // Fecha o popup
-            Navigator.of(context).pop();
-          },
-        ),
-      ],
-      );
-  }
-}
-

@@ -49,7 +49,7 @@ ThemeData temaPadrao(){
           titleLarge: TextStyle(
             color: Color.fromARGB(255, 109, 46, 46),
             fontFamily: 'Impact',
-            fontSize: 30,
+            fontSize: 20,
           ),
 
           //bodyText2: TextStyle(color: Colors.grey),
