@@ -1,0 +1,190 @@
+[
+    {
+        "e_id": "E001",
+        "nome": "Afeta Corpóreo",
+        "fixo": true,
+        "custo_base": -1,
+        "desc": false
+    },
+
+    {
+        "e_id": "E002",
+        "nome": "Afeta Intangível",
+        "fixo": true,
+        "custo_base": 1,
+        "limite": 2,
+        "desc": false
+    },
+
+    {
+        "e_id": "E003",
+        "nome": "Afeta Objetos",
+        "fixo": true,
+        "custo_base": 1,
+        "limite": 1,
+        "desc": false
+    },
+
+    {
+        "e_id": "E004",
+        "nome": "Afeta Objetos Apenas",
+        "fixo": false,
+        "custo_base": 0,
+        "limite": 1,
+        "desc": false
+    },
+
+    {
+        "e_id": "E005",
+        "nome": "Alcance",
+        "fixo": true,
+        "custo_base": 0,
+        "desc": false
+    },
+
+    {
+        "e_id": "E006",
+        "nome": "Aumentar Massa",
+        "fixo": true,
+        "custo_base": 0,
+        "desc": false
+    },
+
+    {
+        "e_id": "E007",
+        "nome": "Característica",
+        "fixo": true,
+        "custo_base": 1,
+        "desc": true
+    },
+
+    {
+        "e_id": "E008",
+        "nome": "Contagioso",
+        "fixo": false,
+        "custo_base": 1,
+        "desc": false
+    },
+
+    {
+        "e_id": "E009",
+        "nome": "Descritor Variável",
+        "fixo": true,
+        "custo_base": 1,
+        "limite": 2,
+        "desc": true
+    },
+
+    {
+        "e_id": "E010",
+        "nome": "Dimensional",
+        "fixo": true,
+        "custo_base": 0,
+        "limite": 3,
+        "desc": true
+    },
+
+    {
+        "e_id": "E011",
+        "nome": "Dividido",
+        "fixo": true,
+        "custo_base": 1,
+        "limite": -1,
+        "desc": true
+    },
+
+    {
+        "e_id": "E012",
+        "nome": "Efeito Secundário",
+        "fixo": false,
+        "custo_base": 1,
+        "limite": 3,
+        "desc": true
+    },
+
+    {
+        "e_id": "E013",
+        "nome": "Engatilhado",
+        "fixo": true,
+        "custo_base": 1,
+        "desc": true
+    },
+
+    {
+        "e_id": "E014",
+        "nome": "Gatilho Variável",
+        "fixo": true,
+        "custo_base": 2,
+        "desc": false
+    },
+
+    {
+        "e_id": "E015",
+        "nome": "Impenetrável",
+        "fixo": true,
+        "custo_base": 1,
+        "desc": false,
+        "limite": -1
+    },
+    
+    {
+        "e_id": "E016",
+        "nome": "Impenetrável",
+        "fixo": false,
+        "custo_base": 1,
+        "desc": false
+    },
+
+    {
+        "e_id": "E017",
+        "nome": "Inato",
+        "fixo": false,
+        "custo_base": 1,
+        "desc": false
+    },
+
+    {
+        "e_id": "E018",
+        "nome": "Inato",
+        "fixo": true,
+        "custo_base": 1,
+        "limite": 1,
+        "desc": false
+    },
+
+    {
+        "e_id": "E019",
+        "nome": "Incurável",
+        "fixo": true,
+        "custo_base": 1,
+        "limite": 1,
+        "desc": false
+    },
+
+    {
+        "e_id": "E020",
+        "nome": "Indireto",
+        "fixo": true,
+        "custo_base": 1,
+        "limite": 4,
+        "desc": true
+    },
+
+    {
+        "e_id": "E021",
+        "nome": "Multiataque",
+        "fixo": false,
+        "custo_base": 1,
+        "limite": 1,
+        "desc": false
+    },
+
+    {
+        "obs": [
+            "alguns limites precisam ser estabelecidos",
+            "Modificadores sem limite não possuiem o atributo limite",
+            "Modificadores Com limite igual a graduação; Dividido, Penentrante -1"
+        ]
+    }
+]
+
