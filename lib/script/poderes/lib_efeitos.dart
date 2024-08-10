@@ -388,6 +388,7 @@ class Efeito{
       "acao":      _acao,
       "alcance":   _alcance,
       "duracao":   _duracao,
+      "modificador":    _modificador,
       "custo":     CustearAlteracoes(),
       
     };

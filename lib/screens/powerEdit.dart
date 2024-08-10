@@ -110,6 +110,11 @@ class _powerEditState extends State<powerEdit> {
   String txtAcao = "";
   String txtAlcance = "";
   String txtDuracao = "";
+  List modficadores = [{
+    "nome": "Critico Aprimorado",
+    "grad": 4
+  }];
+
   bool EsconderText = false;
   
   // Inputs de controle
@@ -214,140 +219,188 @@ class _powerEditState extends State<powerEdit> {
               ),
             ),
             // Ação, Alcance e Duração
+            
             SizedBox(
               width: double.infinity,
               child: Wrap(
                 alignment: WrapAlignment.spaceEvenly,
+                spacing: 8.0, // Espaço horizontal entre os itens
+                runSpacing: 5.0, // Espaço vertical entre as linhas
+                direction: Axis.horizontal,
                 children: [
-                  Row(
-                    // *****************
-                    //      Ação
-                    // *****************
-                    children: [
-                      IconButton(
-                        icon: const Icon(Icons.arrow_circle_left),
-                        onPressed: (){
-                          // Chama função externa devido ao tamanho
-                          // da lógica de validação
-                          int novoValor = alteraAcao(objPoder["acao"], -1);
-                          setState(() {
-                            poder.alteraAcao(novoValor);
-                            objPoder = poder.retornaObj();
-                            txtAcao = poder.returnStrAcao();
-                          });
-                        }
+                // *****************
+                //      Ação
+                // *****************
+                Wrap(                  
+                  alignment: WrapAlignment.center,
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.arrow_circle_left),
+                      onPressed: (){
+                        // Chama função externa devido ao tamanho
+                        // da lógica de validação
+                        int novoValor = alteraAcao(objPoder["acao"], -1);
+                        setState(() {
+                          poder.alteraAcao(novoValor);
+                          objPoder = poder.retornaObj();
+                          txtAcao = poder.returnStrAcao();
+                        });
+                      }
+                    ),
+              
+                    SizedBox(
+                      width: 80,
+                      child: Text(
+                        txtAcao, // Atual ação
+                        textAlign: TextAlign.center,
                       ),
-
-                      SizedBox(
-                        width: 80,
-                        child: Text(
-                          txtAcao, // Atual ação
-                          textAlign: TextAlign.center,
-                        ),
-                      ),                      
-
-                      IconButton(
-                        icon: const Icon(Icons.arrow_circle_right),
-                        onPressed: (){
-                          // Chama função externa devido ao tamanho
-                          // da lógica de validação
-                          int novoValor = alteraAcao(objPoder["acao"], 1);
-                          setState(() {
-                            poder.alteraAcao(novoValor);
-                            objPoder = poder.retornaObj();
-                            txtAcao = poder.returnStrAcao();
-                          });
-                        }
+                    ),                      
+              
+                    IconButton(
+                      icon: const Icon(Icons.arrow_circle_right),
+                      onPressed: (){
+                        // Chama função externa devido ao tamanho
+                        // da lógica de validação
+                        int novoValor = alteraAcao(objPoder["acao"], 1);
+                        setState(() {
+                          poder.alteraAcao(novoValor);
+                          objPoder = poder.retornaObj();
+                          txtAcao = poder.returnStrAcao();
+                        });
+                      }
+                    ),
+                  ],
+                ),
+              
+                // *****************
+                //     Alcance
+                // *****************
+              
+                Wrap(
+                  alignment: WrapAlignment.center,
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.arrow_circle_left),
+                      onPressed: (){
+                        int novoValor = alteraAlcance(objPoder["alcance"], -1);
+                        setState(() {
+                          poder.alteraAlcance(novoValor);
+                          objPoder = poder.retornaObj();
+                          txtAlcance = poder.returnStrAlcance();
+                        });
+                      }
+                    ),
+              
+                    SizedBox(
+                      width: 80,
+                      child: Text(
+                        txtAlcance, // Atual Alcance
+                        textAlign: TextAlign.center,
                       ),
-                    ],
+                    ),                      
+              
+                    IconButton(
+                      icon: const Icon(Icons.arrow_circle_right),
+                      onPressed: (){
+                        // Chama função externa devido ao tamanho
+                        // da lógica de validação
+                        int novoValor = alteraAlcance(objPoder["alcance"], 1);
+                        setState(() {
+                          poder.alteraAlcance(novoValor);
+                          objPoder = poder.retornaObj();
+                          txtAlcance = poder.returnStrAlcance();
+                        });
+                      }
+                    ),
+                  ],
+                ),
+                
+                // *****************
+                //     Duração
+                // *****************
+                Wrap(
+                  alignment: WrapAlignment.center,
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.arrow_circle_left),
+                      onPressed: (){
+                        int novoValor = alteraDuracao(objPoder["duracao"], -1);
+                        setState(() {
+                          poder.alteraDuracao(novoValor);
+                          objPoder = poder.retornaObj();
+                          txtDuracao = poder.returnStrDuracao();
+                          // Talvez altere a ação
+                          txtAcao = poder.returnStrAcao();
+                        });
+                      }
+                    ),
+              
+                    SizedBox(
+                      width: 100,
+                      child: Text(
+                        txtDuracao, // Atual Duracao
+                        textAlign: TextAlign.center,
+                      ),
+                    ),                      
+              
+                    IconButton(
+                      icon: const Icon(Icons.arrow_circle_right),
+                      onPressed: (){
+                        // Chama função externa devido ao tamanho
+                        // da lógica de validação
+                        int novoValor = alteraDuracao(objPoder["duracao"], 1);
+                        setState(() {
+                          poder.alteraDuracao(novoValor);
+                          objPoder = poder.retornaObj();
+                          txtDuracao = poder.returnStrDuracao();
+                          // Talvez altere a ação
+                          txtAcao = poder.returnStrAcao();
+                        });
+                      }
+                    ),
+                  ],
+                )],
+              ),
+            ),
+            SizedBox(height: 30),
+            //********************************
+            //* Campos de Extra e Falha
+            //********************************
+            Container(
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.blueAccent),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Column(
+                children: [
+                  SizedBox(
+                    height: 150, // Altura da lista
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: modficadores.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return ListTile(
+                          title: Text(modficadores[index]["nome"]),
+                          trailing: Text('Graduação: ${modficadores[index]["grad"]}'),
+                        );
+                      },
+                    ),
                   ),
-
-                  // *****************
-                  //     Alcance
-                  // *****************
-
-                  Row(
-                    children: [
-                      IconButton(
-                        icon: const Icon(Icons.arrow_circle_left),
-                        onPressed: (){
-                          int novoValor = alteraAlcance(objPoder["alcance"], -1);
-                          setState(() {
-                            poder.alteraAlcance(novoValor);
-                            objPoder = poder.retornaObj();
-                            txtAlcance = poder.returnStrAlcance();
-                          });
-                        }
-                      ),
-
-                      SizedBox(
-                        width: 80,
-                        child: Text(
-                          txtAlcance, // Atual Alcance
-                          textAlign: TextAlign.center,
-                        ),
-                      ),                      
-
-                      IconButton(
-                        icon: const Icon(Icons.arrow_circle_right),
-                        onPressed: (){
-                          // Chama função externa devido ao tamanho
-                          // da lógica de validação
-                          int novoValor = alteraAlcance(objPoder["alcance"], 1);
-                          setState(() {
-                            poder.alteraAlcance(novoValor);
-                            objPoder = poder.retornaObj();
-                            txtAlcance = poder.returnStrAlcance();
-                          });
-                        }
-                      ),
-                    ],
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        setState(() {
+                          // Adiciona um novo item à lista de modificadores
+                          modficadores.add({"nome": "Novo Modificador", "grad": 1});
+                        });
+                      },
+                      child: const Text('Adicionar Modificador'),
+                    ),
                   ),
-                  
-                  // *****************
-                  //     Duração
-                  // *****************
-                  Row(
-                    children: [
-                      IconButton(
-                        icon: const Icon(Icons.arrow_circle_left),
-                        onPressed: (){
-                          int novoValor = alteraDuracao(objPoder["duracao"], -1);
-                          setState(() {
-                            poder.alteraDuracao(novoValor);
-                            objPoder = poder.retornaObj();
-                            txtDuracao = poder.returnStrDuracao();
-                            // Talvez altere a ação
-                            txtAcao = poder.returnStrAcao();
-                          });
-                        }
-                      ),
-
-                      SizedBox(
-                        width: 100,
-                        child: Text(
-                          txtDuracao, // Atual Duracao
-                          textAlign: TextAlign.center,
-                        ),
-                      ),                      
-
-                      IconButton(
-                        icon: const Icon(Icons.arrow_circle_right),
-                        onPressed: (){
-                          // Chama função externa devido ao tamanho
-                          // da lógica de validação
-                          int novoValor = alteraDuracao(objPoder["duracao"], 1);
-                          setState(() {
-                            poder.alteraDuracao(novoValor);
-                            objPoder = poder.retornaObj();
-                            txtDuracao = poder.returnStrDuracao();
-                            // Talvez altere a ação
-                            txtAcao = poder.returnStrAcao();
-                          });
-                        }
-                      ),
-                    ],
-                  )
                 ],
               ),
             ),
