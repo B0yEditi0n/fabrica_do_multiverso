@@ -111,19 +111,30 @@ class Efeito{
     */ 
     var duracaoPadrao = _padraoEfeito["duracao"];
     switch (duracaoPadrao) {
-      
       case 1 || 2: 
         // Instantaneo ou Concentração
         if([1, 2].contains(novaDuracao)){
           _duracao = novaDuracao;
         }          
         break;
+      
       case 0 || 3 || 4:
-        // Permanente Sustentado Continuo 
+        // Permanente Sustentado Continuo Reação
         if([0, 2, 3, 4].contains(novaDuracao)){
           _duracao = novaDuracao;
+          // Alerar de Sustentado pra continuo implica na alteração da ação
+          switch (novaDuracao) {
+            case 3 || 4:
+              _acao = 3;  
+              break;
+            case 0:
+              _acao = 0;
+              break;
+            case 2:
+              _acao = 1;
+              break;
+          }
         }        
-        break;
     }
 
   }
@@ -137,6 +148,9 @@ class Efeito{
     */ 
     var acaoPadrao = _padraoEfeito["acao"];
     switch (acaoPadrao){
+      //case 0:
+      /* não pode pode case 0 pois isso é alterdação
+       * de sustentado para permanente e vice-versa */
       case 1: 
         // Padrão
         if([1, 4].contains(novaAcao)){
@@ -158,7 +172,7 @@ class Efeito{
     }
   }
 
-  aleteraAlcance(novoAlcance){
+  alteraAlcance(novoAlcance){
     /* 
       avalia alterações de Alcance disponiveis do efeito
 
@@ -321,7 +335,7 @@ class Efeito{
     
     switch(_duracao){
       case 0:
-        txtDuracao = "Permente";
+        txtDuracao = "Permanente";
         break;
       case 1:
         txtDuracao = "Instantanêo";
@@ -333,7 +347,7 @@ class Efeito{
         txtDuracao = "Sustentado";
         break;
       case 4:
-        txtDuracao = "txtDuracao";
+        txtDuracao = "Contínuo";
         break;
     }
 

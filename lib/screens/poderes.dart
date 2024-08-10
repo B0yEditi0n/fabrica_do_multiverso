@@ -7,6 +7,7 @@ import 'package:fabrica_do_multiverso/screens/powerEdit.dart';
 
 // Instancia de Poderes
 import 'package:fabrica_do_multiverso/script/ficha.dart' ;
+import 'package:flutter/widgets.dart';
 
 class Poderes extends StatefulWidget {
   const Poderes({super.key});
@@ -45,21 +46,45 @@ class _PoderesState extends State<Poderes> {
           itemBuilder: (BuildContext context, int index){
             return InkWell(
             onTap: () {
+              atualizarValores(){
+                setState(() {
+                  poderes = personagem.poderes.listaDePoderes();
+                });
+              }
+
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => powerEdit(idPoder: index)),
-              );              
+              ).then((result)=>{
+                atualizarValores()
+              });
+
+              
+              // Atualiza os Poderes
+              
             },
             child: Card(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  ListTile(
-                    title: Text(poderes[index]['nome']),
-                    subtitle: Text("${poderes[index]['efeito']} ${poderes[index]['graduacao']}"),
-                  ),                  
-                ],
-              ),
+              child: 
+              Row( children: <Widget> [
+                Expanded(
+                  child: 
+                    ListTile(
+                      title: Text(poderes[index]['nome']),
+                      subtitle: Text("${poderes[index]['efeito']} ${poderes[index]['graduacao']}"),
+                    ),
+                ),
+
+                IconButton(
+                  icon: const  Icon(Icons.delete),
+                  onPressed: () =>{
+                    personagem.poderes.poderesLista.removeAt(index),
+                    setState(() {
+                      poderes = personagem.poderes.listaDePoderes();  
+                    })
+                  }
+                )
+
+              ],)
             )
             );
           },

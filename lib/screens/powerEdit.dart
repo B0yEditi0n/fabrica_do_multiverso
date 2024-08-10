@@ -8,7 +8,7 @@ import 'package:fabrica_do_multiverso/script/poderes/lib_efeitos.dart';
 // Variável de Manipulação de Poderes
 var poder = Efeito();
 
-// Function das Classe
+// Function para auxiliar a manipulação da Tela
 int alteraAcao(int valorAtual, int passo){
   // passo pode ser positivo ou negativo
   int acaoID = poder.returnObjDefault()["acao"];
@@ -17,6 +17,8 @@ int alteraAcao(int valorAtual, int passo){
 
   // Opções de Edião
   switch(acaoID){
+    case 0:
+      editID = [1, 2, 3];
     case 1:
       editID = [1, 4];
       break;
@@ -36,6 +38,62 @@ int alteraAcao(int valorAtual, int passo){
   }
 
   return valorAtual;
+}
+
+int alteraDuracao(int valorAtual, int passo){
+  // passo pode ser positivo ou negativo
+  int duracaoID = poder.returnObjDefault()["duracao"];
+  List editID = <int>[];
+  int index = -1;
+
+  // Opções de Edião
+  switch(duracaoID){
+    case 1 || 2: 
+      editID = [1, 2];
+      break;
+    case 0 || 3 || 4:
+      editID = [0, 2, 3, 4];
+      break;
+  }
+  
+  
+  
+
+  // Determina a posição do valor Atual
+  index = editID.indexWhere((id) => id == valorAtual);
+  print(index + passo < editID.length && (index + passo) >= 0);
+  // Progride em um passo
+  if(index + passo < editID.length && (index + passo) >= 0){
+    print(editID[index + passo]);
+    return editID[index + passo];
+  }
+
+  return valorAtual;
+
+}
+
+int alteraAlcance(int valorAtual, int passo){
+  // passo pode ser positivo ou negativo
+  int alcanceID = poder.returnObjDefault()["alcance"];
+  List editID = <int>[];
+  int index = -1;
+
+  // Opções de Edião
+  switch(alcanceID){
+    case 1 || 2 || 3:
+      editID = [1, 2, 3];
+      break;
+  }
+
+  // Determina a posição do valor Atual
+  index = editID.indexWhere((id) => id == valorAtual);
+  // Progride em um passo
+  if(index + passo < editID.length && (index + passo) >= 0){
+    return editID[index + passo];
+  }
+
+  return valorAtual;
+
 }
 
 class powerEdit extends StatefulWidget {
@@ -69,7 +127,6 @@ class _powerEditState extends State<powerEdit> {
 
   void _startPower(){
     setState(() {
-
       objPoder = personagem.poderes.poderesLista[widget.idPoder];
       poder.reinstanciarMetodo(objPoder);  
       inputTextNomePoder.text = objPoder["nome"];
@@ -89,7 +146,20 @@ class _powerEditState extends State<powerEdit> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Edição do Poder')
+        centerTitle: true,
+        title: const Text('Edição do Poder'),
+        leading: IconButton(
+        icon: Icon(Icons.arrow_back),
+          onPressed: () async => {
+            // Salva Alterações
+            setState(() {
+              personagem.poderes.poderesLista[widget.idPoder] = poder.retornaObj();
+            }),
+            
+            // Fecha A Aplicação
+            Navigator.of(context).pop()
+          }
+        ), 
       ),
 
 
@@ -143,13 +213,16 @@ class _powerEditState extends State<powerEdit> {
                 ],
               ),
             ),
-            // Ação e Duração e Alcance
+            // Ação, Alcance e Duração
             SizedBox(
               width: double.infinity,
               child: Wrap(
                 alignment: WrapAlignment.spaceEvenly,
                 children: [
                   Row(
+                    // *****************
+                    //      Ação
+                    // *****************
                     children: [
                       IconButton(
                         icon: const Icon(Icons.arrow_circle_left),
@@ -187,6 +260,93 @@ class _powerEditState extends State<powerEdit> {
                         }
                       ),
                     ],
+                  ),
+
+                  // *****************
+                  //     Alcance
+                  // *****************
+
+                  Row(
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.arrow_circle_left),
+                        onPressed: (){
+                          int novoValor = alteraAlcance(objPoder["alcance"], -1);
+                          setState(() {
+                            poder.alteraAlcance(novoValor);
+                            objPoder = poder.retornaObj();
+                            txtAlcance = poder.returnStrAlcance();
+                          });
+                        }
+                      ),
+
+                      SizedBox(
+                        width: 80,
+                        child: Text(
+                          txtAlcance, // Atual Alcance
+                          textAlign: TextAlign.center,
+                        ),
+                      ),                      
+
+                      IconButton(
+                        icon: const Icon(Icons.arrow_circle_right),
+                        onPressed: (){
+                          // Chama função externa devido ao tamanho
+                          // da lógica de validação
+                          int novoValor = alteraAlcance(objPoder["alcance"], 1);
+                          setState(() {
+                            poder.alteraAlcance(novoValor);
+                            objPoder = poder.retornaObj();
+                            txtAlcance = poder.returnStrAlcance();
+                          });
+                        }
+                      ),
+                    ],
+                  ),
+                  
+                  // *****************
+                  //     Duração
+                  // *****************
+                  Row(
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.arrow_circle_left),
+                        onPressed: (){
+                          int novoValor = alteraDuracao(objPoder["duracao"], -1);
+                          setState(() {
+                            poder.alteraDuracao(novoValor);
+                            objPoder = poder.retornaObj();
+                            txtDuracao = poder.returnStrDuracao();
+                            // Talvez altere a ação
+                            txtAcao = poder.returnStrAcao();
+                          });
+                        }
+                      ),
+
+                      SizedBox(
+                        width: 100,
+                        child: Text(
+                          txtDuracao, // Atual Duracao
+                          textAlign: TextAlign.center,
+                        ),
+                      ),                      
+
+                      IconButton(
+                        icon: const Icon(Icons.arrow_circle_right),
+                        onPressed: (){
+                          // Chama função externa devido ao tamanho
+                          // da lógica de validação
+                          int novoValor = alteraDuracao(objPoder["duracao"], 1);
+                          setState(() {
+                            poder.alteraDuracao(novoValor);
+                            objPoder = poder.retornaObj();
+                            txtDuracao = poder.returnStrDuracao();
+                            // Talvez altere a ação
+                            txtAcao = poder.returnStrAcao();
+                          });
+                        }
+                      ),
+                    ],
                   )
                 ],
               ),
@@ -195,11 +355,9 @@ class _powerEditState extends State<powerEdit> {
             // Parametrizar Widgets Visiveis e Invisiveis
             SizedBox(
               child: Visibility(
-                child: Text("Invisible"),
-                maintainSize: true, 
-                maintainAnimation: true,
-                maintainState: true,
                 visible: EsconderText, 
+                child: Text("Invisible"),
+                
               ),
             )
           ],
