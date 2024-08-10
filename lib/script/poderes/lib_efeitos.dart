@@ -12,6 +12,8 @@ class Efeito{
   int _alcance = -1; // 0 - Pessoal | 1 - Perto | 2 - A Distância | 3 - Percepção | 4 - Graduação
   int _duracao = -1; // 0 - Permente | 1 - Instantanêo | 2 - Concentração | 3 - Sustentado | 4 - Contínuo 
 
+  bool defAtaque = false;
+
   var _padraoEfeito = {};
   var _modificador = [];
   
@@ -202,6 +204,14 @@ class Efeito{
     _modificador.add(objModificador);
   }
 
+  definirComoAtaque(){
+    if(_acao == 0){
+      _acao = 1;
+      _alcance = 1;
+      defAtaque = true;
+    }
+  }
+
   // ################################
   // # Methodos de Retorno do objto #
   // ################################
@@ -215,13 +225,22 @@ class Efeito{
     // contabilizando alterações do efeitos
     // - Ação 
     int dfAcao = _padraoEfeito["acao"];
-    int custoAcao = _acao - dfAcao;
-
+    int custoAcao = 0;
+    if(!defAtaque){ 
+      custoAcao = _acao - dfAcao;
+    }else{
+      // Caso setado como ataque ignora o custo da ação default
+      custoAcao = _acao - 1; 
+    }
+    
     // - Alcance
     int dfAlcance = _padraoEfeito["alcance"];
     int custoAlcance = 0;
-    if([1, 2, 3].contains(dfAlcance)){
+    if([1, 2, 3].contains(dfAlcance) && !defAtaque){
       custoAlcance = _alcance - dfAlcance;
+    }else{
+      // Caso setado como ataque ignora o custo do alcance default
+      custoAlcance = _alcance - 1;
     }
 
     // - Duração
