@@ -20,16 +20,16 @@ class _AddmodificadorSelecionadorState extends State<AddmodificadorSelecionador>
   //String _title;A
   // Declaração de Variáveis
   //List poderes = [];
-  final modificadores = [];
+  List modificadores = [];
 
   TextEditingController inputTextPoder = TextEditingController();
   String modificadorSelecionado = '';
   @override
   
-  void initState() async {
+  void initState() {
     // _title = widget.title;
     super.initState();
-    await _carregarDados(); // Carrega os dados ao iniciar o estado
+    _carregarDados(); // Carrega os dados ao iniciar o estado
     
   }
   Future<void> _carregarDados() async {
@@ -37,43 +37,50 @@ class _AddmodificadorSelecionadorState extends State<AddmodificadorSelecionador>
     String jsonEfeitos = await rootBundle.loadString('assets/poderes/efeitos.json');
     String jsonMod = await rootBundle.loadString('assets/poderes/modificadores.json');
     List objEfeitos = jsonDecode(jsonEfeitos);
-    List objMod = jsonDecode(jsonMod);
+    Map objMod = jsonDecode(jsonMod);
+    
 
-    List <Map> pegaEfeito(){
+    List pegaEfeito(){
       String idEfeito = poder.retornaObj()["e_id"];
       int index = objEfeitos.indexWhere((efeito) => efeito["e_id"] == idEfeito);
       Map efeito = objEfeitos[index];
-      
-      return efeito["modificadores"];
+      List efeitosMod = [];
 
+      if (efeito["modificadores"] != null){
+        efeitosMod = efeito["modificadores"];
+      }
+
+      return efeitosMod;
+      
     }
 
-    List <Map> pegaModificadores(){
+    List pegaModificadores(){
       String etiqueta = '';
-      int index = -1;
-      List <Map> mods = objMod["gerais"];
+      List listMods = [];
+
+      // Lista de Efeitos Genéricos
+      List modGerais = objMod["gerais"];
+      listMods += modGerais;
 
       // Seleciona Gerais
-      objEfeitos.indexWhere((mod) => mod  == "E010");
+
+      
 
       for(etiqueta in widget.etiquetas){
-        objMod[etiqueta]
+        var currentMod = objMod[etiqueta];
+        listMods += currentMod;
       }
-      return mods;
+      return listMods;
     }
 
-    // Converte o JSON em objetos
-    List modificadores = [];
-    List efeitosMod = pegaEfeito();
-    List modsGerais = pegaModificadores() ;
-
     setState(() {
-      
+      // Converte o JSON em objetos
+      List efeitosMod = pegaEfeito();
+      List modsGerais = pegaModificadores();      
       
       // Apenda todos em um só
-      modificadores = [efeitosMod];
-
-
+      modificadores = efeitosMod;
+      modificadores += modsGerais;
     });
   }
 
@@ -96,7 +103,7 @@ class _AddmodificadorSelecionadorState extends State<AddmodificadorSelecionador>
 
             const SizedBox(height: 15,),
 
-            DropdownButton<String>(
+            /*DropdownButton<String>(
               value: modificadorSelecionado,
               icon: const Icon(Icons.arrow_downward),
               elevation: 16,
@@ -115,7 +122,7 @@ class _AddmodificadorSelecionadorState extends State<AddmodificadorSelecionador>
                   child: Text(value["efeito"].toString()),
                 );
               }).toList(),
-            )
+            )*/
           ]
         )
       ),

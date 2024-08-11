@@ -210,7 +210,8 @@
         "custo_base": 4,
         "acao": 3,
         "alcance": 4,
-        "duracao": 3
+        "duracao": 3,
+        "limite": 5
     },
     {
         "e_id": "E009",
@@ -237,7 +238,8 @@
         "custo_base": 2,
         "acao": 1,
         "alcance": 2,
-        "duracao": 3
+        "duracao": 3,
+        "desc": true
     },
     {
         "e_id": "E012",
@@ -497,6 +499,7 @@
         "acao": 1,
         "alcance": 0,
         "duracao": 0,
+        "desc": true,
         "opt": [
             {
                 "ID": "OP01",
@@ -531,7 +534,8 @@
         "custo_base": 2,
         "acao": 1,
         "alcance": 1,
-        "duracao": 3
+        "duracao": 3,
+        "desc": true
     },
     {
         "e_id": "E023",
@@ -558,7 +562,9 @@
         "acao": 3,
         "alcance": 0,
         "duracao": 3,
-        "ofensivo": false
+        "ofensivo": false,
+        "desc": true,
+        "limite": 4
     },
     {
         "e_id": "E026",
@@ -723,7 +729,8 @@
         "acao": 1,
         "alcance": 0,
         "duracao": 3,
-        "ofensivo": false
+        "ofensivo": false,
+        "desc": true
     },
     {
         "e_id": "E039",

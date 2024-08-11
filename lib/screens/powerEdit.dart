@@ -6,9 +6,10 @@ import 'package:fabrica_do_multiverso/script/ficha.dart' ;
 import 'package:fabrica_do_multiverso/script/poderes/lib_efeitos.dart';
 
 // Funções e Pops adicionais
-import 'package:fabrica_do_multiverso/screens/powerEdit/popup_GradPicker.dart';
 import 'package:fabrica_do_multiverso/screens/powerEdit/functions_controlEdition.dart';
 
+import 'package:fabrica_do_multiverso/screens/powerEdit/popup_GradPicker.dart';
+import 'package:fabrica_do_multiverso/screens/powerEdit/popup_addModificadores.dart';
 
 class powerEdit extends StatefulWidget {
   final int idPoder;
@@ -32,6 +33,8 @@ class _powerEditState extends State<powerEdit> {
   bool EsconderText = false;
   bool efeitoPessoal = false;
   bool efeitoOfensivo = false;
+
+  List etiquetasModificadores = [];
   
   // Inputs de controle
   TextEditingController inputTextNomePoder = TextEditingController();
@@ -44,6 +47,15 @@ class _powerEditState extends State<powerEdit> {
   }
 
   void _startPower(){
+    // Lista de Modificadores Disponiveis;
+    etiquetasModificadores = ["gerais"];
+    switch (objPoder["classe_manipulacao"]) {
+      case "Aflicao":
+      case "Dano":
+        etiquetasModificadores += ["ofensivos"];
+        break;
+    }
+
     setState(() {
       // Reinstancia para zerar Objeto
       poder = Efeito();
@@ -361,8 +373,13 @@ class _powerEditState extends State<powerEdit> {
                         },
                         child: TextButton(
                           child: const Text('Adicionar Modificador'),
-                          onPressed: () => {
-                            
+                          onPressed: () async => {
+                            await showDialog(
+                              context: context,
+                              builder: ((BuildContext context) {
+                                return AddmodificadorSelecionador(etiquetas: etiquetasModificadores);
+                              })
+                            )
                           },
                         ),
                       ),
