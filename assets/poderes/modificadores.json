@@ -1,190 +1,387 @@
-[
-    {
-        "e_id": "E001",
-        "nome": "Afeta Corpóreo",
-        "fixo": true,
-        "custo_base": -1,
-        "desc": false
-    },
+{
+    "gerais": [
+        {
+            "m_id": "E008",
+            "nome": "Característica",
+            "fixo": true,
+            "custo_base": 1,
+            "desc": true
+        },
 
-    {
-        "e_id": "E002",
-        "nome": "Afeta Intangível",
-        "fixo": true,
-        "custo_base": 1,
-        "limite": 2,
-        "desc": false
-    },
+        {
+            "m_id": "E010",
+            "nome": "Descritor Variável",
+            "fixo": true,
+            "custo_base": 1,
+            "limite": 2,
+            "desc": true
+        },
 
-    {
-        "e_id": "E003",
-        "nome": "Afeta Objetos",
-        "fixo": true,
-        "custo_base": 1,
-        "limite": 1,
-        "desc": false
-    },
+        {
+            "m_id": "E018",
+            "nome": "Inato",
+            "fixo": false,
+            "custo_base": 1,
+            "desc": false
+        },
 
-    {
-        "e_id": "E004",
-        "nome": "Afeta Objetos Apenas",
-        "fixo": false,
-        "custo_base": 0,
-        "limite": 1,
-        "desc": false
-    },
-
-    {
-        "e_id": "E005",
-        "nome": "Alcance",
-        "fixo": true,
-        "custo_base": 0,
-        "desc": false
-    },
-
-    {
-        "e_id": "E006",
-        "nome": "Aumentar Massa",
-        "fixo": true,
-        "custo_base": 0,
-        "desc": false
-    },
-
-    {
-        "e_id": "E007",
-        "nome": "Característica",
-        "fixo": true,
-        "custo_base": 1,
-        "desc": true
-    },
-
-    {
-        "e_id": "E008",
-        "nome": "Contagioso",
-        "fixo": false,
-        "custo_base": 1,
-        "desc": false
-    },
-
-    {
-        "e_id": "E009",
-        "nome": "Descritor Variável",
-        "fixo": true,
-        "custo_base": 1,
-        "limite": 2,
-        "desc": true
-    },
-
-    {
-        "e_id": "E010",
-        "nome": "Dimensional",
-        "fixo": true,
-        "custo_base": 0,
-        "limite": 3,
-        "desc": true
-    },
-
-    {
-        "e_id": "E011",
-        "nome": "Dividido",
-        "fixo": true,
-        "custo_base": 1,
-        "limite": -1,
-        "desc": true
-    },
-
-    {
-        "e_id": "E012",
-        "nome": "Efeito Secundário",
-        "fixo": false,
-        "custo_base": 1,
-        "limite": 3,
-        "desc": true
-    },
-
-    {
-        "e_id": "E013",
-        "nome": "Engatilhado",
-        "fixo": true,
-        "custo_base": 1,
-        "desc": true
-    },
-
-    {
-        "e_id": "E014",
-        "nome": "Gatilho Variável",
-        "fixo": true,
-        "custo_base": 2,
-        "desc": false
-    },
-
-    {
-        "e_id": "E015",
-        "nome": "Impenetrável",
-        "fixo": true,
-        "custo_base": 1,
-        "desc": false,
-        "limite": -1
-    },
+        {
+            "m_id": "E029",
+            "nome": "Sutil",
+            "fixo": true,
+            "custo_base": 1,
+            "limite": 2,
+            "desc": false
+        },
+        
+        {
+            "m_id": "E033",
+            "nome": "Ativação",
+            "fixo": true,
+            "custo_base": -1,
+            "limite": 2,
+            "desc": false
+        },
     
-    {
-        "e_id": "E016",
-        "nome": "Impenetrável",
-        "fixo": false,
-        "custo_base": 1,
-        "desc": false
-    },
+        {
+            "m_id": "E034",
+            "nome": "Cansativo",
+            "fixo": false,
+            "custo_base": -1,
+            "limite": 1,
+            "desc": false
+        },
+    
+        {
+            "m_id": "E035",
+            "nome": "Dissipação",
+            "fixo": false,
+            "custo_base": -1,
+            "limite": 1,
+            "desc": false
+        },
+        
+        {
+            "m_id": "E036",
+            "nome": "Dissipação",
+            "fixo": false,
+            "custo_base": -1,
+            "limite": 1,
+            "desc": false
+        },
+    
+        {
+            "m_id": "E037",
+            "nome": "Distração",
+            "fixo": false,
+            "custo_base": -1,
+            "limite": 1,
+            "desc": false
+        },
+    
+    
+        {
+            "m_id": "E038",
+            "nome": "Efeito Colateral",
+            "fixo": false,
+            "custo_base": -1,
+            "limite": 2,
+            "desc": true
+        },
+    
+        {
+            "m_id": "E039",
+            "nome": "Exige Teste",
+            "fixo": true,
+            "custo_base": -1,
+            "desc": true
+        },
+    
+        {
+            "m_id": "E040",
+            "nome": "Inconstante",
+            "fixo": false,
+            "custo_base": -1,
+            "limite": 1,
+            "desc": false
+        },
+    
+        {
+            "m_id": "E041",
+            "nome": "Inconstante (5 usos)",
+            "fixo": false,
+            "custo_base": -1,
+            "limite": 1,
+            "desc": false
+        },
+    
+        {
+            "m_id": "E042",
+            "nome": "Incontrolável",
+            "fixo": false,
+            "custo_base": -1,
+            "limite": 1,
+            "desc": false
+        },
+    
+        {
+            "m_id": "E043",
+            "nome": "Limitado",
+            "fixo": false,
+            "custo_base": -1,
+            "limite": 1,
+            "desc": false
+        },
 
-    {
-        "e_id": "E017",
-        "nome": "Inato",
-        "fixo": false,
-        "custo_base": 1,
-        "desc": false
-    },
+        {
+            "m_id": "E045",
+            "nome": "Peculiaridade",
+            "fixo": true,
+            "custo_base": -1,
+            "limite": 3,
+            "desc": true
+        },
+    
+        {
+            "m_id": "E046",
+            "nome": "Perceptível",
+            "fixo": true,
+            "custo_base": -1,
+            "limite": 1,
+            "desc": false
+        },
+    
+        {
+            "m_id": "E047",
+            "nome": "Perceptível",
+            "fixo": true,
+            "custo_base": -1,
+            "limite": 1,
+            "desc": false
+        },
+    
+        {
+            "m_id": "E048",
+            "nome": "Retroalimentação",
+            "fixo": true,
+            "custo_base": -1,
+            "limite": 1,
+            "desc": false
+        }
+        
+    ],
 
-    {
-        "e_id": "E018",
-        "nome": "Inato",
-        "fixo": true,
-        "custo_base": 1,
-        "limite": 1,
-        "desc": false
-    },
+    "ofensivos": [
+        {
+            "m_id": "E006",
+            "nome": "Alcance",
+            "fixo": true,
+            "custo_base": 0,
+            "desc": false
+        },
 
-    {
-        "e_id": "E019",
-        "nome": "Incurável",
-        "fixo": true,
-        "custo_base": 1,
-        "limite": 1,
-        "desc": false
-    },
+        {
+            "m_id": "E001",
+            "nome": "Afeta Corpóreo",
+            "fixo": true,
+            "custo_base": -1,
+            "desc": false
+        },
+    
+        {
+            "m_id": "E002",
+            "nome": "Afeta Intangível",
+            "fixo": true,
+            "custo_base": 1,
+            "limite": 2,
+            "desc": false
+        },
+        {
+            "m_id": "E003",
+            "nome": "Afeta Objetos",
+            "fixo": true,
+            "custo_base": 1,
+            "limite": 1,
+            "desc": false
+        },
+    
+        {
+            "m_id": "E005",
+            "nome": "Afeta Objetos Apenas",
+            "fixo": false,
+            "custo_base": 0,
+            "limite": 1,
+            "desc": false
+        },
 
-    {
-        "e_id": "E020",
-        "nome": "Indireto",
-        "fixo": true,
-        "custo_base": 1,
-        "limite": 4,
-        "desc": true
-    },
+        {
+            "m_id": "E009",
+            "nome": "Contagioso",
+            "fixo": false,
+            "custo_base": 1,
+            "desc": false
+        },
 
-    {
-        "e_id": "E021",
-        "nome": "Multiataque",
-        "fixo": false,
-        "custo_base": 1,
-        "limite": 1,
-        "desc": false
-    },
+        {
+            "m_id": "E011",
+            "nome": "Dimensional",
+            "fixo": true,
+            "custo_base": 0,
+            "limite": 3,
+            "desc": true
+        },
 
-    {
-        "obs": [
-            "alguns limites precisam ser estabelecidos",
-            "Modificadores sem limite não possuiem o atributo limite",
-            "Modificadores Com limite igual a graduação; Dividido, Penentrante -1"
-        ]
-    }
-]
+        {
+            "m_id": "E012",
+            "nome": "Dividido",
+            "fixo": true,
+            "custo_base": 1,
+            "limite": -1,
+            "desc": true
+        },
+
+        {
+            "m_id": "E013",
+            "nome": "Efeito Secundário",
+            "fixo": false,
+            "custo_base": 1,
+            "limite": 3,
+            "desc": true
+        },
+    
+        {
+            "m_id": "E014",
+            "nome": "Engatilhado",
+            "fixo": true,
+            "custo_base": 1,
+            "desc": true
+        },
+    
+        {
+            "m_id": "E015",
+            "nome": "Gatilho Variável",
+            "fixo": true,
+            "custo_base": 2,
+            "desc": false
+        },
+
+        {
+            "m_id": "E021",
+            "nome": "Indireto",
+            "fixo": true,
+            "custo_base": 1,
+            "limite": 4,
+            "desc": true
+        },
+    
+        {
+            "m_id": "E022",
+            "nome": "Multiataque",
+            "fixo": false,
+            "custo_base": 1,
+            "limite": 1,
+            "desc": false
+        },
+    
+        {
+            "m_id": "E023",
+            "nome": "Penetrante",
+            "fixo": true,
+            "custo_base": 1,
+            "limite": -1,
+            "desc": false
+        },
+    
+        {
+            "m_id": "E024",
+            "nome": "Preciso",
+            "fixo": true,
+            "custo_base": 1,
+            "limite": 1,
+            "desc": false
+        },
+    
+        {
+            "m_id": "E025",
+            "nome": "Reversível",
+            "fixo": true,
+            "custo_base": 1,
+            "limite": 1,
+            "desc": false
+        },
+        
+        {
+            "m_id": "E026",
+            "nome": "Ricochetear",
+            "fixo": true,
+            "custo_base": 1,
+            "desc": false
+        },
+
+        {
+            "m_id": "E027",
+            "nome": "Seletivo",
+            "fixo": false,
+            "custo_base": 1,
+            "limite": 1,
+            "desc": false
+        },
+        
+        {
+            "m_id": "E030",
+            "nome": "Teleguiado",
+            "fixo": true,
+            "custo_base": 1,
+            "desc": false
+        },
+    
+        {
+            "m_id": "E031",
+            "nome": "Traiçoeiro",
+            "fixo": true,
+            "custo_base": 1,
+            "limite": 1,
+            "desc": false
+        },
+
+        {
+            "m_id": "E032",
+            "nome": "Alcance Diminuído",
+            "fixo": true,
+            "custo_base": -1,
+            "limite": 1,
+            "desc": false
+        }
+    ],
+    
+    "pessoais": [
+        {
+            "m_id": "E007",
+            "nome": "Aumentar Massa",
+            "fixo": true,
+            "custo_base": 0,
+            "desc": false
+        },
+        
+        {
+            "m_id": "E028",
+            "nome": "Limitado a Resistência",
+            "fixo": false,
+            "custo_base": -1,
+            "desc": false
+        }
+    ],
+
+    "defesas": [
+        {
+            "m_id": "E016",
+            "nome": "Impenetrável",
+            "fixo": true,
+            "custo_base": 1,
+            "desc": false,
+            "limite": -1
+        }
+    ]
+
+}
 

@@ -62,6 +62,7 @@ flutter:
   assets:
       - assets/poderes.json
       - assets/poderes/efeitos.json
+      - assets/poderes/modificadores.json
         
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg

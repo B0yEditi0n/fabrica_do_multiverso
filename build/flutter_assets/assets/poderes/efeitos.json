@@ -78,7 +78,7 @@
                 "espec": false
             }
         ],
-        "classe_manipulacao": "Efeito"
+        "classe_manipulacao": "EfeitoCompraUnica"
     },
     {
         "e_id": "E004",
@@ -120,7 +120,7 @@
                 "espec": true
             }
         ],
-        "classe_manipulacao": "Efeito"
+        "classe_manipulacao": "EfeitoCompra"
     },
     {
         "e_id": "E005",
@@ -140,7 +140,7 @@
         "acao": 3,
         "alcance": 0,
         "duracao": 3,
-        "classe_manipulacao": "Efeito"
+        "classe_manipulacao": "EfeitoBoost"
     },
     {
         "e_id": "E007",
@@ -150,7 +150,58 @@
         "acao": 0,
         "alcance": 0,
         "duracao": 0,
-        "classe_manipulacao": "Efeito"
+        "opt":[
+            {
+                "ID": "OP01",
+                "desc": "ANIMAIS",
+                "valor": 1,
+                "espec": false
+            },
+            {
+                "ID": "OP02",
+                "desc": "ESPÍRITOS",
+                "valor": 1,
+                "espec": false
+            },
+            {
+                "ID": "OP03",
+                "desc": "IDIOMAS",
+                "valor": 1,
+                "espec": false
+            },
+            {
+                "ID": "OP04",
+                "desc": "MÁQUINAS",
+                "valor": 1,
+                "espec": false
+            },
+            {
+                "ID": "OP05",
+                "desc": "OBJETOS",
+                "valor": 1,
+                "espec": false
+            },
+            {
+                "ID": "OP06",
+                "desc": "PLANTAS",
+                "valor": 1,
+                "espec": false
+            }
+
+        ],
+        "modificadores":[
+            
+            {
+                "e_id": "EC001",
+                "nome": "Tipo",
+                "fixo": true,
+                "custo_base": -1,
+                "limite": 2,
+                "desc": true
+            }
+            
+        ],
+        "classe_manipulacao": "EfeitoCompra"
     },
     {
         "e_id": "E008",
@@ -204,7 +255,25 @@
         "custo_base": 1,
         "acao": 1,
         "alcance": 1,
-        "duracao": 1
+        "duracao": 1,
+        "modificadores":[
+            {
+                "e_id": "ED001",
+                "nome": "Incurável",
+                "fixo": true,
+                "custo_base": 1,
+                "desc": false,
+                "limite": 1
+            },
+            {
+                "e_id": "ED002",
+                "nome": "Sonífero",
+                "fixo": false,
+                "custo_base": 0,
+                "limite": 1,
+                "desc": false
+            }            
+        ]
     },
     {
         "e_id": "E014",
@@ -534,7 +603,17 @@
         "acao": 0,
         "alcance": 0,
         "duracao": 0,
-        "ofensivo": false
+        "ofensivo": false,
+        "modificadores":[
+            {
+                "e_id": "E044",
+                "nome": "Limitado a Resistência",
+                "fixo": false,
+                "custo_base": -1,
+                "limite": 1,
+                "desc": false
+            }
+        ]
     },
     {
         "e_id": "E031",

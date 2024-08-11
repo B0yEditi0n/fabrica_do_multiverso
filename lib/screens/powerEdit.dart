@@ -359,7 +359,12 @@ class _powerEditState extends State<powerEdit> {
                             modficadores.add({"nome": "Novo Modificador", "grad": 1});
                           });
                         },
-                        child: const Text('Adicionar Modificador'),
+                        child: TextButton(
+                          child: const Text('Adicionar Modificador'),
+                          onPressed: () => {
+                            
+                          },
+                        ),
                       ),
                     ),
                   ],
@@ -393,25 +398,6 @@ class _powerEditState extends State<powerEdit> {
           ),
         ),
       ),
-      /*floatingActionButton: FloatingActionButton(
-
-        // Ação e PopUP
-        onPressed: () async => {
-          await showDialog(
-            context: context,
-            builder: ((BuildContext context) {
-              return DynamicDialog();
-              
-            })),
-          
-          //! Atualiza a Lista de poderes
-          setState(() {
-            poderes = personagem.poderes.listaDePoderes();
-          })
-        },
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ),*/
     );
   }
 }
