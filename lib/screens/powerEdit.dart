@@ -377,7 +377,7 @@ class _powerEditState extends State<powerEdit> {
                             await showDialog(
                               context: context,
                               builder: ((BuildContext context) {
-                                return AddmodificadorSelecionador(etiquetas: etiquetasModificadores);
+                                return AddModificadorSelecionador(etiquetas: etiquetasModificadores);
                               })
                             )
                           },

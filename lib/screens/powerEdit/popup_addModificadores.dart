@@ -9,18 +9,18 @@ import 'package:fabrica_do_multiverso/script/ficha.dart' ;
 // Dialogo Adicionar Poderes
 //
 
-class AddmodificadorSelecionador extends StatefulWidget {
+class AddModificadorSelecionador extends StatefulWidget {
   List etiquetas = [];
-  AddmodificadorSelecionador({super.key, required this.etiquetas});
+  AddModificadorSelecionador({super.key, required this.etiquetas});
   @override
-  _AddmodificadorSelecionadorState createState() => _AddmodificadorSelecionadorState();
+  _AddModificadorSelecionadorState createState() => _AddModificadorSelecionadorState();
 }
 
-class _AddmodificadorSelecionadorState extends State<AddmodificadorSelecionador> {
+class _AddModificadorSelecionadorState extends State<AddModificadorSelecionador> {
   //String _title;A
   // Declaração de Variáveis
   //List poderes = [];
-  List modificadores = [];
+  var modificadores = [];
 
   TextEditingController inputTextPoder = TextEditingController();
   String modificadorSelecionado = '';
@@ -40,7 +40,7 @@ class _AddmodificadorSelecionadorState extends State<AddmodificadorSelecionador>
     Map objMod = jsonDecode(jsonMod);
     
 
-    List pegaEfeito(){
+    Future<List> pegaEfeito() async{
       String idEfeito = poder.retornaObj()["e_id"];
       int index = objEfeitos.indexWhere((efeito) => efeito["e_id"] == idEfeito);
       Map efeito = objEfeitos[index];
@@ -54,7 +54,7 @@ class _AddmodificadorSelecionadorState extends State<AddmodificadorSelecionador>
       
     }
 
-    List pegaModificadores(){
+    Future<List> pegaModificadores() async{
       String etiqueta = '';
       List listMods = [];
 
@@ -73,14 +73,18 @@ class _AddmodificadorSelecionadorState extends State<AddmodificadorSelecionador>
       return listMods;
     }
 
+    List efeitosMod = await pegaEfeito();
+    List modsGerais = await pegaModificadores();
+    
     setState(() {
       // Converte o JSON em objetos
-      List efeitosMod = pegaEfeito();
-      List modsGerais = pegaModificadores();      
       
       // Apenda todos em um só
       modificadores = efeitosMod;
       modificadores += modsGerais;
+      //print(modificadores);
+      // Define o primeiro
+      modificadorSelecionado = modificadores.first["m_id"];
     });
   }
 
@@ -91,9 +95,9 @@ class _AddmodificadorSelecionadorState extends State<AddmodificadorSelecionador>
       content: SingleChildScrollView(
         child: ListBody(
           children: <Widget>[
-          
+            
             //* Entrada do Nome
-            TextField(
+            /*TextField(
               controller: inputTextPoder,
               decoration: const InputDecoration(
                 border: OutlineInputBorder(),
@@ -101,28 +105,30 @@ class _AddmodificadorSelecionadorState extends State<AddmodificadorSelecionador>
               ),
             ),
 
-            const SizedBox(height: 15,),
+            const SizedBox(height: 15,),*/
 
-            /*DropdownButton<String>(
+            DropdownButton<String>(
               value: modificadorSelecionado,
-              icon: const Icon(Icons.arrow_downward),
-              elevation: 16,
+              //icon: const Icon(Icons.arrow_downward),
+              //elevation: 16,
               style: const TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
-              underline: Container(
+              /*underline: Container(
                 height: 2,
-              ),
+              ),*/
               onChanged: (String? value) {
                 setState(() {
-                  modificadorSelecionado = value!;
+                  //modificadorSelecionado = value!;
                 });
               },
-              items: efeitos.map<DropdownMenuItem<String>>((value) {
+              items: modificadores.map<DropdownMenuItem<String>>((value) {
+                print('Variável item valor');
+                print(value);
                 return DropdownMenuItem<String>(
-                  value: value["e_id"].toString(),
-                  child: Text(value["efeito"].toString()),
+                  value: value["m_id"],
+                  child: Text(value["nome"].toString()),
                 );
               }).toList(),
-            )*/
+            )
           ]
         )
       ),
