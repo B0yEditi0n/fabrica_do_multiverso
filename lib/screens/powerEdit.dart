@@ -48,7 +48,6 @@ class _powerEditState extends State<powerEdit> {
 
   void _startPower(){
     // Lista de Modificadores Disponiveis;
-    etiquetasModificadores = ["gerais"];
     switch (objPoder["classe_manipulacao"]) {
       case "Aflicao":
       case "Dano":
@@ -71,8 +70,6 @@ class _powerEditState extends State<powerEdit> {
 
       // Define os Widgets que irão aparecer
       efeitoPessoal = (objPoder["alcance"] == 0);
-      print(efeitoPessoal);
-      print(objPoder["alcance"]);
 
     });
   }

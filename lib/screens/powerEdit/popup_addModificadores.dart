@@ -62,28 +62,36 @@ class _AddModificadorSelecionadorState extends State<AddModificadorSelecionador>
       List modGerais = objMod["gerais"];
       listMods += modGerais;
 
-      // Seleciona Gerais
-
-      
+      // Seleciona Gerais      
 
       for(etiqueta in widget.etiquetas){
         var currentMod = objMod[etiqueta];
         listMods += currentMod;
       }
       return listMods;
-    }
+    } 
 
     List efeitosMod = await pegaEfeito();
     List modsGerais = await pegaModificadores();
     
     setState(() {
+      
+
       // Converte o JSON em objetos
       
       // Apenda todos em um só
-      modificadores = efeitosMod;
-      modificadores += modsGerais;
-      //print(modificadores);
-      // Define o primeiro
+      List allMods = efeitosMod;      
+      allMods += modsGerais;
+
+      Map mod = {};
+      for(mod in allMods){
+        modificadores.add({
+          "m_id": mod["m_id"],
+          "nome": mod["nome"]
+        });
+      }
+      // modificadores = efeitosMod;      
+      // modificadores += modsGerais;
       modificadorSelecionado = modificadores.first["m_id"];
     });
   }
@@ -117,7 +125,7 @@ class _AddModificadorSelecionadorState extends State<AddModificadorSelecionador>
               ),*/
               onChanged: (String? value) {
                 setState(() {
-                  //modificadorSelecionado = value!;
+                  modificadorSelecionado = value!;
                 });
               },
               items: modificadores.map<DropdownMenuItem<String>>((value) {
