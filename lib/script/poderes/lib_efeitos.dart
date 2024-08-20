@@ -71,7 +71,7 @@ class Efeito{
     _acao = objPoder["acao"];
     _alcance = objPoder["alcance"];
     _duracao = objPoder["duracao"];
-    _modificador = objPoder["modificador"];
+    _modificador = objPoder["modificadores"];
 
     List efeitos = await carregaJson();
     Map efeitoAtual = efeitos[efeitos.indexWhere((efeito) => efeito["e_id"] == objPoder["e_id"])];
@@ -202,6 +202,9 @@ class Efeito{
   }
 
   addModificador(objModificador){
+    if(objModificador["grad"] == null){
+      objModificador["grad"] = 1;
+    }
     _modificador.add(objModificador);
   }
 
@@ -271,10 +274,10 @@ class Efeito{
     for(var mod in _modificador){
       if(mod["fixo"]){
         // Custo fixo
-        custoModfixo = mod["grad"] * mod["custo"];
+        custoModfixo = mod["grad"] * mod["custo_base"];
       }else{
         // Custo por graduação
-        custoModGrad = mod["grad"] * mod["custo"];
+        custoModGrad = mod["grad"] * mod["custo_base"];
       }
     }
 
@@ -394,7 +397,7 @@ class Efeito{
       "acao":      _acao,
       "alcance":   _alcance,
       "duracao":   _duracao,
-      "modificador":    _modificador,
+      "modificadores":    _modificador,
       "custo":     CustearAlteracoes(),
       
     };

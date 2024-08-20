@@ -25,10 +25,7 @@ class _powerEditState extends State<powerEdit> {
   String txtAcao = "";
   String txtAlcance = "";
   String txtDuracao = "";
-  List modficadores = [{
-    "nome": "Critico Aprimorado",
-    "grad": 4
-  }];
+  List modficadores = [];
 
   bool EsconderText = false;
   bool efeitoPessoal = false;
@@ -48,6 +45,7 @@ class _powerEditState extends State<powerEdit> {
 
   void _startPower(){
     // Lista de Modificadores Disponiveis;
+    etiquetasModificadores = ["gerais"];
     switch (objPoder["classe_manipulacao"]) {
       case "Aflicao":
       case "Dano":
@@ -70,6 +68,10 @@ class _powerEditState extends State<powerEdit> {
 
       // Define os Widgets que irão aparecer
       efeitoPessoal = (objPoder["alcance"] == 0);
+
+      // Extras e Falhas
+      modficadores = objPoder["modificadores"];
+      print(modficadores);
 
     });
   }
@@ -365,7 +367,7 @@ class _powerEditState extends State<powerEdit> {
                         onPressed: () {
                           setState(() {
                             // Adiciona um novo item à lista de modificadores
-                            modficadores.add({"nome": "Novo Modificador", "grad": 1});
+                            //modficadores.add({"nome": "Novo Modificador", "grad": 1});
                           });
                         },
                         child: TextButton(
@@ -376,7 +378,13 @@ class _powerEditState extends State<powerEdit> {
                               builder: ((BuildContext context) {
                                 return AddModificadorSelecionador(etiquetas: etiquetasModificadores);
                               })
-                            )
+                            ).then((result)=>{
+                              // Atualizar a Lista do Que Saiu
+                              setState(() {
+                                //modficadores = poder.retornaObj()["modificadores"];
+                                //print(poder.retornaObj());
+                              })
+                            })
                           },
                         ),
                       ),

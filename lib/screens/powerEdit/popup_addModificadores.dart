@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:fabrica_do_multiverso/script/poderes/lib_efeitos.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'; 
@@ -17,10 +19,7 @@ class AddModificadorSelecionador extends StatefulWidget {
 }
 
 class _AddModificadorSelecionadorState extends State<AddModificadorSelecionador> {
-  //String _title;A
-  // Declaração de Variáveis
-  //List poderes = [];
-  var modificadores = [];
+  List modificadores = [];
 
   TextEditingController inputTextPoder = TextEditingController();
   String modificadorSelecionado = '';
@@ -58,12 +57,6 @@ class _AddModificadorSelecionadorState extends State<AddModificadorSelecionador>
       String etiqueta = '';
       List listMods = [];
 
-      // Lista de Efeitos Genéricos
-      List modGerais = objMod["gerais"];
-      listMods += modGerais;
-
-      // Seleciona Gerais      
-
       for(etiqueta in widget.etiquetas){
         var currentMod = objMod[etiqueta];
         listMods += currentMod;
@@ -75,23 +68,9 @@ class _AddModificadorSelecionadorState extends State<AddModificadorSelecionador>
     List modsGerais = await pegaModificadores();
     
     setState(() {
-      
+      modificadores = efeitosMod;
+      modificadores += modsGerais;
 
-      // Converte o JSON em objetos
-      
-      // Apenda todos em um só
-      List allMods = efeitosMod;      
-      allMods += modsGerais;
-
-      Map mod = {};
-      for(mod in allMods){
-        modificadores.add({
-          "m_id": mod["m_id"],
-          "nome": mod["nome"]
-        });
-      }
-      // modificadores = efeitosMod;      
-      // modificadores += modsGerais;
       modificadorSelecionado = modificadores.first["m_id"];
     });
   }
@@ -102,18 +81,7 @@ class _AddModificadorSelecionadorState extends State<AddModificadorSelecionador>
       title: const Text('Adicionar Poderes'),
       content: SingleChildScrollView(
         child: ListBody(
-          children: <Widget>[
-            
-            //* Entrada do Nome
-            /*TextField(
-              controller: inputTextPoder,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: 'Nome do poder',
-              ),
-            ),
-
-            const SizedBox(height: 15,),*/
+          children: <Widget>[ 
 
             DropdownButton<String>(
               value: modificadorSelecionado,
@@ -129,8 +97,6 @@ class _AddModificadorSelecionadorState extends State<AddModificadorSelecionador>
                 });
               },
               items: modificadores.map<DropdownMenuItem<String>>((value) {
-                print('Variável item valor');
-                print(value);
                 return DropdownMenuItem<String>(
                   value: value["m_id"],
                   child: Text(value["nome"].toString()),
@@ -145,8 +111,11 @@ class _AddModificadorSelecionadorState extends State<AddModificadorSelecionador>
           child: const Text('Adicionar'),
           onPressed: () async{
             // Atualiza a Classe
-            await personagem.poderes.novoPoder(inputTextPoder.text.toString(), modificadorSelecionado);
-            // Fecha o popup
+            var index = modificadores.indexWhere((mod) => mod["m_id"] == modificadorSelecionado);
+            Map modSelecionado = modificadores[index];
+            poder.addModificador(modSelecionado); 
+
+            // Fecha o Popup
             Navigator.of(context).pop();
           },
         ),
