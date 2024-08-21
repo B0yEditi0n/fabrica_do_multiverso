@@ -354,7 +354,13 @@ class _powerEditState extends State<powerEdit> {
                             trailing: IconButton(
                               icon: const Icon(Icons.delete),
                               onPressed: () =>{
-                                print(index)
+                                
+                                setState(() {
+                                  poder.delModificador(modficadores[index]["m_id"]);
+//                                  poder.retornaObj()["modificadores"];
+                                  
+                                  
+                                })
                               },
                               ),
                           );
@@ -363,30 +369,23 @@ class _powerEditState extends State<powerEdit> {
                     ),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: ElevatedButton(
-                        onPressed: () {
-                          setState(() {
-                            // Adiciona um novo item à lista de modificadores
-                            //modficadores.add({"nome": "Novo Modificador", "grad": 1});
-                          });
-                        },
-                        child: TextButton(
-                          child: const Text('Adicionar Modificador'),
-                          onPressed: () async => {
-                            await showDialog(
-                              context: context,
-                              builder: ((BuildContext context) {
-                                return AddModificadorSelecionador(etiquetas: etiquetasModificadores);
-                              })
-                            ).then((result)=>{
-                              // Atualizar a Lista do Que Saiu
-                              setState(() {
-                                //modficadores = poder.retornaObj()["modificadores"];
-                                //print(poder.retornaObj());
-                              })
+                      child: TextButton(
+                        child: const Text('Adicionar Modificador'),
+                        onPressed: () async => {
+                          await showDialog(
+                            context: context,
+                            builder: ((BuildContext context) {
+                              return AddModificadorSelecionador(etiquetas: etiquetasModificadores);
                             })
-                          },
-                        ),
+                          ).then((result)=>{
+                            // Atualizar a Lista do Que Saiu
+                            setState(() {
+                      
+                              modficadores = poder.retornaObj()["modificadores"];
+                              //print(poder.retornaObj());
+                            })
+                          })
+                        },
                       ),
                     ),
                   ],

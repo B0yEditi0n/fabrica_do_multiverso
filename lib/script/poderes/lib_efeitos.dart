@@ -205,7 +205,17 @@ class Efeito{
     if(objModificador["grad"] == null){
       objModificador["grad"] = 1;
     }
-    _modificador.add(objModificador);
+    int index = -1;
+    index = _modificador.indexWhere((mod) => mod["m_id"] == objModificador["m_id"]);    
+
+    if(index < 0){
+      _modificador.add(objModificador);
+    }    
+  }
+  
+  delModificador(m_id){
+    int index = _modificador.indexWhere((mod) => mod["m_id"] == m_id);
+    _modificador.removeAt(index);
   }
 
   definirComoAtaque(eAtaque){
