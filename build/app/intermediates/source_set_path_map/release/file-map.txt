@@ -1,0 +1,12 @@
+com.example.fabrica_do_multiverso.app-jetified-annotation-experimental-1.1.0-0 /home/caio/.gradle/caches/transforms-3/308a0857d9511b986a0a28ab79a43195/transformed/jetified-annotation-experimental-1.1.0/res
+com.example.fabrica_do_multiverso.app-jetified-window-java-1.0.0-beta04-1 /home/caio/.gradle/caches/transforms-3/51f2918890fffa8ac42351fd708db86a/transformed/jetified-window-java-1.0.0-beta04/res
+com.example.fabrica_do_multiverso.app-jetified-window-1.0.0-beta04-2 /home/caio/.gradle/caches/transforms-3/5a3ba33da1e4eacc760d15398561baf7/transformed/jetified-window-1.0.0-beta04/res
+com.example.fabrica_do_multiverso.app-core-1.6.0-3 /home/caio/.gradle/caches/transforms-3/cf73cc8a4ba953430926b62a90018a2f/transformed/core-1.6.0/res
+com.example.fabrica_do_multiverso.app-main-4 /media/caio/caio.hdd/Documentos/fabrica_do_multiverso/android/app/src/main/res
+com.example.fabrica_do_multiverso.app-release-5 /media/caio/caio.hdd/Documentos/fabrica_do_multiverso/android/app/src/release/res
+com.example.fabrica_do_multiverso.app-pngs-6 /media/caio/caio.hdd/Documentos/fabrica_do_multiverso/build/app/generated/res/pngs/release
+com.example.fabrica_do_multiverso.app-resValues-7 /media/caio/caio.hdd/Documentos/fabrica_do_multiverso/build/app/generated/res/resValues/release
+com.example.fabrica_do_multiverso.app-rs-8 /media/caio/caio.hdd/Documentos/fabrica_do_multiverso/build/app/generated/res/rs/release
+com.example.fabrica_do_multiverso.app-mergeReleaseResources-9 /media/caio/caio.hdd/Documentos/fabrica_do_multiverso/build/app/intermediates/incremental/release/mergeReleaseResources/merged.dir
+com.example.fabrica_do_multiverso.app-mergeReleaseResources-10 /media/caio/caio.hdd/Documentos/fabrica_do_multiverso/build/app/intermediates/incremental/release/mergeReleaseResources/stripped.dir
+com.example.fabrica_do_multiverso.app-merged_res-11 /media/caio/caio.hdd/Documentos/fabrica_do_multiverso/build/app/intermediates/merged_res/release

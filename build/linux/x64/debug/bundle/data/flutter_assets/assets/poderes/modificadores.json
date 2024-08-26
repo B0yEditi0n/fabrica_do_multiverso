@@ -130,7 +130,7 @@
             "fixo": false,
             "custo_base": -1,
             "limite": 1,
-            "desc": false
+            "desc": true
         },
 
         {
@@ -144,15 +144,6 @@
     
         {
             "m_id": "E046",
-            "nome": "Perceptível",
-            "fixo": true,
-            "custo_base": -1,
-            "limite": 1,
-            "desc": false
-        },
-    
-        {
-            "m_id": "E047",
             "nome": "Perceptível",
             "fixo": true,
             "custo_base": -1,

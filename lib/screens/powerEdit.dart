@@ -35,6 +35,7 @@ class _powerEditState extends State<powerEdit> {
   
   // Inputs de controle
   TextEditingController inputTextNomePoder = TextEditingController();
+  List<TextEditingController> listInputModText = [];
 
   @override
 
@@ -71,8 +72,20 @@ class _powerEditState extends State<powerEdit> {
 
       // Extras e Falhas
       modficadores = objPoder["modificadores"];
-      print(modficadores);
 
+      // Criar Inputs de Textos de modificadores com texto
+      print('tamanho');
+      print(modficadores.length);
+      for(Map mod in modficadores){
+        print(mod);
+        if(mod["text_desc"] != null){
+          listInputModText.add(TextEditingController(text: mod["text_desc"]));
+        }else{
+          listInputModText.add(TextEditingController());
+        }
+        
+      }
+      
     });
   }
 
@@ -350,16 +363,38 @@ class _powerEditState extends State<powerEdit> {
                         itemCount: modficadores.length,
                         itemBuilder: (BuildContext context, int index) {
                           return ListTile(
-                            title: Text('${modficadores[index]["nome"]} ${modficadores[index]["grad"]}'),
+                            title: Row(
+                              children: [
+                                // Identifica o Modificador
+                                Text('${modficadores[index]["nome"]} ${modficadores[index]["grad"] > 1 ? modficadores[index]["grad"] : ''}'),
+
+                                // Input de Descrição *se tiver   
+                                Row(
+                                  children: modficadores[index]["desc"] ? [
+                                    const SizedBox(width: 5),
+                                    SizedBox(
+                                      width: MediaQuery.of(context).size.width * 0.20,
+                                      child: TextField(
+                                        controller: listInputModText[index],
+                                        onChanged: (String value) async{
+                                          poder.setDescMod(modficadores[index]["m_id"], value);
+                                        },
+                                        decoration: const InputDecoration(
+                                          hintText: '',
+                                        ),
+                                      
+                                      ),
+                                    ),
+                                  ]: [], 
+                                ),
+                              ]
+                            ),
                             trailing: IconButton(
                               icon: const Icon(Icons.delete),
                               onPressed: () =>{
-                                
                                 setState(() {
                                   poder.delModificador(modficadores[index]["m_id"]);
-//                                  poder.retornaObj()["modificadores"];
-                                  
-                                  
+                                  listInputModText.removeAt(index);
                                 })
                               },
                               ),
@@ -380,9 +415,10 @@ class _powerEditState extends State<powerEdit> {
                           ).then((result)=>{
                             // Atualizar a Lista do Que Saiu
                             setState(() {
-                      
                               modficadores = poder.retornaObj()["modificadores"];
-                              //print(poder.retornaObj());
+                              while(modficadores.length > listInputModText.length){
+                                listInputModText.add(TextEditingController());
+                              }
                             })
                           })
                         },

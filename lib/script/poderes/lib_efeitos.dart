@@ -218,14 +218,19 @@ class Efeito{
     _modificador.removeAt(index);
   }
 
-  definirComoAtaque(eAtaque){
+  setDescMod(m_id, text){
+    int index = _modificador.indexWhere((mod) => mod["m_id"] == m_id);
+    _modificador[index]["text_desc"] = text;
+  }
+
+  definirComoAtaque(bool eAtaque){
     if(_acao == 0 && eAtaque){
       _acao = 1;
       _alcance = 1;
       defAtaque = true;
     }else{
       _acao = _padraoEfeito["acao"];
-      _alcance = _padraoEfeito["_alcance"];
+      _alcance = _padraoEfeito["alcance"];
       defAtaque = false;
 
     }
@@ -235,7 +240,7 @@ class Efeito{
   // # Methodos de Retorno do objto #
   // ################################
 
-  int CustearAlteracoes(){
+  int custearAlteracoes(){
     /*
       Processa o custo de alterações feitas em (Ação, Duração e Alcance)  
       Returns: Valor do Custo total calculado
@@ -340,7 +345,6 @@ class Efeito{
         txtAcao    = 'Reação';
         break;
     }
-    print("$_acao, $txtAcao");
     return txtAcao;
   }
 
@@ -400,15 +404,15 @@ class Efeito{
         Map Json - o Arquivo json
     */
     return{
-      "nome":      nome,
-      "e_id":      _idEfeito,
-      "efeito":    _nomeEfeito,
-      "graduacao": graduacao,
-      "acao":      _acao,
-      "alcance":   _alcance,
-      "duracao":   _duracao,
+      "nome":             nome,
+      "e_id":             _idEfeito,
+      "efeito":           _nomeEfeito,
+      "graduacao":        graduacao,
+      "acao":             _acao,
+      "alcance":          _alcance,
+      "duracao":          _duracao,
       "modificadores":    _modificador,
-      "custo":     CustearAlteracoes(),
+      "custo":            custearAlteracoes(),
       
     };
   }
