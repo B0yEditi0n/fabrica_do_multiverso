@@ -74,10 +74,7 @@ class _powerEditState extends State<powerEdit> {
       modficadores = objPoder["modificadores"];
 
       // Criar Inputs de Textos de modificadores com texto
-      print('tamanho');
-      print(modficadores.length);
       for(Map mod in modficadores){
-        print(mod);
         if(mod["text_desc"] != null){
           listInputModText.add(TextEditingController(text: mod["text_desc"]));
         }else{
@@ -395,6 +392,9 @@ class _powerEditState extends State<powerEdit> {
                                 setState(() {
                                   poder.delModificador(modficadores[index]["m_id"]);
                                   listInputModText.removeAt(index);
+                                  modficadores = poder.retornaObj()["modificadores"];
+                                  // Atualiza o objeto inteiro
+                                  objPoder = poder.retornaObj();
                                 })
                               },
                               ),
@@ -419,6 +419,8 @@ class _powerEditState extends State<powerEdit> {
                               while(modficadores.length > listInputModText.length){
                                 listInputModText.add(TextEditingController());
                               }
+                              // Atualiza o objeto inteiro
+                              objPoder = poder.retornaObj();
                             })
                           })
                         },
