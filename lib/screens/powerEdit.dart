@@ -220,6 +220,9 @@ class _powerEditState extends State<powerEdit> {
                             poder.alteraAcao(novoValor);
                             objPoder = poder.retornaObj();
                             txtAcao = poder.returnStrAcao();
+
+                            // Atualiza o objeto e os custos
+                            objPoder = poder.retornaObj();
                           });
                         }
                       ),
@@ -242,6 +245,9 @@ class _powerEditState extends State<powerEdit> {
                             poder.alteraAcao(novoValor);
                             objPoder = poder.retornaObj();
                             txtAcao = poder.returnStrAcao();
+
+                            // Atualiza o objeto e os custos
+                            objPoder = poder.retornaObj();
                           });
                         }
                       ),
@@ -264,6 +270,9 @@ class _powerEditState extends State<powerEdit> {
                             poder.alteraAlcance(novoValor);
                             objPoder = poder.retornaObj();
                             txtAlcance = poder.returnStrAlcance();
+
+                            // Atualiza o objeto e os custos
+                            objPoder = poder.retornaObj();
                           });
                         }
                       ),
@@ -286,6 +295,9 @@ class _powerEditState extends State<powerEdit> {
                             poder.alteraAlcance(novoValor);
                             objPoder = poder.retornaObj();
                             txtAlcance = poder.returnStrAlcance();
+
+                            // Atualiza o objeto e os custos
+                            objPoder = poder.retornaObj();
                           });
                         }
                       ),
@@ -309,6 +321,9 @@ class _powerEditState extends State<powerEdit> {
                             txtDuracao = poder.returnStrDuracao();
                             // Talvez altere a ação
                             txtAcao = poder.returnStrAcao();
+
+                            // Atualiza o objeto e os custos
+                            objPoder = poder.retornaObj();
                           });
                         }
                       ),
@@ -333,6 +348,9 @@ class _powerEditState extends State<powerEdit> {
                             txtDuracao = poder.returnStrDuracao();
                             // Talvez altere a ação
                             txtAcao = poder.returnStrAcao();
+
+                            // Atualiza o objeto e os custos
+                            objPoder = poder.retornaObj();
                           });
                         }
                       ),
@@ -393,6 +411,7 @@ class _powerEditState extends State<powerEdit> {
                                   poder.delModificador(modficadores[index]["m_id"]);
                                   listInputModText.removeAt(index);
                                   modficadores = poder.retornaObj()["modificadores"];
+                                  
                                   // Atualiza o objeto inteiro
                                   objPoder = poder.retornaObj();
                                 })

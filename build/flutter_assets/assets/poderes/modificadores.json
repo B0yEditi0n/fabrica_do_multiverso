@@ -154,7 +154,7 @@
         {
             "m_id": "E048",
             "nome": "Retroalimentação",
-            "fixo": true,
+            "fixo": false,
             "custo_base": -1,
             "limite": 1,
             "desc": false

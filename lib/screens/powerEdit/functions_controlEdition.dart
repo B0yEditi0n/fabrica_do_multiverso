@@ -53,10 +53,8 @@ int alteraDuracao(int valorAtual, int passo){
 
   // Determina a posição do valor Atual
   index = editID.indexWhere((id) => id == valorAtual);
-  print(index + passo < editID.length && (index + passo) >= 0);
   // Progride em um passo
   if(index + passo < editID.length && (index + passo) >= 0){
-    print(editID[index + passo]);
     return editID[index + passo];
   }
 

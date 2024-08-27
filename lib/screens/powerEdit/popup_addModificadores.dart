@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'package:numberpicker/numberpicker.dart';
 
 import 'package:fabrica_do_multiverso/script/poderes/lib_efeitos.dart';
 import 'package:flutter/material.dart';
@@ -20,6 +21,8 @@ class AddModificadorSelecionador extends StatefulWidget {
 
 class _AddModificadorSelecionadorState extends State<AddModificadorSelecionador> {
   List modificadores = [];
+  Map modSelecionado = {};
+  int modGrad = 1;
 
   TextEditingController inputTextPoder = TextEditingController();
   String modificadorSelecionado = '';
@@ -82,7 +85,7 @@ class _AddModificadorSelecionadorState extends State<AddModificadorSelecionador>
       content: SingleChildScrollView(
         child: ListBody(
           children: <Widget>[ 
-
+            // Escolha do modificador
             DropdownButton<String>(
               value: modificadorSelecionado,
               //icon: const Icon(Icons.arrow_downward),
@@ -94,15 +97,29 @@ class _AddModificadorSelecionadorState extends State<AddModificadorSelecionador>
               onChanged: (String? value) {
                 setState(() {
                   modificadorSelecionado = value!;
+                  // Atualiza o selecionado
+                  var index = modificadores.indexWhere((mod) => mod["m_id"] == modificadorSelecionado);
+                  modSelecionado = modificadores[index];
+                  // Resta a Graduação
+                  modGrad = 1;
                 });
               },
               items: modificadores.map<DropdownMenuItem<String>>((value) {
                 return DropdownMenuItem<String>(
-                  value: value["m_id"],
+                  value: value["m_id"], 
                   child: Text(value["nome"].toString()),
                 );
               }).toList(),
+            ),
+            // Controle de Graduação *se tiver
+            modSelecionado["limite"] != null && modSelecionado["limite"] > 1 ? 
+            NumberPicker(
+              value: modGrad,
+              minValue: 1,
+              maxValue: modSelecionado["limite"], // parametrizar pelo NP posteriormente
+              onChanged: (value) => setState(() => modGrad = value),
             )
+            : const SizedBox()
           ]
         )
       ),
@@ -111,8 +128,9 @@ class _AddModificadorSelecionadorState extends State<AddModificadorSelecionador>
           child: const Text('Adicionar'),
           onPressed: () async{
             // Atualiza a Classe
-            var index = modificadores.indexWhere((mod) => mod["m_id"] == modificadorSelecionado);
-            Map modSelecionado = modificadores[index];
+
+            /*var index = modificadores.indexWhere((mod) => mod["m_id"] == modificadorSelecionado);
+            modSelecionado = modificadores[index];*/
             poder.addModificador(modSelecionado); 
 
             // Fecha o Popup
