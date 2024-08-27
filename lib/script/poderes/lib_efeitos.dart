@@ -307,7 +307,7 @@ class Efeito{
       custoFinal = graduacao * custoPorG;
     }else{
       // 1 para varios
-      custoFinal = ( graduacao / ( custoPorG.abs() + 1 ) ).ceil();
+      custoFinal = ( graduacao / ( custoPorG.abs() + 2 ) ).ceil();
     }
 
     // Calculo de fixos
