@@ -74,6 +74,7 @@ class _AddModificadorSelecionadorState extends State<AddModificadorSelecionador>
       modificadores = efeitosMod;
       modificadores += modsGerais;
 
+      modSelecionado = modificadores.first;
       modificadorSelecionado = modificadores.first["m_id"];
     });
   }
@@ -129,8 +130,8 @@ class _AddModificadorSelecionadorState extends State<AddModificadorSelecionador>
           onPressed: () async{
             // Atualiza a Classe
 
-            /*var index = modificadores.indexWhere((mod) => mod["m_id"] == modificadorSelecionado);
-            modSelecionado = modificadores[index];*/
+            // Define a graduação
+            modSelecionado["grad"] = modGrad;
             poder.addModificador(modSelecionado); 
 
             // Fecha o Popup
