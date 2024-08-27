@@ -286,7 +286,6 @@ class Efeito{
     // - Soma dos Modificadores
     var custoModGrad = 0;
     var custoModfixo = 0;
-    print(_modificador);
     for(var mod in _modificador){
       if(mod["fixo"]){
         // Custo fixo
@@ -299,9 +298,7 @@ class Efeito{
 
     // Finalizar custeio
     int custoBase = _padraoEfeito["custo_base"];
-    print('base ${custoBase}, ação ${custoAcao}, Duração ${custoDurcao}, Alcance ${custoAlcance}, Modificadores ${custoModGrad}');
     int custoPorG = custoBase + custoAcao + custoDurcao + custoAlcance + custoModGrad;
-    print('Custo Final: ${custoPorG}');
 
     int custoFinal = 0;
 
