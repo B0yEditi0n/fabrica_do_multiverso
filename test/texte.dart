@@ -1,8 +1,41 @@
-import 'package:fabrica_do_multiverso/script/poderes/lib_efeitos.dart';
+// import 'package:flutter/foundation.dart';
+// import 'package:flutter_test/flutter_test.dart';
+
+class vaca{
+  String animal = 'Vaquinha';
+  daLeite(){
+    return('Mu');
+  }
+}
+
+class Boi extends vaca{
+  DaXifre(){
+    return('ai');
+  }
+}
+
+
+AnalisaClass(String classe){
+  var obj = Object();
+  
+  switch(classe){
+    case('boi'):
+      obj = Boi();
+      return obj;
+    case('vaca'):
+      obj = vaca();
+      return obj;
+  }
+    
+}
+
 
 void main() {
-  var pkg = Efeito();
+  var pkg = AnalisaClass('vaca');
 
-  pkg.instanciarMetodo('Poder', 'E001');
+  print(pkg.DaXifre());
+  print(pkg.daLeite());
+
+  //pkg.instanciarMetodo('Poder', 'E001');
   
 }
