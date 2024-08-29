@@ -13,8 +13,7 @@ import 'package:fabrica_do_multiverso/main.dart';
 import 'package:fabrica_do_multiverso/script/poderes/lib_efeitos.dart';
 
 void main() {
-  var pkg = Efeito();
-
-  pkg.instanciarMetodo('Poder', 'E001');
+  var pkg = EfeitoCompra();
+  pkg.instanciarMetodo( 'Força Vital', 'E020');
   
 }
