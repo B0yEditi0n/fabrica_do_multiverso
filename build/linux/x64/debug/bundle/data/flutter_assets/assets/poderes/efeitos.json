@@ -7,6 +7,7 @@
         "alcance": 1,
         "duracao": 1,
         "ofensivo": true,
+        "desc": false,
         "classe_manipulacao": "Aflicao"
 
     },
@@ -18,16 +19,19 @@
         "alcance": 0,
         "duracao": 3,
         "ofensivo": false,
+        "desc": false,
         "classe_manipulacao": "Efeito"
     },
     {
         "e_id": "E003",
         "efeito": "Ambiente",
         "ofensivo": false,
+        "desc": false,
         "custo_base": 1,
         "acao": 1,
         "alcance": 4,
         "duracao": 3,
+        "unico": true,
         "opt": [
             {
                 "ID": "E003OP01",
@@ -84,10 +88,12 @@
         "e_id": "E004",
         "efeito": "Camuflagem",
         "ofensivo": false,
+        "desc": false,
         "custo_base": 2,
         "acao": 3,
         "alcance": 0,
         "duracao": 3,
+        "unico": false,
         "opt": [
             {
                 "ID": "OP01",
@@ -126,6 +132,7 @@
         "e_id": "E005",
         "efeito": "Característica",
         "ofensivo": false,
+        "desc": true,
         "custo_base": 1,
         "acao": 0,
         "alcance": 0,
@@ -136,6 +143,7 @@
         "e_id": "E006",
         "efeito": "Habilidade Aumentada",
         "ofensivo": false,
+        "desc": false,
         "custo_base": 2,
         "acao": 3,
         "alcance": 0,
@@ -146,10 +154,12 @@
         "e_id": "E007",
         "efeito": "Compreender",
         "ofensivo": false,
+        "desc": false,
         "custo_base": 2,
         "acao": 0,
         "alcance": 0,
         "duracao": 0,
+        "unico":false,
         "opt":[
             {
                 "ID": "OP01",
@@ -207,6 +217,7 @@
         "e_id": "E008",
         "efeito": "Comunicação",
         "ofensivo": false,
+        "desc": false,
         "custo_base": 4,
         "acao": 3,
         "alcance": 4,
@@ -217,6 +228,7 @@
         "e_id": "E009",
         "efeito": "Controle de Sorte",
         "ofensivo": true,
+        "desc": false,
         "custo_base": 3,
         "acao": 4,
         "alcance": 3,
@@ -226,6 +238,7 @@
         "e_id": "E010",
         "efeito": "Crescimento",
         "ofensivo": false,
+        "desc": false,
         "custo_base": 2,
         "acao": 3,
         "alcance": 0,
@@ -245,6 +258,7 @@
         "e_id": "E012",
         "efeito": "Cura",
         "ofensivo": false,
+        "desc": false,
         "custo_base": 2,
         "acao": 0,
         "alcance": 0,
@@ -254,6 +268,7 @@
         "e_id": "E013",
         "efeito": "Dano",
         "ofensivo": true,
+        "desc": false,
         "custo_base": 1,
         "acao": 1,
         "alcance": 1,
@@ -284,8 +299,8 @@
         "alcance": 2,
         "duracao": 1,
         "ofensivo": false,
-        "custo_base": 1
-
+        "custo_base": 1,
+        "desc": false
     },
     {
         "e_id": "E015",
@@ -294,7 +309,8 @@
         "custo_base": 1,
         "acao": 1,
         "alcance": 2,
-        "duracao": 1
+        "duracao": 1,
+        "desc": false
     },
     {
         "e_id": "E016",
@@ -303,7 +319,8 @@
         "custo_base": 1,
         "acao": 1,
         "alcance": 1,
-        "duracao": 1
+        "duracao": 1,
+        "desc": true
     },
     {
         "e_id": "E017",
@@ -311,13 +328,14 @@
         "custo_base": 1,
         "acao": 3,
         "alcance": 0,
-        "duracao": 3
+        "duracao": 3,
+        "desc": false
     },
     {
         "e_id": "E018",
         "efeito": "Ilusão",
         "ofensivo": true,
-        
+        "desc": false,
         "acao": 3,
         "alcance": 3,
         "duracao": 3
@@ -329,7 +347,8 @@
         "acao": 0,
         "alcance": 0,
         "duracao": 0,
-        "limite": 20
+        "limite": 20,
+        "desc": false
     },
     {
         "e_id": "E020",
@@ -337,8 +356,9 @@
         "custo_base": 1,
         "acao": 0,
         "alcance": 0,
-        "duracao": 0,
-        "tipo": "OPT",
+        "duracao": 0,  
+        "desc": false,
+        "unico": false,
         "opt": [
             {
                 "ID": "OP01",
@@ -490,7 +510,8 @@
                 "valor": 80,
                 "espec": false
             }
-        ]
+        ],
+        "classe_manipulacao": "EfeitoCompra"
     },
     {
         "e_id": "E021",
@@ -500,6 +521,7 @@
         "alcance": 0,
         "duracao": 0,
         "desc": true,
+        "unico": true,
         "opt": [
             {
                 "ID": "OP01",
@@ -526,7 +548,8 @@
                 "espec": false
             }
 
-        ]
+        ],
+        "classe_manipulacao": "EfeitoCompra"
     },
     {
         "e_id": "E022",
@@ -544,7 +567,8 @@
         "acao": 1,
         "alcance": 1,
         "duracao": 3,
-        "ofensivo": true
+        "ofensivo": true,
+        "desc": false
     },
     {
         "e_id": "E024",
@@ -553,7 +577,8 @@
         "acao": 0,
         "alcance": 0,
         "duracao": 0,
-        "ofensivo": false
+        "ofensivo": false,
+        "desc": false
     },
     {
         "e_id": "E025",
@@ -573,7 +598,8 @@
         "acao": 1,
         "alcance": 2,
         "duracao": 3,
-        "ofensivo": true
+        "ofensivo": true,
+        "desc": false
     },
     {
         "e_id": "E027",
@@ -582,7 +608,8 @@
         "acao": 0,
         "alcance": 0,
         "duracao": 0,
-        "ofensivo": false
+        "ofensivo": false,
+        "desc": false
     },
     {
         "e_id": "E028",
@@ -591,7 +618,8 @@
         "acao": 3,
         "alcance": 0,
         "duracao": 3,
-        "ofensivo": false
+        "ofensivo": false,
+        "desc": false
     },
     {
         "e_id": "E029",
@@ -600,7 +628,8 @@
         "acao": 1,
         "alcance": 2,
         "duracao": 1,
-        "ofensivo": true
+        "ofensivo": true,
+        "desc": true
     },
     {
         "e_id": "E030",
@@ -610,6 +639,7 @@
         "alcance": 0,
         "duracao": 0,
         "ofensivo": false,
+        "desc": false,
         "modificadores":[
             {
                 "e_id": "E044",
@@ -628,7 +658,8 @@
         "acao": 3,
         "alcance": 0,
         "duracao": 3,
-        "ofensivo": false
+        "ofensivo": false,
+        "desc": false
     },
     {
         "e_id": "E032",
@@ -637,7 +668,8 @@
         "acao": 0,
         "alcance": 0,
         "duracao": 0,
-        "ofensivo": false
+        "ofensivo": false,
+        "desc": false
     },
     {
         "e_id": "E033",
@@ -646,7 +678,8 @@
         "acao": 0,
         "alcance": 0,
         "duracao": 0,
-        "ofensivo": false
+        "ofensivo": false,
+        "desc": false
     },
     {
         "e_id": "E034",
@@ -656,6 +689,7 @@
         "alcance": 4,
         "duracao": 3,
         "ofensivo": false,
+        "desc": false,
         "opt": [
             {
                 "ID": "OP01",
@@ -702,7 +736,8 @@
         "acao": 3,
         "alcance": 4,
         "duracao": 3,
-        "ofensivo": false
+        "ofensivo": false,
+        "desc": false
     },
     {
         "e_id": "E036",
@@ -711,7 +746,8 @@
         "acao": 2,
         "alcance": 0,
         "duracao": 1,
-        "ofensivo": false
+        "ofensivo": false,
+        "desc": false
     },
     {
         "e_id": "E037",
@@ -720,7 +756,8 @@
         "acao": 1,
         "alcance": 1,
         "duracao": 3,
-        "ofensivo": false
+        "ofensivo": false,
+        "desc": true
     },
     {
         "e_id": "E038",
@@ -739,7 +776,8 @@
         "acao": 3,
         "alcance": 0,
         "duracao": 3,
-        "ofensivo": false
+        "ofensivo": false,
+        "desc": false
     },
     {
         "e_id": "E040",
@@ -748,6 +786,7 @@
         "acao": 3,
         "alcance": 0,
         "duracao": 3,
-        "ofensivo": false
+        "ofensivo": false,
+        "desc": false
     }
 ]

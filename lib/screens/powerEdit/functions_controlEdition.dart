@@ -1,4 +1,4 @@
-import 'package:fabrica_do_multiverso/script/poderes/lib_efeitos.dart';
+import 'package:fabrica_do_multiverso/script/poderes/lib_switchEfeito.dart';
 
 // Function para auxiliar a manipulação da Tela
 int alteraAcao(int valorAtual, int passo){
@@ -47,9 +47,6 @@ int alteraDuracao(int valorAtual, int passo){
       editID = [0, 2, 3, 4];
       break;
   }
-  
-  
-  
 
   // Determina a posição do valor Atual
   index = editID.indexWhere((id) => id == valorAtual);

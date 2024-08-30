@@ -13,8 +13,10 @@ class Efeito{
   int _duracao = -1; // 0 - Permente | 1 - Instantanêo | 2 - Concentração | 3 - Sustentado | 4 - Contínuo 
 
   bool defAtaque = false;
+  String desc = '';
 
-  var _padraoEfeito = {};
+  Map _padraoEfeito = {};
+  //Map get padraoEfeito => _padraoEfeito;
   var _modificador = [];
   
   // ###########################
@@ -42,8 +44,8 @@ class Efeito{
     int index = efeitos.indexWhere((efeito) => efeito["e_id"] == idEfeito);
     Map efeitoAtual = efeitos[index];
     
+    
     _padraoEfeito = efeitoAtual;
-
     _nomeEfeito = efeitoAtual["efeito"];
     _acao       = efeitoAtual["acao"];
     _alcance    = efeitoAtual["alcance"];
@@ -72,12 +74,12 @@ class Efeito{
     _alcance = objPoder["alcance"];
     _duracao = objPoder["duracao"];
     _modificador = objPoder["modificadores"];
+    desc = objPoder["descricao"];
 
     List efeitos = await carregaJson();
     Map efeitoAtual = efeitos[efeitos.indexWhere((efeito) => efeito["e_id"] == objPoder["e_id"])];
 
     _nomeEfeito = efeitoAtual["efeito"];
-
     _padraoEfeito = efeitoAtual;
 
     return true;
@@ -95,7 +97,6 @@ class Efeito{
     
     var jsonEfeitos = await rootBundle.loadString('assets/poderes/efeitos.json');
     var objetoJson = jsonDecode(jsonEfeitos);
-
     return(objetoJson);
 
   }
@@ -321,7 +322,7 @@ class Efeito{
     return custoFinal;
   }
 
-  Map returnObjDefault(){
+  Map returnObjDefault() {
     return _padraoEfeito;
   }
 
@@ -412,13 +413,76 @@ class Efeito{
       "alcance":          _alcance,
       "duracao":          _duracao,
       "modificadores":    _modificador,
+      "descricao":        desc,
       "custo":            custearAlteracoes(),
       
     };
   }
 
-    
 }
 
-// Variável de Manipulação de Poderes
-var poder = Efeito();
+
+class EfeitoCompra extends Efeito{
+  EfeitoCompra(): super();
+
+  bool _compraUnica = false;
+  List opt = [];
+  
+  @override
+  Future<bool> reinstanciarMetodo(Map objPoder) async{
+    super.reinstanciarMetodo(objPoder);
+    if(objPoder["opt"] != null){
+      opt = objPoder["opt"];
+    }
+    if(_padraoEfeito["unico"] != null){
+      _compraUnica = _padraoEfeito["unico"];
+    }
+    return true;
+  }
+
+  Future<bool> instanciarMetodo(String nome , String idEfeito)  async{
+    super.instanciarMetodo(nome, idEfeito);
+    
+    if(_padraoEfeito["unico"] != null){
+      _compraUnica = _padraoEfeito["unico"];
+    }
+    return true;
+  }
+
+  addOpt(Map option){
+    opt.add(option);
+  }
+  rmOpt(id){
+    int index = opt.indexWhere((mod) => mod["ID"] == id);
+    opt.removeAt(index);
+  }
+
+  
+  returnListOpt(){
+    return _padraoEfeito["opt"];
+  }
+
+  @override 
+  Map<String, dynamic> retornaObj(){
+    /*
+      Retorna um json com os dados montados
+
+      Return:
+        Map Json - o Arquivo json
+    */
+    return{
+      "nome":             nome,
+      "e_id":             _idEfeito,
+      "efeito":           _nomeEfeito,
+      "graduacao":        graduacao,
+      "acao":             _acao,
+      "alcance":          _alcance,
+      "duracao":          _duracao,
+      "modificadores":    _modificador,
+      "descricao":        desc,
+      "opt":              opt,
+      "custo":            custearAlteracoes(),
+    };
+  }
+
+}
