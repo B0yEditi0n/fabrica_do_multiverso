@@ -414,6 +414,7 @@ class Efeito{
       "duracao":          _duracao,
       "modificadores":    _modificador,
       "descricao":        desc,
+      "class":            _padraoEfeito["classe_manipulacao"],
       "custo":            custearAlteracoes(),
       
     };
@@ -440,6 +441,7 @@ class EfeitoCompra extends Efeito{
     return true;
   }
 
+  @override
   Future<bool> instanciarMetodo(String nome , String idEfeito)  async{
     super.instanciarMetodo(nome, idEfeito);
     
@@ -452,6 +454,12 @@ class EfeitoCompra extends Efeito{
   addOpt(Map option){
     opt.add(option);
   }
+
+  setOptDesc(m_id, text){
+    int index = _modificador.indexWhere((mod) => mod["m_id"] == m_id);
+    _modificador[index]["text_desc"] = text;
+  }
+
   rmOpt(id){
     int index = opt.indexWhere((mod) => mod["ID"] == id);
     opt.removeAt(index);
@@ -481,8 +489,13 @@ class EfeitoCompra extends Efeito{
       "modificadores":    _modificador,
       "descricao":        desc,
       "opt":              opt,
+      "class":            _padraoEfeito["classe_manipulacao"],
       "custo":            custearAlteracoes(),
     };
   }
 
 }
+
+// Variável de Manipulação de Poderes
+var poder = Efeito();
+

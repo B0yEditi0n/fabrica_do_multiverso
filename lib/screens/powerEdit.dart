@@ -4,13 +4,13 @@ import 'package:numberpicker/numberpicker.dart';
 // Instancia de Poderes
 import 'package:fabrica_do_multiverso/script/ficha.dart' ;
 import 'package:fabrica_do_multiverso/script/poderes/lib_efeitos.dart';
-import 'package:fabrica_do_multiverso/script/poderes/lib_switchEfeito.dart';
 
 // Funções e Pops adicionais
 import 'package:fabrica_do_multiverso/screens/powerEdit/functions_controlEdition.dart';
 
 import 'package:fabrica_do_multiverso/screens/powerEdit/popup_GradPicker.dart';
 import 'package:fabrica_do_multiverso/screens/powerEdit/popup_addModificadores.dart';
+import 'package:fabrica_do_multiverso/screens/powerEdit/popup_OptPoderes.dart';
 
 class powerEdit extends StatefulWidget {
   final int idPoder;
@@ -26,9 +26,9 @@ class _powerEditState extends State<powerEdit> {
   String txtAcao = "";
   String txtAlcance = "";
   String txtDuracao = "";
-  List modficadores = [];
+  List modificadores = [];
+  List compra = [];
 
-  bool EsconderText = false;
   bool efeitoPessoal = false;
   bool efeitoOfensivo = false;
   bool descricao = false;
@@ -39,28 +39,34 @@ class _powerEditState extends State<powerEdit> {
   TextEditingController inputTextNomePoder = TextEditingController();
   TextEditingController inputTextDesc = TextEditingController();
   List<TextEditingController> listInputModText = [];
+  List<TextEditingController> listInputOption = [];
 
   @override
 
   void initState() {
     super.initState();
-    _startPower(); // Carrega os dados ao iniciar o estado
-    //_updateData();
+    _startPower();
   }
 
   Future<bool> _startPower() async{
-    // Lista de Modificadores Disponiveis;
+    objPoder = personagem.poderes.poderesLista[widget.idPoder];
+    // Reinstancia para zerar Objeto
     etiquetasModificadores = ["gerais"];
-    switch (objPoder["classe_manipulacao"]) {
+    switch (objPoder["class"]) {
+      case "Efeito":
+        poder = Efeito();
+        break;
       case "Aflicao":
       case "Dano":
+        poder = Efeito();
         etiquetasModificadores += ["ofensivos"];
         break;
+      case "EfeitoCompra":
+        poder = EfeitoCompra();
+        break;
     }
-
-    // Reinstancia para zerar Objeto
-    poder = Efeito();
-    objPoder = personagem.poderes.poderesLista[widget.idPoder];
+    
+    
     poder.reinstanciarMetodo(objPoder).then((valor)=>_updateData());
     //_updateData();
     return true;
@@ -84,18 +90,27 @@ class _powerEditState extends State<powerEdit> {
       }
 
       // Extras e Falhas
-      modficadores = objPoder["modificadores"];
+      modificadores = objPoder["modificadores"];
 
       // Criar Inputs de Textos de modificadores com texto
-      for(Map mod in modficadores){
-        if(mod["text_desc"] != null){
-          listInputModText.add(TextEditingController(text: mod["text_desc"]));
-        }else{
-          listInputModText.add(TextEditingController());
-        }
-        
-      }
       
+      for(Map mod in modificadores){
+        listInputModText.add(TextEditingController(text: mod["text_desc"] != null ? mod["text_desc"] : ''));
+      }
+
+      // Cria Inputs de Texto para Opções (Se tiver)
+      if(objPoder is EfeitoCompra){
+        if(objPoder["opt"].length > 0){
+          compra = objPoder["opt"];
+
+          for(Map option in objPoder["opt"]){
+            print(option["text_desc"]);
+            listInputOption.add(TextEditingController(text: option["text_desc"] != null ? option["text_desc"] : ''));
+          }
+        }        
+      }
+
+
     });
 
   }
@@ -390,35 +405,35 @@ class _powerEditState extends State<powerEdit> {
               //* Campos de Compra (Especifico pra alguns efeitos)
               //***************************************************
               
-              Container(
+              poder is EfeitoCompra ? Container(
                 decoration: BoxDecoration(
                   border: Border.all(color: Theme.of(context).colorScheme.primary),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Column(
                   children: [
-                    objPoder["classe_manipulacao"] == 'EfeitoCompra' ? SizedBox(
+                    SizedBox(
                       height: MediaQuery.of(context).size.height * 0.40, // 40% da altura da tela,
                       child: ListView.builder(
                         shrinkWrap: true,
-                        itemCount: modficadores.length,
+                        itemCount: compra.length,
                         itemBuilder: (BuildContext context, int index) {
                           return ListTile(
-                            /*title: Row(
+                            title: Row(
                               children: [
                                 // Identifica o Modificador
-                                //Text('${modficadores[index]["nome"]} ${modficadores[index]["grad"] > 1 ? modficadores[index]["grad"] : ''}'),
+                                //Text('${compra[index]["nome"]} ${compra[index]["grad"] > 1 ? compra[index]["grad"] : ''}'),
 
                                 // Input de Descrição *se tiver   
                                 Row(
-                                  children: modficadores[index]["desc"] ? [
+                                  children: compra[index]["desc"] ? [
                                     const SizedBox(width: 5),
                                     SizedBox(
                                       width: MediaQuery.of(context).size.width * 0.20,
                                       child: TextField(
-                                        controller: listInputModText[index],
+                                        controller: listInputOption[index],
                                         onChanged: (String value){
-                                          poder.setDescMod(modficadores[index]["m_id"], value);
+                                          poder.setDescMod(compra[index]["ID"], value);
                                         },
                                         decoration: const InputDecoration(
                                           hintText: '',
@@ -429,7 +444,7 @@ class _powerEditState extends State<powerEdit> {
                                   ]: [], 
                                 ),
                               ]
-                            ),*/
+                            ),
                             trailing: IconButton(
                               icon: const Icon(Icons.delete),
                               onPressed: () =>{
@@ -440,7 +455,7 @@ class _powerEditState extends State<powerEdit> {
                           );
                         },
                       ),
-                    ) : const SizedBox(),
+                    ),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: TextButton(
@@ -449,14 +464,14 @@ class _powerEditState extends State<powerEdit> {
                           await showDialog(
                             context: context,
                             builder: ((BuildContext context) {
-                              return AddModificadorSelecionador(etiquetas: etiquetasModificadores);
+                              return AddOptCompra(poderCompra: poder);
                             })
                           ).then((result)=>{
                             // Atualizar a Lista do Que Saiu
                             setState(() {
-                              modficadores = objPoder["modificadores"];
-                              while(modficadores.length > listInputModText.length){
-                                listInputModText.add(TextEditingController());
+                              compra = objPoder["opt"];
+                              while(compra.length > listInputOption.length){
+                                listInputOption.add(TextEditingController());
                               }
                               // Atualiza o objeto inteiro
                               objPoder = poder.retornaObj();
@@ -467,7 +482,7 @@ class _powerEditState extends State<powerEdit> {
                     ),
                   ],
                 ),
-              ),
+              ) : const SizedBox(),
 
               const SizedBox(height: 30),
 
@@ -485,26 +500,28 @@ class _powerEditState extends State<powerEdit> {
                       height: MediaQuery.of(context).size.height * 0.40, // 40% da altura da tela,
                       child: ListView.builder(
                         shrinkWrap: true,
-                        itemCount: modficadores.length,
+                        itemCount: modificadores.length,
                         itemBuilder: (BuildContext context, int index) {
                           return ListTile(
                             title: Row(
                               children: [
                                 // Identifica o Modificador
-                                Text('${modficadores[index]["nome"]} ${modficadores[index]["grad"] > 1 ? modficadores[index]["grad"] : ''}'),
+                                Text('${modificadores[index]["nome"]} ${modificadores[index]["grad"] > 1 ? modificadores[index]["grad"] : ''}'),
 
                                 // Input de Descrição *se tiver   
                                 Row(
-                                  children: modficadores[index]["desc"] ? [
+                                  children: modificadores[index]["desc"] ? [
                                     const SizedBox(width: 5),
                                     SizedBox(
                                       width: MediaQuery.of(context).size.width * 0.20,
                                       child: TextField(
                                         controller: listInputModText[index],
-                                        onChanged: (String value){
-                                          poder.setDescMod(modficadores[index]["m_id"], value);
+                                        onChanged: (value){
+                                         
+                                          poder.setDescMod(modificadores[index]["m_id"], value);
+                                          
                                         },
-                                        decoration: const InputDecoration(
+                                        decoration: const InputDecoration(  
                                           hintText: '',
                                         ),
                                       
@@ -518,9 +535,9 @@ class _powerEditState extends State<powerEdit> {
                               icon: const Icon(Icons.delete),
                               onPressed: () =>{
                                 setState(() {
-                                  poder.delModificador(modficadores[index]["m_id"]);
+                                  poder.delModificador(modificadores[index]["m_id"]);
                                   listInputModText.removeAt(index);
-                                  modficadores = poder.retornaObj()["modificadores"];
+                                  modificadores = poder.retornaObj()["modificadores"];
                                   
                                   // Atualiza o objeto inteiro
                                   objPoder = poder.retornaObj();
@@ -544,12 +561,14 @@ class _powerEditState extends State<powerEdit> {
                           ).then((result)=>{
                             // Atualizar a Lista do Que Saiu
                             setState(() {
-                              modficadores = objPoder["modificadores"];
-                              while(modficadores.length > listInputModText.length){
+                              modificadores = objPoder["modificadores"];
+
+                              while(modificadores.length > listInputModText.length){
                                 listInputModText.add(TextEditingController());
                               }
                               // Atualiza o objeto inteiro
                               objPoder = poder.retornaObj();
+
                             })
                           })
                         },

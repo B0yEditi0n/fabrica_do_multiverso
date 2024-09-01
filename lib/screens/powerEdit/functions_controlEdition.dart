@@ -1,4 +1,4 @@
-import 'package:fabrica_do_multiverso/script/poderes/lib_switchEfeito.dart';
+import 'package:fabrica_do_multiverso/script/poderes/lib_efeitos.dart';
 
 // Function para auxiliar a manipulação da Tela
 int alteraAcao(int valorAtual, int passo){

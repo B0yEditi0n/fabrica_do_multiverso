@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:numberpicker/numberpicker.dart';
 
 // Instancia de Poderes
-import 'package:fabrica_do_multiverso/script/poderes/lib_switchEfeito.dart';
+import 'package:fabrica_do_multiverso/script/poderes/lib_efeitos.dart';
 
 //****************************************** */
 // Pop Up Seta Nivel da Graduação do Poder

@@ -8,8 +8,10 @@ class controlPoderes{
   novoPoder(nome, id) async{    
     // Cria um novo Efeito
     var poder = Efeito();
+    
     await poder.instanciarMetodo(nome, id);
-    poderesLista.add(poder.retornaObj());
+    Map objPoder = poder.retornaObj();
+    poderesLista.add(objPoder);
     return 1;
   }
 

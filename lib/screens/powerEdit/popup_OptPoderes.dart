@@ -1,50 +1,68 @@
+import 'dart:developer';
+import 'package:fabrica_do_multiverso/screens/poderes.dart';
+import 'package:numberpicker/numberpicker.dart';
+
+import 'package:fabrica_do_multiverso/script/poderes/lib_efeitos.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'; 
 import 'dart:convert';
 
-import 'package:fabrica_do_multiverso/script/ficha.dart' ;
+import '../../script/poderes/lib_efeitos.dart';
 
 //
 // Dialogo Adicionar Poderes
 //
 
-class DynamicDialog extends StatefulWidget {
+class AddOptCompra extends StatefulWidget {
+  Object poderCompra = EfeitoCompra();
+  AddOptCompra({super.key, required this.poderCompra});
   @override
-  _DynamicDialogState createState() => _DynamicDialogState();
+  _AddOptCompraState createState() => _AddOptCompraState();
 }
 
-class _DynamicDialogState extends State<DynamicDialog> {
-  //String _title;A
-  // Declaração de Variáveis
-  //List poderes = [];
-  final efeitos = [];
+class _AddOptCompraState extends State<AddOptCompra> {
+  //var poder = EfeitoCompra();
+  List optionsCompra = [];
+  Map optSelecionado = {};
+  int optGrad = 1;
 
-  TextEditingController inputTextPoder = TextEditingController();
-  String EfeitoSelecionado = '';
+  EfeitoCompra poderCompra = EfeitoCompra();
+
+  TextEditingController inputTextOpt = TextEditingController();
+  String optionCompraSelecionado = '';
   @override
   
   void initState() {
     // _title = widget.title;
     super.initState();
-  _carregarDados(); // Carrega os dados ao iniciar o estado
+    _carregarDados(); // Carrega os dados ao iniciar o estado
+    
   }
-  Future<void> _carregarDados() async {
+  Future<bool> _carregarDados() async {
     // Carrega o Efeitos
     String jsonEfeitos = await rootBundle.loadString('assets/poderes/efeitos.json');
-    List<dynamic> objEfeitos = jsonDecode(jsonEfeitos);
+    List objEfeitos = jsonDecode(jsonEfeitos);
+    
+    // força um cast na classe para acessar os metodos sem problemas
+    // de sintaxe
+    poderCompra = widget.poderCompra as EfeitoCompra;
 
-    // Converte o JSON em objetos
-    setState(() {
-      Map efeito = {};
-      for(efeito in objEfeitos){
-        efeitos.add({
-          "e_id": efeito["e_id"],
-          "efeito": efeito["efeito"] 
-        });
-      }
-
-      EfeitoSelecionado = efeitos.first["e_id"];
+    String idEfeito = poderCompra.retornaObj()["e_id"];
+    int index = objEfeitos.indexWhere((efeito) => efeito["e_id"] == idEfeito);
+    Map efeito = objEfeitos[index];
+    List efeitosOpt = [];
+    if (efeito["opt"] != null){
+    setState(() {      
+        efeitosOpt = efeito["opt"];
+        
     });
+    }
+    optionsCompra = efeitosOpt;
+    // Define o inicial da lista
+    optionCompraSelecionado = optionsCompra.first["ID"];
+
+    return true;
+
   }
 
   @override
@@ -53,39 +71,42 @@ class _DynamicDialogState extends State<DynamicDialog> {
       title: const Text('Adicionar Poderes'),
       content: SingleChildScrollView(
         child: ListBody(
-          children: <Widget>[
-          
-            //* Entrada do Nome
-            TextField(
-              controller: inputTextPoder,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: 'Nome do poder',
-              ),
-            ),
-
-            const SizedBox(height: 15,),
-
+          children: <Widget>[ 
+            // Escolha do modificador
             DropdownButton<String>(
-              value: EfeitoSelecionado,
-              icon: const Icon(Icons.arrow_downward),
-              elevation: 16,
+              value: optionCompraSelecionado,
+              //icon: const Icon(Icons.arrow_downward),
+              //elevation: 16,
               style: const TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
-              underline: Container(
+              /*underline: Container(
                 height: 2,
-              ),
+              ),*/
               onChanged: (String? value) {
                 setState(() {
-                  EfeitoSelecionado = value!;
+                  optionCompraSelecionado = value!;
+                  // Atualiza o selecionado
+                  var index = optionsCompra.indexWhere((mod) => mod["ID"] == optionCompraSelecionado);
+                  optSelecionado = optionsCompra[index];
+                  // Resta a Graduação
+                  optGrad = 1;
                 });
               },
-              items: efeitos.map<DropdownMenuItem<String>>((value) {
+              items: optionsCompra.map<DropdownMenuItem<String>>((value) {
                 return DropdownMenuItem<String>(
-                  value: value["e_id"].toString(),
-                  child: Text(value["efeito"].toString()),
+                  value: value["ID"], 
+                  child: Text(value["desc"].toString()),
                 );
               }).toList(),
+            ),
+            // Controle de Graduação *se tiver
+            /*optSelecionado["limite"] != null && optSelecionado["limite"] > 1 ? 
+            NumberPicker(
+              value: optGrad,
+              minValue: 1,
+              maxValue: optSelecionado["limite"], // parametrizar pelo NP posteriormente
+              onChanged: (value) => setState(() => optGrad = value),
             )
+            : const SizedBox()*/
           ]
         )
       ),
@@ -94,8 +115,12 @@ class _DynamicDialogState extends State<DynamicDialog> {
           child: const Text('Adicionar'),
           onPressed: () async{
             // Atualiza a Classe
-            await personagem.poderes.novoPoder(inputTextPoder.text.toString(), EfeitoSelecionado);
-            // Fecha o popup
+
+            // Define a graduação
+            optSelecionado["grad"] = optGrad;
+            poderCompra.addOpt(optSelecionado)!; 
+
+            // Fecha o Popup
             Navigator.of(context).pop();
           },
         ),

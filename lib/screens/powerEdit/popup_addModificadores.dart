@@ -1,7 +1,7 @@
 import 'dart:developer';
 import 'package:numberpicker/numberpicker.dart';
 
-import 'package:fabrica_do_multiverso/script/poderes/lib_switchEfeito.dart';
+import 'package:fabrica_do_multiverso/script/poderes/lib_efeitos.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'; 
 import 'dart:convert';
