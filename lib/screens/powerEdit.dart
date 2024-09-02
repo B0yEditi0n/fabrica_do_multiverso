@@ -417,7 +417,7 @@ class _powerEditState extends State<powerEdit> {
                 child: Column(
                   children: [
                     SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.40, // 40% da altura da tela,
+                      height: MediaQuery.of(context).size.height * 0.20, // 40% da altura da tela,
                       child: ListView.builder(
                         shrinkWrap: true,
                         itemCount: compra.length,
