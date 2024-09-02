@@ -225,7 +225,8 @@ class Efeito{
   }
 
   definirComoAtaque(bool eAtaque){
-    if(_acao == 0 && eAtaque){
+    print('ataque? ${_padraoEfeito["alcance"] == 0 && eAtaque}');
+    if(_padraoEfeito["alcance"] == 0 && eAtaque){
       _acao = 1;
       _alcance = 1;
       defAtaque = true;
@@ -249,8 +250,10 @@ class Efeito{
 
     // contabilizando alterações do efeitos
     // - Ação 
+    
     int dfAcao = _padraoEfeito["acao"];
     int custoAcao = 0;
+    print(dfAcao);
     if(!defAtaque){ 
       custoAcao = _acao - dfAcao;
     }else{
@@ -261,7 +264,7 @@ class Efeito{
     // - Alcance
     int dfAlcance = _padraoEfeito["alcance"];
     int custoAlcance = 0;
-    if([1, 2, 3].contains(dfAlcance) && !defAtaque){
+    if([0, 1, 2, 3].contains(dfAlcance) && !defAtaque){
       custoAlcance = _alcance - dfAlcance;
     }else{
       // Caso setado como ataque ignora o custo do alcance default
@@ -275,7 +278,9 @@ class Efeito{
       case 0 || 3: // Permanente ou Sustentado
         if(_duracao == 4){
           custoDurcao = 1;
-        }
+        }else if(_duracao == 2){
+          custoDurcao = -1;
+        };  
         break;
       case 1: // Instaneo
         if(_duracao == 2){
@@ -299,6 +304,7 @@ class Efeito{
 
     // Finalizar custeio
     int custoBase = _padraoEfeito["custo_base"];
+    print('custobase  : $custoBase, custoacao: $custoAcao, custoDurcao: $custoDurcao, custoAlcance: $custoAlcance, custoModGrad $custoModGrad');
     int custoPorG = custoBase + custoAcao + custoDurcao + custoAlcance + custoModGrad;
 
     int custoFinal = 0;
@@ -451,18 +457,32 @@ class EfeitoCompra extends Efeito{
     return true;
   }
 
+  optsetGrad(){
+    graduacao = 0;
+    for(Map option in opt){
+      int valor = option["valor"];
+      print(valor);
+      graduacao += valor;
+    }
+    
+  }
+
   addOpt(Map option){
     opt.add(option);
+    // Atualiza Grad
+    optsetGrad();
   }
 
   setOptDesc(m_id, text){
-    int index = _modificador.indexWhere((mod) => mod["m_id"] == m_id);
-    _modificador[index]["text_desc"] = text;
+    int index = opt.indexWhere((mod) => mod["ID"] == m_id);
+    opt[index]["text_desc"] = text;
   }
 
   rmOpt(id){
     int index = opt.indexWhere((mod) => mod["ID"] == id);
     opt.removeAt(index);
+    // Atualiza Grad
+    optsetGrad();
   }
 
   

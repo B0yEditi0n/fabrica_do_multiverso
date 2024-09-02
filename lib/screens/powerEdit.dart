@@ -99,17 +99,15 @@ class _powerEditState extends State<powerEdit> {
       }
 
       // Cria Inputs de Texto para Opções (Se tiver)
-      if(objPoder is EfeitoCompra){
-        if(objPoder["opt"].length > 0){
+      if(poder is EfeitoCompra){
+        if(objPoder["opt"] != null && objPoder["opt"].length > 0){
           compra = objPoder["opt"];
 
           for(Map option in objPoder["opt"]){
-            print(option["text_desc"]);
             listInputOption.add(TextEditingController(text: option["text_desc"] != null ? option["text_desc"] : ''));
           }
         }        
       }
-
 
     });
 
@@ -169,17 +167,19 @@ class _powerEditState extends State<powerEdit> {
                      
                     TextButton(
                       onPressed: () async => {
-                        
-                        await showDialog(
-                          context: context,
-                          builder: ((BuildContext context) {
-                            return GradPowerDialog(gradValue: objPoder["graduacao"], titulo: 'Valor de Graduação',);
+                        if(poder is! EfeitoCompra){
+                        // Garante que jogador não escolha graduações de efeitos de compra
+                          await showDialog(
+                            context: context,
+                            builder: ((BuildContext context) {
+                              return GradPowerDialog(gradValue: objPoder["graduacao"], titulo: 'Valor de Graduação',);
+                            })
+                          ),
+                          //! Atualiza a Lista de poderes
+                          setState(() {
+                            objPoder = poder.retornaObj();
                           })
-                        ),
-                        //! Atualiza a Lista de poderes
-                        setState(() {
-                          objPoder = poder.retornaObj();
-                        })
+                        }
                       },
         
                       child: Wrap(
@@ -209,6 +209,10 @@ class _powerEditState extends State<powerEdit> {
                                     setState(() {
                                       efeitoOfensivo = value!;
                                       poder.definirComoAtaque(efeitoOfensivo);
+                                      // atualiza marcas de texto
+                                        txtAcao    = poder.returnStrAcao();
+                                        txtAlcance = poder.returnStrAlcance();
+                                        txtDuracao = poder.returnStrDuracao();
                                     });
                                   },
                                 ),
@@ -421,19 +425,22 @@ class _powerEditState extends State<powerEdit> {
                           return ListTile(
                             title: Row(
                               children: [
-                                // Identifica o Modificador
-                                //Text('${compra[index]["nome"]} ${compra[index]["grad"] > 1 ? compra[index]["grad"] : ''}'),
+                                // Identifica a opção comprada
+                                Text('${compra[index]["desc"]} ${compra[index]["valor"]}'),
 
                                 // Input de Descrição *se tiver   
-                                Row(
-                                  children: compra[index]["desc"] ? [
+                                compra[index]["espec"] != null && compra[index]["espec"] ? Row(
+                                  children: [
                                     const SizedBox(width: 5),
                                     SizedBox(
                                       width: MediaQuery.of(context).size.width * 0.20,
                                       child: TextField(
                                         controller: listInputOption[index],
                                         onChanged: (String value){
-                                          poder.setDescMod(compra[index]["ID"], value);
+                                          // Força o cast
+                                          EfeitoCompra poderCompra = poder as EfeitoCompra;
+                                          poderCompra.setOptDesc(compra[index]["ID"], value);
+                                          poder.reinstanciarMetodo(poderCompra.retornaObj());
                                         },
                                         decoration: const InputDecoration(
                                           hintText: '',
@@ -441,14 +448,24 @@ class _powerEditState extends State<powerEdit> {
                                       
                                       ),
                                     ),
-                                  ]: [], 
-                                ),
+                                  ],
+                                ) : const SizedBox(),
                               ]
                             ),
                             trailing: IconButton(
                               icon: const Icon(Icons.delete),
                               onPressed: () =>{
                                 setState(() {
+                                  // força um cast para acessar metodos de compra
+                                  EfeitoCompra poderCompra = poder as EfeitoCompra;
+                                  
+                                  poderCompra.rmOpt(compra[index]["ID"]);
+                                  listInputOption.removeAt(index);
+                                  compra = poder.retornaObj()["opt"];
+                                  
+                                  
+                                  // Atualiza o objeto inteiro
+                                  objPoder = poder.retornaObj();
                                 })
                               },
                               ),
@@ -469,7 +486,7 @@ class _powerEditState extends State<powerEdit> {
                           ).then((result)=>{
                             // Atualizar a Lista do Que Saiu
                             setState(() {
-                              compra = objPoder["opt"];
+                              compra = poder.retornaObj()["opt"];
                               while(compra.length > listInputOption.length){
                                 listInputOption.add(TextEditingController());
                               }
