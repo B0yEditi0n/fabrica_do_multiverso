@@ -481,7 +481,7 @@ class _powerEditState extends State<powerEdit> {
                           await showDialog(
                             context: context,
                             builder: ((BuildContext context) {
-                              return AddOptCompra(poderCompra: poder);
+                              return AddOptCompra();
                             })
                           ).then((result)=>{
                             // Atualizar a Lista do Que Saiu

@@ -225,7 +225,6 @@ class Efeito{
   }
 
   definirComoAtaque(bool eAtaque){
-    print('ataque? ${_padraoEfeito["alcance"] == 0 && eAtaque}');
     if(_padraoEfeito["alcance"] == 0 && eAtaque){
       _acao = 1;
       _alcance = 1;
@@ -253,7 +252,6 @@ class Efeito{
     
     int dfAcao = _padraoEfeito["acao"];
     int custoAcao = 0;
-    print(dfAcao);
     if(!defAtaque){ 
       custoAcao = _acao - dfAcao;
     }else{
@@ -304,7 +302,6 @@ class Efeito{
 
     // Finalizar custeio
     int custoBase = _padraoEfeito["custo_base"];
-    print('custobase  : $custoBase, custoacao: $custoAcao, custoDurcao: $custoDurcao, custoAlcance: $custoAlcance, custoModGrad $custoModGrad');
     int custoPorG = custoBase + custoAcao + custoDurcao + custoAlcance + custoModGrad;
 
     int custoFinal = 0;
@@ -461,33 +458,48 @@ class EfeitoCompra extends Efeito{
     graduacao = 0;
     for(Map option in opt){
       int valor = option["valor"];
-      print(valor);
       graduacao += valor;
     }
     
   }
 
   addOpt(Map option){
+    if(_padraoEfeito["unico"]){ // apenas um unico efeito
+      if(opt.length > 0){
+        opt = [];
+      }
+    }
+
     opt.add(option);
     // Atualiza Grad
-    optsetGrad();
+      optsetGrad();
+    
   }
 
   setOptDesc(m_id, text){
-    int index = opt.indexWhere((mod) => mod["ID"] == m_id);
+    int index = opt.indexWhere((option) => option["ID"] == m_id);
     opt[index]["text_desc"] = text;
   }
 
   rmOpt(id){
-    int index = opt.indexWhere((mod) => mod["ID"] == id);
+    int index = opt.indexWhere((option) => option["ID"] == id);
     opt.removeAt(index);
     // Atualiza Grad
     optsetGrad();
   }
 
   
-  returnListOpt(){
-    return _padraoEfeito["opt"];
+  List returnListOpt(){
+    // Evitas retornos duplicadoss
+    List optionList = [];
+    for (Map option in _padraoEfeito["opt"]){
+      int i = opt.indexWhere((optio) => optio["ID"] == option["ID"]);
+      if(i == -1){ 
+        // evita que adicione opoções já adicionadas
+        optionList.add(option);
+      }      
+    }
+    return optionList;
   }
 
   @override 
