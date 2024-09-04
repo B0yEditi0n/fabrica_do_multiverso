@@ -27,11 +27,10 @@
         "efeito": "Ambiente",
         "ofensivo": false,
         "desc": false,
-        "custo_base": 1,
         "acao": 1,
         "alcance": 4,
         "duracao": 3,
-        "unico": true,
+        "unico": false,
         "opt": [
             {
                 "ID": "E003OP01",
@@ -82,7 +81,7 @@
                 "espec": false
             }
         ],
-        "classe_manipulacao": "EfeitoCompra"
+        "classe_manipulacao": "EfeitoCustoVaria"
     },
     {
         "e_id": "E004",
@@ -114,7 +113,7 @@
                 "espec": false
             },
             {
-                "ID": "OP05",
+                "ID": "OP04",
                 "desc": "Todos os Sentidos",
                 "valor": 10,
                 "espec": false
@@ -351,7 +350,42 @@
         "acao": 3,
         "alcance": 3,
         "duracao": 3,
-        "classe_manipulacao": "Efeito"
+        "unico": false,
+        "opt":[
+            {
+            
+                "ID": "OP01",
+                "desc": "Audição",
+                "valor": 1,
+                "espec": false
+                                
+            },
+            {
+            
+                "ID": "OP02",
+                "desc": "Tatil",
+                "valor": 1,
+                "espec": false
+                                
+            },
+            {
+            
+                "ID": "OP03",
+                "desc": "Olfato",
+                "valor": 1,
+                "espec": false
+                                
+            },
+            {
+            
+                "ID": "OP04",
+                "desc": "Visual",
+                "valor": 2,
+                "espec": false
+                                
+            }
+        ],
+        "classe_manipulacao": "EfeitoCustoVaria"
     },
     {
         "e_id": "E019",
@@ -716,45 +750,42 @@
         "duracao": 3,
         "ofensivo": false,
         "desc": false,
+        "unico": false,
         "opt": [
             {
+            
                 "ID": "OP01",
-                "desc": "um tipo de sentido",
+                "desc": "Audição",
                 "valor": 1,
-                "espec": true
+                "espec": false
+                                
             },
             {
+            
                 "ID": "OP02",
-                "desc": "dois tipos de sentidos",
-                "valor": 2,
-                "espec": true
+                "desc": "Tatil",
+                "valor": 1,
+                "espec": false
+                                
             },
             {
+            
                 "ID": "OP03",
-                "desc": "sentido visual",
+                "desc": "Olfato",
+                "valor": 1,
+                "espec": false
+                                
+            },
+            {
+            
+                "ID": "OP04",
+                "desc": "Visual",
                 "valor": 2,
                 "espec": false
-            },
-            {
-                "ID": "OP04",
-                "desc": "três tipos de sentidos",
-                "valor": 3,
-                "espec": true
-            },
-            {
-                "ID": "OP05",
-                "desc": "quatro tipos de sentidos",
-                "valor": 4,
-                "espec": true
-            },
-            {
-                "ID": "OP06",
-                "desc": "todos os tipos de sentidos",
-                "valor": 5,
-                "espec": false
+                                
             }
         ],
-        "classe_manipulacao": "Efeito"
+        "classe_manipulacao": "EfeitoCustoVaria"
     },
     {
         "e_id": "E035",
@@ -785,8 +816,37 @@
         "alcance": 1,
         "duracao": 3,
         "ofensivo": false,
-        "desc": true,
-        "classe_manipulacao": "Efeito"
+        "desc": false,
+        "unico": true,
+        "opt":[
+            {
+                "ID": "OP01",
+                "desc": "uma coisa em outra coisa",
+                "valor": 2,
+                "espec": true
+            },
+            {
+                "ID": "OP02",
+                "desc": "um grupo amplo de coisas em uma única coisa ou vice-versa",
+                "valor": 3,
+                "espec": true
+            },
+            {
+                "ID": "OP03",
+                "desc": "um grupo amplo de alvos em um grupo amplo de resultados",
+                "valor": 4,
+                "espec": true
+            },
+            {
+                "ID": "OP04",
+                "desc": "qualquer coisa em qualquer outra coisa",
+                "valor": 5,
+                "espec": true
+            }
+            
+
+        ],
+        "classe_manipulacao": "EfeitoCustoVaria"
     },
     {
         "e_id": "E038",

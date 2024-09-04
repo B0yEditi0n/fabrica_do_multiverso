@@ -1,4 +1,3 @@
-
 import 'package:flutter/services.dart'; 
 import 'dart:convert';
 
@@ -248,19 +247,33 @@ class Efeito{
     */
 
     // contabilizando alterações do efeitos
-    // - Ação 
-    
     int dfAcao = _padraoEfeito["acao"];
+    int dfAlcance = _padraoEfeito["alcance"];
+    int dfDurcao = _padraoEfeito["duracao"];
+    
+    
+    
+    // - Ação    
     int custoAcao = 0;
     if(!defAtaque){ 
-      custoAcao = _acao - dfAcao;
+      // Pra maioria das vezes funciona
+      if([1, 2, 3, 4].contains(dfAcao) && _duracao != 2){
+        custoAcao = _acao - dfAcao;
+      }else if(dfAcao == 0 && _duracao != 2){ // Ação Permamente tem o mesmo custo de livre
+        
+        if(_acao != 0){
+          custoAcao = _acao - 3;
+        }        
+      }else{ // Caso permanente
+        custoAcao = _acao - 1; // Presupoem que o custo vem apartir de concentração
+      };
+      
     }else{
       // Caso setado como ataque ignora o custo da ação default
       custoAcao = _acao - 1; 
     }
     
     // - Alcance
-    int dfAlcance = _padraoEfeito["alcance"];
     int custoAlcance = 0;
     if([0, 1, 2, 3].contains(dfAlcance) && !defAtaque){
       custoAlcance = _alcance - dfAlcance;
@@ -270,7 +283,6 @@ class Efeito{
     }
 
     // - Duração
-    int dfDurcao = _padraoEfeito["duracao"];
     int custoDurcao = 0;
     switch (dfDurcao) {
       case 0 || 3: // Permanente ou Sustentado
@@ -425,13 +437,13 @@ class Efeito{
 
 }
 
-
-class EfeitoCompra extends Efeito{
-  EfeitoCompra(): super();
+class EfeitoEscolha extends Efeito{
+  EfeitoEscolha(): super();
 
   bool _compraUnica = false;
   List opt = [];
   
+  // Implementação dos Construtores para os atributos adicionais
   @override
   Future<bool> reinstanciarMetodo(Map objPoder) async{
     super.reinstanciarMetodo(objPoder);
@@ -454,15 +466,7 @@ class EfeitoCompra extends Efeito{
     return true;
   }
 
-  optsetGrad(){
-    graduacao = 0;
-    for(Map option in opt){
-      int valor = option["valor"];
-      graduacao += valor;
-    }
-    
-  }
-
+  // Metodos de tratamento do atributo OPT de escolha do efeito
   addOpt(Map option){
     if(_padraoEfeito["unico"]){ // apenas um unico efeito
       if(opt.length > 0){
@@ -472,8 +476,15 @@ class EfeitoCompra extends Efeito{
 
     opt.add(option);
     // Atualiza Grad
-      optsetGrad();
+      optsetCusto();
     
+  }
+
+  optsetCusto(){
+    // Implementado para ser utilizado com @override
+
+    // Efeitos de compra implementam a graduação 
+    // Efeitos de alteração de custo o custo base
   }
 
   setOptDesc(m_id, text){
@@ -485,7 +496,7 @@ class EfeitoCompra extends Efeito{
     int index = opt.indexWhere((option) => option["ID"] == id);
     opt.removeAt(index);
     // Atualiza Grad
-    optsetGrad();
+    optsetCusto();
   }
 
   
@@ -525,7 +536,33 @@ class EfeitoCompra extends Efeito{
       "custo":            custearAlteracoes(),
     };
   }
+}
 
+class EfeitoCompra extends EfeitoEscolha{
+  @override 
+  optsetCusto(){
+    graduacao = 0;
+    for(Map option in opt){
+      int valor = option["valor"];
+      graduacao += valor;
+    }
+    
+  }
+}
+
+class EfeitoCustoVaria extends EfeitoEscolha{
+  @override 
+  optsetCusto(){
+    int custoBase = 0;
+    _padraoEfeito["custo_base"] = 0;
+    
+    for(Map option in opt){
+      int valor = option["valor"];
+      custoBase += valor;
+    }
+
+    _padraoEfeito["custo_base"] = custoBase;
+  }
 }
 
 // Variável de Manipulação de Poderes

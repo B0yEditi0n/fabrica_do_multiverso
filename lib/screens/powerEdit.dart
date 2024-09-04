@@ -64,6 +64,9 @@ class _powerEditState extends State<powerEdit> {
       case "EfeitoCompra":
         poder = EfeitoCompra();
         break;
+      case "EfeitoCustoVaria":
+        poder = EfeitoCustoVaria();
+        break;
     }
     
     
@@ -99,7 +102,7 @@ class _powerEditState extends State<powerEdit> {
       }
 
       // Cria Inputs de Texto para Opções (Se tiver)
-      if(poder is EfeitoCompra){
+      if(poder is EfeitoEscolha){
         if(objPoder["opt"] != null && objPoder["opt"].length > 0){
           compra = objPoder["opt"];
 
@@ -409,7 +412,7 @@ class _powerEditState extends State<powerEdit> {
               //* Campos de Compra (Especifico pra alguns efeitos)
               //***************************************************
               
-              poder is EfeitoCompra ? Container(
+              poder is EfeitoEscolha ? Container(
                 decoration: BoxDecoration(
                   border: Border.all(color: Theme.of(context).colorScheme.primary),
                   borderRadius: BorderRadius.circular(10),
@@ -438,7 +441,7 @@ class _powerEditState extends State<powerEdit> {
                                         controller: listInputOption[index],
                                         onChanged: (String value){
                                           // Força o cast
-                                          EfeitoCompra poderCompra = poder as EfeitoCompra;
+                                          EfeitoEscolha poderCompra = poder as EfeitoEscolha;
                                           poderCompra.setOptDesc(compra[index]["ID"], value);
                                           poder.reinstanciarMetodo(poderCompra.retornaObj());
                                         },
@@ -457,7 +460,7 @@ class _powerEditState extends State<powerEdit> {
                               onPressed: () =>{
                                 setState(() {
                                   // força um cast para acessar metodos de compra
-                                  EfeitoCompra poderCompra = poder as EfeitoCompra;
+                                  EfeitoEscolha poderCompra = poder as EfeitoEscolha;
                                   
                                   poderCompra.rmOpt(compra[index]["ID"]);
                                   listInputOption.removeAt(index);

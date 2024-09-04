@@ -14,19 +14,16 @@ import '../../script/poderes/lib_efeitos.dart';
 //
 
 class AddOptCompra extends StatefulWidget {
-  //Object poderCompra = EfeitoCompra();
-  //AddOptCompra({super.key, required this.poderCompra});
   @override
   _AddOptCompraState createState() => _AddOptCompraState();
 }
 
 class _AddOptCompraState extends State<AddOptCompra> {
-  //var poder = EfeitoCompra();
   List optionsCompra = [];
   Map optSelecionado = {};
   int optGrad = 1;
 
-  EfeitoCompra poderCompra = EfeitoCompra();
+  EfeitoEscolha poderCompra = EfeitoEscolha();
 
   TextEditingController inputTextOpt = TextEditingController();
   String optionCompraSelecionado = '';
@@ -45,7 +42,7 @@ class _AddOptCompraState extends State<AddOptCompra> {
     
     // força um cast na classe para acessar os metodos sem problemas
     // de sintaxe
-    poderCompra = poder as EfeitoCompra;
+    poderCompra = poder as EfeitoEscolha;
 
     String idEfeito = poderCompra.retornaObj()["e_id"];
     //int index = objEfeitos.indexWhere((efeito) => efeito["e_id"] == idEfeito);
