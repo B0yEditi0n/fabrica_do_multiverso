@@ -8,7 +8,7 @@
         "duracao": 1,
         "ofensivo": true,
         "desc": false,
-        "classe_manipulacao": "Efeito"
+        "classe_manipulacao": "EfeitoOfensivo"
 
     },
     {
@@ -297,7 +297,7 @@
                 "desc": false
             }            
         ],
-        "classe_manipulacao": "Efeito"
+        "classe_manipulacao": "EfeitoOfensivo"
     },
     {
         "e_id": "E014",
@@ -330,7 +330,7 @@
         "alcance": 1,
         "duracao": 1,
         "desc": true,
-        "classe_manipulacao": "Efeito"
+        "classe_manipulacao": "EfeitoOfensivo"
     },
     {
         "e_id": "E017",
@@ -618,7 +618,7 @@
         "duracao": 3,
         "ofensivo": true,
         "desc": false,
-        "classe_manipulacao": "Efeito"
+        "classe_manipulacao": "EfeitoOfensivo"
     },
     {
         "e_id": "E024",
@@ -652,7 +652,7 @@
         "duracao": 3,
         "ofensivo": true,
         "desc": false,
-        "classe_manipulacao": "Efeito"
+        "classe_manipulacao": "EfeitoOfensivo"
     },
     {
         "e_id": "E027",
@@ -685,7 +685,7 @@
         "duracao": 1,
         "ofensivo": true,
         "desc": true,
-        "classe_manipulacao": "Efeito"
+        "classe_manipulacao": "EfeitoOfensivo"
     },
     {
         "e_id": "E030",

@@ -565,6 +565,99 @@ class EfeitoCustoVaria extends EfeitoEscolha{
   }
 }
 
+class EfeitoOfensivo extends Efeito{
+  int bonuAcerto = 0;
+
+  @override
+  int custearAlteracoes(){
+    /*
+      Processa o custo de alterações feitas em (Ação, Duração e Alcance)  
+      Returns: Valor do Custo total calculado
+    */
+
+    // contabilizando alterações do efeitos
+    int dfAcao = _padraoEfeito["acao"];
+    int dfAlcance = _padraoEfeito["alcance"];
+    int dfDurcao = _padraoEfeito["duracao"];
+    
+    
+    
+    // - Ação    
+    int custoAcao = _acao - dfAcao;
+    
+    // - Alcance
+    int custoAlcance = _alcance - dfAlcance;
+  
+    // - Duração
+    int custoDurcao = _duracao - dfDurcao;
+
+    // - Soma dos Modificadores
+    var custoModGrad = 0;
+    var custoModfixo = 0;
+    for(var mod in _modificador){
+      if(mod["fixo"]){
+        // Custo fixo
+        custoModfixo = (mod["grad"] * mod["custo_base"]) + custoModfixo;
+      }else{
+        // Custo por graduação
+        custoModGrad = (mod["grad"] * mod["custo_base"]) + custoModGrad;
+      }
+    }
+
+    // Incrementa valores de acurado e impreciso
+    custoModfixo += bonuAcerto;
+
+    // Finalizar custeio
+    int custoBase = _padraoEfeito["custo_base"];
+    int custoPorG = custoBase + custoAcao + custoDurcao + custoAlcance + custoModGrad;
+
+    int custoFinal = 0;
+
+    // custo por graduação
+    if(custoPorG >= 1){
+      custoFinal = graduacao * custoPorG;
+    }else{
+      // 1 para varios
+      custoFinal = ( graduacao / ( custoPorG.abs() + 2 ) ).ceil();
+    }
+
+    // Calculo de fixos
+    custoFinal += custoModfixo;
+
+    // Não pode ser 0
+    if(custoFinal < 1){
+      custoFinal = 1;
+    }
+
+    return custoFinal;
+  }
+
+  Map<String, dynamic> retornaObj(){
+    /*
+      Retorna um json com os dados montados
+
+      Return:
+        Map Json - o Arquivo json
+    */
+    return{
+      "nome":             nome,
+      "e_id":             _idEfeito,
+      "efeito":           _nomeEfeito,
+      "graduacao":        graduacao,
+      "acao":             _acao,
+      "alcance":          _alcance,
+      "duracao":          _duracao,
+      "modificadores":    _modificador,
+      "descricao":        desc,
+      "class":            _padraoEfeito["classe_manipulacao"],
+      "cd":               (graduacao + 10),
+      "custo":            custearAlteracoes(),
+      
+    };
+  }
+
+}
+
 // Variável de Manipulação de Poderes
 var poder = Efeito();
 

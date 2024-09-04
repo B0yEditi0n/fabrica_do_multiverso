@@ -53,9 +53,6 @@ class _powerEditState extends State<powerEdit> {
     // Reinstancia para zerar Objeto
     etiquetasModificadores = ["gerais"];
     switch (objPoder["class"]) {
-      case "Efeito":
-        poder = Efeito();
-        break;
       case "Aflicao":
       case "Dano":
         poder = Efeito();
@@ -66,6 +63,13 @@ class _powerEditState extends State<powerEdit> {
         break;
       case "EfeitoCustoVaria":
         poder = EfeitoCustoVaria();
+        break;
+      case "EfeitoOfensivo":
+        poder = EfeitoOfensivo();
+        break;
+      case "Efeito":
+      default:
+        poder = Efeito();
         break;
     }
     
