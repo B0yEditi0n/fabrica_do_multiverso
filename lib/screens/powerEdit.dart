@@ -75,7 +75,6 @@ class _powerEditState extends State<powerEdit> {
         break;
     }
     
-    
     poder.reinstanciarMetodo(objPoder).then((valor)=>_updateData());
     //_updateData();
     return true;
@@ -122,7 +121,7 @@ class _powerEditState extends State<powerEdit> {
       // Bonus de Acerto se tiver
       if(poder is EfeitoOfensivo){
         EfeitoOfensivo poderOfensivo = poder as EfeitoOfensivo;
-        bonusAtaque = poderOfensivo.bonuAcerto;
+        bonusAtaque = poderOfensivo.bonusAcerto();
       }
 
     });
@@ -160,6 +159,7 @@ class _powerEditState extends State<powerEdit> {
           padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
+            
             children: [
               //******************************** */
               // Nome Efeito e Graduação         *
@@ -168,8 +168,8 @@ class _powerEditState extends State<powerEdit> {
                 width: double.infinity,
                 child: Wrap(
                   alignment: WrapAlignment.spaceEvenly,
-                  spacing: 8.0, // Espaço horizontal entre os itens
-                  runSpacing: 5.0, // Espaço vertical entre as linhas
+                  spacing: 10.0, // Espaço horizontal entre os itens
+                  runSpacing: 15.0, // Espaço vertical entre as linhas
                   children: [
 
                     //
@@ -256,8 +256,11 @@ class _powerEditState extends State<powerEdit> {
                   ],
                 ),
               ),
-              // Ação, Alcance e Duração
               
+              const SizedBox(height: 30),
+              //****************************
+              // Ação, Alcance e Duração              
+              //****************************
               SizedBox(
                 width: double.infinity,
                 child: Wrap(
@@ -415,8 +418,9 @@ class _powerEditState extends State<powerEdit> {
                   )],
                 ),
               ),
-              
-              
+
+              const SizedBox(height: 30),
+
               //***************************************************
               //* Widgets Ofensivos CD, Acerto
               //***************************************************
@@ -428,8 +432,11 @@ class _powerEditState extends State<powerEdit> {
                   alignment: WrapAlignment.spaceAround,
                   direction: Axis.horizontal,
                   children: [
+
+                    // CD
+
                     SizedBox(
-                      child: Text('CD: ${poder.retornaObj()["cd"]}',
+                      child: Text('CD: ${poder.graduacao + 10}',
                         style: const TextStyle(
                           fontSize: 35,
                           fontWeight: FontWeight.bold,
@@ -437,25 +444,31 @@ class _powerEditState extends State<powerEdit> {
                         )
                       ),
                     ),
-                    
-                    TextButton(
+
+                    // ACERTO
+
+                    objPoder["alcance"]!= null && objPoder["alcance"] != 3 ? TextButton(
                         child: Text('Acerto $bonusAtaque',
                         style: const TextStyle(
                           fontSize: 30,
                           fontWeight: FontWeight.normal,
                         ),),
                         onPressed: () async => {
-                          if(poder is! EfeitoCompra){
+                          
+                          if(poder is EfeitoOfensivo){
                             // chama um popupItem
-                            setState(() async{
-                              bonusAtaque = await Navigator.push(
+                            bonusAtaque = await Navigator.push(
                                 context,
-                                MaterialPageRoute(builder: (context) => PoupInputIntValue(intValue: bonusAtaque, titulo: 'Valor de Graduação')),
-                              );
+                                MaterialPageRoute(builder: (context) => PoupInputIntValue(intValue: bonusAtaque, titulo: 'Valor de Acerto')),
+                            ),
+                            setState(() {
+                              EfeitoOfensivo poderOfensivo = poder as EfeitoOfensivo;
+                              poderOfensivo.addBonus(bonusAtaque);
+                              objPoder = poderOfensivo.retornaObj();
                             })
                           }
                       }
-                    ),
+                    ) : const SizedBox(),
                   ],
                 ),
               ) : const SizedBox(),

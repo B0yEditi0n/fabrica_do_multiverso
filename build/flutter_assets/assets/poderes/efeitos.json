@@ -6,7 +6,6 @@
         "acao": 1,
         "alcance": 1,
         "duracao": 1,
-        "ofensivo": true,
         "desc": false,
         "classe_manipulacao": "EfeitoOfensivo"
 

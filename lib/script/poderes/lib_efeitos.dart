@@ -566,7 +566,26 @@ class EfeitoCustoVaria extends EfeitoEscolha{
 }
 
 class EfeitoOfensivo extends Efeito{
-  int bonuAcerto = 0;
+  int _bonusAcerto = 0;
+
+  // Implementação dos Construtores para os atributos adicionais
+  @override
+  Future<bool> reinstanciarMetodo(Map objPoder) async{
+    super.reinstanciarMetodo(objPoder);    
+    if(objPoder["acerto"] != null){
+      _bonusAcerto = objPoder["acerto"];
+    }
+    
+    return true;
+  }
+
+  addBonus(bonus){
+    if(_alcance != 3){ // Alacance a Percepão
+      _bonusAcerto = bonus;
+    }    
+  }
+
+  int bonusAcerto(){return _bonusAcerto;}
 
   @override
   int custearAlteracoes(){
@@ -605,7 +624,7 @@ class EfeitoOfensivo extends Efeito{
     }
 
     // Incrementa valores de acurado e impreciso
-    custoModfixo += ( bonuAcerto / 2 ).ceil();
+    custoModfixo += ( _bonusAcerto / 2 ).ceil();
 
     // Finalizar custeio
     int custoBase = _padraoEfeito["custo_base"];
@@ -650,6 +669,7 @@ class EfeitoOfensivo extends Efeito{
       "modificadores":    _modificador,
       "descricao":        desc,
       "class":            _padraoEfeito["classe_manipulacao"],
+      "acerto":           _bonusAcerto,
       "cd":               (graduacao + 10),
       "custo":            custearAlteracoes(),
       
