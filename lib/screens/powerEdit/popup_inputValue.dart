@@ -2,26 +2,28 @@ import 'package:flutter/material.dart';
 import 'package:numberpicker/numberpicker.dart';
 
 // Instancia de Poderes
-import 'package:fabrica_do_multiverso/script/poderes/lib_efeitos.dart';
+//import 'package:fabrica_do_multiverso/script/poderes/lib_efeitos.dart';
 
 //****************************************** */
 // Pop Up Seta Nivel da Graduação do Poder
 //****************************************** */
 
 
-class GradPowerDialog extends StatefulWidget {
-  final int gradValue;
+class PoupInputIntValue extends StatefulWidget {
+  final int intValue;
   final String titulo;
-  GradPowerDialog({super.key, required this.gradValue, required this.titulo});
+  final int iniValor;
+  PoupInputIntValue({super.key, required this.intValue, required this.titulo, this.iniValor = 0});
 
   @override
-  _GradPowerDialogState createState() => _GradPowerDialogState();
+  _PoupInputIntValueState createState() => _PoupInputIntValueState();
 }
 
-class _GradPowerDialogState extends State<GradPowerDialog> {
+class _PoupInputIntValueState extends State<PoupInputIntValue> {
   // Declaração de Variáveis  
   final efeitos = [];
-  int _gradValue = 1;
+  int _valueInt = 1;
+  int iniValor = 0; 
   String titulo = '';
 
   TextEditingController inputTextPoder = TextEditingController();
@@ -35,8 +37,9 @@ class _GradPowerDialogState extends State<GradPowerDialog> {
   }
   Future<void> _carregarDados() async {
     setState(() {
-      _gradValue = widget.gradValue;
       titulo     = widget.titulo;
+      _valueInt  = widget.intValue;
+      iniValor   = widget.iniValor;
     });
   }
 
@@ -48,10 +51,10 @@ class _GradPowerDialogState extends State<GradPowerDialog> {
         child: ListBody(
           children: <Widget>[
             NumberPicker(
-              value: _gradValue,
-              minValue: 1,
+              value: _valueInt,
+              minValue: iniValor,
               maxValue: 20, // parametrizar pelo NP posteriormente
-              onChanged: (value) => setState(() => _gradValue = value),
+              onChanged: (value) => setState(() => _valueInt = value),
             ),
           ]
         )
@@ -60,10 +63,8 @@ class _GradPowerDialogState extends State<GradPowerDialog> {
         TextButton(
           child: const Text('Ok'),
           onPressed: () async{
-            // Atualiza a Classe
-            poder.graduacao = _gradValue;
             // Fecha o popup
-            Navigator.of(context).pop();
+            Navigator.of(context).pop(_valueInt);
           },
         ),
       ],

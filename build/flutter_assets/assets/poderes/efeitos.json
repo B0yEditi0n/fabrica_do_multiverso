@@ -8,7 +8,7 @@
         "duracao": 1,
         "ofensivo": true,
         "desc": false,
-        "classe_manipulacao": "Efeito"
+        "classe_manipulacao": "EfeitoOfensivo"
 
     },
     {
@@ -30,6 +30,7 @@
         "acao": 1,
         "alcance": 4,
         "duracao": 3,
+        "unico": false,
         "opt": [
             {
                 "ID": "E003OP01",
@@ -296,7 +297,7 @@
                 "desc": false
             }            
         ],
-        "classe_manipulacao": "Efeito"
+        "classe_manipulacao": "EfeitoOfensivo"
     },
     {
         "e_id": "E014",
@@ -329,7 +330,7 @@
         "alcance": 1,
         "duracao": 1,
         "desc": true,
-        "classe_manipulacao": "Efeito"
+        "classe_manipulacao": "EfeitoOfensivo"
     },
     {
         "e_id": "E017",
@@ -349,6 +350,7 @@
         "acao": 3,
         "alcance": 3,
         "duracao": 3,
+        "unico": false,
         "opt":[
             {
             
@@ -616,7 +618,7 @@
         "duracao": 3,
         "ofensivo": true,
         "desc": false,
-        "classe_manipulacao": "Efeito"
+        "classe_manipulacao": "EfeitoOfensivo"
     },
     {
         "e_id": "E024",
@@ -650,7 +652,7 @@
         "duracao": 3,
         "ofensivo": true,
         "desc": false,
-        "classe_manipulacao": "Efeito"
+        "classe_manipulacao": "EfeitoOfensivo"
     },
     {
         "e_id": "E027",
@@ -683,7 +685,7 @@
         "duracao": 1,
         "ofensivo": true,
         "desc": true,
-        "classe_manipulacao": "Efeito"
+        "classe_manipulacao": "EfeitoOfensivo"
     },
     {
         "e_id": "E030",
@@ -748,6 +750,7 @@
         "duracao": 3,
         "ofensivo": false,
         "desc": false,
+        "unico": false,
         "opt": [
             {
             
@@ -843,7 +846,7 @@
             
 
         ],
-        "classe_manipulacao": "Efeito"
+        "classe_manipulacao": "EfeitoCustoVaria"
     },
     {
         "e_id": "E038",

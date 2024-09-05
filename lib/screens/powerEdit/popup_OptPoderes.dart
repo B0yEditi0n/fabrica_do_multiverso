@@ -6,9 +6,6 @@ import 'package:fabrica_do_multiverso/script/poderes/lib_efeitos.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'; 
 import 'dart:convert';
-
-import '../../script/poderes/lib_efeitos.dart';
-
 //
 // Dialogo Adicionar Poderes
 //

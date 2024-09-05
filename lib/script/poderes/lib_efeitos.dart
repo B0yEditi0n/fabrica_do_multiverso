@@ -605,7 +605,7 @@ class EfeitoOfensivo extends Efeito{
     }
 
     // Incrementa valores de acurado e impreciso
-    custoModfixo += bonuAcerto;
+    custoModfixo += ( bonuAcerto / 2 ).ceil();
 
     // Finalizar custeio
     int custoBase = _padraoEfeito["custo_base"];

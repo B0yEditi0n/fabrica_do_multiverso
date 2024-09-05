@@ -8,9 +8,9 @@ import 'package:fabrica_do_multiverso/script/poderes/lib_efeitos.dart';
 // Funções e Pops adicionais
 import 'package:fabrica_do_multiverso/screens/powerEdit/functions_controlEdition.dart';
 
-import 'package:fabrica_do_multiverso/screens/powerEdit/popup_GradPicker.dart';
 import 'package:fabrica_do_multiverso/screens/powerEdit/popup_addModificadores.dart';
 import 'package:fabrica_do_multiverso/screens/powerEdit/popup_OptPoderes.dart';
+import 'package:fabrica_do_multiverso/screens/powerEdit/popup_inputValue.dart';
 
 class powerEdit extends StatefulWidget {
   final int idPoder;
@@ -34,6 +34,8 @@ class _powerEditState extends State<powerEdit> {
   bool descricao = false;
 
   List etiquetasModificadores = [];
+
+  int bonusAtaque = 0;
   
   // Inputs de controle
   TextEditingController inputTextNomePoder = TextEditingController();
@@ -98,12 +100,13 @@ class _powerEditState extends State<powerEdit> {
 
       // Extras e Falhas
       modificadores = objPoder["modificadores"];
-
-      // Criar Inputs de Textos de modificadores com texto
-      
       for(Map mod in modificadores){
         listInputModText.add(TextEditingController(text: mod["text_desc"] != null ? mod["text_desc"] : ''));
       }
+
+      //
+      // Inputs de Tipos Especificos
+      //
 
       // Cria Inputs de Texto para Opções (Se tiver)
       if(poder is EfeitoEscolha){
@@ -114,6 +117,12 @@ class _powerEditState extends State<powerEdit> {
             listInputOption.add(TextEditingController(text: option["text_desc"] != null ? option["text_desc"] : ''));
           }
         }        
+      }
+
+      // Bonus de Acerto se tiver
+      if(poder is EfeitoOfensivo){
+        EfeitoOfensivo poderOfensivo = poder as EfeitoOfensivo;
+        bonusAtaque = poderOfensivo.bonuAcerto;
       }
 
     });
@@ -152,7 +161,9 @@ class _powerEditState extends State<powerEdit> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              // Nome Efeito e Graduação
+              //******************************** */
+              // Nome Efeito e Graduação         *
+              //******************************** */
               SizedBox(
                 width: double.infinity,
                 child: Wrap(
@@ -160,6 +171,11 @@ class _powerEditState extends State<powerEdit> {
                   spacing: 8.0, // Espaço horizontal entre os itens
                   runSpacing: 5.0, // Espaço vertical entre as linhas
                   children: [
+
+                    //
+                    // Nome do Poder
+                    //
+
                     SizedBox(
                       width: 350,
                       child: TextField(
@@ -174,13 +190,17 @@ class _powerEditState extends State<powerEdit> {
                      
                     TextButton(
                       onPressed: () async => {
-                        if(poder is! EfeitoCompra){
-                        // Garante que jogador não escolha graduações de efeitos de compra
-                          await showDialog(
-                            context: context,
-                            builder: ((BuildContext context) {
-                              return GradPowerDialog(gradValue: objPoder["graduacao"], titulo: 'Valor de Graduação',);
-                            })
+                        if(poder is! EfeitoCompra){ // Garante que jogador não escolha graduações de efeitos de compra
+                          if(objPoder["graduacao"] == 0){
+                            objPoder["graduacao"] = 1
+                          },
+                          poder.graduacao = await Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => PoupInputIntValue(
+                              intValue: objPoder["graduacao"], 
+                              titulo: 'Valor de Graduação',
+                              iniValor: 1,
+                            )),
                           ),
                           //! Atualiza a Lista de poderes
                           setState(() {
@@ -188,11 +208,14 @@ class _powerEditState extends State<powerEdit> {
                           })
                         }
                       },
-        
+
+                      //
+                      // Efeito & Graduação
+                      //
+
                       child: Wrap(
                         direction: Axis.vertical,
                         alignment: WrapAlignment.center,
-                        crossAxisAlignment: WrapCrossAlignment.center,
                         children: [
                           Text('${objPoder["efeito"]} ${objPoder["graduacao"]}',
                             style: const TextStyle(
@@ -200,6 +223,7 @@ class _powerEditState extends State<powerEdit> {
                               fontWeight: FontWeight.bold,
                             )
                           ),
+                         
 
                           // Check Box de Ataque
                           Visibility(
@@ -391,6 +415,50 @@ class _powerEditState extends State<powerEdit> {
                   )],
                 ),
               ),
+              
+              
+              //***************************************************
+              //* Widgets Ofensivos CD, Acerto
+              //***************************************************
+
+              poder is EfeitoOfensivo ? 
+              SizedBox(
+                width: double.infinity,
+                child: Wrap(
+                  alignment: WrapAlignment.spaceAround,
+                  direction: Axis.horizontal,
+                  children: [
+                    SizedBox(
+                      child: Text('CD: ${poder.retornaObj()["cd"]}',
+                        style: const TextStyle(
+                          fontSize: 35,
+                          fontWeight: FontWeight.bold,
+                          
+                        )
+                      ),
+                    ),
+                    
+                    TextButton(
+                        child: Text('Acerto $bonusAtaque',
+                        style: const TextStyle(
+                          fontSize: 30,
+                          fontWeight: FontWeight.normal,
+                        ),),
+                        onPressed: () async => {
+                          if(poder is! EfeitoCompra){
+                            // chama um popupItem
+                            setState(() async{
+                              bonusAtaque = await Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => PoupInputIntValue(intValue: bonusAtaque, titulo: 'Valor de Graduação')),
+                              );
+                            })
+                          }
+                      }
+                    ),
+                  ],
+                ),
+              ) : const SizedBox(),
 
               // Checa se o efeito exige descrição
               descricao ? 
@@ -405,7 +473,7 @@ class _powerEditState extends State<powerEdit> {
                           poder.desc = value;
                           objPoder["descricao"] = value;
                         },
-                      )
+                    ),
                   ],
                 )
               : const SizedBox(),
