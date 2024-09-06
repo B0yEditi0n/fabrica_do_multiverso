@@ -21,7 +21,7 @@ class powerEdit extends StatefulWidget {
 
 class _powerEditState extends State<powerEdit> {
   // Declaração
-  var objPoder = {};
+  Map objPoder = {};
   String txtAcao = "";
   String txtAlcance = "";
   String txtDuracao = "";
@@ -38,10 +38,14 @@ class _powerEditState extends State<powerEdit> {
   
   // Inputs de controle
   TextEditingController inputTextNomePoder = TextEditingController();
-  TextEditingController inputTextDesc = TextEditingController();
-  List<TextEditingController> listInputModText = [];
-  List<TextEditingController> listInputOption = [];
+  TextEditingController inputTextDesc = TextEditingController(); // Descrição de Poder (se houver)
+  List<TextEditingController> listInputModText = []; // Descrição de Modificador (se houver)
+  List<TextEditingController> listInputOption = []; // Descrição de para Efeitos de compra de Opções (se houver)
 
+  // Exclusivo de Aflição
+  TextEditingController priCondica = TextEditingController();
+  TextEditingController segCondica = TextEditingController();
+  TextEditingController terCondica = TextEditingController();
   @override
 
   void initState() {
@@ -54,7 +58,9 @@ class _powerEditState extends State<powerEdit> {
     // Reinstancia para zerar Objeto
     etiquetasModificadores = ["gerais"];
     switch (objPoder["class"]) {
-      case "Aflicao":
+      case "EfeitoAflicao":
+        poder = EfeitoAflicao();
+        break;
       case "Dano":
         poder = Efeito();
         etiquetasModificadores += ["ofensivos"];
@@ -73,7 +79,6 @@ class _powerEditState extends State<powerEdit> {
         poder = Efeito();
         break;
     }
-    
     poder.reinstanciarMetodo(objPoder).then((valor)=>_updateData());
     //_updateData();
     return true;
@@ -82,6 +87,9 @@ class _powerEditState extends State<powerEdit> {
     // Atualiza o estado da interface após a operação assíncrona
     
     setState(() {
+      // com a reinstancia é refazer o obj
+      objPoder = poder.retornaObj();
+
       inputTextNomePoder.text = objPoder["nome"];
 
       // Converte as Variáveis para texto
@@ -117,10 +125,16 @@ class _powerEditState extends State<powerEdit> {
         }        
       }
 
-      // Bonus de Acerto se tiver
+      // Bonus de Acerto & CD se tiver
       if(poder is EfeitoOfensivo){
         EfeitoOfensivo poderOfensivo = poder as EfeitoOfensivo;
-        bonusAtaque = poderOfensivo.bonusAcerto();
+        bonusAtaque = poderOfensivo.bonusAcerto();        
+      }
+      // Exclusivo de Aflição
+      if(poder is EfeitoAflicao && objPoder["condicoes"] != null){
+        priCondica.text = objPoder["condicoes"][1];
+        segCondica.text = objPoder["condicoes"][2];
+        terCondica.text = objPoder["condicoes"][3];
       }
 
     });
@@ -257,6 +271,7 @@ class _powerEditState extends State<powerEdit> {
               ),
               
               const SizedBox(height: 30),
+
               //****************************
               // Ação, Alcance e Duração              
               //****************************
@@ -435,7 +450,7 @@ class _powerEditState extends State<powerEdit> {
                     // CD
 
                     SizedBox(
-                      child: Text('CD: ${poder.graduacao + 10}',
+                      child: Text('CD: ${objPoder["cd"]}',
                         style: const TextStyle(
                           fontSize: 35,
                           fontWeight: FontWeight.bold,
@@ -493,6 +508,59 @@ class _powerEditState extends State<powerEdit> {
               const SizedBox(height: 30),
 
               //***************************************************
+              //* Campos de Condições pra Aflições
+              //***************************************************
+
+              poder is EfeitoAflicao ? Wrap(
+                alignment: WrapAlignment.spaceBetween,
+                direction: Axis.horizontal,
+                spacing: 10.0, // Espaço horizontal entre os itens
+                runSpacing: 15.0, // Espaço vertical entre as linhas                  
+                children: [
+                  SizedBox(
+                    width: 200,
+                    child: TextField(
+                      controller: priCondica,
+                      onChanged: (String value){
+                        // Força o cast
+                        EfeitoAflicao poderCompra = poder as EfeitoAflicao;
+                        poderCompra.addCondicao(1, value);
+                      },
+                      decoration: const InputDecoration(hintText: 'Primeira Condição'),
+                    ),
+                  ),
+              
+                  SizedBox(
+                    width: 200,
+                    child: TextField(
+                      controller: segCondica,
+                      onChanged: (String value){
+                        // Força o cast
+                        EfeitoAflicao poderCompra = poder as EfeitoAflicao;
+                        poderCompra.addCondicao(2, value);                        
+                      },
+                      decoration: const InputDecoration(hintText: 'Segunda Condição',),
+                    ),
+                  ),
+              
+                  SizedBox(
+                    width: 200,
+                    child: TextField(
+                      controller: terCondica,
+                      onChanged: (String value){
+                        // Força o cast
+                        EfeitoAflicao poderCompra = poder as EfeitoAflicao;
+                        poderCompra.addCondicao(3, value);
+                      },
+                      decoration: const InputDecoration(hintText: 'Terceira Condição',),
+                    ),
+                  )
+                ],
+              ) : const SizedBox(),
+
+              const SizedBox(height: 30),
+
+              //***************************************************
               //* Campos de Compra (Especifico pra alguns efeitos)
               //***************************************************
               
@@ -504,7 +572,7 @@ class _powerEditState extends State<powerEdit> {
                 child: Column(
                   children: [
                     SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.20, // 40% da altura da tela,
+                      height: MediaQuery.of(context).size.height * 0.20,
                       child: ListView.builder(
                         shrinkWrap: true,
                         itemCount: compra.length,

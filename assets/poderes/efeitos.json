@@ -7,7 +7,7 @@
         "alcance": 1,
         "duracao": 1,
         "desc": false,
-        "classe_manipulacao": "EfeitoOfensivo"
+        "classe_manipulacao": "EfeitoAflicao"
 
     },
     {

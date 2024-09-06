@@ -36,8 +36,7 @@ ThemeData temaPadrao(){
             //surfaceTintColor: purpleSwatch,
           ),
           inputDecorationTheme: InputDecorationTheme(
-            fillColor: Colors.white
-
+            fillColor: Colors.white,
           ),
           textStyle: TextStyle(
             color: Colors.white
@@ -45,6 +44,10 @@ ThemeData temaPadrao(){
         ),
 
         // temas de texto
+        inputDecorationTheme: const InputDecorationTheme(
+          border: OutlineInputBorder(),
+          contentPadding: EdgeInsets.all(8),
+        ),
         textTheme: const TextTheme(
           titleLarge: TextStyle(
             color: Color.fromARGB(255, 109, 46, 46),
@@ -53,5 +56,7 @@ ThemeData temaPadrao(){
           ),
 
           //bodyText2: TextStyle(color: Colors.grey),
-        )));
+        ),
+
+      ));
 }

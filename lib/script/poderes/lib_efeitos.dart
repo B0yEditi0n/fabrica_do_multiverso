@@ -599,8 +599,6 @@ class EfeitoOfensivo extends Efeito{
     int dfAlcance = _padraoEfeito["alcance"];
     int dfDurcao = _padraoEfeito["duracao"];
     
-    
-    
     // - Ação    
     int custoAcao = _acao - dfAcao;
     
@@ -678,6 +676,56 @@ class EfeitoOfensivo extends Efeito{
 
 }
 
+class EfeitoAflicao extends EfeitoOfensivo{
+  Map<int, String> _condicoes = {
+    1: "",
+    2: "",
+    3: ""
+  };
+
+  @override
+  Future<bool> reinstanciarMetodo(Map objPoder) async{
+    super.reinstanciarMetodo(objPoder);    
+    if(objPoder["acerto"] != null){
+      _condicoes = objPoder["condicoes"];
+    }
+    
+    return true;
+  }
+
+  addCondicao(grau, txtCond){
+    if([1, 2, 3].contains(grau)){
+      _condicoes[grau] = txtCond;
+    }
+  }
+
+  @override
+  Map<String, dynamic> retornaObj(){
+    /*
+      Retorna um json com os dados montados
+
+      Return:
+        Map Json - o Arquivo json
+    */
+    return{
+      "nome":             nome,
+      "e_id":             _idEfeito,
+      "efeito":           _nomeEfeito,
+      "graduacao":        graduacao,
+      "acao":             _acao,
+      "alcance":          _alcance,
+      "duracao":          _duracao,
+      "modificadores":    _modificador,
+      "descricao":        desc,
+      "class":            _padraoEfeito["classe_manipulacao"],
+      "acerto":           _bonusAcerto,
+      "cd":               (graduacao + 10),
+      "condicoes":        _condicoes,
+      "custo":            custearAlteracoes(),
+      
+    };
+  }
+}
 // Variável de Manipulação de Poderes
 var poder = Efeito();
 
