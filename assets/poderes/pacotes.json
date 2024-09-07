@@ -1,0 +1,37 @@
+[
+    {
+        "e_id": "E041",
+        "efeito": "Pacotes de Efeitos",
+        "tipo": "R",
+        "removivel": 0,
+        "classe_manipulacao": "PacotesEfeitos"
+    },
+    {
+        "e_id": "E042",
+        "efeito": "Equipamentos",
+        "tipo": "R",
+        "removivel": 4,
+        "classe_manipulacao": "PacotesEfeitos"
+    },
+    {
+        "e_id": "E043",
+        "efeito": "Efeitos Alternativos",
+        "tipo": "E",
+        "removivel": 0,
+        "classe_manipulacao": "PacotesEfeitos"
+    },
+    {
+        "e_id": "E044",
+        "efeito": "Efeitos Alternativos Dinamicos",
+        "tipo": "D",
+        "removivel": 0,
+        "classe_manipulacao": "PacotesEfeitos"
+    },
+    {
+        "e_id": "E045",
+        "efeito": "Efeitos Ligados",
+        "tipo": "L",
+        "removivel": 0,
+        "classe_manipulacao": "PacotesEfeitos"
+    }
+]

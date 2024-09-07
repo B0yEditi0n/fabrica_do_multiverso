@@ -883,7 +883,7 @@
     
     {
         "e_id": "E041",
-        "efeito": "PacotesEfeitos",
+        "efeito": "Pacotes de Efeitos",
         "tipo": "R",
         "removivel": 0,
         "classe_manipulacao": "PacotesEfeitos"
@@ -897,14 +897,14 @@
     },
     {
         "e_id": "E043",
-        "efeito": "Efeito Alternativo",
+        "efeito": "Efeitos Alternativos",
         "tipo": "E",
         "removivel": 0,
         "classe_manipulacao": "PacotesEfeitos"
     },
     {
         "e_id": "E044",
-        "efeito": "Efeito Alternativo Dinamico",
+        "efeito": "Efeitos Alternativos Dinamicos",
         "tipo": "D",
         "removivel": 0,
         "classe_manipulacao": "PacotesEfeitos"

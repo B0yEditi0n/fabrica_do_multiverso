@@ -313,7 +313,10 @@ class Efeito{
     }
 
     // Finalizar custeio
-    int custoBase = _padraoEfeito["custo_base"];
+    int custoBase = 0;
+    if(_padraoEfeito["custo_base"] != null){ // Caso algum filho com custo variado
+      int custoBase = _padraoEfeito["custo_base"];
+    }    
     int custoPorG = custoBase + custoAcao + custoDurcao + custoAlcance + custoModGrad;
 
     int custoFinal = 0;

@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:fabrica_do_multiverso/theme/theme.dart';
 
 // Screens de Poderes
-import 'package:fabrica_do_multiverso/screens/poderes.dart';
+import 'package:fabrica_do_multiverso/screens/screenPoderes/controlePoderes.dart';
 
 void main() {
   runApp(FabricaHerois());
