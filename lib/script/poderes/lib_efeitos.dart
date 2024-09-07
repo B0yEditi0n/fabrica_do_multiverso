@@ -676,6 +676,33 @@ class EfeitoOfensivo extends Efeito{
 
 }
 
+class EfeitoDano extends EfeitoOfensivo{
+  @override
+  Map<String, dynamic> retornaObj(){
+    /*
+      Retorna um json com os dados montados
+
+      Return:
+        Map Json - o Arquivo json
+    */
+    return{
+      "nome":             nome,
+      "e_id":             _idEfeito,
+      "efeito":           _nomeEfeito,
+      "graduacao":        graduacao,
+      "acao":             _acao,
+      "alcance":          _alcance,
+      "duracao":          _duracao,
+      "modificadores":    _modificador,
+      "descricao":        desc,
+      "class":            _padraoEfeito["classe_manipulacao"],
+      "acerto":           _bonusAcerto,
+      "cd":               (graduacao + 15),
+      "custo":            custearAlteracoes(),
+      
+    };
+  }
+}
 class EfeitoAflicao extends EfeitoOfensivo{
   Map<int, String> _condicoes = {
     1: "",
@@ -728,4 +755,3 @@ class EfeitoAflicao extends EfeitoOfensivo{
 }
 // Variável de Manipulação de Poderes
 var poder = Efeito();
-

@@ -296,7 +296,7 @@
                 "desc": false
             }            
         ],
-        "classe_manipulacao": "EfeitoOfensivo"
+        "classe_manipulacao": "EfeitoDano"
     },
     {
         "e_id": "E014",
@@ -795,7 +795,7 @@
         "duracao": 3,
         "ofensivo": false,
         "desc": false,
-        "classe_manipulacao": "Efeito"
+        "classe_manipulacao": "EfeitoCompra"
     },
     {
         "e_id": "E036",

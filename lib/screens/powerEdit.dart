@@ -61,8 +61,8 @@ class _powerEditState extends State<powerEdit> {
       case "EfeitoAflicao":
         poder = EfeitoAflicao();
         break;
-      case "Dano":
-        poder = Efeito();
+      case "EfeitoDano":
+        poder = EfeitoDano();
         etiquetasModificadores += ["ofensivos"];
         break;
       case "EfeitoCompra":
