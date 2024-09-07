@@ -79,7 +79,7 @@ class _AddOptCompraState extends State<AddOptCompra> {
                 setState(() {
                   optionCompraSelecionado = value!;
                   // Atualiza o selecionado
-                  var index = optionsCompra.indexWhere((mod) => mod["ID"] == optionCompraSelecionado);
+                  int index = optionsCompra.indexWhere((mod) => mod["ID"] == optionCompraSelecionado);
                   optSelecionado = optionsCompra[index];
                   // Resta a Graduação
                   optGrad = 1;

@@ -141,9 +141,9 @@ class _powerEditState extends State<powerEdit> {
 
   }
 
-  //************
-  //* WIDGETs
-  //************
+  //# ************
+  //# * WIDGETs  *
+  //# ************
 
   @override
   Widget build(BuildContext context) {
@@ -175,7 +175,7 @@ class _powerEditState extends State<powerEdit> {
             
             children: [
               //******************************** */
-              // Nome Efeito e Graduação         *
+              //# Nome Efeito e Graduação         *
               //******************************** */
               SizedBox(
                 width: double.infinity,
@@ -186,7 +186,7 @@ class _powerEditState extends State<powerEdit> {
                   children: [
 
                     //
-                    // Nome do Poder
+                    //# Nome do Poder
                     //
 
                     SizedBox(
@@ -223,7 +223,7 @@ class _powerEditState extends State<powerEdit> {
                       },
 
                       //
-                      // Efeito & Graduação
+                      //# Efeito & Graduação
                       //
 
                       child: Wrap(
@@ -273,7 +273,7 @@ class _powerEditState extends State<powerEdit> {
               const SizedBox(height: 30),
 
               //****************************
-              // Ação, Alcance e Duração              
+              //# Ação, Alcance e Duração
               //****************************
               SizedBox(
                 width: double.infinity,
@@ -436,7 +436,7 @@ class _powerEditState extends State<powerEdit> {
               const SizedBox(height: 30),
 
               //***************************************************
-              //* Widgets Ofensivos CD, Acerto
+              //# Widgets Ofensivos CD, Acerto
               //***************************************************
 
               poder is EfeitoOfensivo ? 
@@ -508,7 +508,7 @@ class _powerEditState extends State<powerEdit> {
               const SizedBox(height: 30),
 
               //***************************************************
-              //* Campos de Condições pra Aflições
+              //# Campos de Condições pra Aflições
               //***************************************************
 
               poder is EfeitoAflicao ? Wrap(
@@ -561,7 +561,7 @@ class _powerEditState extends State<powerEdit> {
               const SizedBox(height: 30),
 
               //***************************************************
-              //* Campos de Compra (Especifico pra alguns efeitos)
+              //# Campos de Compra (Especifico pra alguns efeitos)
               //***************************************************
               
               poder is EfeitoEscolha ? Container(
@@ -659,7 +659,7 @@ class _powerEditState extends State<powerEdit> {
               const SizedBox(height: 30),
 
               //********************************
-              //* Campos de Extra e Falha
+              //# Campos de Extra e Falha
               //********************************
               Container(
                 decoration: BoxDecoration(
@@ -752,7 +752,7 @@ class _powerEditState extends State<powerEdit> {
 
               const SizedBox(height: 30),
 
-              //* Pontos Gastos */
+              //# Pontos Gastos */
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [

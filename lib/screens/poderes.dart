@@ -45,32 +45,21 @@ class _PoderesState extends State<Poderes> {
           itemCount: poderes.length,
           itemBuilder: (BuildContext context, int index){
             return InkWell(
-            onTap: () {
-              atualizarValores(){
-                setState(() {
-                  poderes = personagem.poderes.listaDePoderes();
-                });
-              }
-
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => powerEdit(idPoder: index)),
-              ).then((result)=>{
-                atualizarValores()
-              });
-
-              
-              // Atualiza os Poderes
-              
-            },
             child: Card(
               child: 
               Row( children: <Widget> [
                 Expanded(
-                  child: 
-                    ListTile(
+                  child:
+                    //# Card de Exibição
+                    // Exibe os poderes ativos
+                    poderes[index]["classe_manipulacao"] != "PacotesEfeitos" 
+                    ? ListTile(
                       title: Text(poderes[index]['nome']),
                       subtitle: Text("${poderes[index]['efeito']} ${poderes[index]['graduacao']}"),
+                    ) 
+                    : ListTile(
+                      title: Text('${poderes[index]["efeito"]}: ${poderes[index]['nome']}'),
+                      //subtitle: Text("${poderes[index]['nome']} ${poderes[index]['custo']}"),
                     ),
                 ),
 
@@ -85,18 +74,39 @@ class _PoderesState extends State<Poderes> {
                 )
 
               ],)
-            )
+            ),
+            onTap: () {
+              atualizarValores(){
+                setState(() {
+                  poderes = personagem.poderes.listaDePoderes();
+                });
+              }
+
+              if(poderes[index]["classe_manipulacao"] != "PacotesEfeitos"){ 
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => powerEdit(idPoder: index)),
+                ).then((result)=>{
+                  atualizarValores()
+                });
+              }else{
+                //? Implementar popUp Widget de classes
+              };
+
+              
+              // Atualiza os Poderes
+              
+            },
             );
           },
           
         ),
 
-        //
         // add Icone
-        //
 
         floatingActionButton: FloatingActionButton(
-
+          tooltip: 'Adicionar Poder',
+          child: const Icon(Icons.add),
           // Ação e PopUP
           onPressed: () async => {
             await showDialog(
@@ -111,16 +121,13 @@ class _PoderesState extends State<Poderes> {
               poderes = personagem.poderes.listaDePoderes();
             })
           },
-          tooltip: 'Increment',
-          child: const Icon(Icons.add),
         ),
     );
   }
 }
 
-//
-// Dialogo Adicionar Poderes
-//
+//# Dialogo Adicionar Poderes
+
 
 class DynamicDialog extends StatefulWidget {
   @override
@@ -128,13 +135,11 @@ class DynamicDialog extends StatefulWidget {
 }
 
 class _DynamicDialogState extends State<DynamicDialog> {
-  //String _title;A
-  // Declaração de Variáveis
-  //List poderes = [];
-  final efeitos = [];
-
+  final List<Map> efeitos = [];
+  String efeitoSelecionado = '';
+  Map objEfeito = {};
   TextEditingController inputTextPoder = TextEditingController();
-  String EfeitoSelecionado = '';
+  
   @override
   
   void initState() {
@@ -151,13 +156,16 @@ class _DynamicDialogState extends State<DynamicDialog> {
     setState(() {
       Map efeito = {};
       for(efeito in objEfeitos){
-        efeitos.add({
+        efeitos.add(efeito);
+        /*efeitos.add({
           "e_id": efeito["e_id"],
-          "efeito": efeito["efeito"] 
-        });
+          "efeito": efeito["efeito"],
+          "classe_manipulacao": efeito["classe_manipulacao"],
+        });*/
       }
 
-      EfeitoSelecionado = efeitos.first["e_id"];
+      efeitoSelecionado = efeitos.first["e_id"];
+      objEfeito = efeitos.first;
     });
   }
 
@@ -181,16 +189,19 @@ class _DynamicDialogState extends State<DynamicDialog> {
             const SizedBox(height: 15,),
 
             DropdownButton<String>(
-              value: EfeitoSelecionado,
+              value: efeitoSelecionado,
               icon: const Icon(Icons.arrow_downward),
               elevation: 16,
               style: const TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
               underline: Container(
                 height: 2,
               ),
-              onChanged: (String? value) {
+              onChanged: (value) {
                 setState(() {
-                  EfeitoSelecionado = value!;
+                  efeitoSelecionado = value!;
+                  // Atualiza o selecionado
+                  int index = efeitos.indexWhere((mod) => mod["e_id"] == efeitoSelecionado);
+                  objEfeito = efeitos[index];
                 });
               },
               items: efeitos.map<DropdownMenuItem<String>>((value) {
@@ -203,16 +214,28 @@ class _DynamicDialogState extends State<DynamicDialog> {
           ]
         )
       ),
+      
       actions: <Widget>[
         TextButton(
           child: const Text('Adicionar'),
           onPressed: () async{
-            // Atualiza a Classe
-            await personagem.poderes.novoPoder(inputTextPoder.text.toString(), EfeitoSelecionado);
+            //? Pont de Atenção
+            // os efeitos devem já aqui ser
+            // instanciados na classe correta
+
+            // Cria a classe 
+            if(objEfeito["classe_manipulacao"] != "PacotesEfeitos"){
+              await personagem.poderes.novoPoder(inputTextPoder.text.toString(), efeitoSelecionado, objEfeito["classeManipuladora"]);
+            }else{
+              await personagem.poderes.novoPacote(inputTextPoder.text.toString(), objEfeito["tipo"], objEfeito["efeito"]);
+            }
+            
+            
             // Fecha o popup
             Navigator.of(context).pop();
           },
         ),
+
         TextButton(
           child: const Text('Cancelar'),
           onPressed: () {

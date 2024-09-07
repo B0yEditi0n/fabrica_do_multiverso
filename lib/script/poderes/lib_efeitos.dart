@@ -18,9 +18,9 @@ class Efeito{
   //Map get padraoEfeito => _padraoEfeito;
   var _modificador = [];
   
-  // ###########################
-  // Methodos de Inicialização #
-  // ###########################
+  //*************************** */
+  // Methodos de Inicialização 
+  //*************************** */
   Future<bool> instanciarMetodo(String nome , String idEfeito) async{
     /*
       Carrega os atributos básicos do efeito 
@@ -100,9 +100,9 @@ class Efeito{
 
   }
 
-  // ####################################
-  // # Modificações de atributos Classe #
-  // ####################################
+  // ************************************
+  // * Modificações de atributos Classe *
+  // ************************************
   alteraDuracao(novaDuracao){
     /* 
       o metodo apenas avaiará qual alterações mecanicamente são permitidas
@@ -236,9 +236,9 @@ class Efeito{
     }
   }
 
-  // ################################
-  // # Methodos de Retorno do objto #
-  // ################################
+  // ********************************
+  // * Methodos de Retorno do objto *
+  // ********************************
 
   int custearAlteracoes(){
     /*
