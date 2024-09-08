@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:bootstrap_icons/bootstrap_icons.dart';
 
 // Temas
 import 'package:fabrica_do_multiverso/theme/theme.dart';
-
+// Screens de Habilidades
+import 'package:fabrica_do_multiverso/screens/habilidades/habilidades.dart';
 // Screens de Poderes
 import 'package:fabrica_do_multiverso/screens/screenPoderes/controlePoderes.dart';
 
@@ -22,6 +24,7 @@ class FabricaHerois extends StatelessWidget {
       home: HomePage(),
       routes: {
         '/home': (context) => HomePage(),
+        '/habilidades': (context) => Habilidades(),
         '/poderes': (context) => const Poderes(),
       },
     );
@@ -53,12 +56,56 @@ class HomePage extends StatelessWidget {
               ),
             ),
             ListTile(
-              leading: const Icon(Icons.local_fire_department),
+              leading: const Icon(BootstrapIcons.yin_yang),
+              title: const Text('Habilidades'),
+              onTap: () {
+                Navigator.pushNamed(context, '/habilidades');
+              },
+            ),
+
+            ListTile(
+              leading: const Icon(Icons.shield_outlined),
+              title: const Text('Defesas'),
+              onTap: () {
+                //Navigator.pushNamed(context, '/poderes');
+              },
+            ),
+
+            ListTile(
+              leading: const Icon(BootstrapIcons.fire),
               title: const Text('Poderes'),
               onTap: () {
                 Navigator.pushNamed(context, '/poderes');
               },
             ),
+            
+            ListTile(
+              leading: const Icon(Icons.paid),
+              title: const Text('Vantagens'),
+              onTap: () {
+                //Navigator.pushNamed(context, '/poderes');
+              },
+            ),
+
+            ListTile(
+              leading: const Icon(BootstrapIcons.tools),
+              title: const Text('Perícias'),
+              onTap: () {
+                //Navigator.pushNamed(context, '/poderes');
+              },
+            ),
+
+            ListTile(
+              leading: const Icon(BootstrapIcons.capsule),
+              title: const Text('Complicações'),
+              onTap: () {
+                //Navigator.pushNamed(context, '/poderes');
+              },
+            ),
+
+            
+
+
           ],
         ),
       ),

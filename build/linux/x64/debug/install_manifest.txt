@@ -2,6 +2,7 @@
 /media/caio/caio.hdd/Documentos/fabrica_do_multiverso/build/linux/x64/debug/bundle/data/icudtl.dat
 /media/caio/caio.hdd/Documentos/fabrica_do_multiverso/build/linux/x64/debug/bundle/lib/libflutter_linux_gtk.so
 /media/caio/caio.hdd/Documentos/fabrica_do_multiverso/build/linux/x64/debug/bundle/data/flutter_assets/packages/cupertino_icons/assets/CupertinoIcons.ttf
+/media/caio/caio.hdd/Documentos/fabrica_do_multiverso/build/linux/x64/debug/bundle/data/flutter_assets/packages/bootstrap_icons/fonts/BootstrapIcons.ttf
 /media/caio/caio.hdd/Documentos/fabrica_do_multiverso/build/linux/x64/debug/bundle/data/flutter_assets/FontManifest.json
 /media/caio/caio.hdd/Documentos/fabrica_do_multiverso/build/linux/x64/debug/bundle/data/flutter_assets/version.json
 /media/caio/caio.hdd/Documentos/fabrica_do_multiverso/build/linux/x64/debug/bundle/data/flutter_assets/assets/poderes.json

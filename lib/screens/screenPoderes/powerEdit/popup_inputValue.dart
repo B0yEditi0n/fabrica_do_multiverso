@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:numberpicker/numberpicker.dart';
 
 // Instancia de Poderes
@@ -64,6 +65,9 @@ class _PoupInputIntValueState extends State<PoupInputIntValue> {
               child: TextField(
                 controller: inputIntValue,
                 keyboardType: TextInputType.number,
+                inputFormatters: <TextInputFormatter>[
+                    FilteringTextInputFormatter.digitsOnly
+                ],
                 onChanged: (value) {
                   // Validar a entrada para evitar texto
                   // E Evita o máximo
@@ -71,13 +75,7 @@ class _PoupInputIntValueState extends State<PoupInputIntValue> {
                   && int.parse(value) <= 20 && int.parse(value) >= iniValor) {
                     setState((){
                       _valueInt = int.parse(value);
-                      inputIntValue.text = value;
-                    });
-                  }else{
-                    setState((){
-                      if(value != ""){
-                        inputIntValue.text = _valueInt.toString();
-                      }                    
+                      
                     });
                   }
                 }
