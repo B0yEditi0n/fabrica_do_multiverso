@@ -95,7 +95,9 @@ class _PoderesState extends State<Poderes> {
                           physics: NeverScrollableScrollPhysics(),
                           itemBuilder: (context, indexE) {
                             return ListTile(
-                              title: Text("${poderes[index]["efeitos"][indexE]["nome"]}: ${poderes[index]["efeitos"][indexE]["efeito"]}")
+                              title: poderes[index]["efeitos"][indexE]["nome"] != "" 
+                              ? Text("${poderes[index]["efeitos"][indexE]["nome"]}: ${poderes[index]["efeitos"][indexE]["efeito"]}")
+                              : Text("${poderes[index]["efeitos"][indexE]["efeito"]}")
                             );
                           }
                           )
