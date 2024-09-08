@@ -12,8 +12,8 @@ import 'package:fabrica_do_multiverso/screens/screenPoderes/powerEdit/popup_OptP
 import 'package:fabrica_do_multiverso/screens/screenPoderes/powerEdit/popup_inputValue.dart';
 
 class powerEdit extends StatefulWidget {
-  final int idPoder;
-  const powerEdit({super.key, required this.idPoder});
+  final Map objEfeito;
+  const powerEdit({super.key, required this.objEfeito});
 
   @override
   State<powerEdit> createState() => _powerEditState();
@@ -54,7 +54,7 @@ class _powerEditState extends State<powerEdit> {
   }
 
   Future<bool> _startPower() async{
-    objPoder = personagem.poderes.poderesLista[widget.idPoder];
+    objPoder = widget.objEfeito;
     // Reinstancia para zerar Objeto
     etiquetasModificadores = ["gerais"];
     switch (objPoder["class"]) {
@@ -156,11 +156,11 @@ class _powerEditState extends State<powerEdit> {
             onPressed: () async => {
               // Salva Alterações
               setState(() {
-                personagem.poderes.poderesLista[widget.idPoder] = poder.retornaObj();
+                //personagem.poderes.poderesLista[widget.idPoder] = poder.retornaObj();
               }),
               
               // Fecha A Aplicação
-              Navigator.of(context).pop()
+              Navigator.of(context).pop(poder.retornaObj())
             }
         ), 
       ),

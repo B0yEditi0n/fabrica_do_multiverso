@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 // Screens de poderes
 import 'package:fabrica_do_multiverso/screens/screenPoderes/editorPoderes.dart';
 import 'package:fabrica_do_multiverso/screens/screenPoderes/poderes/popup_addPoderes.dart';
-import 'package:fabrica_do_multiverso/screens/screenPoderes/poderes/popup_controlePacote.dart';
+import 'package:fabrica_do_multiverso/screens/screenPoderes/controlePacote.dart';
 
 // Instancia de Poderes
 import 'package:fabrica_do_multiverso/script/ficha.dart';
@@ -107,31 +107,29 @@ class _PoderesState extends State<Poderes> {
                 ) : const SizedBox()
               ],
             ),
-            onTap: () {
-              atualizarValores(){
+            onTap: () async{
+               atualizarValores(){
                 setState(() {
                   poderes = personagem.poderes.listaDePoderes();
                 });
               }
-
-              if(poderes[index]["classe_manipulacao"] != "PacotesEfeitos"){ 
-                Navigator.push(
+              Map returnObjPoder = {};
+              Map inputObjEfeito = personagem.poderes.poderesLista[index];
+              if(poderes[index]["classe_manipulacao"] != "PacotesEfeitos"){
+                returnObjPoder = await Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => powerEdit(idPoder: index)),
-                ).then((result)=>{
-                  atualizarValores()
-                });
+                  MaterialPageRoute(builder: (context) => powerEdit(objEfeito: inputObjEfeito)),
+                );
               }else{
-                Navigator.push(
+                returnObjPoder = await Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => ControladorDePacotes(indexPacote: index, retornoDePacote: false,)),
-                ).then((result)=>{
-                  atualizarValores()  
-                });
+                  MaterialPageRoute(builder: (context) => ControladorDePacotes(objPacote: inputObjEfeito)),
+                );
               };
+              personagem.poderes.poderesLista[index] = returnObjPoder;
 
-              
               // Atualiza os Poderes
+              atualizarValores();
               
             },
             );

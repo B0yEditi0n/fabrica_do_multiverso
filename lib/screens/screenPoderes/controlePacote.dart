@@ -11,9 +11,9 @@ import 'package:fabrica_do_multiverso/script/poderes/lib_efeitos.dart';
 import 'package:fabrica_do_multiverso/script/poderes/lib_pacoteEfeitos.dart';
 
 class ControladorDePacotes extends StatefulWidget {
-  final int indexPacote;
-  final bool retornoDePacote;
-  const ControladorDePacotes({super.key, required this.indexPacote, required this.retornoDePacote});
+  final Map objPacote;
+
+  const ControladorDePacotes({super.key, required this.objPacote});
 
   @override
   State<ControladorDePacotes> createState() => _ControladorDePacotesState();
@@ -25,7 +25,7 @@ class _ControladorDePacotesState extends State<ControladorDePacotes> {
   int indexPoder = -1;
   bool retornoDePacote = true;
   Map objPacote = {};
-  Map objPoder = {};
+  Map objPoder = {}; // Retorno objtido de chamadas
   List poderes = [];
   bool nomearEfeitos = true;
 
@@ -47,11 +47,26 @@ class _ControladorDePacotesState extends State<ControladorDePacotes> {
   }
 
   Future _addPoderes(Map objEfeito) async{
-    Efeito efeito = Efeito();
-    await efeito.instanciarMetodo(objEfeito["nome"], objEfeito["e_id"])
-    .then((resulte)=>{
-      _updateAfterCreate(efeito)
-    });
+    
+    if(objEfeito["classe_manipulacao"] != "PacotesEfeitos"){
+      Efeito efeito = Efeito();
+      await efeito.instanciarMetodo(objEfeito["nome"], objEfeito["e_id"])
+      .then((resulte)=>{
+        _updateAfterCreate(efeito)
+      });
+    }else{
+      PacotesEfeitos enpacotado = PacotesEfeitos();
+      await enpacotado.instanciarMetodo(objEfeito)
+      .then((resulte)=>{
+        // Apos a chamada atualiza a lista
+        pacote.efeitos.add(enpacotado.retornaObj()),
+        setState(() {
+          objPacote = pacote.retornaObj();
+          poderes = pacote.efeitos;
+        })
+      });
+    }
+    
     
     
     
@@ -59,11 +74,8 @@ class _ControladorDePacotesState extends State<ControladorDePacotes> {
   }
 
   _inicializarVariaveis(){
-    indexPoder = widget.indexPacote;
-    retornoDePacote = widget.retornoDePacote;
-
     // inicialização do objeto
-    objPacote = personagem.poderes.poderesLista[widget.indexPacote];
+    objPacote = widget.objPacote;
     pacote.instanciarMetodo(objPacote);
     poderes.addAll(objPacote["efeitos"]);
 
@@ -87,13 +99,8 @@ class _ControladorDePacotesState extends State<ControladorDePacotes> {
           leading: IconButton(
             icon: const Icon(Icons.arrow_back),
               onPressed: () async => {
-                // Salva Alterações
-                setState(() {
-                  personagem.poderes.poderesLista[widget.indexPacote] = pacote.retornaObj();
-                }),
-                
-                // Fecha A Aplicação
-                Navigator.of(context).pop()
+                // Fecha A Aplicação & passando alterações
+                Navigator.of(context).pop(pacote.retornaObj())
               }
           ), 
         ),
@@ -148,21 +155,30 @@ class _ControladorDePacotesState extends State<ControladorDePacotes> {
               
                     ],)
                   ),
-                  onTap: () {
+                  onTap: () async {
                     atualizarValores(){
                       setState(() {
                         poderes = pacote.efeitos;
                       });
                     }
-              
-                    if(poderes[index]["classe_manipulacao"] != "PacotesEfeitos"){ 
-                      // Navigator.push()
-                      //   MaterialPageRoute(builder: (context) => ControladorDePacotes(indexPacote: index,)),
-                      // ).then((result)=>{expression
-                      //   atualizarValores()
-                      // });
-                    };
-                    
+
+                    Map returnObjPoder = {};
+                    Map inputObjEfeito = poderes[index];
+
+                    if(poderes[index]["classe_manipulacao"] != "PacotesEfeitos"){
+                      
+                      returnObjPoder = await Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => powerEdit(objEfeito: inputObjEfeito)),
+                      );
+                    }else{
+                      returnObjPoder = await Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => ControladorDePacotes(objPacote: inputObjEfeito)),
+                      );
+                    }
+                    pacote.efeitos[index] = returnObjPoder;
+                    atualizarValores();                      
                   },
                   );
                 },
