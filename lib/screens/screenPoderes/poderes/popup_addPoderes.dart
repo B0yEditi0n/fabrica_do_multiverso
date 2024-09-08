@@ -8,9 +8,9 @@ import 'package:fabrica_do_multiverso/script/ficha.dart';
 //# Dialogo Adicionar Poderes
 
 class DynamicDialog extends StatefulWidget {
-  bool ea = false;
+  String tipo = "";
   bool descNome = true;
-  DynamicDialog({super.key, required this.ea, required this.descNome});
+  DynamicDialog({super.key, required this.tipo, required this.descNome});
   @override
   _DynamicDialogState createState() => _DynamicDialogState();
 }
@@ -26,7 +26,7 @@ class _DynamicDialogState extends State<DynamicDialog> {
   void initState() {
     // _title = widget.title;
     super.initState();
-  _carregarDados(); // Carrega os dados ao iniciar o estado
+    _carregarDados(); // Carrega os dados ao iniciar o estado
   }
   Future<void> _carregarDados() async {
     // Carrega o Efeitos
@@ -34,10 +34,53 @@ class _DynamicDialogState extends State<DynamicDialog> {
     String jsonPacotes = await rootBundle.loadString('assets/poderes/pacotes.json');
     List<dynamic> objEfeitos = jsonDecode(jsonEfeitos);
     List<dynamic> objPacotes = jsonDecode(jsonPacotes);
-    if(!widget.ea){ // Impede efeitos alternativos sejam adiconados de novo
-      objPacotes.removeWhere((obj)=> obj["e_id"] == "E043" || obj["e_id"] == "E044");
+
+    if(widget.tipo == ""){ // chamada normal
+      objEfeitos.addAll(objPacotes);
+    }else{ // é um pacote que chama
+      //? nota de atenção alguns Pacotes podem adicionar
+      //? alguns tipos de sub pacotes
+      if(["E", "D"].contains(widget.tipo)){
+        // Efeitos Alternativos podem incluir apenas efefeitos ligados
+        int linkIndex = objPacotes.indexWhere((obj)=> obj["e_id"] == "P005");
+        print(objPacotes[linkIndex]);
+        objEfeitos.add(objPacotes[linkIndex]);
+      }
+      
+      if("R" == widget.tipo){
+        // Removivel pode conter efeitos ligados e EA
+
+        // EA
+        int index = objPacotes.indexWhere((obj)=> obj["e_id"] == "P003");
+        objEfeitos.add(objPacotes[index]);
+
+        // EAD
+        index = objPacotes.indexWhere((obj)=> obj["e_id"] == "P004");
+        objEfeitos.add(objPacotes[index]);
+        
+        // Efeitos Ligados
+        index = objPacotes.indexWhere((obj)=> obj["e_id"] == "P005");
+        objEfeitos.add(objPacotes[index]);
+
+      }
+
+      if("F" == widget.tipo){
+        // Formas pode conter efeitos ligados e EA
+
+        // EA
+        int index = objPacotes.indexWhere((obj)=> obj["e_id"] == "P003");
+        objEfeitos.add(objPacotes[index]);
+
+        // EAD
+        index = objPacotes.indexWhere((obj)=> obj["e_id"] == "P004");
+        objEfeitos.add(objPacotes[index]);
+        
+        // Efeitos Ligados
+        index = objPacotes.indexWhere((obj)=> obj["e_id"] == "P005");
+        objEfeitos.add(objPacotes[index]);
+
+      }
     }
-    objEfeitos.addAll(objPacotes);
 
     // Converte o JSON em objetos
     setState(() {

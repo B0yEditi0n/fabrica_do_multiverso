@@ -5,6 +5,7 @@
 /media/caio/caio.hdd/Documentos/fabrica_do_multiverso/build/linux/x64/debug/bundle/data/flutter_assets/FontManifest.json
 /media/caio/caio.hdd/Documentos/fabrica_do_multiverso/build/linux/x64/debug/bundle/data/flutter_assets/version.json
 /media/caio/caio.hdd/Documentos/fabrica_do_multiverso/build/linux/x64/debug/bundle/data/flutter_assets/assets/poderes.json
+/media/caio/caio.hdd/Documentos/fabrica_do_multiverso/build/linux/x64/debug/bundle/data/flutter_assets/assets/poderes/pacotes.json
 /media/caio/caio.hdd/Documentos/fabrica_do_multiverso/build/linux/x64/debug/bundle/data/flutter_assets/assets/poderes/modificadores.json
 /media/caio/caio.hdd/Documentos/fabrica_do_multiverso/build/linux/x64/debug/bundle/data/flutter_assets/assets/poderes/efeitos.json
 /media/caio/caio.hdd/Documentos/fabrica_do_multiverso/build/linux/x64/debug/bundle/data/flutter_assets/AssetManifest.json

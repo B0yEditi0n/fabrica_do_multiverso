@@ -12,7 +12,8 @@ import 'package:fabrica_do_multiverso/script/poderes/lib_pacoteEfeitos.dart';
 
 class ControladorDePacotes extends StatefulWidget {
   final int indexPacote;
-  const ControladorDePacotes({required this.indexPacote});
+  final bool retornoDePacote;
+  const ControladorDePacotes({super.key, required this.indexPacote, required this.retornoDePacote});
 
   @override
   State<ControladorDePacotes> createState() => _ControladorDePacotesState();
@@ -21,10 +22,15 @@ class ControladorDePacotes extends StatefulWidget {
 class _ControladorDePacotesState extends State<ControladorDePacotes> {
   //# Declarações
   PacotesEfeitos pacote = PacotesEfeitos();
+  int indexPoder = -1;
+  bool retornoDePacote = true;
   Map objPacote = {};
+  Map objPoder = {};
   List poderes = [];
   bool nomearEfeitos = true;
 
+  // Controle de texto
+  TextEditingController nomePoder = TextEditingController();
   @override
   void initState() {
     super.initState();
@@ -32,20 +38,42 @@ class _ControladorDePacotesState extends State<ControladorDePacotes> {
     _inicializarVariaveis();
   }
 
+  _updateAfterCreate(Efeito efeito){
+    pacote.efeitos.add(efeito.retornaObj());
+    setState(() {
+      objPacote = pacote.retornaObj();
+      poderes = pacote.efeitos;
+    });
+  }
+
   Future _addPoderes(Map objEfeito) async{
-    pacote.efeitos.add(objEfeito);
+    Efeito efeito = Efeito();
+    await efeito.instanciarMetodo(objEfeito["nome"], objEfeito["e_id"])
+    .then((resulte)=>{
+      _updateAfterCreate(efeito)
+    });
+    
+    
+    
+    
   }
 
   _inicializarVariaveis(){
+    indexPoder = widget.indexPacote;
+    retornoDePacote = widget.retornoDePacote;
+
+    // inicialização do objeto
     objPacote = personagem.poderes.poderesLista[widget.indexPacote];
     pacote.instanciarMetodo(objPacote);
     poderes.addAll(objPacote["efeitos"]);
 
+    // define se os efeitos adionados devem ter nome
     if(["R", "E" "D"].contains(pacote.getType())){ nomearEfeitos = true; }
     if(["L"].contains(pacote.getType())){ nomearEfeitos = true; }
+
+    nomePoder.text = pacote.nomePacote;
     
   }
-
 
   //# Widgets
   @override
@@ -53,7 +81,9 @@ class _ControladorDePacotesState extends State<ControladorDePacotes> {
     return Scaffold(
         appBar: AppBar(
           //backgroundColor: Theme.of(context).colorScheme.inversePrimary,          
-          title: const Text("Poderes"),
+          title: objPacote["nome"] != "" 
+          ? Text("${objPacote["nome"]}")
+          : Text("Poderes de (${objPacote["efeito"]})"),
           leading: IconButton(
             icon: const Icon(Icons.arrow_back),
               onPressed: () async => {
@@ -68,62 +98,78 @@ class _ControladorDePacotesState extends State<ControladorDePacotes> {
           ), 
         ),
 
-        body: ListView.builder(
-          itemCount: poderes.length,
-          itemBuilder: (BuildContext context, int index){
-            return InkWell(
-            child: Card(
-              child: 
-              Row( children: <Widget> [
-                Expanded(
-                  child:
-                    //# Card de Exibição
-                    // Exibe os poderes ativos
-                    poderes[index]["classe_manipulacao"] != "PacotesEfeitos" 
-                    ? ListTile(
-                      title: Text(poderes[index]['nome']),
-                      subtitle: Text("${poderes[index]['efeito']} ${poderes[index]['graduacao']}"),
-                    ) 
-                    : ListTile(
-                      title: Text('${poderes[index]["efeito"]}: ${poderes[index]['nome']}'),
-                      //subtitle: Text("${poderes[index]['nome']} ${poderes[index]['custo']}"),
-                    ),
+        body: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: TextField(
+                controller: nomePoder,
+                style: const TextStyle(
+                  
                 ),
-
-                IconButton(
-                  icon: const  Icon(Icons.delete),
-                  onPressed: () =>{
-                    personagem.poderes.poderesLista.removeAt(index),
-                    setState(() {
-                      poderes = personagem.poderes.listaDePoderes();  
-                    })
-                  }
-                )
-
-              ],)
+                onChanged: (valor) =>{
+                  pacote.nomePacote = nomePoder.text,
+                  objPacote = pacote.retornaObj(),
+                },
+              ),
             ),
-            onTap: () {
-              atualizarValores(){
-                setState(() {
-                  poderes = personagem.poderes.listaDePoderes();
-                });
-              }
-
-              if(poderes[index]["classe_manipulacao"] != "PacotesEfeitos"){ 
-                // Navigator.push()
-                //   MaterialPageRoute(builder: (context) => ControladorDePacotes(indexPacote: index,)),
-                // ).then((result)=>{expression
-                //   atualizarValores()
-                // });
-              };
-
+            Expanded(
+              child: ListView.builder(
+                itemCount: poderes.length,
+                itemBuilder: (BuildContext context, int index){
+                  return InkWell(
+                  child: Card(
+                    child: 
+                    Row( children: <Widget> [
+                      Expanded(
+                        child:
+                          //# Card de Exibição
+                          // Exibe os poderes ativos
+                          poderes[index]["classe_manipulacao"] != "PacotesEfeitos" 
+                          ? ListTile(
+                            title: Text(poderes[index]['nome']),
+                            subtitle: Text("${poderes[index]['efeito']} ${poderes[index]['graduacao']}"),
+                          ) 
+                          : ListTile(
+                            title: Text('${poderes[index]["efeito"]}: ${poderes[index]['nome']}'),
+                            //subtitle: Text("${poderes[index]['nome']} ${poderes[index]['custo']}"),
+                          ),
+                      ),
               
-              // Atualiza os Poderes
+                      IconButton(
+                        icon: const  Icon(Icons.delete),
+                        onPressed: () =>{
+                          pacote.efeitos.removeAt(index),
+                          setState(() {
+                            poderes = pacote.efeitos;
+                          })
+                        }
+                      )
               
-            },
-            );
-          },
-          
+                    ],)
+                  ),
+                  onTap: () {
+                    atualizarValores(){
+                      setState(() {
+                        poderes = pacote.efeitos;
+                      });
+                    }
+              
+                    if(poderes[index]["classe_manipulacao"] != "PacotesEfeitos"){ 
+                      // Navigator.push()
+                      //   MaterialPageRoute(builder: (context) => ControladorDePacotes(indexPacote: index,)),
+                      // ).then((result)=>{expression
+                      //   atualizarValores()
+                      // });
+                    };
+                    
+                  },
+                  );
+                },
+                
+              ),
+            ),
+          ],
         ),
 
         // add Icone
@@ -133,15 +179,15 @@ class _ControladorDePacotesState extends State<ControladorDePacotes> {
           child: const Icon(Icons.add),
           // Ação e PopUP
           onPressed: () async => {
-            objPacote = {},            
-            objPacote = await Navigator.push(
+            objPoder = {},            
+            objPoder = await Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => DynamicDialog(ea: false, descNome: nomearEfeitos),
+              MaterialPageRoute(builder: (context) => DynamicDialog(tipo: objPacote["tipo"], descNome: nomearEfeitos),
               )
             ),
             //! Atualiza a Lista de poderes
-            if(objPacote.isNotEmpty){
-              _addPoderes(objPacote)
+            if(objPoder.isNotEmpty){
+              _addPoderes(objPoder)
             }            
           },
         ),

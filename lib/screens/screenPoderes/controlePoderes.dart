@@ -54,35 +54,56 @@ class _PoderesState extends State<Poderes> {
           itemCount: poderes.length,
           itemBuilder: (BuildContext context, int index){
             return InkWell(
-            child: Card(
-              child: 
-              Row( children: <Widget> [
-                Expanded(
-                  child:
-                    //# Card de Exibição
-                    // Exibe os poderes ativos
-                    poderes[index]["classe_manipulacao"] != "PacotesEfeitos" 
-                    ? ListTile(
-                      title: Text(poderes[index]['nome']),
-                      subtitle: Text("${poderes[index]['efeito']} ${poderes[index]['graduacao']}"),
-                    ) 
-                    : ListTile(
-                      title: Text('${poderes[index]["efeito"]}: ${poderes[index]['nome']}'),
-                      //subtitle: Text("${poderes[index]['nome']} ${poderes[index]['custo']}"),
+            child: Column(
+              children: [
+                Card(
+                  child: 
+                  Row( children: <Widget> [
+                    Expanded(
+                      child:
+                        //# Card de Exibição
+                        // Exibe os poderes ativos
+                        poderes[index]["classe_manipulacao"] != "PacotesEfeitos" 
+                        ? ListTile(
+                          title: Text(poderes[index]['nome']),
+                          subtitle: Text("${poderes[index]['efeito']} ${poderes[index]['graduacao']}"),
+                        ) 
+                        : ListTile(
+                          title: Text('${poderes[index]["efeito"]}: ${poderes[index]['nome']}'),                        
+                        ),
                     ),
+                
+                    IconButton(
+                      icon: const  Icon(Icons.delete),
+                      onPressed: () =>{
+                        personagem.poderes.poderesLista.removeAt(index),
+                        setState(() {
+                          poderes = personagem.poderes.listaDePoderes();  
+                        })
+                      }
+                    ),
+                  ],
+                  )
                 ),
-
-                IconButton(
-                  icon: const  Icon(Icons.delete),
-                  onPressed: () =>{
-                    personagem.poderes.poderesLista.removeAt(index),
-                    setState(() {
-                      poderes = personagem.poderes.listaDePoderes();  
-                    })
-                  }
-                )
-
-              ],)
+                poderes[index]["classe_manipulacao"] == "PacotesEfeitos" 
+                ? Padding(
+                  padding: const EdgeInsets.only(left: 30.0),
+                  child: Card(
+                      child: ListView.builder(
+                          itemCount: poderes[index]["efeitos"].length,
+                          shrinkWrap: true,
+                          physics: NeverScrollableScrollPhysics(),
+                          itemBuilder: (context, indexE) {
+                            return ListTile(
+                              title: Text("${poderes[index]["efeitos"][indexE]["nome"]}: ${poderes[index]["efeitos"][indexE]["efeito"]}")
+                            );
+                          }
+                          )
+                      //]
+                    //)
+                  ),
+                ) : const SizedBox()
+              ],
             ),
             onTap: () {
               atualizarValores(){
@@ -101,9 +122,9 @@ class _PoderesState extends State<Poderes> {
               }else{
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => ControladorDePacotes(indexPacote: index)),
+                  MaterialPageRoute(builder: (context) => ControladorDePacotes(indexPacote: index, retornoDePacote: false,)),
                 ).then((result)=>{
-                  atualizarValores()
+                  atualizarValores()  
                 });
               };
 
@@ -116,7 +137,7 @@ class _PoderesState extends State<Poderes> {
           
         ),
 
-        // add Icone
+        //# Icone de Add
 
         floatingActionButton: FloatingActionButton(
           tooltip: 'Adicionar Poder',
@@ -126,7 +147,7 @@ class _PoderesState extends State<Poderes> {
             objEfeito = {},
             objEfeito = await Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => DynamicDialog(ea: false, descNome: true),
+              MaterialPageRoute(builder: (context) => DynamicDialog(tipo: "", descNome: true),
               )
             ),
             //! Atualiza a Lista de poderes

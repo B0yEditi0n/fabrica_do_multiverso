@@ -62,6 +62,7 @@ class controlPoderes{
       "nome": nome,
       "tipo": tipo,
       "efeito": efeito,
+      "efeitos": [],
       "removivel": 0,
     });
 
@@ -76,7 +77,7 @@ class controlPoderes{
       List poderes = [];
       
       for(poder in poderesLista){
-        if(poder["classe_manipulacao"] != "classe_manipulacao"){
+        if(poder["classe_manipulacao"] != "PacotesEfeitos"){
         poderes.add({
           "nome": poder["nome"],
           "efeito": poder["efeito"],
@@ -84,11 +85,11 @@ class controlPoderes{
           "classe_manipulacao": poder["classe_manipulacao"]
           
         });
-      }else{
+        }else{
         poderes.add({
           "nome": poder["nome"],
           "efeito": poder["efeito"],
-          //"graduacao": poder["graduacao"],
+          "efeitos": poder["efeitos"],
           "classe_manipulacao": poder["classe_manipulacao"]
           
         });

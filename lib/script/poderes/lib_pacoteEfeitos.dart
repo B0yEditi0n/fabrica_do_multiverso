@@ -16,10 +16,11 @@ class PacotesEfeitos{
   // Exemplo Facilmente Removivel = 2 (abate 2 a cada 5 pontos)
   int removivel = 0; 
 
-  // R - Repertório
+  // F - Repertório (Forma)
   // L - Ligado
   // E - Efeito Alternativo
   // D - Efeito Alternativo Dinamico
+  // R - Removivel
   int _groupType = 0; 
 
   // ***************************
@@ -38,7 +39,7 @@ class PacotesEfeitos{
     */
 
     nomePacote = mapObject["nome"];
-    setType(mapObject["tipo"]);
+    setType(mapObject["tipo"]);    
     removivel = mapObject["removivel"];
     _efeito = mapObject["efeito"];
 
@@ -95,7 +96,7 @@ class PacotesEfeitos{
     return {
       "nome": nomePacote,
       "efeito": _efeito,
-      "tipo": _groupType,
+      "tipo": getType(),
       "removivel": removivel,
       "custo": custearAlteracoes(),
       "classe_manipulacao": "PacotesEfeitos",
