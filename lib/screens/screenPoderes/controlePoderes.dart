@@ -9,14 +9,14 @@ import 'package:fabrica_do_multiverso/screens/screenPoderes/controlePacote.dart'
 import 'package:fabrica_do_multiverso/script/ficha.dart';
 import 'package:flutter/widgets.dart';
 
-class Poderes extends StatefulWidget {
-  const Poderes({super.key});
+class ScreenPoderes extends StatefulWidget {
+  const ScreenPoderes({super.key});
 
   @override
-  State<Poderes> createState() => _PoderesState();
+  State<ScreenPoderes> createState() => _ScreenPoderesState();
 }
 
-class _PoderesState extends State<Poderes> {
+class _ScreenPoderesState extends State<ScreenPoderes> {
   // Declaração de Variáveis
   List poderes = [];
   Map objEfeito = {};

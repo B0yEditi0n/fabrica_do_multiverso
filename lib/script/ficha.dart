@@ -1,13 +1,14 @@
+import 'package:fabrica_do_multiverso/script/defesas/defesas.dart';
 import 'package:fabrica_do_multiverso/script/habilidades/habilidades.dart';
+import 'package:fabrica_do_multiverso/screens/defesas/defesas.dart';
 //import 'package:fabrica_do_multiverso/screens/screenPoderes/controlePoderes.dart';
 import 'package:fabrica_do_multiverso/script/poderes/lib_efeitos.dart';
 import 'package:fabrica_do_multiverso/script/poderes/lib_pacoteEfeitos.dart';
 
-class manipulaHabilidades{
+class ManipulaHabilidades{
   List listHab = [];
 
-  manipulaHabilidades(){
-
+  ManipulaHabilidades(){
     Habilidade forHabilidade = Habilidade();
     forHabilidade.init("FOR", 0, "Força");
     listHab.add(forHabilidade.objHabilidade());
@@ -61,7 +62,15 @@ class manipulaHabilidades{
   }
 }
 
-class controlPoderes{
+class ManipulaDefesas{
+  List listaDefesas = [];
+
+  ManipulaDefesas(){
+    Defesa esquiva = Defesa();
+  }
+}
+
+class ManipulaPoderes{
   //Classe de Poderes
 
   List poderesLista = []; 
@@ -161,19 +170,12 @@ class controlPoderes{
 class Ficha{
   String nomePersonagem = '';
 
-  List<Object> Defesas =[
-    {"Esquiva": 0},
-    {"Aparar": 0},
-    {"Fortitude": 0},
-    {"Vontade": 0},
-  ];
+  // Instancia da Ficha
+  ManipulaPoderes poderes = ManipulaPoderes();
+  ManipulaHabilidades habilidades = ManipulaHabilidades();
+  ManipulaDefesas defesas = ManipulaDefesas();
 
   List<String> complicacoes = [];
-
-  // Instancia Poderes
-  controlPoderes poderes = controlPoderes();
-
-  manipulaHabilidades habilidades = manipulaHabilidades();
 }
 
 Ficha personagem = Ficha();

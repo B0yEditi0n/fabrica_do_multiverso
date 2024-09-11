@@ -2,24 +2,20 @@ import 'package:fabrica_do_multiverso/script/poderes/lib_efeitos.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-// Biblioteca de Habilidades
+// Biblioteca de Defesas
 import 'package:fabrica_do_multiverso/script/ficha.dart';
-import 'package:fabrica_do_multiverso/script/habilidades/habilidades.dart';
+import 'package:fabrica_do_multiverso/script/defesas/defesas.dart';
 
-class ScreenHabilidades extends StatefulWidget {
+class screenDefesas extends StatefulWidget {
   @override
-  _ScreenHabilidadesState createState() => _ScreenHabilidadesState();
+  _screenDefesasState createState() => _screenDefesasState();
 }
 
-class _ScreenHabilidadesState extends State<ScreenHabilidades> {
+class _screenDefesasState extends State<screenDefesas> {
   List<Map> listHabilidade = [];
-  Habilidade currentHabi = Habilidade();
+  Defesa defesa = Defesa();
   int custoTotal = 0;
-  //   'FORÇA', 'VIGOR', 'AGILIDADE', 'DESTREZA',
-  //   'LUTA', 'INTELECTO', 'PRONTIDÃO', 'PRESENÇA'
-  // ];
-  //
-  // final List<String> labels = [];
+
   List<TextEditingController> listInputs = [];
 
   //* Constante de estilo
@@ -32,26 +28,26 @@ class _ScreenHabilidadesState extends State<ScreenHabilidades> {
   }
 
   _initProg() {
-    List classHabilidades = personagem.habilidades.listHab;
-    for (Map mapHabilidades in classHabilidades) {
-      listHabilidade.add(mapHabilidades);
-    }
+    // List classDefesas = personagem.Defesas.listHab;
+    // for (Map mapDefesas in classDefesas) {
+    //   listHabilidade.add(mapDefesas);
+    // }
   }
 
   _initialStete() {
     setState(() {
-      // define custo total
-      custoTotal = personagem.habilidades.calculaTotal();
+      // // define custo total
+      // custoTotal = personagem.Defesas.calculaTotal();
 
-      // Instancia campos de input
-      for (Map l in listHabilidade) {
-        if(l["ausente"] != true){ // Caso seja ausente o valor
-          listInputs.add(TextEditingController(text: l["valor"].toString()));
-        }else{
-          listInputs.add(TextEditingController(text: '-'));
-        }
+      // // Instancia campos de input
+      // for (Map l in listHabilidade) {
+      //   if(l["ausente"] != true){ // Caso seja ausente o valor
+      //     listInputs.add(TextEditingController(text: l["valor"].toString()));
+      //   }else{
+      //     listInputs.add(TextEditingController(text: '-'));
+      //   }
         
-      }
+      // }
     });
     return 1;
   }
@@ -71,7 +67,7 @@ class _ScreenHabilidadesState extends State<ScreenHabilidades> {
     return Scaffold(
         appBar: AppBar(
           //backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          title: const Text('Habilidades'),
+          title: const Text('Defesas'),
           leading: IconButton(
               icon: const Icon(Icons.arrow_back),
               onPressed: () async => {
@@ -81,7 +77,7 @@ class _ScreenHabilidadesState extends State<ScreenHabilidades> {
         ),
         body: Column(
           children: [
-          // Grid de habilidades
+          // Grid de Defesas
           Expanded(
             child: GridView.builder(
               padding: const EdgeInsets.all(2.0),
@@ -109,7 +105,7 @@ class _ScreenHabilidadesState extends State<ScreenHabilidades> {
                         FilteringTextInputFormatter.allow(RegExp(r'^-?\d*')),
                       ],
                       onChanged: ((value) => {
-                        currentHabi = personagem.habilidades.getIndex(index),
+                        currentHabi = personagem.Defesas.getIndex(index),
                         if (int.tryParse(value) != null){
                           currentHabi.valor = int.parse(value),
                           currentHabi.ausente = false,
@@ -118,10 +114,10 @@ class _ScreenHabilidadesState extends State<ScreenHabilidades> {
                           currentHabi.ausente = true,
                         },
 
-                        personagem.habilidades.listHab[index] = currentHabi.objHabilidade(),
+                        personagem.Defesas.listHab[index] = currentHabi.objHabilidade(),
 
                         setState(() {
-                          custoTotal = personagem.habilidades.calculaTotal();
+                          custoTotal = personagem.Defesas.calculaTotal();
                         }),
 
                       }),
