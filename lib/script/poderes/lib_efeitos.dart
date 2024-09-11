@@ -434,7 +434,6 @@ class Efeito{
       "descricao":        desc,
       "class":            _padraoEfeito["classe_manipulacao"],
       "custo":            custearAlteracoes(),
-      
     };
   }
 

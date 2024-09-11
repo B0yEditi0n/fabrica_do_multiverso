@@ -1,6 +1,65 @@
-import 'package:fabrica_do_multiverso/screens/screenPoderes/controlePoderes.dart';
+import 'package:fabrica_do_multiverso/script/habilidades/habilidades.dart';
+//import 'package:fabrica_do_multiverso/screens/screenPoderes/controlePoderes.dart';
 import 'package:fabrica_do_multiverso/script/poderes/lib_efeitos.dart';
 import 'package:fabrica_do_multiverso/script/poderes/lib_pacoteEfeitos.dart';
+
+class manipulaHabilidades{
+  List listHab = [];
+
+  manipulaHabilidades(){
+
+    Habilidade forHabilidade = Habilidade();
+    forHabilidade.init("FOR", 0, "Força");
+    listHab.add(forHabilidade.objHabilidade());
+
+    Habilidade vigHabilidade = Habilidade();
+    vigHabilidade.init("VIG", 0, "Vigor");
+    listHab.add(vigHabilidade.objHabilidade());
+
+    Habilidade agiHabilidade = Habilidade();
+    agiHabilidade.init("AGI", 0, "Agilidade");
+    listHab.add(agiHabilidade.objHabilidade());
+
+    Habilidade desHabilidade = Habilidade();
+    desHabilidade.init("DES", 0, "Destreza");
+    listHab.add(desHabilidade.objHabilidade());
+
+    Habilidade lutHabilidade = Habilidade();
+    lutHabilidade.init("LUT", 0, "Luta");
+    listHab.add(lutHabilidade.objHabilidade());
+
+    Habilidade intHabilidade = Habilidade();
+    intHabilidade.init("INT", 0, "Intelecto");
+    listHab.add(intHabilidade.objHabilidade());
+
+    Habilidade proHabilidade = Habilidade();
+    proHabilidade.init("PRO", 0, "Prontidão");
+    listHab.add(proHabilidade.objHabilidade());
+
+    Habilidade preHabilidade = Habilidade();
+    preHabilidade.init("PRE", 0, "Presença");
+    listHab.add(preHabilidade.objHabilidade());
+
+  }
+
+  Habilidade getIndex(int index){
+    Map obj = listHab[index];
+    Habilidade habilidade = Habilidade();
+    habilidade.initObject(obj);
+    return habilidade;
+  }
+
+  int calculaTotal(){
+    Habilidade instanciaHab = Habilidade();
+    int totalHabi = 0;
+    for(Map hab in listHab){
+      print(hab);
+      instanciaHab.initObject(hab);
+      totalHabi += instanciaHab.total();
+    }
+    return totalHabi;
+  }
+}
 
 class controlPoderes{
   //Classe de Poderes
@@ -102,18 +161,6 @@ class controlPoderes{
 class Ficha{
   String nomePersonagem = '';
 
-  // Habilidades
-  List<Object> Habilidades = [
-    {"FOR": 0},
-    {"VIG": 0},
-    {"AGI": 0},
-    {"DES": 0},
-    {"LUT": 0},
-    {"INT": 0},
-    {"PRO": 0},
-    {"PRE": 0}
-  ];
-
   List<Object> Defesas =[
     {"Esquiva": 0},
     {"Aparar": 0},
@@ -124,7 +171,9 @@ class Ficha{
   List<String> complicacoes = [];
 
   // Instancia Poderes
-  var poderes = controlPoderes();
+  controlPoderes poderes = controlPoderes();
+
+  manipulaHabilidades habilidades = manipulaHabilidades();
 }
 
-var personagem = Ficha();
+Ficha personagem = Ficha();
