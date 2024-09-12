@@ -101,7 +101,9 @@ class _screenDefesasState extends State<screenDefesas> {
                                 border: OutlineInputBorder(),
                               ),
                               onChanged: (value) =>{
-                                personagem.defesas.listaDefesas[index]["valor"] = int.parse(value),
+                                if(int.tryParse(value) != null){
+                                  personagem.defesas.listaDefesas[index]["valor"] = int.parse(value),
+                                },                                
                                 // _updateValues(),
                                 setState(() {
                                   custoTotal = personagem.defesas.calculaTotal();
