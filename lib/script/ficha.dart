@@ -1,3 +1,7 @@
+import 'package:flutter/services.dart'; 
+import 'dart:convert';
+
+// Bibliotecas
 import 'package:fabrica_do_multiverso/script/defesas/defesas.dart';
 import 'package:fabrica_do_multiverso/script/habilidades/habilidades.dart';
 import 'package:fabrica_do_multiverso/screens/defesas/defesas.dart';
@@ -5,6 +9,7 @@ import 'package:fabrica_do_multiverso/screens/defesas/defesas.dart';
 import 'package:fabrica_do_multiverso/script/poderes/lib_efeitos.dart';
 import 'package:fabrica_do_multiverso/script/poderes/lib_pacoteEfeitos.dart';
 
+//# Classe de Manipulação de Habilidades
 class ManipulaHabilidades{
   List listHab = [];
 
@@ -54,7 +59,6 @@ class ManipulaHabilidades{
     Habilidade instanciaHab = Habilidade();
     int totalHabi = 0;
     for(Map hab in listHab){
-      print(hab);
       instanciaHab.initObject(hab);
       totalHabi += instanciaHab.total();
     }
@@ -62,14 +66,84 @@ class ManipulaHabilidades{
   }
 }
 
+//# Classe de Manipulação de Habilidades
 class ManipulaDefesas{
   List listaDefesas = [];
 
   ManipulaDefesas(){
+    // Anexa as Defesas
     Defesa esquiva = Defesa();
+    esquiva.init({
+      "id": "D001",
+      "nome": "Esquiva",
+      "valor": 0,
+      "bonus": 0,
+      "idHabi": "AGI",
+      "idOpDefesa": "D004",
+      "imune": false
+    });
+    listaDefesas.add(esquiva.returnObj());
+
+    Defesa aparar = Defesa();
+    aparar.init({
+      "id": "D002",
+      "nome": "Aparar",
+      "valor": 0,
+      "bonus": 0,
+      "idHabi": "LUT",
+      "idOpDefesa": "D004",
+      "imune": false
+    });
+    listaDefesas.add(aparar.returnObj());
+
+    Defesa fortitude = Defesa();
+    fortitude.init({
+      "id": "D003",
+      "nome": "Fortitude",
+      "valor": 0,
+      "bonus": 0,
+      "idHabi": "VIG",
+      "idOpDefesa": "D005",
+      "imune": false
+    });
+    listaDefesas.add(fortitude.returnObj());
+
+    Resistencia resistencia = Resistencia();
+    resistencia.init({
+      "id": "D004",
+      "nome": "Resistência",
+      "valor": 0,
+      "bonus": 0,
+      "idHabi": "VIG",
+      "idOpDefesa": "",
+      "imune": false
+    });
+    listaDefesas.add(resistencia.returnObj());
+
+    Defesa vontade = Defesa();
+    vontade.init({
+      "id": "D005",
+      "nome": "Vontade",
+      "valor": 0,
+      "bonus": 0,
+      "idHabi": "PRO",
+      "idOpDefesa": "D003",
+      "imune": false
+    });
+    listaDefesas.add(vontade.returnObj());
+  }
+  int calculaTotal(){
+    int total = 0;
+    for(Map mapDefesa in listaDefesas){
+      Defesa defesa = Defesa();
+      defesa.init(mapDefesa);
+      total += defesa.custoTotal();
+    }
+    return total;
   }
 }
 
+//# Classe de Manipulação de Poderes
 class ManipulaPoderes{
   //Classe de Poderes
 
@@ -167,8 +241,13 @@ class ManipulaPoderes{
   }
 }
 
+
+//# Classe de Manipulação de Ficha
+// esse metodo será acessível para todos
+// para manipulação
 class Ficha{
   String nomePersonagem = '';
+  int np = 10;
 
   // Instancia da Ficha
   ManipulaPoderes poderes = ManipulaPoderes();

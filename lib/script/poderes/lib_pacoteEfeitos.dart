@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:fabrica_do_multiverso/script/poderes/lib_efeitos.dart';
 
 class PacotesEfeitos{

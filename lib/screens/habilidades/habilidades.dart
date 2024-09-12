@@ -7,6 +7,7 @@ import 'package:fabrica_do_multiverso/script/ficha.dart';
 import 'package:fabrica_do_multiverso/script/habilidades/habilidades.dart';
 
 class ScreenHabilidades extends StatefulWidget {
+  const ScreenHabilidades({super.key});
   @override
   _ScreenHabilidadesState createState() => _ScreenHabilidadesState();
 }
@@ -103,8 +104,7 @@ class _ScreenHabilidadesState extends State<ScreenHabilidades> {
                     TextField(
                       controller: listInputs[index],
                       textAlign: TextAlign.center,
-                      keyboardType: const TextInputType.numberWithOptions(
-                          signed: true, decimal: false),
+                      keyboardType: const TextInputType.numberWithOptions(signed: true, decimal: false),
                       inputFormatters: <TextInputFormatter>[
                         FilteringTextInputFormatter.allow(RegExp(r'^-?\d*')),
                       ],

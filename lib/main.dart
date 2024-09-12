@@ -1,3 +1,7 @@
+import 'package:flutter/services.dart';
+
+import 'package:fabrica_do_multiverso/screens/defesas/defesas.dart';
+import 'package:fabrica_do_multiverso/script/ficha.dart';
 import 'package:flutter/material.dart';
 import 'package:bootstrap_icons/bootstrap_icons.dart';
 
@@ -21,23 +25,35 @@ class FabricaHerois extends StatelessWidget {
       theme: temaPadrao(),//(
       //   primarySwatch: Colors.blue,
       // ),
-      home: HomePage(),
+      home: ScreenInicial(),
       routes: {
-        '/home': (context) => HomePage(),
-        '/habilidades': (context) => Habilidades(),
-        '/poderes': (context) => const Poderes(),
+        '/home': (context) => ScreenInicial(),
+        '/habilidades': (context) => const ScreenHabilidades(),
+        '/defesas': (context) => const screenDefesas(),
+        '/poderes': (context) => const ScreenPoderes(),
       },
     );
   }
 }
 
 
-class HomePage extends StatelessWidget {
+class ScreenInicial extends StatelessWidget {  
+
+  TextEditingController txtControlName = TextEditingController();
+  TextEditingController txtNP = TextEditingController();
+
+  void _updateValue(){
+    txtControlName.text = personagem.nomePersonagem;
+    txtNP.text = personagem.np.toString();    
+  }
+  
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    txtControlName.text = personagem.nomePersonagem;
+    txtNP.text = personagem.np.toString();    
+    return Scaffold(      
       appBar: AppBar(
-        title: const Text('Home Page'),
+        title: const Text('Visão Geral do Pesonagem'),
       ),
       drawer: Drawer(
         child: ListView(
@@ -67,7 +83,7 @@ class HomePage extends StatelessWidget {
               leading: const Icon(Icons.shield_outlined),
               title: const Text('Defesas'),
               onTap: () {
-                //Navigator.pushNamed(context, '/poderes');
+                Navigator.pushNamed(context, '/defesas');
               },
             ),
 
@@ -109,23 +125,75 @@ class HomePage extends StatelessWidget {
           ],
         ),
       ),
-      body: const Center(
-        child: Text('Home Page Content'),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        //mainAxisSize: ,
+        children: [
+          //; descomentar quando for colcoar titulo
+          // const Text(
+          //   'Fabrica de Heróis',
+          //   style: TextStyle(
+          //     fontFamily: 'Impact',
+          //     fontSize: 20,
+          //   ),
+          // ),
+          Expanded(
+            child: Wrap(
+              direction: Axis.horizontal,
+              alignment: WrapAlignment.center,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              children: [
+                //? Nome
+                SizedBox(
+                  width: (MediaQuery.of(context).size.width * 0.6),
+                  child: TextField(
+                    controller: txtControlName,
+                    decoration: const InputDecoration(hintText: "Nome do Personagem"),
+                    onChanged: (value)=>{
+                      personagem.nomePersonagem = value,
+                      _updateValue()
+                    },
+                  ),
+                ),
+                const SizedBox(width: 10),
+                //? NP
+                SizedBox(
+                  width: (MediaQuery.of(context).size.width * 0.3),
+                  child: TextField(
+                    controller: txtNP,
+                    decoration: const InputDecoration(hintText: "Nível de Poder"),
+                    keyboardType: TextInputType.number,
+                    inputFormatters: <TextInputFormatter>[
+                      FilteringTextInputFormatter.digitsOnly
+                    ],
+                    onChanged: (value)=>{
+                      if(int.tryParse(value) != null){
+                        personagem.np = int.parse(value)
+                      },
+                      _updateValue()
+                    },
+                  ),
+                )
+              ]
+            ),
+          )
+        ],
       ),
     );
   }
 }
 
-class SettingsPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Settings Page'),
-      ),
-      body: const Center(
-        child: Text('Settings Page Content'),
-      ),
-    );
-  }
-}
+// class SettingsPage extends StatelessWidget {
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(
+//         title: const Text('Settings Page'),
+//       ),
+//       body: const Center(
+//         child: Text('Settings Page Content'),
+//       ),
+//     );
+//   }
+// }
