@@ -13,8 +13,8 @@ class screenPericias extends StatefulWidget {
 }
 
 class _screenPericiasState extends State<screenPericias> {
-  List<Map> listDefesa = [];
-  Defesa defesa = Defesa();
+  List<Map> ListaPercias = [];
+  Pericia pericia = Pericia();
   int custoTotal = 0;
 
   List<TextEditingController> listInputs = [];
@@ -30,9 +30,9 @@ class _screenPericiasState extends State<screenPericias> {
   }
 
   _initProg() {
-    List classPericias = personagem.pericias.listaPericias;
+    List classPericias = personagem.pericias.ListaPercias;
     for (Map mapPericias in classPericias) {
-      listDefesa.add(mapPericias);
+      ListaPercias.add(mapPericias);
     }
   }
   
@@ -45,12 +45,8 @@ class _screenPericiasState extends State<screenPericias> {
       custoTotal = personagem.pericias.calculaTotal();
 
       // Instancia campos de input
-      for (Map d in listDefesa) {
-        if(!d["imune"]){ // Caso seja imune
-          listInputs.add(TextEditingController(text: d["valor"].toString()));
-        }else{
-          listInputs.add(TextEditingController(text: "imune"));
-        }
+      for (Map p in ListaPercias) {
+          listInputs.add(TextEditingController(text: p["valor"].toString()));
       }
     });
     return 1;
@@ -73,11 +69,23 @@ class _screenPericiasState extends State<screenPericias> {
           children: [
           // Grid de Pericias
           Expanded(
-            child: ListView.builder(
-              itemCount: listDefesa.length,
+            child: GridView.builder(
+              //; configurações de grid
+              //; para deixar mais proximo de uma ficha 2 colunas de pericias
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2, // Define o número de colunas
+                //maxCrossAxisExtent: 2,
+                childAspectRatio: 1,
+                crossAxisSpacing: 1,
+                mainAxisSpacing: 1
+
+                
+              ),
+
+              itemCount: ListaPercias.length,
               itemBuilder: (context, index) {
-                Defesa defesa = Defesa();
-                defesa.init(listDefesa[index]);
+                Pericia defesa = Pericia();
+                defesa.init(ListaPercias[index]);
                 
                 return Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
@@ -86,7 +94,7 @@ class _screenPericiasState extends State<screenPericias> {
                     //mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(listDefesa[index]["nome"]),
+                      Text(ListaPercias[index]["nome"]),
                       const SizedBox(height: 10),
                       Row(
                         children: [
@@ -95,14 +103,13 @@ class _screenPericiasState extends State<screenPericias> {
                             width: 50,
                             child: TextField(
                               controller: listInputs[index],
-                              enabled: !listDefesa[index]["imune"],
                               textAlign: TextAlign.center,
                               decoration: const InputDecoration(
                                 border: OutlineInputBorder(),
                               ),
                               onChanged: (value) =>{
                                 if(int.tryParse(value) != null){
-                                  personagem.pericias.listaPericias[index]["valor"] = int.parse(value),
+                                  personagem.pericias.ListaPercias[index]["valor"] = int.parse(value),
                                 },                                
                                 // _updateValues(),
                                 setState(() {
@@ -114,7 +121,7 @@ class _screenPericiasState extends State<screenPericias> {
 
                           const SizedBox(width: 10),
 
-                          Text("Total: ${defesa.bonusTotal()}"),
+                          Text("Total: ${pericia.bonusTotal()}"),
                         ],
                       ),
                     ],

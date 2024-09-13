@@ -1,3 +1,4 @@
+import 'package:fabrica_do_multiverso/screens/pericias/pericias.dart';
 import 'package:flutter/services.dart';
 
 import 'package:fabrica_do_multiverso/screens/defesas/defesas.dart';
@@ -31,6 +32,7 @@ class FabricaHerois extends StatelessWidget {
         '/habilidades': (context) => const ScreenHabilidades(),
         '/defesas': (context) => const screenDefesas(),
         '/poderes': (context) => const ScreenPoderes(),
+        '/pericias': (context) => const screenPericias(),
       },
     );
   }
@@ -107,7 +109,7 @@ class ScreenInicial extends StatelessWidget {
               leading: const Icon(BootstrapIcons.tools),
               title: const Text('Perícias'),
               onTap: () {
-                //Navigator.pushNamed(context, '/poderes');
+                Navigator.pushNamed(context, '/pericias');
               },
             ),
 
@@ -183,17 +185,3 @@ class ScreenInicial extends StatelessWidget {
     );
   }
 }
-
-// class SettingsPage extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: const Text('Settings Page'),
-//       ),
-//       body: const Center(
-//         child: Text('Settings Page Content'),
-//       ),
-//     );
-//   }
-// }

@@ -18,7 +18,7 @@ class Pericia{
   int setValor(){
     return ( valor / 2 ).ceil();
   }
-  int calculaBonusTotal(){
+  int bonusTotal(){
     /*
       Calcula Bonus Total somando o valor
       da perícias e habilidade

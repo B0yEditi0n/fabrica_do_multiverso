@@ -247,7 +247,7 @@ class ManipulaPoderes{
 
 //# Classe de manipulação de Perícias
 class ManipulaPericias{
-  List<Map> ListPercias = [];
+  List<Map> ListaPercias = [];
 
   Future<int> init() async{
     /*
@@ -258,10 +258,16 @@ class ManipulaPericias{
     for(Map oPericia in objetoJson){
       Pericia pericia = Pericia();
       pericia.init(oPericia);
+
+      ListaPercias.add(pericia.returnObj());
     }
     //return(objetoJson);
 
     return 1;
+  }
+
+  int calculaTotal(){
+    return 0;
   }
   //addPericias
 }
