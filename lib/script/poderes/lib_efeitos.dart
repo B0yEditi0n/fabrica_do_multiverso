@@ -100,9 +100,9 @@ class Efeito{
 
   }
 
-  // ************************************
-  // * Modificações de atributos Classe *
-  // ************************************
+  
+  //? Modificações de atributos Classe 
+  
   alteraDuracao(novaDuracao){
     /* 
       o metodo apenas avaiará qual alterações mecanicamente são permitidas

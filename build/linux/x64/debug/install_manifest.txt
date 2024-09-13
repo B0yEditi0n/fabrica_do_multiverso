@@ -10,6 +10,7 @@
 /media/caio/caio.hdd/Documentos/fabrica_do_multiverso/build/linux/x64/debug/bundle/data/flutter_assets/assets/poderes/pacotes.json
 /media/caio/caio.hdd/Documentos/fabrica_do_multiverso/build/linux/x64/debug/bundle/data/flutter_assets/assets/poderes/modificadores.json
 /media/caio/caio.hdd/Documentos/fabrica_do_multiverso/build/linux/x64/debug/bundle/data/flutter_assets/assets/poderes/efeitos.json
+/media/caio/caio.hdd/Documentos/fabrica_do_multiverso/build/linux/x64/debug/bundle/data/flutter_assets/assets/pericias.json
 /media/caio/caio.hdd/Documentos/fabrica_do_multiverso/build/linux/x64/debug/bundle/data/flutter_assets/AssetManifest.json
 /media/caio/caio.hdd/Documentos/fabrica_do_multiverso/build/linux/x64/debug/bundle/data/flutter_assets/shaders/ink_sparkle.frag
 /media/caio/caio.hdd/Documentos/fabrica_do_multiverso/build/linux/x64/debug/bundle/data/flutter_assets/kernel_blob.bin

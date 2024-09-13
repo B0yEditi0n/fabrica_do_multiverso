@@ -1,5 +1,6 @@
-import 'package:flutter/services.dart'; 
-import 'dart:convert';
+import 'package:fabrica_do_multiverso/script/pericias/pericias.dart';
+import 'package:flutter/services.dart'; // Biblioteca de Load files
+import 'dart:convert';                  // Biblitoeca de conversão de json
 
 // Bibliotecas
 import 'package:fabrica_do_multiverso/script/defesas/defesas.dart';
@@ -132,6 +133,9 @@ class ManipulaDefesas{
     });
     listaDefesas.add(vontade.returnObj());
   }
+  init(){
+
+  }
   int calculaTotal(){
     int total = 0;
     for(Map mapDefesa in listaDefesas){
@@ -241,6 +245,26 @@ class ManipulaPoderes{
   }
 }
 
+//# Classe de manipulação de Perícias
+class ManipulaPericias{
+  List<Map> ListPercias = [];
+
+  Future<int> init() async{
+    /*
+      instancia a lista de pericias armazenadas
+    */
+    String jsonEfeitos = await rootBundle.loadString('assets/pericias.json');
+    List objetoJson = jsonDecode(jsonEfeitos);
+    for(Map oPericia in objetoJson){
+      Pericia pericia = Pericia();
+      pericia.init(oPericia);
+    }
+    //return(objetoJson);
+
+    return 1;
+  }
+  //addPericias
+}
 
 //# Classe de Manipulação de Ficha
 // esse metodo será acessível para todos
@@ -253,8 +277,17 @@ class Ficha{
   ManipulaPoderes poderes = ManipulaPoderes();
   ManipulaHabilidades habilidades = ManipulaHabilidades();
   ManipulaDefesas defesas = ManipulaDefesas();
+  ManipulaPericias pericias = ManipulaPericias();
 
   List<String> complicacoes = [];
+
+  Future<int> init() async{
+    // await habilidades.init();
+    // await habilidades.init();
+    await pericias.init();
+
+    return 1;
+  }
 }
 
 Ficha personagem = Ficha();

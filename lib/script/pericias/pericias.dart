@@ -1,13 +1,18 @@
-class Pericias{
+class Pericia{
   String id = "";
   String nome = "";
-  String idHabilidadeBase = "";
+  String _idHabilidadeBase = "";
   int valor = 0;
+  bool _apenasTreinado = false;
   
   init(obj){
     id    = obj["id"];
     nome  = obj["nome"];
-    idHabilidadeBase = obj["idHab"];
+    _idHabilidadeBase = obj["idHab"];
+    _apenasTreinado = obj["treinado"];
+    if(obj["valor"] != null){
+      valor = obj["valor"];
+    }
   }
 
   int setValor(){
@@ -28,8 +33,44 @@ class Pericias{
     return({
       "id": id,
       "nome": nome,
-      "idHab": idHabilidadeBase
+      "valor": valor,
+      "idHab": _idHabilidadeBase,
+      "treinado": _apenasTreinado,
     });
   }
 
+}
+
+class PericiaAdiciona extends Pericia{
+  List listEfeitos = [];
+  bool range = false;
+  String escopo = "";
+
+  addEfeitosOfensivos(int index){
+    /*
+      adiciona a lista de bonus um efeito da lista de efeitos
+    */
+  }
+
+  Map returnEfeitos(){
+    /*
+      retorna uma lista de efeitos compativeis com a 
+      perícias
+    */
+
+    return {};
+  }
+
+  @override 
+  Map returnObj(){
+    return({
+      "id": id,
+      "nome": nome,
+      "idHab": _idHabilidadeBase,
+      "treinado": _apenasTreinado,
+      "list": listEfeitos,
+      "escopo": escopo,
+      "range": range,
+    });
+  }
 }

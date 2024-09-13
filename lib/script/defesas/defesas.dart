@@ -14,7 +14,10 @@ class Defesa{
   init(obj){
     _id = obj["id"];
     nome = obj["nome"];
-    _valor = obj["valor"];
+    if(obj["valor"] != null){
+      _valor = obj["valor"];
+    }
+    
     idOpDefesa = obj["idOpDefesa"];
     imune = obj["imune"];
     idHabi = obj["idHabi"];

@@ -14,12 +14,12 @@ import 'package:fabrica_do_multiverso/screens/screenPoderes/controlePoderes.dart
 
 void main() {
   runApp(FabricaHerois());
-
 }
 
 class FabricaHerois extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    personagem.init();
     return MaterialApp(
       title: 'Fabrica de Heróis',
       theme: temaPadrao(),//(
