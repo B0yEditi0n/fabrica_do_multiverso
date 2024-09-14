@@ -58,16 +58,25 @@ class _ScreenHabilidadesState extends State<ScreenHabilidades> {
   }
 
   @override
+  void dispose() {
+    //! adição do Chat GPT ao código
+    // Certifica-se de descartar todos os controladores ao finalizar
+    for (var controller in listInputs) {
+      controller.dispose();
+    }
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     // Obtém a largura da tela
     double screenWidth = MediaQuery.of(context).size.width; // print(screenWidth); // deixar guardado para futuros debug
     // Define o número de colunas com base na largura da tela
-    int crossAxisCount = 4;
+    int crossAxisCount = 2;
 
-    if (screenWidth < 1000) {
-      // 2 colunas para telas maiores, 1 para menores
-      crossAxisCount = screenWidth > 600 ? 2 : 1;
-    }
+    // 2 colunas para telas maiores, 1 para menores
+    crossAxisCount = screenWidth > 1000 ? 2 : 1;
+    
 
     return Scaffold(
         appBar: AppBar(
@@ -88,9 +97,9 @@ class _ScreenHabilidadesState extends State<ScreenHabilidades> {
               padding: const EdgeInsets.all(2.0),
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: crossAxisCount, // Define o número de colunas
-                mainAxisSpacing: 2.0,
-                crossAxisSpacing: 2.0,
-                childAspectRatio: 2.5, // Controla o tamanho das células
+                mainAxisSpacing: 2.8,
+                crossAxisSpacing: 2.5,
+                childAspectRatio: 4, // Controla o tamanho das células
               ),
               itemCount: listHabilidade.length,
               itemBuilder: (context, index) {

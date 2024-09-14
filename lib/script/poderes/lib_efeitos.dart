@@ -73,6 +73,7 @@ class Efeito{
     _alcance = objPoder["alcance"];
     _duracao = objPoder["duracao"];
     _modificador = objPoder["modificadores"];
+    defAtaque = objPoder["defAtaque"];
     desc = objPoder["descricao"];
 
     List efeitos = await carregaJson();
@@ -432,6 +433,7 @@ class Efeito{
       "duracao":          _duracao,
       "modificadores":    _modificador,
       "descricao":        desc,
+      "defAtaque":        defAtaque,
       "class":            _padraoEfeito["classe_manipulacao"],
       "custo":            custearAlteracoes(),
     };
@@ -533,6 +535,7 @@ class EfeitoEscolha extends Efeito{
       "duracao":          _duracao,
       "modificadores":    _modificador,
       "descricao":        desc,
+      "defAtaque":        defAtaque,
       "opt":              opt,
       "class":            _padraoEfeito["classe_manipulacao"],
       "custo":            custearAlteracoes(),
@@ -668,6 +671,7 @@ class EfeitoOfensivo extends Efeito{
       "duracao":          _duracao,
       "modificadores":    _modificador,
       "descricao":        desc,
+      "defAtaque":        defAtaque,
       "class":            _padraoEfeito["classe_manipulacao"],
       "acerto":           _bonusAcerto,
       "cd":               (graduacao + 10),
@@ -697,6 +701,7 @@ class EfeitoDano extends EfeitoOfensivo{
       "duracao":          _duracao,
       "modificadores":    _modificador,
       "descricao":        desc,
+      "defAtaque":        defAtaque,
       "class":            _padraoEfeito["classe_manipulacao"],
       "acerto":           _bonusAcerto,
       "cd":               (graduacao + 15),
@@ -746,6 +751,7 @@ class EfeitoAflicao extends EfeitoOfensivo{
       "duracao":          _duracao,
       "modificadores":    _modificador,
       "descricao":        desc,
+      "defAtaque":        defAtaque,
       "class":            _padraoEfeito["classe_manipulacao"],
       "acerto":           _bonusAcerto,
       "cd":               (graduacao + 10),

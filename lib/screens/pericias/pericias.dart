@@ -15,6 +15,7 @@ class screenPericias extends StatefulWidget {
 class _screenPericiasState extends State<screenPericias> {
   List<Map> ListaPercias = [];
   Pericia pericia = Pericia();
+  Map mapPericiaReturn = {};
   int custoTotal = 0;
 
   List<TextEditingController> listInputs = [];
@@ -53,7 +54,21 @@ class _screenPericiasState extends State<screenPericias> {
   }
 
   @override
+  void dispose() {
+    //! adição do Chat GPT ao código
+    // Certifica-se de descartar todos os controladores ao finalizar
+    for (var controller in listInputs) {
+      controller.dispose();
+    }
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    //print(screenWidth); // deixar guardado para futuros debug
+    int crossAxisCount = 2;
+    crossAxisCount = screenWidth > 700 ? 2 : 1;
     return Scaffold(
         appBar: AppBar(
           //backgroundColor: Theme.of(context).colorScheme.inversePrimary,
@@ -65,76 +80,246 @@ class _screenPericiasState extends State<screenPericias> {
                     Navigator.of(context).pop()
                   }),
         ),
-        body: Column(
-          children: [
-          // Grid de Pericias
-          Expanded(
-            child: GridView.builder(
-              //; configurações de grid
-              //; para deixar mais proximo de uma ficha 2 colunas de pericias
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2, // Define o número de colunas
-                //maxCrossAxisExtent: 2,
-                childAspectRatio: 1,
-                crossAxisSpacing: 1,
-                mainAxisSpacing: 1
-
-                
-              ),
-
-              itemCount: ListaPercias.length,
-              itemBuilder: (context, index) {
-                Pericia defesa = Pericia();
-                defesa.init(ListaPercias[index]);
-                
-                return Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-
-                  child: Column(
-                    //mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(ListaPercias[index]["nome"]),
-                      const SizedBox(height: 10),
-                      Row(
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+            // Grid de Pericias
+            Expanded(
+              child: Container(
+                constraints: const BoxConstraints(maxWidth: 1200),
+                child: GridView.builder(
+                  //; configurações de grid
+                  //; para deixar mais proximo de uma ficha 2 colunas de pericias
+                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: crossAxisCount, // Define o número de colunas
+                    crossAxisSpacing: 8,  // Espaço horizontal entre os itens
+                    mainAxisSpacing: 1.0,  // Espaço vertical entre os itens
+                    childAspectRatio: 2.5,
+                                
+                    
+                  ),
+                                
+                  itemCount: ListaPercias.length,
+                  itemBuilder: (context, index) {
+                    Pericia periria = Pericia();
+                    periria.init(ListaPercias[index]);
+                    
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                                
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                      
+                          Text(ListaPercias[index]["nome"]),
+                          const SizedBox(height: 1),
                           SizedBox(
-                            width: 50,
-                            child: TextField(
-                              controller: listInputs[index],
-                              textAlign: TextAlign.center,
-                              decoration: const InputDecoration(
-                                border: OutlineInputBorder(),
-                              ),
-                              onChanged: (value) =>{
-                                if(int.tryParse(value) != null){
-                                  personagem.pericias.ListaPercias[index]["valor"] = int.parse(value),
-                                },                                
-                                // _updateValues(),
-                                setState(() {
-                                  custoTotal = personagem.pericias.calculaTotal();
-                                }),
-                              }
+                            width: 150,
+                            height: 100,
+                            child: Row(
+                              children: [
+                            
+                                SizedBox(
+                                  width: 50,
+                                  child: TextField(
+                                    controller: listInputs[index],
+                                    keyboardType: TextInputType.number,
+                                    inputFormatters: <TextInputFormatter>[
+                                      FilteringTextInputFormatter.digitsOnly
+                                    ],
+                                    textAlign: TextAlign.center,
+                                    decoration: const InputDecoration(
+                                      border: OutlineInputBorder(),
+                                    ),
+                                    onChanged: (value) =>{
+                                      if(int.tryParse(value) != null){
+                                        personagem.pericias.ListaPercias[index]["valor"] = int.parse(value),
+                                      },                                
+                                      // _updateValues(),
+                                      setState(() {
+                                        custoTotal = personagem.pericias.calculaTotal();
+                                      }),
+                                    }
+                                  ),
+                                ),
+                            
+                                const SizedBox(width: 10),
+                            
+                                Text("Total: ${pericia.bonusTotal()}"),
+                              ],
                             ),
                           ),
-
-                          const SizedBox(width: 10),
-
-                          Text("Total: ${pericia.bonusTotal()}"),
                         ],
                       ),
-                    ],
-                  ),
-                );
-              },
+                    );
+                  },
+                ),
+              ),
             ),
-          ),
-          SizedBox(
-            child: Text('Total: ${custoTotal.toString()}')
-          )
-        ]
-      )
+            SizedBox(
+              child: Text('Total: ${custoTotal.toString()}')
+            )
+          ]
+                ),
+        ),
+
+      //# Botão de Adicionar novas Perícias
+      floatingActionButton: FloatingActionButton(
+          tooltip: 'Adicionar Poder',
+          child: const Icon(Icons.add),
+          // Ação e PopUP
+          onPressed: () async => {
+            // Fecha o popup
+            mapPericiaReturn = await Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const PopUpAddSkill())
+            ),
+          },
+        ),
     );
   }
 }
+
+
+//# Dialogo de Adição de Perícias
+
+
+class PopUpAddSkill extends StatefulWidget {
+  const PopUpAddSkill({super.key});
+  @override
+  _PopUpAddSkillState createState() => _PopUpAddSkillState();
+}
+
+class _PopUpAddSkillState extends State<PopUpAddSkill> {
+  Map periciaSelecionada ={};
+  Map efeitoBonusSelec   = {};
+
+  List ofensivePoderes = [];
+  final List<Map<String, String>> periciaListAdd = [
+    {"id": "PA01", "nome": "Atque a Corpo-a-Corpo"},
+    {"id": "PA02", "nome": "Atque a Distância"},
+    {"id": "PA03", "nome": "Especialidade"}
+  ];
+
+  
+
+  TextEditingController inputDescrPericia = TextEditingController();
+  
+  @override
+  
+  void initState() {
+    // _title = widget.title;
+    super.initState();
+    _carregarDados(); // Carrega os dados ao iniciar o estado
+  }
+  Future<void> _carregarDados() async {
+    periciaSelecionada = periciaListAdd.first;
+
+    // Efeitos Ofensivos
+    ofensivePoderes = personagem.pericias.returnOfensiveEfeitos();
+    if(ofensivePoderes.isNotEmpty){efeitoBonusSelec = ofensivePoderes.first;}    
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Text('Adicionar Poderes'),
+      content: SingleChildScrollView(
+        child: ListBody(
+          children: <Widget>[
+          
+            //? Input nome da perícia ou descrição do grupo de acerto            
+            periciaSelecionada.isNotEmpty && "PA03" == periciaSelecionada["id"] 
+            ? TextField(
+              controller: inputDescrPericia,
+              decoration: const InputDecoration(
+                border: OutlineInputBorder(),
+                hintText: 'Perícias',
+              ),
+            )
+            : TextField(
+              controller: inputDescrPericia,
+              decoration: const InputDecoration(
+                border: OutlineInputBorder(),
+                hintText: 'Grupo de Acerto',
+              ),
+            ),
+
+            const SizedBox(height: 15,),
+            
+            //? Input de Perícia
+            DropdownButton<Map>(
+              value: periciaSelecionada,
+              icon: const Icon(Icons.arrow_downward),
+              elevation: 16,
+              style: const TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
+              underline: Container(
+                height: 2,
+              ),
+              onChanged: (value) {
+                setState(() {
+                  periciaSelecionada = value!;                  
+                });
+              },
+              items: periciaListAdd.map<DropdownMenuItem<Map>>((value) {
+                return DropdownMenuItem<Map>(
+                  value: value,
+                  child: Text(value["nome"].toString()),
+                );
+              }).toList(),
+            ),
+
+            //? Perícia baseada ou Efeito selecionado
+            ofensivePoderes.isNotEmpty && "PA03" != periciaSelecionada["id"] ?
+            DropdownButton<Map>(
+              value: efeitoBonusSelec,
+              icon: const Icon(Icons.arrow_downward),
+              elevation: 16,
+              style: const TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
+              underline: Container(
+                height: 2,
+              ),
+              onChanged: (value) {
+                setState(() {
+                  efeitoBonusSelec = value!;                  
+                });
+              },
+              items: ofensivePoderes.map<DropdownMenuItem<Map>>((value) {
+                return DropdownMenuItem<Map>(
+                  value: value,
+                  child: Text("${value["nome"]}: ${value["efeito"]}"),
+                );
+              }).toList(),
+            ) : const SizedBox(),
+
+
+          ]
+        )
+      ),
+      
+      actions: <Widget>[
+        TextButton(
+          child: const Text('Adicionar'),
+          onPressed: () async{
+            //? Pont de Atenção
+            // Anexa Descrição da Perícias
+            periciaSelecionada["escopo"] = inputDescrPericia.text;
+            // Fecha o popup
+            Navigator.of(context).pop(periciaSelecionada);
+          },
+        ),
+
+        TextButton(
+          child: const Text('Cancelar'),
+          onPressed: () {
+            // Fecha o popup
+            Navigator.of(context).pop(periciaSelecionada);
+          },
+        ),
+      ],
+      );
+  }
+}
+

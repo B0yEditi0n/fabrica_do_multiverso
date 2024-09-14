@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 //Screens
-import 'package:fabrica_do_multiverso/screens/screenPoderes/editorPoderes.dart';
+import 'package:fabrica_do_multiverso/screens/poderes/editorPoderes.dart';
 // popups
-import 'package:fabrica_do_multiverso/screens/screenPoderes/poderes/popup_addPoderes.dart';
+import 'package:fabrica_do_multiverso/screens/poderes/poderes/popup_addPoderes.dart';
 
 // Lib de Poderes
 import 'package:fabrica_do_multiverso/script/ficha.dart';
@@ -198,8 +198,7 @@ class _ControladorDePacotesState extends State<ControladorDePacotes> {
             objPoder = {},            
             objPoder = await Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => DynamicDialog(tipo: objPacote["tipo"], descNome: nomearEfeitos),
-              )
+              MaterialPageRoute(builder: (context) => DynamicDialog(tipo: objPacote["tipo"], descNome: nomearEfeitos))
             ),
             //! Atualiza a Lista de poderes
             if(objPoder.isNotEmpty){

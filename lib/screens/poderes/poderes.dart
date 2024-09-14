@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 // Screens de poderes
-import 'package:fabrica_do_multiverso/screens/screenPoderes/editorPoderes.dart';
-import 'package:fabrica_do_multiverso/screens/screenPoderes/poderes/popup_addPoderes.dart';
-import 'package:fabrica_do_multiverso/screens/screenPoderes/controlePacote.dart';
+import 'package:fabrica_do_multiverso/screens/poderes/editorPoderes.dart';
+import 'package:fabrica_do_multiverso/screens/poderes/poderes/popup_addPoderes.dart';
+import 'package:fabrica_do_multiverso/screens/poderes/controlePacote.dart';
 
 // Instancia de Poderes
 import 'package:fabrica_do_multiverso/script/ficha.dart';
@@ -137,7 +137,7 @@ class _ScreenPoderesState extends State<ScreenPoderes> {
           
         ),
 
-        //# Icone de Add
+        //# Icone de Adicionar Novos Poderes
 
         floatingActionButton: FloatingActionButton(
           tooltip: 'Adicionar Poder',

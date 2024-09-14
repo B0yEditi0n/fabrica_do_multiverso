@@ -35,6 +35,16 @@ class _screenDefesasState extends State<screenDefesas> {
       listDefesa.add(mapDefesas);
     }
   }
+
+  @override
+  void dispose() {
+    //! adição do Chat GPT ao código
+    // Certifica-se de descartar todos os controladores ao finalizar
+    for (var controller in listInputs) {
+      controller.dispose();
+    }
+    super.dispose();
+  }
   
   _updateValues(){
     custoTotal = personagem.defesas.calculaTotal();
@@ -95,6 +105,10 @@ class _screenDefesasState extends State<screenDefesas> {
                             width: 50,
                             child: TextField(
                               controller: listInputs[index],
+                              keyboardType: TextInputType.number,
+                              inputFormatters: <TextInputFormatter>[
+                                  FilteringTextInputFormatter.digitsOnly
+                              ],
                               enabled: !listDefesa[index]["imune"],
                               textAlign: TextAlign.center,
                               decoration: const InputDecoration(

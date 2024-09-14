@@ -5,11 +5,11 @@ import 'package:fabrica_do_multiverso/script/ficha.dart' ;
 import 'package:fabrica_do_multiverso/script/poderes/lib_efeitos.dart';
 
 // Funções e Pops adicionais
-import 'package:fabrica_do_multiverso/screens/screenPoderes/powerEdit/functions_controlEdition.dart';
+import 'package:fabrica_do_multiverso/screens/poderes/powerEdit/functions_controlEdition.dart';
 
-import 'package:fabrica_do_multiverso/screens/screenPoderes/powerEdit/popup_addModificadores.dart';
-import 'package:fabrica_do_multiverso/screens/screenPoderes/powerEdit/popup_OptPoderes.dart';
-import 'package:fabrica_do_multiverso/screens/screenPoderes/powerEdit/popup_inputValue.dart';
+import 'package:fabrica_do_multiverso/screens/poderes/powerEdit/popup_addModificadores.dart';
+import 'package:fabrica_do_multiverso/screens/poderes/powerEdit/popup_OptPoderes.dart';
+import 'package:fabrica_do_multiverso/screens/poderes/powerEdit/popup_inputValue.dart';
 
 class powerEdit extends StatefulWidget {
   final Map objEfeito;
@@ -98,7 +98,8 @@ class _powerEditState extends State<powerEdit> {
       txtDuracao = poder.returnStrDuracao();
 
       // Define os Widgets que irão aparecer
-      efeitoPessoal = (objPoder["alcance"] == 0);
+      efeitoPessoal = (objPoder["alcance"] == 0) || objPoder["defAtaque"] == true;
+      if( objPoder["defAtaque"] != null ) {efeitoOfensivo = objPoder["defAtaque"];}
       descricao = poder.returnObjDefault()["desc"];
       if(descricao){
         inputTextDesc.text = poder.desc;
@@ -139,6 +140,19 @@ class _powerEditState extends State<powerEdit> {
 
     });
 
+  }
+
+  @override
+  void dispose() {
+    //! adição do Chat GPT ao código
+    // Certifica-se de descartar todos os controladores ao finalizar
+    for (var controller in listInputModText) {
+      controller.dispose();
+    }
+    for (var controller in listInputOption) {
+      controller.dispose();
+    }
+    super.dispose();
   }
 
   //# ************

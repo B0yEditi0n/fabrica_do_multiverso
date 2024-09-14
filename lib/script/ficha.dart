@@ -267,9 +267,42 @@ class ManipulaPericias{
   }
 
   int calculaTotal(){
-    return 0;
+    int total = 0;
+    for(Map p in ListaPercias){
+      total += int.parse("${p["valor"]}");
+    }
+
+    return ( total / 2 ).ceil();
   }
-  //addPericias
+  
+  List returnOfensiveEfeitos(){
+    /*
+      retorna uma lista de efeitos compativeis com a 
+      perícias
+
+      - Argus;
+        Return: List<Map> | Retorna a Lista de poderes compativeis com acerto
+    */
+    List poderes = personagem.poderes.poderesLista;
+    List poderesFilter = [];
+    //; Poderes ofensivos e Sendo perto ou a distância
+    poderesFilter = poderes.where((p)=>(
+    // Efeitos Ofensivos nativos
+    (["EfeitoAflicao", "EfeitoOfensivo", "EfeitoDano"].contains(p["class"])
+    
+    // Efeitos Convetidos em Ofensivo
+    || p["defAtaque"] == true)
+    
+    // Alance sendo pero ou a ditância
+    && [1, 2].contains(p["alcance"]) 
+
+    )).toList();
+
+    // print(poderesFilter);
+    return poderesFilter;
+  }
+
+  
 }
 
 //# Classe de Manipulação de Ficha

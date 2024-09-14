@@ -1,3 +1,5 @@
+import 'package:fabrica_do_multiverso/script/ficha.dart';
+
 class Pericia{
   String id = "";
   String nome = "";
@@ -50,15 +52,6 @@ class PericiaAdiciona extends Pericia{
     /*
       adiciona a lista de bonus um efeito da lista de efeitos
     */
-  }
-
-  Map returnEfeitos(){
-    /*
-      retorna uma lista de efeitos compativeis com a 
-      perícias
-    */
-
-    return {};
   }
 
   @override 

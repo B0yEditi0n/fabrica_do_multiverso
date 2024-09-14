@@ -11,7 +11,7 @@ import 'package:fabrica_do_multiverso/theme/theme.dart';
 // Screens de Habilidades
 import 'package:fabrica_do_multiverso/screens/habilidades/habilidades.dart';
 // Screens de Poderes
-import 'package:fabrica_do_multiverso/screens/screenPoderes/controlePoderes.dart';
+import 'package:fabrica_do_multiverso/screens/poderes/poderes.dart';
 
 void main() {
   runApp(FabricaHerois());
@@ -58,9 +58,9 @@ class ScreenInicial extends StatelessWidget {
         title: const Text('Visão Geral do Pesonagem'),
       ),
       drawer: Drawer(
-        child: ListView(
+        child: Padding(
           padding: EdgeInsets.zero,
-          children: <Widget>[
+          child: Column( children: [
             const DrawerHeader(
               /*decoration: BoxDecoration(
                 color: Colors.blue,
@@ -73,6 +73,9 @@ class ScreenInicial extends StatelessWidget {
                 //),
               ),
             ),
+
+            const Divider(),
+
             ListTile(
               leading: const Icon(BootstrapIcons.yin_yang),
               title: const Text('Habilidades'),
@@ -120,12 +123,11 @@ class ScreenInicial extends StatelessWidget {
                 //Navigator.pushNamed(context, '/poderes');
               },
             ),
-
+            const Divider(),
             
-
-
-          ],
+          ]),
         ),
+        
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
