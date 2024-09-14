@@ -1,3 +1,4 @@
+import 'package:bootstrap_icons/bootstrap_icons.dart';
 import 'package:fabrica_do_multiverso/script/poderes/lib_efeitos.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -13,10 +14,10 @@ class screenPericias extends StatefulWidget {
 }
 
 class _screenPericiasState extends State<screenPericias> {
-  List<Map> ListaPercias = [];
-  Pericia pericia = Pericia();
-  Map mapPericiaReturn = {};
-  int custoTotal = 0;
+  List<Map> ListaPercias = []; // Pericias Adiconais
+  Pericia pericia = Pericia(); // Classe de Manipulação
+  Map mapPericiaReturn = {};   // Mapa de Retorno
+  int custoTotal = 0;          // Custo total
 
   List<TextEditingController> listInputs = [];
 
@@ -194,7 +195,8 @@ class PopUpAddSkill extends StatefulWidget {
 
 class _PopUpAddSkillState extends State<PopUpAddSkill> {
   Map periciaSelecionada ={};
-  Map efeitoBonusSelec   = {};
+  List<int> poderesBonusAcerto = []; // Poderes selecionados para bonus
+  Map efeitoBonusSelec   = {}; // Poderes Selecionado para dar bonus de acerto
 
   List ofensivePoderes = [];
   final List<Map<String, String>> periciaListAdd = [
@@ -218,107 +220,154 @@ class _PopUpAddSkillState extends State<PopUpAddSkill> {
     periciaSelecionada = periciaListAdd.first;
 
     // Efeitos Ofensivos
-    ofensivePoderes = personagem.pericias.returnOfensiveEfeitos();
+    int rangeOfensive = 0; 
+    periciaSelecionada["id"] == "PA01" ? rangeOfensive = 1 : null;
+    periciaSelecionada["id"] == "PA02" ? rangeOfensive = 2 : null;
+    ofensivePoderes = personagem.pericias.returnOfensiveEfeitos(rangeOfensive);
     if(ofensivePoderes.isNotEmpty){efeitoBonusSelec = ofensivePoderes.first;}    
   }
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Adicionar Poderes'),
+      title: const Text('Perícia Adicional'),
+
+
       content: SingleChildScrollView(
-        child: ListBody(
-          children: <Widget>[
+        child: 
+          Column(
+            children: <Widget>[
+              //? Input nome da perícia ou descrição do grupo de acerto            
+              periciaSelecionada.isNotEmpty && "PA03" == periciaSelecionada["id"] 
+              ? TextField(
+                controller: inputDescrPericia,
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  hintText: 'Perícias',
+                ),
+              )
+              : TextField(
+                controller: inputDescrPericia,
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  hintText: 'Grupo de Acerto',
+                ),
+              ),
           
-            //? Input nome da perícia ou descrição do grupo de acerto            
-            periciaSelecionada.isNotEmpty && "PA03" == periciaSelecionada["id"] 
-            ? TextField(
-              controller: inputDescrPericia,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: 'Perícias',
+              const SizedBox(height: 15,),
+              
+              //? Input de Perícia
+              DropdownButton<Map>(
+                value: periciaSelecionada,
+                icon: const Icon(Icons.arrow_downward),
+                elevation: 16,
+                style: const TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
+                underline: Container(
+                  height: 2,
+                ),
+                onChanged: (value) {
+                  // caso seja um retorno atualiza a lista de Poderes
+                  // Atualiza o estado das variáveis
+                  setState(() {
+                    periciaSelecionada = value!;     
+                    if(periciaSelecionada["id"] != "PA03"){ // Em caso de ofensivo estruturar lista
+                      int rangeOfensive = 0;
+                      periciaSelecionada["id"] == "PA01" ? rangeOfensive = 1 : null;
+                      periciaSelecionada["id"] == "PA02" ? rangeOfensive = 2 : null;
+                      ofensivePoderes = personagem.pericias.returnOfensiveEfeitos(rangeOfensive);
+                    }
+                    
+                  });
+                },
+                items: periciaListAdd.map<DropdownMenuItem<Map>>((value) {
+                  return DropdownMenuItem<Map>(
+                    value: value,
+                    child: Text(value["nome"].toString()),
+                  );
+                }).toList(),
               ),
-            )
-            : TextField(
-              controller: inputDescrPericia,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: 'Grupo de Acerto',
-              ),
-            ),
-
-            const SizedBox(height: 15,),
-            
-            //? Input de Perícia
-            DropdownButton<Map>(
-              value: periciaSelecionada,
-              icon: const Icon(Icons.arrow_downward),
-              elevation: 16,
-              style: const TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
-              underline: Container(
-                height: 2,
-              ),
-              onChanged: (value) {
-                setState(() {
-                  periciaSelecionada = value!;                  
-                });
-              },
-              items: periciaListAdd.map<DropdownMenuItem<Map>>((value) {
-                return DropdownMenuItem<Map>(
-                  value: value,
-                  child: Text(value["nome"].toString()),
-                );
-              }).toList(),
-            ),
-
-            //? Perícia baseada ou Efeito selecionado
-            ofensivePoderes.isNotEmpty && "PA03" != periciaSelecionada["id"] ?
-            DropdownButton<Map>(
-              value: efeitoBonusSelec,
-              icon: const Icon(Icons.arrow_downward),
-              elevation: 16,
-              style: const TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
-              underline: Container(
-                height: 2,
-              ),
-              onChanged: (value) {
-                setState(() {
-                  efeitoBonusSelec = value!;                  
-                });
-              },
-              items: ofensivePoderes.map<DropdownMenuItem<Map>>((value) {
-                return DropdownMenuItem<Map>(
-                  value: value,
-                  child: Text("${value["nome"]}: ${value["efeito"]}"),
-                );
-              }).toList(),
-            ) : const SizedBox(),
-
-
-          ]
-        )
-      ),
-      
-      actions: <Widget>[
-        TextButton(
-          child: const Text('Adicionar'),
-          onPressed: () async{
-            //? Pont de Atenção
-            // Anexa Descrição da Perícias
-            periciaSelecionada["escopo"] = inputDescrPericia.text;
-            // Fecha o popup
-            Navigator.of(context).pop(periciaSelecionada);
-          },
+          
+              //? Perícia baseada ou Poderes selecionado
+              ofensivePoderes.isNotEmpty && "PA03" != periciaSelecionada["id"] ?
+              Column(
+                children: [
+                  //? Poderes alvo de bonus
+                  SizedBox(
+                    height: 150,
+                    width: 300,
+                    child: ListView.builder(
+                      padding: const EdgeInsets.all(4),
+                      itemCount: poderesBonusAcerto.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return InkWell(
+                          child: Column(children: [
+                            //; Efeitos Adiconados a Perícia
+                            ListTile(
+                              title: Text(ofensivePoderes[poderesBonusAcerto[index]]['nome']),
+                              subtitle: Text(ofensivePoderes[poderesBonusAcerto[index]]['efeito']),
+                            ) 
+                          ],)
+                        );
+                      }
+                    ),
+                  ),
+                  DropdownButton<Map>(
+                    value: efeitoBonusSelec,
+                    icon: const Icon(Icons.arrow_downward),
+                    elevation: 16,
+                    style: const TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
+                    underline: Container(
+                      height: 2,
+                    ),
+                    onChanged: (value) {
+                      setState(() {
+                        efeitoBonusSelec = value!;                  
+                      });
+                    },
+                    items: ofensivePoderes.map<DropdownMenuItem<Map>>((value) {
+                      return DropdownMenuItem<Map>(
+                        value: value,
+                        child: Text("${value["nome"]}: ${value["efeito"]}"),
+                      );
+                    }).toList(),
+                  ),
+                  IconButton(
+                    icon: const Icon(BootstrapIcons.plus),
+                    onPressed: (){
+                      setState(() {
+                        print(poderesBonusAcerto);
+                        poderesBonusAcerto.add(efeitoBonusSelec["index"]);                      
+                      });                    
+                    },
+                  )
+                ],
+              ) : const SizedBox(),
+            ]
+          ),
         ),
-
-        TextButton(
-          child: const Text('Cancelar'),
-          onPressed: () {
-            // Fecha o popup
-            Navigator.of(context).pop(periciaSelecionada);
-          },
-        ),
-      ],
+        actions: [
+          //? Botões de cancelar e adicionar
+          TextButton(
+            child: const Text('Adicionar'),
+            onPressed: () async{
+              //? Pont de Atenção
+              // Anexa Descrição da Perícias
+              periciaSelecionada["escopo"] = inputDescrPericia.text;
+              // E o Poderes se Tiver
+              //"PA03" != periciaSelecionada["id"] ?? efeitoBonusSelec
+              // Fecha o popup
+              Navigator.of(context).pop(periciaSelecionada);
+            },
+          ),
+                
+          TextButton(
+            child: const Text('Cancelar'),
+            onPressed: () {
+              // Fecha o popup
+              Navigator.of(context).pop(periciaSelecionada);
+            },
+          )
+        ],
       );
   }
 }

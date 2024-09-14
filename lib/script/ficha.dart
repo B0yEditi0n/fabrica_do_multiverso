@@ -10,6 +10,16 @@ import 'package:fabrica_do_multiverso/screens/defesas/defesas.dart';
 import 'package:fabrica_do_multiverso/script/poderes/lib_efeitos.dart';
 import 'package:fabrica_do_multiverso/script/poderes/lib_pacoteEfeitos.dart';
 
+//# Classe de intercambio entre os modulos
+class IntercambioModular{
+  // Essa classe fica reponsável por alterações
+  // que devem acontecer fora do modulo
+
+  periciasOfensivas(){
+
+  }
+}
+
 //# Classe de Manipulação de Habilidades
 class ManipulaHabilidades{
   List listHab = [];
@@ -249,6 +259,9 @@ class ManipulaPoderes{
 class ManipulaPericias{
   List<Map> ListaPercias = [];
 
+  //Armazena Pericias Ofensivas
+  List ListOfensive = [];
+
   Future<int> init() async{
     /*
       instancia a lista de pericias armazenadas
@@ -275,18 +288,19 @@ class ManipulaPericias{
     return ( total / 2 ).ceil();
   }
   
-  List returnOfensiveEfeitos(){
+  List returnOfensiveEfeitos(int distancia){
     /*
-      retorna uma lista de efeitos compativeis com a 
-      perícias
+      retorna uma lista de poderes compativeis com a 
+      perícias, e realoca a lista de poderes se alterados
 
-      - Argus;
-        Return: List<Map> | Retorna a Lista de poderes compativeis com acerto
+      - Args;
+        - int distancia : 0 retornar tudo, 1 para perto, 2 para distância
+        - Return: List<Map>: Retorna a Lista de poderes compativeis com acerto
     */
     List poderes = personagem.poderes.poderesLista;
     List poderesFilter = [];
     //; Poderes ofensivos e Sendo perto ou a distância
-    poderesFilter = poderes.where((p)=>(
+    List mapPoderes = poderes.map((p)=>(
     // Efeitos Ofensivos nativos
     (["EfeitoAflicao", "EfeitoOfensivo", "EfeitoDano"].contains(p["class"])
     
@@ -298,7 +312,19 @@ class ManipulaPericias{
 
     )).toList();
 
-    // print(poderesFilter);
+    // Faz o append anexando o index
+    for(int i=0; i < mapPoderes.length; i++){
+      if(mapPoderes[i]){
+        ListOfensive.add(poderes[i]);
+        ListOfensive[i]["index"] = i;
+
+        // Apenda de acordo com a entrada
+        if(distancia == 0 || distancia == ListOfensive[i]["alcance"]){
+          poderesFilter.add(ListOfensive.last);
+        }
+      }
+      
+    }
     return poderesFilter;
   }
 
@@ -318,7 +344,9 @@ class Ficha{
   ManipulaDefesas defesas = ManipulaDefesas();
   ManipulaPericias pericias = ManipulaPericias();
 
-  List<String> complicacoes = [];
+  List<Map<String, String>> complicacoes = [];
+
+  IntercambioModular validador = IntercambioModular();
 
   Future<int> init() async{
     // await habilidades.init();
@@ -327,6 +355,8 @@ class Ficha{
 
     return 1;
   }
+
+  
 }
 
 Ficha personagem = Ficha();

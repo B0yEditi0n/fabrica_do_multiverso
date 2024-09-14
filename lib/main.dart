@@ -1,17 +1,22 @@
 import 'package:fabrica_do_multiverso/screens/pericias/pericias.dart';
 import 'package:flutter/services.dart';
 
-import 'package:fabrica_do_multiverso/screens/defesas/defesas.dart';
+
+
 import 'package:fabrica_do_multiverso/script/ficha.dart';
 import 'package:flutter/material.dart';
 import 'package:bootstrap_icons/bootstrap_icons.dart';
 
 // Temas
 import 'package:fabrica_do_multiverso/theme/theme.dart';
-// Screens de Habilidades
+// Screen de Habilidades
 import 'package:fabrica_do_multiverso/screens/habilidades/habilidades.dart';
+// Screen de Defesas
+import 'package:fabrica_do_multiverso/screens/defesas/defesas.dart';
 // Screens de Poderes
 import 'package:fabrica_do_multiverso/screens/poderes/poderes.dart';
+// Screen de Poderes
+import 'package:fabrica_do_multiverso/screens/complicacoes/complicacoes.dart';
 
 void main() {
   runApp(FabricaHerois());
@@ -33,6 +38,7 @@ class FabricaHerois extends StatelessWidget {
         '/defesas': (context) => const screenDefesas(),
         '/poderes': (context) => const ScreenPoderes(),
         '/pericias': (context) => const screenPericias(),
+        '/complicacoes': (context) => const ScreenComplicacoes(),
       },
     );
   }
@@ -120,7 +126,7 @@ class ScreenInicial extends StatelessWidget {
               leading: const Icon(BootstrapIcons.capsule),
               title: const Text('Complicações'),
               onTap: () {
-                //Navigator.pushNamed(context, '/poderes');
+                Navigator.pushNamed(context, '/complicacoes');
               },
             ),
             const Divider(),
