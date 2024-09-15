@@ -1,8 +1,6 @@
 import 'package:fabrica_do_multiverso/screens/pericias/pericias.dart';
 import 'package:flutter/services.dart';
 
-
-
 import 'package:fabrica_do_multiverso/script/ficha.dart';
 import 'package:flutter/material.dart';
 import 'package:bootstrap_icons/bootstrap_icons.dart';

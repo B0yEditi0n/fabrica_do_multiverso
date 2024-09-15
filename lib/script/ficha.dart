@@ -338,12 +338,14 @@ class Ficha{
   String nomePersonagem = '';
   int np = 10;
 
+  int acertoDis = 0;
+  int acertoPer = 0;
+
   // Instancia da Ficha
   ManipulaPoderes poderes = ManipulaPoderes();
   ManipulaHabilidades habilidades = ManipulaHabilidades();
   ManipulaDefesas defesas = ManipulaDefesas();
   ManipulaPericias pericias = ManipulaPericias();
-
   List<Map<String, String>> complicacoes = [];
 
   IntercambioModular validador = IntercambioModular();

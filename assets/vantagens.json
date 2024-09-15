@@ -1,0 +1,14 @@
+[
+    {
+        "id": "AÇÃO EM MOVIMENTO",
+        "graduada": false,
+        "bonus":[]
+    },
+    {
+        "id": "ATAQUE À DISTÂNCIA",
+        "graduada": true,
+        "bonus":{
+            "alvo": "aceto_perto"
+        }
+    }    
+]

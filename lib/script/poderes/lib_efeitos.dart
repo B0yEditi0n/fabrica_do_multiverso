@@ -570,9 +570,12 @@ class EfeitoCustoVaria extends EfeitoEscolha{
   }
 }
 
+//# classe Ofensiva
 class EfeitoOfensivo extends Efeito{
   int _bonusAcerto = 0;
-
+  int _critico = 0;
+  // Bonus de Efeito vindo de outros lugares
+  List bonus = [];
   // Implementação dos Construtores para os atributos adicionais
   @override
   Future<bool> reinstanciarMetodo(Map objPoder) async{
@@ -580,17 +583,36 @@ class EfeitoOfensivo extends Efeito{
     if(objPoder["acerto"] != null){
       _bonusAcerto = objPoder["acerto"];
     }
+
+    if(objPoder["bonus"] != null){
+      bonus = objPoder["bonus"];
+    }
     
     return true;
   }
 
-  addBonus(bonus){
+  void addBonus(bonus){
     if(_alcance != 3){ // Alacance a Percepão
       _bonusAcerto = bonus;
     }    
   }
 
   int bonusAcerto(){return _bonusAcerto;}
+
+  int getCritico(){
+    /*
+      contabiliza o critico total 
+    */
+    int bCritico = int.parse("${bonus.where((b) => b["alvo"] == "critico")}");
+    return bCritico + _critico;
+  }
+  
+  void defineCritic(int crit){ 
+    // checa se ah bonus na lista
+    if(getCritico() + crit <= 4){
+      _critico = crit;
+    }    
+  }
 
   @override
   int custearAlteracoes(){
@@ -654,6 +676,13 @@ class EfeitoOfensivo extends Efeito{
     return custoFinal;
   }
 
+  processaBonus(){
+    /*
+      Contabiliza o Bonus Inserido dentro do efeito
+    */
+  }
+
+  @override
   Map<String, dynamic> retornaObj(){
     /*
       Retorna um json com os dados montados
@@ -673,6 +702,8 @@ class EfeitoOfensivo extends Efeito{
       "descricao":        desc,
       "defAtaque":        defAtaque,
       "class":            _padraoEfeito["classe_manipulacao"],
+      "bonus":            bonus,
+      "critico":          _critico,
       "acerto":           _bonusAcerto,
       "cd":               (graduacao + 10),
       "custo":            custearAlteracoes(),
@@ -681,6 +712,8 @@ class EfeitoOfensivo extends Efeito{
   }
 
 }
+
+//# classe Dano
 
 class EfeitoDano extends EfeitoOfensivo{
   @override
@@ -703,6 +736,8 @@ class EfeitoDano extends EfeitoOfensivo{
       "descricao":        desc,
       "defAtaque":        defAtaque,
       "class":            _padraoEfeito["classe_manipulacao"],
+      "bonus":            bonus,      
+      "critico":          _critico,
       "acerto":           _bonusAcerto,
       "cd":               (graduacao + 15),
       "custo":            custearAlteracoes(),
@@ -710,6 +745,8 @@ class EfeitoDano extends EfeitoOfensivo{
     };
   }
 }
+
+//# classe Aflição
 class EfeitoAflicao extends EfeitoOfensivo{
   Map<int, String> _condicoes = {
     1: "",
@@ -754,6 +791,8 @@ class EfeitoAflicao extends EfeitoOfensivo{
       "defAtaque":        defAtaque,
       "class":            _padraoEfeito["classe_manipulacao"],
       "acerto":           _bonusAcerto,
+      "bonus":            bonus,
+      "critico":          _critico,
       "cd":               (graduacao + 10),
       "condicoes":        _condicoes,
       "custo":            custearAlteracoes(),

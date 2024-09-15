@@ -105,7 +105,6 @@ class _ScreenComplicacoesState extends State<ScreenComplicacoes> {
               MaterialPageRoute(builder: (context) => PopUpAddComplicacao(title: "", desc: ""),
               )
             ),
-            print(complicacaoObj),
             //! Atualiza a Lista de poderes
             if(complicacaoObj.isNotEmpty){
               personagem.complicacoes.add(complicacaoObj),
@@ -163,7 +162,6 @@ class _PopUpAddComplicacaoState extends State<PopUpAddComplicacao> {
             Column(
               children: <Widget>[
                 SizedBox(
-                  //height: 40,
                   child: TextField(
                     controller: txtTitle,
                     decoration: const InputDecoration(
