@@ -1,10 +1,10 @@
-import 'package:fabrica_do_multiverso/script/pericias/pericias.dart';
+import 'package:fabrica_do_multiverso/script/pericias/lib_pericias.dart';
 import 'package:flutter/services.dart'; // Biblioteca de Load files
 import 'dart:convert';                  // Biblitoeca de conversão de json
 
 // Bibliotecas
 import 'package:fabrica_do_multiverso/script/defesas/defesas.dart';
-import 'package:fabrica_do_multiverso/script/habilidades/habilidades.dart';
+import 'package:fabrica_do_multiverso/script/habilidades/ScreenHabilidades.dart';
 import 'package:fabrica_do_multiverso/screens/defesas/defesas.dart';
 //import 'package:fabrica_do_multiverso/screens/screenPoderes/controlePoderes.dart';
 import 'package:fabrica_do_multiverso/script/poderes/lib_efeitos.dart';
@@ -16,6 +16,22 @@ class IntercambioModular{
   // que devem acontecer fora do modulo
 
   periciasOfensivas(){
+
+  }
+  addBonusPericiaOfensivo(int id, int index, int bonus){
+    /*
+      Adiciona ou remove o bonus de uma pericia
+      ofensiva a um poder
+
+      Args: 
+        - int id: id de indentificação de qual pericia a adicionou
+        - int index: identifica a posição do poder
+        - int bonus: bonus a ser adicionado
+    */
+
+    
+  }
+  removeBonusPericiaOfensivo(int id, int index){
 
   }
 }
@@ -268,14 +284,15 @@ class ManipulaPericias{
     */
     String jsonEfeitos = await rootBundle.loadString('assets/pericias.json');
     List objetoJson = jsonDecode(jsonEfeitos);
-    for(Map oPericia in objetoJson){
-      Pericia pericia = Pericia();
-      pericia.init(oPericia);
 
-      ListaPercias.add(pericia.returnObj());
-    }
-    //return(objetoJson);
+    if(ListaPercias.isEmpty){ // Em caso de reinicio rápido
+      for(Map oPericia in objetoJson){
+        Pericia pericia = Pericia();
+        pericia.init(oPericia);
 
+        ListaPercias.add(pericia.returnObj());
+      }
+    } 
     return 1;
   }
 
@@ -316,10 +333,10 @@ class ManipulaPericias{
     for(int i=0; i < mapPoderes.length; i++){
       if(mapPoderes[i]){
         ListOfensive.add(poderes[i]);
-        ListOfensive[i]["index"] = i;
+        ListOfensive.last["index"] = i;
 
         // Apenda de acordo com a entrada
-        if(distancia == 0 || distancia == ListOfensive[i]["alcance"]){
+        if(distancia == 0 || distancia == ListOfensive.last["alcance"]){
           poderesFilter.add(ListOfensive.last);
         }
       }

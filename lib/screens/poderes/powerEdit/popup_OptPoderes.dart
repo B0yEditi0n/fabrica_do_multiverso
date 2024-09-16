@@ -1,5 +1,5 @@
 import 'dart:developer';
-import 'package:fabrica_do_multiverso/screens/poderes/poderes.dart';
+import 'package:fabrica_do_multiverso/screens/poderes/ScreenPoderes.dart';
 import 'package:numberpicker/numberpicker.dart';
 
 import 'package:fabrica_do_multiverso/script/poderes/lib_efeitos.dart';

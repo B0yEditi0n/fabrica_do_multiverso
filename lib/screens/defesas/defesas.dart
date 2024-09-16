@@ -80,6 +80,8 @@ class _screenDefesasState extends State<screenDefesas> {
                   }),
         ),
         body: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
           // Grid de Defesas
           Expanded(
@@ -93,12 +95,12 @@ class _screenDefesasState extends State<screenDefesas> {
                   padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
 
                   child: Column(
-                    //mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Text(listDefesa[index]["nome"]),
                       const SizedBox(height: 10),
                       Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                       
                           SizedBox(
@@ -118,7 +120,6 @@ class _screenDefesasState extends State<screenDefesas> {
                                 if(int.tryParse(value) != null){
                                   personagem.defesas.listaDefesas[index]["valor"] = int.parse(value),
                                 },                                
-                                // _updateValues(),
                                 setState(() {
                                   custoTotal = personagem.defesas.calculaTotal();
                                 }),
@@ -131,14 +132,18 @@ class _screenDefesasState extends State<screenDefesas> {
                           Text("Total: ${defesa.bonusTotal()}"),
                         ],
                       ),
+                      const SizedBox(height: 60),
                     ],
                   ),
                 );
               },
             ),
           ),
-          SizedBox(
-            child: Text('Total: ${custoTotal.toString()}')
+          Padding(
+            padding: const EdgeInsets.all(15.0),
+            child: SizedBox(
+              child: Text('Total: ${custoTotal.toString()}', style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w800))
+            ),
           )
         ]
       )

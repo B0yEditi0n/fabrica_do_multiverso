@@ -1,4 +1,4 @@
-import 'package:fabrica_do_multiverso/screens/pericias/pericias.dart';
+import 'package:fabrica_do_multiverso/screens/pericias/ScreenPericias.dart';
 import 'package:flutter/services.dart';
 
 import 'package:fabrica_do_multiverso/script/ficha.dart';
@@ -8,13 +8,13 @@ import 'package:bootstrap_icons/bootstrap_icons.dart';
 // Temas
 import 'package:fabrica_do_multiverso/theme/theme.dart';
 // Screen de Habilidades
-import 'package:fabrica_do_multiverso/screens/habilidades/habilidades.dart';
+import 'package:fabrica_do_multiverso/screens/habilidades/ScreenHabilidades.dart';
 // Screen de Defesas
 import 'package:fabrica_do_multiverso/screens/defesas/defesas.dart';
 // Screens de Poderes
-import 'package:fabrica_do_multiverso/screens/poderes/poderes.dart';
+import 'package:fabrica_do_multiverso/screens/poderes/ScreenPoderes.dart';
 // Screen de Poderes
-import 'package:fabrica_do_multiverso/screens/complicacoes/complicacoes.dart';
+import 'package:fabrica_do_multiverso/screens/complicacoes/ScreenComplicacoes.dart';
 
 void main() {
   runApp(FabricaHerois());
