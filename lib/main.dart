@@ -10,7 +10,7 @@ import 'package:fabrica_do_multiverso/theme/theme.dart';
 // Screen de Habilidades
 import 'package:fabrica_do_multiverso/screens/habilidades/ScreenHabilidades.dart';
 // Screen de Defesas
-import 'package:fabrica_do_multiverso/screens/defesas/defesas.dart';
+import 'package:fabrica_do_multiverso/screens/defesas/ScreenDefesas.dart';
 // Screens de Poderes
 import 'package:fabrica_do_multiverso/screens/poderes/ScreenPoderes.dart';
 // Screen de Poderes

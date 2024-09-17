@@ -92,7 +92,7 @@ class _ScreenPoderesState extends State<ScreenPoderes> {
                       child: ListView.builder(
                           itemCount: poderes[index]["efeitos"].length,
                           shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
+                          physics: const NeverScrollableScrollPhysics(),
                           itemBuilder: (context, indexE) {
                             return ListTile(
                               title: poderes[index]["efeitos"][indexE]["nome"] != "" 

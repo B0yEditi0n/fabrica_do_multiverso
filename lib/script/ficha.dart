@@ -5,7 +5,7 @@ import 'dart:convert';                  // Biblitoeca de conversão de json
 // Bibliotecas
 import 'package:fabrica_do_multiverso/script/defesas/defesas.dart';
 import 'package:fabrica_do_multiverso/script/habilidades/ScreenHabilidades.dart';
-import 'package:fabrica_do_multiverso/screens/defesas/defesas.dart';
+import 'package:fabrica_do_multiverso/screens/defesas/ScreenDefesas.dart';
 //import 'package:fabrica_do_multiverso/screens/screenPoderes/controlePoderes.dart';
 import 'package:fabrica_do_multiverso/script/poderes/lib_efeitos.dart';
 import 'package:fabrica_do_multiverso/script/poderes/lib_pacoteEfeitos.dart';

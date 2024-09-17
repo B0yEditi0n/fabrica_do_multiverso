@@ -47,37 +47,19 @@ class _PopUpAddSkillState extends State<PopUpAddSkill> {
   }
 
   void _addBonusOfensivo(){
-    print(ListIdxPoderes);
     // Evita que o mesmo efeito seja add 2 vezes
-    int i = 0;
-    while(addOfensivePoderes.length != ListIdxPoderes.length){
-      print("tamanho adicionado: ${addOfensivePoderes.length}");
-      print("tamanho do indice: ${ListIdxPoderes.length}");
-      print(addOfensivePoderes.length != ListIdxPoderes.length);
-      if(addOfensivePoderes.length > ListIdxPoderes.length){
-        print('${ofensivePoderes.where((o)=>o["index"] == ListIdxPoderes[i])}');
-        setState((){
-          addOfensivePoderes.add(
-            ofensivePoderes.where((o)=>o["index"] == ListIdxPoderes[i])
-          );
-        });
-      }
-      else if(addOfensivePoderes.length < ListIdxPoderes.length){
-        setState((){
-          addOfensivePoderes.removeWhere((o)=> !ListIdxPoderes.contains(o["index"]));
-        });
-      }
+    if(addOfensivePoderes.length != ListIdxPoderes.length){
+      setState(() {
+        // Adiciona os poderes a Lista
+        addOfensivePoderes = ofensivePoderes.where((o)=>ListIdxPoderes.contains(o["index"])).toList();
+        // Remove do disponíveis
+        avaliableOfenPoderes.removeWhere((a)=>ListIdxPoderes.contains(a["index"]));
+        if(avaliableOfenPoderes.isNotEmpty){
+          poderBonusEmSelec = avaliableOfenPoderes.first;
+        }        
 
-      i++;
-      if(i <= 600){
-        break;
-      };      
+      });
     }
-    
-    
-    setState(() {
-      avaliableOfenPoderes.remove((o)=> ListIdxPoderes.contains(o["index"]));  
-    });
     
   }
 
@@ -89,7 +71,7 @@ class _PopUpAddSkillState extends State<PopUpAddSkill> {
     periciaSelecionada["id"] == "PA01" ? rangeOfensive = 1 : null;
     periciaSelecionada["id"] == "PA02" ? rangeOfensive = 2 : null;
     ofensivePoderes = personagem.pericias.returnOfensiveEfeitos(rangeOfensive);
-    avaliableOfenPoderes = ofensivePoderes;
+    avaliableOfenPoderes.addAll(ofensivePoderes);
     if(avaliableOfenPoderes.isNotEmpty){poderBonusEmSelec = avaliableOfenPoderes.first;}
 
     // caso haja objetos carregados
@@ -169,7 +151,7 @@ class _PopUpAddSkillState extends State<PopUpAddSkill> {
               ): const SizedBox(),
           
               //? Perícia baseada ou Poderes selecionado
-              avaliableOfenPoderes.isNotEmpty && ["PA01", "PA02"].contains(periciaSelecionada["id"]) ?
+              ofensivePoderes.isNotEmpty && ["PA01", "PA02"].contains(periciaSelecionada["id"]) ?
               Column(
                 children: [
                   //? Poderes alvo de bonus
@@ -194,6 +176,7 @@ class _PopUpAddSkillState extends State<PopUpAddSkill> {
                     ),
                   ),
                   //? Seleciona poder a Ser adicionado
+                  avaliableOfenPoderes.isNotEmpty ?
                   DropdownButton<Map>(
                     value: poderBonusEmSelec,
                     icon: const Icon(Icons.arrow_downward),
@@ -213,19 +196,24 @@ class _PopUpAddSkillState extends State<PopUpAddSkill> {
                         child: Text("${value["nome"]}: ${value["efeito"]}"),
                       );
                     }).toList(),
-                  ),
+                  ) : const SizedBox(),
 
+                  avaliableOfenPoderes.isNotEmpty ?
                   IconButton(
                     //? Botão de Adição de Poder
                     //? ao acerto
-                    icon: const Icon(BootstrapIcons.plus),
+                    icon: const Icon(BootstrapIcons.plus_circle),
                     onPressed: (){
                       setState(() {
-                        ListIdxPoderes.add(poderBonusEmSelec["index"]);
-                        _addBonusOfensivo();
+                        // Evita Repetições ao adicionar
+                        if(!ListIdxPoderes.contains(poderBonusEmSelec["index"])){
+                          ListIdxPoderes.add(poderBonusEmSelec["index"]);
+                          _addBonusOfensivo();
+                        }
+                        
                       });                    
                     },
-                  )
+                  ) : const SizedBox(),
                 ],
               ) : const SizedBox(),
             ]
