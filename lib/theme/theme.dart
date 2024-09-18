@@ -19,6 +19,8 @@ const MaterialColor purpleSwatch = MaterialColor(
 
 ThemeData temaPadrao(){
   return (ThemeData(
+        primaryColorLight: Color.fromARGB(255, 89, 15, 216),
+        primaryColorDark: Color.fromARGB(255, 152, 97, 248),
         brightness: Brightness.dark,
         primarySwatch: purpleSwatch,
         visualDensity: VisualDensity.adaptivePlatformDensity,

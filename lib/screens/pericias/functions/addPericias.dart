@@ -2,6 +2,7 @@
 
 import 'package:bootstrap_icons/bootstrap_icons.dart';
 import 'package:flutter/material.dart';
+import 'package:multi_select_flutter/multi_select_flutter.dart';
 
 // Biblioteca de Pericias
 import 'package:fabrica_do_multiverso/script/ficha.dart';
@@ -20,13 +21,8 @@ class _PopUpAddSkillState extends State<PopUpAddSkill> {
 
   // Repetório de Efeitos Adicionados
   List ofensivePoderes = [];      // Repetório
-  List avaliableOfenPoderes = []; // Disponíveis para adição
   List addOfensivePoderes = [];   // Já adicionados
   List<int> ListIdxPoderes = [];  // Indice que volta pra retorno
-
-  // Qual efeito em seleção para receber bonus
-  Map poderBonusEmSelec   = {}; // Poderes Selecionado para dar bonus de acerto
-
 
   // Pericias Adicionaveis no Popup
   final List<Map<String, dynamic>> periciaListAdd = [
@@ -52,12 +48,6 @@ class _PopUpAddSkillState extends State<PopUpAddSkill> {
       setState(() {
         // Adiciona os poderes a Lista
         addOfensivePoderes = ofensivePoderes.where((o)=>ListIdxPoderes.contains(o["index"])).toList();
-        // Remove do disponíveis
-        avaliableOfenPoderes.removeWhere((a)=>ListIdxPoderes.contains(a["index"]));
-        if(avaliableOfenPoderes.isNotEmpty){
-          poderBonusEmSelec = avaliableOfenPoderes.first;
-        }        
-
       });
     }
     
@@ -71,8 +61,6 @@ class _PopUpAddSkillState extends State<PopUpAddSkill> {
     periciaSelecionada["id"] == "PA01" ? rangeOfensive = 1 : null;
     periciaSelecionada["id"] == "PA02" ? rangeOfensive = 2 : null;
     ofensivePoderes = personagem.pericias.returnOfensiveEfeitos(rangeOfensive);
-    avaliableOfenPoderes.addAll(ofensivePoderes);
-    if(avaliableOfenPoderes.isNotEmpty){poderBonusEmSelec = avaliableOfenPoderes.first;}
 
     // caso haja objetos carregados
     if(widget.obj.isNotEmpty){
@@ -154,66 +142,60 @@ class _PopUpAddSkillState extends State<PopUpAddSkill> {
               ofensivePoderes.isNotEmpty && ["PA01", "PA02"].contains(periciaSelecionada["id"]) ?
               Column(
                 children: [
-                  //? Poderes alvo de bonus
-                  SizedBox(
-                    height: 150,
-                    width: 300,
-                    child: ListView.builder(
-                      padding: const EdgeInsets.all(4),
-                      itemCount: addOfensivePoderes.length,
-                      itemBuilder: (BuildContext context, int idxPoder) {
-
-                        return InkWell(
-                          child: Column(children: [
-                            //; Efeitos Adiconados a Perícia
-                            ListTile(
-                              title: Text(addOfensivePoderes[idxPoder]['nome']),
-                              subtitle: Text(addOfensivePoderes[idxPoder]['efeito']),
-                            ) 
-                          ],)
-                        );
-                      }
-                    ),
-                  ),
                   //? Seleciona poder a Ser adicionado
-                  avaliableOfenPoderes.isNotEmpty ?
-                  DropdownButton<Map>(
-                    value: poderBonusEmSelec,
-                    icon: const Icon(Icons.arrow_downward),
-                    elevation: 16,
-                    style: const TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
-                    underline: Container(
-                      height: 2,
-                    ),
-                    onChanged: (value) {
-                      setState(() {
-                        poderBonusEmSelec = value!;                  
-                      });
-                    },
-                    items: avaliableOfenPoderes.map<DropdownMenuItem<Map>>((value) {
-                      return DropdownMenuItem<Map>(
-                        value: value,
-                        child: Text("${value["nome"]}: ${value["efeito"]}"),
+                  MultiSelectDialogField(
+                    items: ofensivePoderes.map<MultiSelectItem>((value) {
+                      return MultiSelectItem(
+                        value["index"],
+                        "${value["nome"]}${value["nome"].isNotEmpty ? ":" : ""} ${value["efeito"]}"
                       );
                     }).toList(),
-                  ) : const SizedBox(),
+                    listType: MultiSelectListType.LIST,
+                    initialValue: ListIdxPoderes,
 
-                  avaliableOfenPoderes.isNotEmpty ?
-                  IconButton(
-                    //? Botão de Adição de Poder
-                    //? ao acerto
-                    icon: const Icon(BootstrapIcons.plus_circle),
-                    onPressed: (){
+                    // Pop UP
+                    title: const Text("Poderes"),
+                    searchable: true,
+                    checkColor: const Color.fromARGB(255, 243, 243, 243),
+                    selectedColor: Theme.of(context).primaryColorDark,
+                    itemsTextStyle: const TextStyle(
+                      color: Colors.white
+                    ),
+                    selectedItemsTextStyle: const TextStyle(
+                      color: Colors.white
+                    ),
+
+
+
+                    decoration: BoxDecoration(
+                      //color: PrimaryScrollController.withOpacity(0.1),
+                      borderRadius: const BorderRadius.all(Radius.circular(40)),
+                      border: Border.all(
+                        color: const Color.fromARGB(255, 255, 8, 0),
+                        width: 2,
+                      ),
+                    ),
+                    buttonIcon: const Icon(
+                      BootstrapIcons.fire,
+                      color: Color.fromARGB(255, 255, 8, 0),
+                    ),
+                    buttonText: const Text(
+                      "Selecionar Poderes",
+                      style: TextStyle(
+                        //color: Colors.blue[800],
+                        fontSize: 16,
+                      ),
+                    ),  
+
+                    onConfirm: (results) {
                       setState(() {
                         // Evita Repetições ao adicionar
-                        if(!ListIdxPoderes.contains(poderBonusEmSelec["index"])){
-                          ListIdxPoderes.add(poderBonusEmSelec["index"]);
-                          _addBonusOfensivo();
-                        }
-                        
-                      });                    
+                        ListIdxPoderes = [];
+                        ListIdxPoderes.addAll(results.cast<int>());
+                        _addBonusOfensivo();                        
+                      });
                     },
-                  ) : const SizedBox(),
+                  )
                 ],
               ) : const SizedBox(),
             ]

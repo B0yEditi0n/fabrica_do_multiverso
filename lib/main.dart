@@ -134,7 +134,7 @@ class ScreenInicial extends StatelessWidget {
         
       ),
       body: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         //mainAxisSize: ,
         children: [
@@ -147,42 +147,45 @@ class ScreenInicial extends StatelessWidget {
           //   ),
           // ),
           Expanded(
-            child: Wrap(
-              direction: Axis.horizontal,
-              alignment: WrapAlignment.center,
-              crossAxisAlignment: WrapCrossAlignment.center,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center, // Alinha os itens no centro horizontalmente
+              crossAxisAlignment: CrossAxisAlignment.start, // Alinha os itens verticalmente
               children: [
-                //? Nome
-                SizedBox(
-                  width: (MediaQuery.of(context).size.width * 0.6),
-                  child: TextField(
-                    controller: txtControlName,
-                    decoration: const InputDecoration(hintText: "Nome do Personagem"),
-                    onChanged: (value)=>{
-                      personagem.nomePersonagem = value,
-                      _updateValue()
-                    },
-                  ),
+                Wrap(
+                  children: [
+                    //? Nome
+                    SizedBox(
+                      width: (MediaQuery.of(context).size.width * 0.6),
+                      child: TextField(
+                        controller: txtControlName,
+                        decoration: const InputDecoration(hintText: "Nome do Personagem"),
+                        onChanged: (value)=>{
+                          personagem.nomePersonagem = value,
+                          _updateValue()
+                        },
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    //? NP
+                    SizedBox(
+                      width: (MediaQuery.of(context).size.width * 0.3),
+                      child: TextField(
+                        controller: txtNP,
+                        decoration: const InputDecoration(hintText: "Nível de Poder"),
+                        keyboardType: TextInputType.number,
+                        inputFormatters: <TextInputFormatter>[
+                          FilteringTextInputFormatter.digitsOnly
+                        ],
+                        onChanged: (value)=>{
+                          if(int.tryParse(value) != null){
+                            personagem.np = int.parse(value)
+                          },
+                          _updateValue()
+                        },
+                      ),
+                    )
+                  ],
                 ),
-                const SizedBox(width: 10),
-                //? NP
-                SizedBox(
-                  width: (MediaQuery.of(context).size.width * 0.3),
-                  child: TextField(
-                    controller: txtNP,
-                    decoration: const InputDecoration(hintText: "Nível de Poder"),
-                    keyboardType: TextInputType.number,
-                    inputFormatters: <TextInputFormatter>[
-                      FilteringTextInputFormatter.digitsOnly
-                    ],
-                    onChanged: (value)=>{
-                      if(int.tryParse(value) != null){
-                        personagem.np = int.parse(value)
-                      },
-                      _updateValue()
-                    },
-                  ),
-                )
               ]
             ),
           )
