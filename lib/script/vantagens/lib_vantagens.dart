@@ -24,6 +24,9 @@ class Vantagem {
     if(obj["limite"] != null){
       limite = obj["limite"];
     }
+    if(obj["txtDec"] != null){
+      txtDec = obj["txtDec"];
+    }
 
     if(obj["bonus"] != null){
       //bonus.addAll();
@@ -38,11 +41,11 @@ class Vantagem {
       "id": id,
       "nome": nome,
       "desc": desc,
+      "txtDec": txtDec,
       "graduado": graduado,
       "graduacao": _graduacao,
       "limite": limite,
       "bonus": bonus,
-      "txtDec": txtDec,
       "class": "Vantagem",
     };
   }

@@ -54,7 +54,6 @@ class _ScreenVantagensState extends State<ScreenVantagens> {
     for(Map addedVantage in addVantagens){
       vantagensDisponiveis.removeWhere((e) => addedVantage["id"] == e["id"]);
     }
-    print(vantagensDisponiveis);
   }
 
   @override
@@ -76,6 +75,7 @@ class _ScreenVantagensState extends State<ScreenVantagens> {
       body: ListView.builder(
         itemCount: addVantagens.length,
         itemBuilder: (BuildContext context, int index){
+          //print(addVantagens[index]["graduacao"]);
           return InkWell(
             child: Column(
               children: [
@@ -88,8 +88,18 @@ class _ScreenVantagensState extends State<ScreenVantagens> {
                         Expanded(
                           child: 
                           addVantagens[index]["graduacao"] == 1 
-                          ? Text(addVantagens[index]["nome"], textAlign: TextAlign.center,)
-                          : Text("${addVantagens[index]["nome"]}[${addVantagens[index]["graduacao"]}]"  , textAlign: TextAlign.center,)
+                          ? Text(
+                            "${addVantagens[index]["nome"]} ${addVantagens[index]["txtDec"].isNotEmpty 
+                            ? '(' + addVantagens[index]["txtDec"] + ')' 
+                            : ""}", 
+                          textAlign: TextAlign.center,
+                          )
+                          : Text(
+                            "${addVantagens[index]["nome"]}[${addVantagens[index]["graduacao"]}] ${addVantagens[index]["txtDec"].isNotEmpty 
+                            ? '(' + addVantagens[index]["txtDec"] + ')' 
+                            : ""}", 
+                            textAlign: TextAlign.center,
+                          )
                         ),
                         IconButton(
                         icon: const  Icon(Icons.delete),

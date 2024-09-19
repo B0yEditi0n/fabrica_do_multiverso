@@ -41,6 +41,7 @@ class _PopUpAddVantagemState extends State<PopUpAddVantagem> {
     }else{
       selectVantagem = widget.obj;
       inputIntVantagem.text = widget.obj["graduacao"].toString();
+      textDesc.text = widget.obj["txtDec"];
     }
     
   }
@@ -100,14 +101,31 @@ class _PopUpAddVantagemState extends State<PopUpAddVantagem> {
                         inputFormatters: <TextInputFormatter>[
                           FilteringTextInputFormatter.digitsOnly
                         ],
-                        onChanged: (value) => {
-                          if (int.tryParse(value) != null 
-                          && selectVantagem["limite"] != null
-                          && int.parse(value) <= selectVantagem["limite"] 
-                          && int.parse(value) >= 1){
-                            setState(() {
-                              valueVantagem = int.parse(value);
-                            })
+
+                        onChanged: (value) => {                          
+                          // Tem que ser numérico
+                          if (int.tryParse(value) != null){
+                            // Minimo
+                            
+                            if(int.parse(value) >= 1){                              
+                              // Dentro do Máximo                              
+                              if ( selectVantagem["limite"] == 0 || int.parse(value) <= selectVantagem["limite"] ){
+                                setState(() {
+                                  valueVantagem = int.parse(value);
+                                })
+                              } else{ // Fora do Máximo
+                                setState(() {
+                                  valueVantagem = selectVantagem["limite"];
+                                })
+                              }
+                            }else{ // Fora do minimo
+                              setState(() {
+                                valueVantagem = 1;
+                              })
+                            }
+                          //   || int.parse(value) <= selectVantagem["limite"] )
+                          // && int.parse(value) >= 1){
+                            
                           },
                         },
                         decoration: const InputDecoration(
