@@ -7,7 +7,6 @@ import 'package:fabrica_do_multiverso/screens/poderes/ScreenControlePacote.dart'
 
 // Instancia de Poderes
 import 'package:fabrica_do_multiverso/script/ficha.dart';
-import 'package:flutter/widgets.dart';
 
 class ScreenPoderes extends StatefulWidget {
   const ScreenPoderes({super.key});
@@ -89,20 +88,18 @@ class _ScreenPoderesState extends State<ScreenPoderes> {
                 ? Padding(
                   padding: const EdgeInsets.only(left: 30.0),
                   child: Card(
-                      child: ListView.builder(
-                          itemCount: poderes[index]["efeitos"].length,
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemBuilder: (context, indexE) {
-                            return ListTile(
-                              title: poderes[index]["efeitos"][indexE]["nome"] != "" 
-                              ? Text("${poderes[index]["efeitos"][indexE]["nome"]}: ${poderes[index]["efeitos"][indexE]["efeito"]}")
-                              : Text("${poderes[index]["efeitos"][indexE]["efeito"]}")
-                            );
-                          }
-                          )
-                      //]
-                    //)
+                    child: ListView.builder(
+                      itemCount: poderes[index]["efeitos"].length,
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemBuilder: (context, indexE) {
+                        return ListTile(
+                          title: poderes[index]["efeitos"][indexE]["nome"] != "" 
+                          ? Text("${poderes[index]["efeitos"][indexE]["nome"]}: ${poderes[index]["efeitos"][indexE]["efeito"]}")
+                          : Text("${poderes[index]["efeitos"][indexE]["efeito"]}")
+                        );
+                      }
+                    )
                   ),
                 ) : const SizedBox()
               ],

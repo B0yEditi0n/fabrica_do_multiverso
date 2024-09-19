@@ -8,13 +8,13 @@ import 'package:fabrica_do_multiverso/screens/pericias/functions/addPericias.dar
 import 'package:fabrica_do_multiverso/script/ficha.dart';
 import 'package:fabrica_do_multiverso/script/pericias/lib_pericias.dart';
 
-class screenPericias extends StatefulWidget {
-  const screenPericias({super.key});
+class ScreenPericias extends StatefulWidget {
+  const ScreenPericias({super.key});
   @override
-  _screenPericiasState createState() => _screenPericiasState();
+  _ScreenPericiasState createState() => _ScreenPericiasState();
 }
 
-class _screenPericiasState extends State<screenPericias> {
+class _ScreenPericiasState extends State<ScreenPericias> {
   List<Map> ListaPercias = []; // Pericias Adiconais
   Pericia pericia = Pericia(); // Classe de Manipulação
   Map mapPericiaReturn = {};   // Mapa de Retorno

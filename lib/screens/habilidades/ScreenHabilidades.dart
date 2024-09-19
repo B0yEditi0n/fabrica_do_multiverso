@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 
 // Biblioteca de Habilidades
 import 'package:fabrica_do_multiverso/script/ficha.dart';
-import 'package:fabrica_do_multiverso/script/habilidades/ScreenHabilidades.dart';
+import 'package:fabrica_do_multiverso/script/habilidades/lib_habilidades.dart';
 
 class ScreenHabilidades extends StatefulWidget {
   const ScreenHabilidades({super.key});

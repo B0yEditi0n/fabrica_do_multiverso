@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 
 // Biblioteca de Defesas
 import 'package:fabrica_do_multiverso/script/ficha.dart';
-import 'package:fabrica_do_multiverso/script/defesas/defesas.dart';
+import 'package:fabrica_do_multiverso/script/defesas/lib_defesas.dart';
 
 class screenDefesas extends StatefulWidget {
   const screenDefesas({super.key});

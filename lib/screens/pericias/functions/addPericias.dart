@@ -57,9 +57,14 @@ class _PopUpAddSkillState extends State<PopUpAddSkill> {
     periciaSelecionada = periciaListAdd.first;
 
     // Efeitos Ofensivos
-    int rangeOfensive = 0; 
-    periciaSelecionada["id"] == "PA01" ? rangeOfensive = 1 : null;
-    periciaSelecionada["id"] == "PA02" ? rangeOfensive = 2 : null;
+    int rangeOfensive = 0;
+    if(widget.obj.isEmpty){
+      periciaSelecionada["id"] == "PA01" ? rangeOfensive = 1 : null;
+      periciaSelecionada["id"] == "PA02" ? rangeOfensive = 2 : null;
+    }else{ // Caso já esteja instanciado
+      widget.obj["id"] == "PA01" ? rangeOfensive = 1 : null;
+      widget.obj["id"] == "PA02" ? rangeOfensive = 2 : null;
+    }
     ofensivePoderes = personagem.pericias.returnOfensiveEfeitos(rangeOfensive);
 
     // caso haja objetos carregados
@@ -214,6 +219,14 @@ class _PopUpAddSkillState extends State<PopUpAddSkill> {
           ) : const SizedBox(),
 
           TextButton(
+            child: const Text('Cancelar'),
+            onPressed: () {
+              // Fecha o popup
+              Navigator.of(context).pop({});
+            },
+          ),
+
+          TextButton(
             child: const Text('Adicionar'),
             onPressed: () async{
               // Anexa Descrição e Valores a Perícias 
@@ -235,14 +248,6 @@ class _PopUpAddSkillState extends State<PopUpAddSkill> {
               //"PA03" != periciaSelecionada["id"] ?? efeitoBonusSelec
               // Fecha o popup
               Navigator.of(context).pop(periciaSelecionada);
-            },
-          ),
-                
-          TextButton(
-            child: const Text('Cancelar'),
-            onPressed: () {
-              // Fecha o popup
-              Navigator.of(context).pop({});
             },
           ),
         ],

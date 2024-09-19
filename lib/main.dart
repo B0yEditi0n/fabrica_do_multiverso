@@ -1,4 +1,5 @@
 import 'package:fabrica_do_multiverso/screens/pericias/ScreenPericias.dart';
+import 'package:fabrica_do_multiverso/screens/vantagens/ScreenVantagens.dart';
 import 'package:flutter/services.dart';
 
 import 'package:fabrica_do_multiverso/script/ficha.dart';
@@ -35,7 +36,8 @@ class FabricaHerois extends StatelessWidget {
         '/habilidades': (context) => const ScreenHabilidades(),
         '/defesas': (context) => const screenDefesas(),
         '/poderes': (context) => const ScreenPoderes(),
-        '/pericias': (context) => const screenPericias(),
+        '/vantagens': (context) => const ScreenVantagens(),
+        '/pericias': (context) => const ScreenPericias(),
         '/complicacoes': (context) => const ScreenComplicacoes(),
       },
     );
@@ -97,7 +99,7 @@ class ScreenInicial extends StatelessWidget {
             ),
 
             ListTile(
-              leading: const Icon(BootstrapIcons.fire),
+              leading: const Icon(BootstrapIcons.battery_charging /*(BootstrapIcons.fire*/ ),
               title: const Text('Poderes'),
               onTap: () {
                 Navigator.pushNamed(context, '/poderes');
@@ -108,7 +110,7 @@ class ScreenInicial extends StatelessWidget {
               leading: const Icon(Icons.paid),
               title: const Text('Vantagens'),
               onTap: () {
-                //Navigator.pushNamed(context, '/poderes');
+                Navigator.pushNamed(context, '/vantagens');
               },
             ),
 
@@ -121,7 +123,7 @@ class ScreenInicial extends StatelessWidget {
             ),
 
             ListTile(
-              leading: const Icon(BootstrapIcons.capsule),
+              leading: const Icon(Icons.personal_injury),
               title: const Text('Complicações'),
               onTap: () {
                 Navigator.pushNamed(context, '/complicacoes');
@@ -134,9 +136,6 @@ class ScreenInicial extends StatelessWidget {
         
       ),
       body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        //mainAxisSize: ,
         children: [
           //; descomentar quando for colcoar titulo
           // const Text(
@@ -148,8 +147,8 @@ class ScreenInicial extends StatelessWidget {
           // ),
           Expanded(
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.center, // Alinha os itens no centro horizontalmente
-              crossAxisAlignment: CrossAxisAlignment.start, // Alinha os itens verticalmente
+              mainAxisAlignment: MainAxisAlignment.center, 
+              crossAxisAlignment: CrossAxisAlignment.start, 
               children: [
                 Wrap(
                   children: [

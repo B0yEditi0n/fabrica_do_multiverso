@@ -1,14 +1,660 @@
 [
-    {
-        "id": "AÇÃO EM MOVIMENTO",
-        "graduada": false,
-        "bonus":[]
-    },
-    {
-        "id": "ATAQUE À DISTÂNCIA",
-        "graduada": true,
-        "bonus":{
-            "alvo": "aceto_perto"
-        }
-    }    
+	{
+		"id": "V001",
+		"nome": "AÇÃO EM MOVIMENTO",
+		"graduado": false,
+		"desc": false,
+		"class": "Vantagem"
+	},
+	{
+		"id": "V002",
+		"nome": "AGARRAR APRIMORADO",
+		"graduado": false,
+		"desc": false,
+		"class": "Vantagem"
+	},
+	{
+		"id": "V003",
+		"nome": "AGARRAR PRECISO",
+		"graduado": false,
+		"desc": false,
+		"class": "Vantagem"
+	},
+	{
+		"id": "V004",
+		"nome": "AGARRAR RÁPIDO",
+		"graduado": false,
+		"desc": false,
+		"class": "Vantagem"		
+	},
+	{
+		"id": "V005",
+		"nome": "AMBIENTE FAVORITO",
+		"graduado": false,
+		"desc": true,
+		"class": "Vantagem"
+	},
+	{
+		"id": "V006",
+		"nome": "ARMAÇÃO",
+		"graduado": true,
+		"desc": true,
+		"class": "Vantagem"
+	},
+	{
+		"id": "V007",
+		"nome": "ARMAS IMPROVISADAS",
+		"graduado": true,
+		"desc": false,
+		"bonus": [
+			"DAMAGE_CLOSE"
+		],
+		"class": "Vantagem"
+	},
+	{
+		"id": "V008",
+		"nome": "ARTÍFICE",
+		"graduado": false,
+		"desc": false,
+		"class": "Vantagem"
+	},
+	{
+		"id": "V009",
+		"nome": "ASSISTENTE",
+		"graduado": false,
+		"desc": false,
+		"class": "Vantagem"
+	},
+	{
+		"id": "V010",
+		"nome": "ASSUSTAR",
+		"graduado": false,
+		"desc": false,
+		"class": "Vantagem"
+	},
+	{
+		"id": "V011",
+		"nome": "ATAQUE À DISTÂNCIA",
+		"graduado": true,
+		"desc": false,
+		"bonus":[
+			"ACERTO_RANGE"
+		],
+		"class": "Vantagem"
+	},
+	{
+		"id": "V012",
+		"nome": "ATAQUE ACURADO",
+		"graduado": false,
+		"desc": false,
+		"class": "Vantagem"
+	},
+	{
+		"id": "V013",
+		"nome": "ATAQUE CORPO-A-CORPO",
+		"graduado": true,
+		"desc": false,
+		"bonus":[
+			"ACERTO_CLOSE"
+		],
+		"class": "Vantagem"
+	},
+	{
+		"id": "V014",
+		"nome": "ATAQUE DE EQUIPE",
+		"graduado": true,
+		"desc": false,
+		"bonus":[
+			"ACERTO_CLOSE"
+		],
+		"limite": 2,
+		"class": "Vantagem"
+	},
+	{
+		"id": "V015",
+		"nome": "ATAQUE DE EQUIPE",
+		"graduado": false,
+		"desc": false,
+		"class": "Vantagem"
+	},
+	{
+		"id": "V016",
+		"nome": "ATAQUE DE EQUIPE VARIÁVEL",
+		"graduado": false,
+		"desc": false,
+		"class": "Vantagem"
+	},
+	{
+		"id": "V017",
+		"nome": "ATAQUE DE EQUIPE VARIÁVEL",
+		"graduado": false,
+		"desc": false,
+		"class": "Vantagem"
+	},	
+	{
+		"id": "V018",
+		"nome": "ATAQUE DEFENSIVO",
+		"graduado": false,
+		"desc": false,
+		"class": "Vantagem"
+	},
+	{
+		"id": "V019",
+		"nome": "ATAQUE DOMINÓ",
+		"graduado": true,
+		"desc": false,
+		"limite": 2,
+		"class": "Vantagem"
+	},
+	{
+		"id": "V020",
+		"nome": "ATAQUE IMPRUDENTE",
+		"graduado": false,
+		"desc": false,
+		"class": "Vantagem"
+	},
+	{
+		"id": "V021",
+		"nome": "ATAQUE PODEROSO",
+		"graduado": false,
+		"desc": false,
+		"class": "Vantagem"
+	},
+	{
+		"id": "V022",
+		"nome": "ATAQUE PRECISO",
+		"graduado": true,
+		"desc": true,
+		"limite": 4,
+		"class": "Vantagem"
+	},
+	{
+		"id": "V023",
+		"nome": "ATRAENTE",
+		"graduado": true,
+		"desc": false,
+		"limite": 2,
+		"class": "Vantagem"		
+	},
+	{
+		"id": "V024",
+		"nome": "AVALIAÇÃO",
+		"graduado": false,
+		"desc": false,
+		"class": "Vantagem"
+	},
+	{
+		"id": "V025",
+		"nome": "BEM EQUIPADO",
+		"graduado": true,
+		"desc": false,
+		"class": "Vantagem"
+	},
+	{
+		"id": "V026",
+		"nome": "BEM INFORMADO",
+		"graduado": false,
+		"desc": false,
+		"class": "Vantagem"
+	},
+	{
+		"id": "V027",
+		"nome": "BEM RELACIONADO",
+		"graduado": false,
+		"desc": false,
+		"class": "Vantagem"
+	},
+	{
+		"id": "V028",
+		"nome": "BENEFÍCIO",
+		"graduado": true,
+		"desc": true,
+		"class": "Vantagem"
+	},
+	{
+		"id": "V029",
+		"nome": "CAPANGA",
+		"graduado": true,
+		"desc": true,
+		"limite_np": true,
+		"class": "Vantagem"
+	},
+	{
+		"id": "V030",
+		"nome": "CÓDIGO DE EQUIPE",
+		"graduado": false,
+		"desc": false,
+		"class": "Vantagem"
+	},
+	{
+		"id": "V031",
+		"nome": "CONTATOS",
+		"graduado": false,
+		"desc": false,
+		"class": "Vantagem"
+	},
+		{
+		"id": "V032",
+		"nome": "CRÍTICO APRIMORADO",
+		"graduado": true,
+		"desc": false,
+		"limite": 4,
+		"class": "VantagemCritico"
+	},
+	{
+		"id": "V033",
+		"nome": "DE PÉ",
+		"graduado": false,
+		"desc": false,
+		"class": "Vantagem"
+	},
+	{
+		"id": "V034",
+		"nome": "DEFESA APRIMORADA",
+		"graduado": false,
+		"desc": false,
+		"class": "Vantagem"
+	},
+	{
+		"id": "V035",
+		"nome": "DERRUBAR APRIMORADO",
+		"graduado": false,
+		"desc": false,
+		"class": "Vantagem"
+	},
+	{
+		"id": "V036",
+		"nome": "DESARME",
+		"graduado": true,
+		"desc": false,
+		"limite": 10,
+		"class": "Vantagem"
+	},
+	{
+		"id": "V037",
+		"nome": "DESARMAR APRIMORADO",
+		"graduado": false,
+		"desc": false,
+		"class": "Vantagem"
+	},
+	{
+		"id": "V038",
+		"nome": "DESTEMIDO",
+		"graduado": false,
+		"desc": false,
+		"class": "Vantagem"
+	},
+	{
+		"id": "V039",
+		"nome": "DURO DE MATAR",
+		"graduado": false,
+		"desc": false,
+		"class": "Vantagem"
+	},
+	{
+		"id": "V040",
+		"nome": "EMPATIA COM ANIMAIS",
+		"graduado": false,
+		"desc": false,
+		"class": "Vantagem"
+	},
+	{
+		"id": "V041",
+		"nome": "EQUIPAMENTO",
+		"graduado": true,
+		"desc": false,
+		"class": "VantagemEquipamento"
+	},
+	{
+		"id": "V042",
+		"nome": "ESCONDER-SE A PLENA VISTA",
+		"graduado": false,
+		"desc": false,
+		"class": "Vantagem"
+	},
+	{
+		"id": "V043",
+		"nome": "ESFORÇO EXTRAORDINÁRIO",
+		"graduado": false,
+		"desc": false,
+		"class": "Vantagem"
+	},
+	{
+		"id": "V044",
+		"nome": "ESFORÇO SUPREMO",
+		"graduado": false,
+		"desc": true,
+		"class": "Vantagem"
+	},
+	{
+		"id": "V045",
+		"nome": "ESQUIVA FABULOSA",
+		"graduado": false,
+		"desc": false,
+		"class": "Vantagem"
+	},
+	{
+		"id": "V046",
+		"nome": "ESTRANGULAR",
+		"graduado": false,
+		"desc": false,
+		"class": "Vantagem"
+	},
+	{
+		"id": "V047",
+		"nome": "EVASÃO",
+		"graduado": true,
+		"desc": false,
+		"limite": 2,
+		"class": "Vantagem"
+	},
+	{
+		"id": "V048",
+		"nome": "FASCINAR",
+		"graduado": true,
+		"desc": true,
+		"class": "Vantagem"
+	},
+	{
+		"id": "V049",
+		"nome": "FAZ-TUDO",
+		"graduado": false,
+		"desc": false,
+		"class": "Vantagem"
+	},
+	{
+		"id": "V050",
+		"nome": "FERRAMENTAS IMPROVISADAS",
+		"graduado": false,
+		"desc": false,
+		"class": "Vantagem"
+	},
+	{
+		"id": "V051",
+		"nome": "FINTA ÁGIL",
+		"graduado": false,
+		"desc": false,
+		"class": "Vantagem"
+	},
+	{
+		"id": "V052",
+		"nome": "IDIOMAS",
+		"graduado": true,
+		"desc": true,
+		"class": "Vantagem"
+	},
+	{
+		"id": "V053",
+		"nome": "IMOBILIZAR APRIMORADO",
+		"graduado": false,
+		"desc": false,
+		"class": "Vantagem"
+	},
+	{
+		"id": "V054",
+		"nome": "INICIATIVA APRIMORADA",
+		"graduado": true,
+		"desc": false,
+		"bonus":[
+			"INICIATIVA"
+		],
+		"class": "Vantagem"
+	},
+	{
+		"id": "V055",
+		"nome": "INSPIRAR",
+		"graduado": true,
+		"desc": false,
+		"limite": 5,
+		"class": "Vantagem"
+	},
+	{
+		"id": "V056",
+		"nome": "INTERPOR-SE",
+		"graduado": false,
+		"desc": false,
+		"class": "Vantagem"
+	},
+	{
+		"id": "V057",
+		"nome": "INVENTOR",
+		"graduado": false,
+		"desc": false,
+		"class": "Vantagem"
+	},
+	{
+		"id": "V058",
+		"nome": "LIDERANÇA",
+		"graduado": false,
+		"desc": false,
+		"class": "Vantagem"
+	},
+	{
+		"id": "V059",
+		"nome": "LUTA NO CHÃO",
+		"graduado": false,
+		"desc": false,
+		"class": "Vantagem"
+	},
+	{
+		"id": "V060",
+		"nome": "MAESTRIA EM ARREMESSO",
+		"graduado": false,
+		"desc": false,
+		"bonus": [
+			"DAMAGE_RANGE"
+		],
+		"class": "Vantagem"
+	},
+	{
+		"id": "V061",
+		"nome": "MAESTRIA EM PERÍCIA",
+		"graduado": true,
+		"desc": true,
+		"class": "Vantagem"
+	},
+	{
+		"id": "V062",
+		"nome": "MEMÓRIA EIDÉTICA",
+		"graduado": false,
+		"desc": false,
+		"class": "Vantagem"
+	},
+	{
+		"id": "V063",
+		"nome": "MANEIRO",
+		"graduado": true,
+		"desc": true,
+		"class": "Vantagem"
+	},
+	{
+		"id": "V064",
+		"nome": "MIRA APRIMORADA",
+		"graduado": false,
+		"desc": false,
+		"class": "Vantagem"
+	},
+	{
+		"id": "V065",
+		"nome": "OPONENTE FAVORITO",
+		"graduado": false,
+		"desc": false,
+		"class": "Vantagem"
+	},
+	{
+		"id": "V066",
+		"nome": "ORIENTAÇÃO",
+		"graduado": false,
+		"desc": false,
+		"class": "Vantagem"
+	},
+	{
+		"id": "V067",
+		"nome": "PARCEIRO",
+		"graduado": true,
+		"desc": false,
+		"class": "Vantagem"
+	},
+	{
+		"id": "V068",
+		"nome": "POTENCIAL DESCONHECIDO",
+		"graduado": false,
+		"desc": false,
+		"class": "Vantagem"
+	},
+	{
+		"id": "V069",
+		"nome": "PRENDER ARMA",
+		"graduado": false,
+		"desc": false,
+		"class": "Vantagem"
+	},
+	{
+		"id": "V070",
+		"nome": "QUEBRAR APRIMORADO",
+		"graduado": false,
+		"desc": false,
+		"class": "Vantagem"
+	},
+	{
+		"id": "V071",
+		"nome": "QUEBRAR ARMA",
+		"graduado": false,
+		"desc": false,
+		"class": "Vantagem"
+	},
+	{
+		"id": "V072",
+		"nome": "RASTREAR",
+		"graduado": false,
+		"desc": false,
+		"class": "Vantagem"
+	},
+	{
+		"id": "V073",
+		"nome": "REDIRECIONAR",
+		"graduado": false,
+		"desc": false,
+		"class": "Vantagem"
+	},
+	{
+		"id": "V074",
+		"nome": "RETENÇÃO",
+		"graduado": true,
+		"desc": false,
+		"limite": 6,
+		"class": "Vantagem"
+	},
+	{
+		"id": "V075",
+		"nome": "REVIVENDO ATAQUE EM EQUIPE",
+		"graduado": false,
+		"desc": false,
+		"class": "Vantagem"
+	},
+	{
+		"id": "V076",
+		"nome": "RITUALISTA",
+		"graduado": false,
+		"desc": false,
+		"class": "Vantagem"
+	},
+	{
+		"id": "V077",
+		"nome": "ROLAMENTO DEFENSIVO",
+		"graduado": false,
+		"desc": false,
+		"bonus":[
+			"RESISTANCE"
+		],
+		"class": "Vantagem"
+	},
+	{
+		"id": "V078",
+		"nome": "SAQUE RÁPIDO",
+		"graduado": false,
+		"desc": false,
+		"bonus":[
+			"RESISTANCE"
+		],
+		"class": "Vantagem"
+	},
+	{
+		"id": "V079",
+		"nome": "SEGUNDA CHANCE",
+		"graduado": true,
+		"desc": true,
+		"class": "Vantagem"
+	},
+	{
+		"id": "V080",
+		"nome": "SORTE",
+		"graduado": true,
+		"desc": true,
+		"class": "VantagemSorte"
+	},
+	{
+		"id": "V081",
+		"nome": "SORTE DE PRINCIPIANTE",
+		"graduado": false,
+		"desc": false,
+		"class": "Vantagem"
+	},
+	{
+		"id": "V082",
+		"nome": "TOLERÂNCIA MAIOR",
+		"graduado": false,
+		"desc": false,
+		"class": "Vantagem"
+	},
+	{
+		"id": "V083",
+		"nome": "TONTEAR",
+		"graduado": true,
+		"desc": false,
+		"limite": 2,
+		"class": "Vantagem"
+	},
+	{
+		"id": "V084",
+		"nome": "TOMAR INICIATIVA",
+		"graduado": false,
+		"desc": false,
+		"class": "Vantagem"
+	},
+	{
+		"id": "V085",
+		"nome": "TRABALHO EM EQUIPE",
+		"graduado": false,
+		"desc": false,
+		"class": "Vantagem"
+	},
+	{
+		"id": "V086",
+		"nome": "TRANSE",
+		"graduado": false,
+		"desc": false,
+		"class": "Vantagem"
+	},
+	{
+		"id": "V087",
+		"nome": "TRATAMENTO APRIMORADO",
+		"graduado": false,
+		"desc": false,
+		"class": "Vantagem"
+	},
+	{
+		"id": "V088",
+		"nome": "TREINAMENTO TÁTICO",
+		"graduado": false,
+		"desc": false,
+		"class": "Vantagem"
+	},
+	{
+		"id": "V089",
+		"nome": "ZOMBAR",
+		"graduado": false,
+		"desc": false,
+		"class": "Vantagem"
+	}
 ]

@@ -3,8 +3,8 @@ import 'package:flutter/services.dart'; // Biblioteca de Load files
 import 'dart:convert';                  // Biblitoeca de conversão de json
 
 // Bibliotecas
-import 'package:fabrica_do_multiverso/script/defesas/defesas.dart';
-import 'package:fabrica_do_multiverso/script/habilidades/ScreenHabilidades.dart';
+import 'package:fabrica_do_multiverso/script/defesas/lib_defesas.dart';
+import 'package:fabrica_do_multiverso/script/habilidades/lib_habilidades.dart';
 import 'package:fabrica_do_multiverso/screens/defesas/ScreenDefesas.dart';
 //import 'package:fabrica_do_multiverso/screens/screenPoderes/controlePoderes.dart';
 import 'package:fabrica_do_multiverso/script/poderes/lib_efeitos.dart';
@@ -272,6 +272,10 @@ class ManipulaPoderes{
 }
 
 //# Classe de manipulação de Perícias
+class ManipulaVantagens{
+  List<Map> listaVantagens = [];
+}
+//# Classe de manipulação de Perícias
 class ManipulaPericias{
   List<Map> ListaPercias = [];
 
@@ -325,7 +329,8 @@ class ManipulaPericias{
     || p["defAtaque"] == true)
     
     // Alance sendo pero ou a ditância
-    && [1, 2].contains(p["alcance"]) 
+    //&& [1, 2].contains(p["alcance"]) 
+    && distancia == p["alcance"]
 
     )).toList();
 
@@ -363,6 +368,7 @@ class Ficha{
   ManipulaHabilidades habilidades = ManipulaHabilidades();
   ManipulaDefesas defesas = ManipulaDefesas();
   ManipulaPericias pericias = ManipulaPericias();
+  ManipulaVantagens vantagens = ManipulaVantagens();
   List<Map<String, String>> complicacoes = [];
 
   IntercambioModular validador = IntercambioModular();
@@ -374,7 +380,6 @@ class Ficha{
 
     return 1;
   }
-
   
 }
 
