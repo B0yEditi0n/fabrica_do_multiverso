@@ -5,7 +5,7 @@ class Efeito{
   String nome = '' ;
   String _nomeEfeito = '';
   String _idEfeito = '';
-  int graduacao = 0;
+  int _graduacao = 0;
 
   int _acao = -1;    // 0 - Nenhuma | 1 - Padrao | 2 - Movimento | 3 - Livre | 4 - Reação
   int _alcance = -1; // 0 - Pessoal | 1 - Perto | 2 - A Distância | 3 - Percepção | 4 - Graduação
@@ -202,6 +202,9 @@ class Efeito{
 
   }
 
+  setGrad(valor){
+    _graduacao = valor;
+  }
   addModificador(objModificador){
     if(objModificador["grad"] == null){
       objModificador["grad"] = 1;
@@ -267,7 +270,7 @@ class Efeito{
         }        
       }else{ // Caso permanente
         custoAcao = _acao - 1; // Presupoem que o custo vem apartir de concentração
-      };
+      }
       
     }else{
       // Caso setado como ataque ignora o custo da ação default
@@ -324,10 +327,10 @@ class Efeito{
 
     // custo por graduação
     if(custoPorG >= 1){
-      custoFinal = graduacao * custoPorG;
+      custoFinal = _graduacao * custoPorG;
     }else{
       // 1 para varios
-      custoFinal = ( graduacao / ( custoPorG.abs() + 2 ) ).ceil();
+      custoFinal = ( _graduacao / ( custoPorG.abs() + 2 ) ).ceil();
     }
 
     // Calculo de fixos
@@ -529,7 +532,7 @@ class EfeitoEscolha extends Efeito{
       "nome":             nome,
       "e_id":             _idEfeito,
       "efeito":           _nomeEfeito,
-      "graduacao":        graduacao,
+      "graduacao":        _graduacao,
       "acao":             _acao,
       "alcance":          _alcance,
       "duracao":          _duracao,
@@ -546,10 +549,10 @@ class EfeitoEscolha extends Efeito{
 class EfeitoCompra extends EfeitoEscolha{
   @override 
   optsetCusto(){
-    graduacao = 0;
+    _graduacao = 0;
     for(Map option in opt){
       int valor = option["valor"];
-      graduacao += valor;
+      _graduacao += valor;
     }
     
   }
@@ -659,10 +662,10 @@ class EfeitoOfensivo extends Efeito{
 
     // custo por graduação
     if(custoPorG >= 1){
-      custoFinal = graduacao * custoPorG;
+      custoFinal = _graduacao * custoPorG;
     }else{
       // 1 para varios
-      custoFinal = ( graduacao / ( custoPorG.abs() + 2 ) ).ceil();
+      custoFinal = ( _graduacao / ( custoPorG.abs() + 2 ) ).ceil();
     }
 
     // Calculo de fixos
@@ -694,7 +697,7 @@ class EfeitoOfensivo extends Efeito{
       "nome":             nome,
       "e_id":             _idEfeito,
       "efeito":           _nomeEfeito,
-      "graduacao":        graduacao,
+      "graduacao":        _graduacao,
       "acao":             _acao,
       "alcance":          _alcance,
       "duracao":          _duracao,
@@ -705,7 +708,7 @@ class EfeitoOfensivo extends Efeito{
       "bonus":            bonus,
       "critico":          _critico,
       "acerto":           _bonusAcerto,
-      "cd":               (graduacao + 10),
+      "cd":               (_graduacao + 10),
       "custo":            custearAlteracoes(),
       
     };
@@ -800,5 +803,74 @@ class EfeitoAflicao extends EfeitoOfensivo{
     };
   }
 }
+
+class EfeitoBonus extends Efeito{
+  List alvoAumento = [];
+  String idCriacao = '';
+
+  @override
+  Future<bool> instanciarMetodo(String nome , String idEfeito) async{
+    /*
+      Carrega os atributos básicos do efeito 
+      o algoritimo que o chamar precisa usar await
+      para carregar o json
+
+      Args:
+        nome     - nome do poder a ser dados
+        idEfeito - id do efeito a ser inserido
+      Return:
+        Map Json - o Arquivo json
+    */
+    
+    super.instanciarMetodo(nome, idEfeito);
+    // P indica pode + o seu timestump
+    idCriacao = "P${DateTime.now().millisecondsSinceEpoch.toRadixString(16)}";
+
+    return true;
+  }
+
+  @override
+  Future<bool> reinstanciarMetodo(Map objPoder) async{
+    super.reinstanciarMetodo(objPoder);    
+    if(objPoder["alvoAumento"] != null){
+      alvoAumento = objPoder["alvoAumento"];
+    }
+
+    if(objPoder["idCriacao"] != null){
+      idCriacao = objPoder["idCriacao"];
+    }
+    
+    return true;
+  }
+
+  
+
+  Map<String, dynamic> retornaObj(){
+    /*
+      Retorna um json com os dados montados
+
+      Return:
+        Map Json - o Arquivo json
+    */
+    return{
+      "nome":             nome,
+      "e_id":             _idEfeito,
+      "efeito":           _nomeEfeito,
+      "graduacao":        graduacao,
+      "acao":             _acao,
+      "alcance":          _alcance,
+      "duracao":          _duracao,
+      "modificadores":    _modificador,
+      "descricao":        desc,
+      "defAtaque":        defAtaque,
+      "class":            "EfeitoBonus",
+      "idCriacao":        idCriacao,
+      "alvoAumento":      alvoAumento,
+      "custo":            custearAlteracoes(),
+    };
+  }
+
+}
+
 // Variável de Manipulação de Poderes
 var poder = Efeito();

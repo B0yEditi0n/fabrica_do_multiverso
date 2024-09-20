@@ -34,8 +34,6 @@ class Vantagem {
     }
   }
 
-
-
   Map returnObj(){
     return{
       "id": id,
