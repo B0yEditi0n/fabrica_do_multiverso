@@ -1,6 +1,9 @@
+import 'package:fabrica_do_multiverso/script/ficha.dart';
 import 'package:flutter/services.dart'; 
 import 'dart:convert';
 
+// intercambio
+import 'package:fabrica_do_multiverso/script/intercambio/intercambio.dart'; 
 class Efeito{
   String nome = '' ;
   String _nomeEfeito = '';
@@ -49,7 +52,7 @@ class Efeito{
     _acao       = efeitoAtual["acao"];
     _alcance    = efeitoAtual["alcance"];
     _duracao    = efeitoAtual["duracao"];
-    graduacao   = 1;
+    _graduacao   = 1;
 
     return true;
   }
@@ -68,7 +71,7 @@ class Efeito{
 
     nome = objPoder["nome"];
     _idEfeito = objPoder["e_id"];
-    graduacao = objPoder["graduacao"];
+    _graduacao = objPoder["graduacao"];
     _acao = objPoder["acao"];
     _alcance = objPoder["alcance"];
     _duracao = objPoder["duracao"];
@@ -202,7 +205,7 @@ class Efeito{
 
   }
 
-  setGrad(valor){
+  void setGrad(valor){
     _graduacao = valor;
   }
   addModificador(objModificador){
@@ -430,7 +433,7 @@ class Efeito{
       "nome":             nome,
       "e_id":             _idEfeito,
       "efeito":           _nomeEfeito,
-      "graduacao":        graduacao,
+      "graduacao":        _graduacao,
       "acao":             _acao,
       "alcance":          _alcance,
       "duracao":          _duracao,
@@ -704,7 +707,7 @@ class EfeitoOfensivo extends Efeito{
       "modificadores":    _modificador,
       "descricao":        desc,
       "defAtaque":        defAtaque,
-      "class":            _padraoEfeito["classe_manipulacao"],
+      "class":            "EfeitoOfensivo",
       "bonus":            bonus,
       "critico":          _critico,
       "acerto":           _bonusAcerto,
@@ -731,7 +734,7 @@ class EfeitoDano extends EfeitoOfensivo{
       "nome":             nome,
       "e_id":             _idEfeito,
       "efeito":           _nomeEfeito,
-      "graduacao":        graduacao,
+      "graduacao":        _graduacao,
       "acao":             _acao,
       "alcance":          _alcance,
       "duracao":          _duracao,
@@ -742,7 +745,7 @@ class EfeitoDano extends EfeitoOfensivo{
       "bonus":            bonus,      
       "critico":          _critico,
       "acerto":           _bonusAcerto,
-      "cd":               (graduacao + 15),
+      "cd":               (_graduacao + 15),
       "custo":            custearAlteracoes(),
       
     };
@@ -785,18 +788,18 @@ class EfeitoAflicao extends EfeitoOfensivo{
       "nome":             nome,
       "e_id":             _idEfeito,
       "efeito":           _nomeEfeito,
-      "graduacao":        graduacao,
+      "graduacao":        _graduacao,
       "acao":             _acao,
       "alcance":          _alcance,
       "duracao":          _duracao,
       "modificadores":    _modificador,
       "descricao":        desc,
       "defAtaque":        defAtaque,
-      "class":            _padraoEfeito["classe_manipulacao"],
+      "class":            "EfeitoAflicao",
       "acerto":           _bonusAcerto,
       "bonus":            bonus,
       "critico":          _critico,
-      "cd":               (graduacao + 10),
+      "cd":               (_graduacao + 10),
       "condicoes":        _condicoes,
       "custo":            custearAlteracoes(),
       
@@ -806,6 +809,7 @@ class EfeitoAflicao extends EfeitoOfensivo{
 
 class EfeitoBonus extends Efeito{
   List alvoAumento = [];
+  List grupoOpt = [];
   String idCriacao = '';
 
   @override
@@ -825,6 +829,17 @@ class EfeitoBonus extends Efeito{
     super.instanciarMetodo(nome, idEfeito);
     // P indica pode + o seu timestump
     idCriacao = "P${DateTime.now().millisecondsSinceEpoch.toRadixString(16)}";
+    
+    await getListaBonus(_padraoEfeito["grupoOpt"]);
+
+    return true;
+  }
+
+  Future<bool> getListaBonus(alvo) async{
+    //
+
+    String jsonString = await rootBundle.loadString('assets/poderes/$alvo.json');
+    List<Map> objetoJson = jsonDecode(jsonString).toList();
 
     return true;
   }
@@ -843,8 +858,20 @@ class EfeitoBonus extends Efeito{
     return true;
   }
 
-  
 
+  @override
+  void setGrad(valor){
+    /*
+      ao alterar graduação de habilidade
+      também irá aumentar o bonus em intercambio 
+    */
+    Intercambio bonusObj = Intercambio(idCriacao, alvoAumento);
+    
+    super.setGrad(valor);
+  }
+
+  
+  @override
   Map<String, dynamic> retornaObj(){
     /*
       Retorna um json com os dados montados
@@ -856,7 +883,7 @@ class EfeitoBonus extends Efeito{
       "nome":             nome,
       "e_id":             _idEfeito,
       "efeito":           _nomeEfeito,
-      "graduacao":        graduacao,
+      "graduacao":        _graduacao,
       "acao":             _acao,
       "alcance":          _alcance,
       "duracao":          _duracao,

@@ -138,17 +138,6 @@
         "classe_manipulacao": "Efeito"
     },
     {
-        "e_id": "E006",
-        "efeito": "Habilidade Aumentada",
-        "ofensivo": false,
-        "desc": false,
-        "custo_base": 2,
-        "acao": 3,
-        "alcance": 0,
-        "duracao": 3,
-        "classe_manipulacao": "Efeito"
-    },
-    {
         "e_id": "E007",
         "efeito": "Compreender",
         "ofensivo": false,
@@ -879,5 +868,60 @@
         "ofensivo": false,
         "desc": false,
         "classe_manipulacao": "Efeito"
+    },
+    {
+        "e_id": "PB01",
+        "efeito": "Habilidade Aumentada",
+        "ofensivo": false,
+        "desc": false,
+        "custo_base": 2,
+        "acao": 3,
+        "alcance": 0,
+        "duracao": 3,
+        "classe_manipulacao": "EfeitoBonus"
+    },
+    {
+        "e_id": "PB02",
+        "efeito": "Defesa Aumentada",
+        "ofensivo": false,
+        "desc": false,
+        "custo_base": 2,
+        "acao": 3,
+        "alcance": 0,
+        "duracao": 3,
+        "modificadores":[
+            {
+                "e_id": "ES01",
+                "nome": "Impenetrável",
+                "fixo": true,
+                "custo_base": 1,
+                "limite": 0,
+                "limite_grad": true,
+                "desc": false
+            }
+        ],
+        "classe_manipulacao": "EfeitoBonus"
+    },
+    {
+        "e_id": "PB03",
+        "efeito": "Vantagem Aumentada",
+        "ofensivo": false,
+        "desc": false,
+        "custo_base": 2,
+        "acao": 3,
+        "alcance": 0,
+        "duracao": 3,
+        "classe_manipulacao": "EfeitoBonus"
+    },
+    {
+        "e_id": "PB04",
+        "efeito": "Perícia Aumentada",
+        "ofensivo": false,
+        "desc": false,
+        "custo_base": 2,
+        "acao": 3,
+        "alcance": 0,
+        "duracao": 3,
+        "classe_manipulacao": "EfeitoBonus"
     }
 ]

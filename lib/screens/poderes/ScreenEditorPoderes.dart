@@ -221,18 +221,18 @@ class _powerEditState extends State<powerEdit> {
                           if(objPoder["graduacao"] == 0){
                             objPoder["graduacao"] = 1
                           },
-                          poder.graduacao = await Navigator.push(
+                          poder.setGrad( await Navigator.push(
                             context,
                             MaterialPageRoute(builder: (context) => PoupInputIntValue(
                               intValue: objPoder["graduacao"], 
                               titulo: 'Valor de Graduação',
                               iniValor: 1,
                             )),
-                          ),
+                          ) ),
                           //! Atualiza a Lista de poderes
                           setState(() {
                             objPoder = poder.retornaObj();
-                          })
+                          }) 
                         }
                       },
 

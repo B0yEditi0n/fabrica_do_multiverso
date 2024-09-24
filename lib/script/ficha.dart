@@ -12,6 +12,8 @@ import 'package:fabrica_do_multiverso/script/poderes/lib_pacoteEfeitos.dart';
 
 //# Classe de intercambio entre os modulos
 class IntercambioModular{
+  // Lista de Bonus
+  List<Object> bonus = [];
   // Essa classe fica reponsável por alterações
   // que devem acontecer fora do modulo
 
@@ -39,7 +41,7 @@ class IntercambioModular{
 //# Classe de Manipulação de Habilidades
 class ManipulaHabilidades{
   List listHab = [];
-
+  
   ManipulaHabilidades(){
     Habilidade forHabilidade = Habilidade();
     forHabilidade.init("FOR", 0, "Força");
@@ -73,6 +75,9 @@ class ManipulaHabilidades{
     preHabilidade.init("PRE", 0, "Presença");
     listHab.add(preHabilidade.objHabilidade());
 
+  }
+  init(){
+    
   }
 
   Habilidade getIndex(int index){
@@ -375,7 +380,7 @@ class Ficha{
 
   Future<int> init() async{
     // await habilidades.init();
-    // await habilidades.init();
+    await habilidades.init();
     await pericias.init();
 
     return 1;
