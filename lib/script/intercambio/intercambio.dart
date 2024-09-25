@@ -1,8 +1,8 @@
 class Intercambio {
   String _id = "";
-  List ListBonus = [];
+  List listBonus = [];
 
-  Intercambio(this._id, this.ListBonus){
+  init(id, listBonus){
     /*
       Adiciona um bonus a algum pedaço da ficha
       - Parm:
@@ -10,8 +10,10 @@ class Intercambio {
           TimeStamp em hexastring
         - List ListBonus: Atributo chave o destino do bonus, e valor é valor do bonus
     */
-
-    //; Nomenclatura
+    _id = id;
+    this.listBonus = listBonus;
+    
+    //for
     
   }
   

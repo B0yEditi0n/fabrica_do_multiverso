@@ -872,20 +872,25 @@
     {
         "e_id": "PB01",
         "efeito": "Habilidade Aumentada",
+        "escolha": true,
         "ofensivo": false,
         "desc": false,
+        "unico": false,
         "custo_base": 2,
         "acao": 3,
         "alcance": 0,
         "duracao": 3,
+        
         "grupoOpt": "HABILIDADE",
         "classe_manipulacao": "EfeitoBonus"
     },
     {
         "e_id": "PB02",
         "efeito": "Defesa Aumentada",
+        "escolha": true,
         "ofensivo": false,
         "desc": false,
+        "unico": false,
         "custo_base": 1,
         "acao": 3,
         "alcance": 0,
@@ -907,8 +912,10 @@
     {
         "e_id": "PB03",
         "efeito": "Vantagem Aumentada",
+        "escolha": true,
         "ofensivo": false,
         "desc": false,
+        "unico": false,
         "custo_base": 1,
         "acao": 3,
         "alcance": 0,
@@ -919,8 +926,10 @@
     {
         "e_id": "PB04",
         "efeito": "Perícia Aumentada",
+        "escolha": true,
         "ofensivo": false,
         "desc": false,
+        "unico": false,
         "custo_base": 1,
         "acao": 3,
         "alcance": 0,

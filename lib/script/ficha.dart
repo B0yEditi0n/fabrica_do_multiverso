@@ -198,6 +198,9 @@ class ManipulaPoderes{
     // Cria um novo Efeito
     Efeito poder;
     switch (classe) {
+      case "EfeitoBonus":
+        poder = EfeitoBonus();
+        break;
       case "EfeitoAflicao":
         poder = EfeitoAflicao();
         break;

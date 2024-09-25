@@ -543,13 +543,14 @@ class EfeitoEscolha extends Efeito{
       "descricao":        desc,
       "defAtaque":        defAtaque,
       "opt":              opt,
-      "class":            _padraoEfeito["classe_manipulacao"],
+      "class":            "EfeitoEscolha",
       "custo":            custearAlteracoes(),
     };
   }
 }
 
 class EfeitoCompra extends EfeitoEscolha{
+  /* Efeito de Escolha Define a Graduação e o custo é fixo */
   @override 
   optsetCusto(){
     _graduacao = 0;
@@ -562,6 +563,7 @@ class EfeitoCompra extends EfeitoEscolha{
 }
 
 class EfeitoCustoVaria extends EfeitoEscolha{
+  /* Efeito de Escolha Define a o custo base e a graduação é definida*/
   @override 
   optsetCusto(){
     int custoBase = 0;
@@ -808,9 +810,17 @@ class EfeitoAflicao extends EfeitoOfensivo{
 }
 
 class EfeitoBonus extends Efeito{
+  /* 
+    Apesar de semelhante a escolha a tratativa é bem
+    mais estritiva em EfeitoBonus
+  */
+
   List alvoAumento = [];
   List grupoOpt = [];
   String idCriacao = '';
+  List opt = [];
+
+  Intercambio bonusObj = Intercambio(); // objeto de inicialização
 
   @override
   Future<bool> instanciarMetodo(String nome , String idEfeito) async{
@@ -827,19 +837,9 @@ class EfeitoBonus extends Efeito{
     */
     
     super.instanciarMetodo(nome, idEfeito);
-    // P indica pode + o seu timestump
+    // P indica poder + o seu timestump
     idCriacao = "P${DateTime.now().millisecondsSinceEpoch.toRadixString(16)}";
-    
-    await getListaBonus(_padraoEfeito["grupoOpt"]);
-
-    return true;
-  }
-
-  Future<bool> getListaBonus(alvo) async{
-    //
-
-    String jsonString = await rootBundle.loadString('assets/poderes/$alvo.json');
-    List<Map> objetoJson = jsonDecode(jsonString).toList();
+    bonusObj.init(idCriacao, alvoAumento);
 
     return true;
   }
@@ -863,11 +863,25 @@ class EfeitoBonus extends Efeito{
   void setGrad(valor){
     /*
       ao alterar graduação de habilidade
-      também irá aumentar o bonus em intercambio 
+      tamList returnListOpt(){bém irá aumentar o bonus em intercambio 
     */
-    Intercambio bonusObj = Intercambio(idCriacao, alvoAumento);
     
     super.setGrad(valor);
+  }
+
+  Future<List<Map>> returnListOpt() async{
+    /*
+      Busca os valores de compra baseados na classe
+
+      Param:
+        String alvo: tras o nome do arquivo dentro do repósitório json
+      Returns: 
+        bool:  indica sucesso e fim da execução do metodo
+    */
+
+    String jsonString = await rootBundle.loadString('assets/poderes/${_padraoEfeito["grupoOpt"]}.json');
+    List<Map> objetoJson = jsonDecode(jsonString).toList();
+    return objetoJson;
   }
 
   
@@ -893,6 +907,7 @@ class EfeitoBonus extends Efeito{
       "class":            "EfeitoBonus",
       "idCriacao":        idCriacao,
       "alvoAumento":      alvoAumento,
+      "opt":              opt,
       "custo":            custearAlteracoes(),
     };
   }
