@@ -869,7 +869,7 @@ class EfeitoBonus extends Efeito{
     super.setGrad(valor);
   }
 
-  Future<List<Map>> returnListOpt() async{
+  Future<List> returnListOpt() async{
     /*
       Busca os valores de compra baseados na classe
 
@@ -879,8 +879,8 @@ class EfeitoBonus extends Efeito{
         bool:  indica sucesso e fim da execução do metodo
     */
 
-    String jsonString = await rootBundle.loadString('assets/poderes/${_padraoEfeito["grupoOpt"]}.json');
-    List<Map> objetoJson = jsonDecode(jsonString).toList();
+    String jsonString = await rootBundle.loadString('assets/${_padraoEfeito["grupoOpt"]}.json');    
+    List objetoJson = jsonDecode(jsonString);
     return objetoJson;
   }
 

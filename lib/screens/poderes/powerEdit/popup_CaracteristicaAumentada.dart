@@ -16,16 +16,15 @@ class AddCaractAumet extends StatefulWidget {
 }
 
 class _AddCaractAumetState extends State<AddCaractAumet> {
-  List optionsCompra = [];
-  Map optSelecionado = {};
-  int optGrad = 1;
+  List caractCompra = [];
+  Map caractSel = {};
+  int gradValue = 1;
 
-  EfeitoEscolha poderCompra = EfeitoEscolha();
+  EfeitoBonus poderCompra = EfeitoBonus();
 
-  TextEditingController inputTextOpt = TextEditingController();
-  String optionCompraSelecionado = '';
-  @override
-  
+  TextEditingController inputValue = TextEditingController( text: '1' );
+
+  @override  
   void initState() {
     // _title = widget.title;
     super.initState();
@@ -33,64 +32,65 @@ class _AddCaractAumetState extends State<AddCaractAumet> {
     
   }
   Future<bool> _carregarDados() async {
-    // Carrega o Efeitos
-    String jsonEfeitos = await rootBundle.loadString('assets/poderes/efeitos.json');
-    List objEfeitos = jsonDecode(jsonEfeitos);
     
     // força um cast na classe para acessar os metodos sem problemas
     // de sintaxe
-    poderCompra = poder as EfeitoEscolha;
+    poderCompra = poder as EfeitoBonus;
 
-    String idEfeito = poderCompra.retornaObj()["e_id"];
-    //int index = objEfeitos.indexWhere((efeito) => efeito["e_id"] == idEfeito);
-    //Map efeito = objEfeitos[index];
-    List efeitosOpt = [];
-    //if (poderCompra.returnListOpt() != null){
-    setState(() {      
-        efeitosOpt = poderCompra.returnListOpt();        
+    List listTemp = await poderCompra.returnListOpt();  
+    setState(() {   
+      caractCompra = listTemp;
+      caractSel = caractCompra.first;
     });
-    //}
-    optionsCompra = efeitosOpt;
-    // Define o inicial da lista
-    optionCompraSelecionado = optionsCompra.first["ID"];
-    optSelecionado = optionsCompra.first;
-    
-    return true;
 
+    return true;
   }
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Adicionar Poderes'),
+      title: const Text('Caracteristica Selecionada'),
       content: SingleChildScrollView(
         child: ListBody(
-          children: <Widget>[ 
-            // Escolha do modificador
-            DropdownButton<String>(
-              value: optionCompraSelecionado,
-              //icon: const Icon(Icons.arrow_downward),
-              //elevation: 16,
+          children: <Widget>[             
+            // Valor da Caracteristica (Atenção para Vantagens)
+            SizedBox(
+              width: 50,
+              child: TextField(
+                controller: inputValue,
+                keyboardType: TextInputType.number,
+                inputFormatters: <TextInputFormatter>[
+                    FilteringTextInputFormatter.digitsOnly
+                ],
+                onChanged: (value) {
+                  // Validar a entrada para evitar texto
+                  // E Evita o máximo
+                  setState((){
+                    gradValue = int.parse(value);
+                  });  
+                }
+              )
+            ),
+
+            const SizedBox(height: 30),
+
+            // Escolha da Caracteristica 
+            DropdownButton(
+              value: caractSel,
               style: const TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
-              /*underline: Container(
-                height: 2,
-              ),*/
-              onChanged: (String? value) {
-                setState(() {
-                  optionCompraSelecionado = value!;
-                  // Atualiza o selecionado
-                  int index = optionsCompra.indexWhere((mod) => mod["ID"] == optionCompraSelecionado);
-                  optSelecionado = optionsCompra[index];
-                  // Resta a Graduação
-                  optGrad = 1;
-                });
-              },
-              items: optionsCompra.map<DropdownMenuItem<String>>((value) {
-                return DropdownMenuItem<String>(
-                  value: value["ID"], 
-                  child: Text(value["desc"].toString()),
+              items: caractCompra.map<DropdownMenuItem<Map>>((value) {
+                return DropdownMenuItem(
+                  value: value, 
+                  child: Text(value["nome"].toString()),
                 );
               }).toList(),
+
+              onChanged: (value) {
+                setState(() {
+                  caractSel = value!;
+                });
+              },
+
             ),
             
           ]
@@ -102,7 +102,7 @@ class _AddCaractAumetState extends State<AddCaractAumet> {
           onPressed: () async{
             // Atualiza a Classe
             
-            poderCompra.addOpt(optSelecionado); 
+            //poderCompra.addOpt(optSelecionado); 
 
             // Fecha o Popup
             Navigator.of(context).pop();

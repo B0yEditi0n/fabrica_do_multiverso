@@ -26,6 +26,7 @@ class _powerEditState extends State<powerEdit> {
   String txtAcao = "";
   String txtAlcance = "";
   String txtDuracao = "";
+  
   List modificadores = [];
   List compra = [];
   List caractAumentada = [];

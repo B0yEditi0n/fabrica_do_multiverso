@@ -66,6 +66,7 @@ flutter:
       - assets/poderes/efeitos.json
       - assets/poderes/modificadores.json
       - assets/poderes/pacotes.json
+      - assets/habilidades.json
       - assets/defesas.json
       - assets/pericias.json
       - assets/vantagens.json
