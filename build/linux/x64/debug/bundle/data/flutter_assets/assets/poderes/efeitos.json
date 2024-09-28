@@ -936,5 +936,34 @@
         "duracao": 3,
         "grupoOpt": "pericias",
         "classe_manipulacao": "EfeitoBonus"
+    },
+    {
+        "e_id": "PB06",
+        "efeito": "Crescimento",
+        "escolha": false,
+        "ofensivo": false,
+        "desc": false,
+        "unico": false,
+        "custo_base": 2,
+        "acao": 3,
+        "alcance": 0,
+        "duracao": 3,
+        "grupoOpt": "CRE",
+        "classe_manipulacao": "EfeitoCrescimento"
+    }
+    ,
+    {
+        "e_id": "PB06",
+        "efeito": "Crescimento",
+        "escolha": false,
+        "ofensivo": false,
+        "desc": false,
+        "unico": false,
+        "custo_base": 2,
+        "acao": 3,
+        "alcance": 0,
+        "duracao": 3,
+        "grupoOpt": "ENC",
+        "classe_manipulacao": "EfeitoCrescimento"
     }
 ]

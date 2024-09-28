@@ -232,7 +232,9 @@ class _powerEditState extends State<powerEdit> {
                      
                     TextButton(
                       onPressed: () async => {
-                        if(poder is! EfeitoCompra){ // Garante que jogador não escolha graduações de efeitos de compra
+                        // Garante que jogador não escolha graduações de efeitos de compra ou bonus
+                        if(poder is! EfeitoCompra 
+                        && poder.retornaObj()["class"] != "EfeitoBonus"){ 
                           if(objPoder["graduacao"] == 0){
                             objPoder["graduacao"] = 1
                           },
