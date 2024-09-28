@@ -815,7 +815,7 @@ class EfeitoBonus extends Efeito{
     mais estritiva em EfeitoBonus
   */
 
-  List alvoAumento = [];
+  List _alvoAumento = [];
   List grupoOpt = [];
   String idCriacao = '';
   List opt = [];
@@ -839,7 +839,7 @@ class EfeitoBonus extends Efeito{
     super.instanciarMetodo(nome, idEfeito);
     // P indica poder + o seu timestump
     idCriacao = "P${DateTime.now().millisecondsSinceEpoch.toRadixString(16)}";
-    bonusObj.init(idCriacao, alvoAumento);
+    bonusObj.init(idCriacao, _alvoAumento);
 
     return true;
   }
@@ -848,7 +848,7 @@ class EfeitoBonus extends Efeito{
   Future<bool> reinstanciarMetodo(Map objPoder) async{
     super.reinstanciarMetodo(objPoder);    
     if(objPoder["alvoAumento"] != null){
-      alvoAumento = objPoder["alvoAumento"];
+      _alvoAumento = objPoder["alvoAumento"];
     }
 
     if(objPoder["idCriacao"] != null){
@@ -858,15 +858,24 @@ class EfeitoBonus extends Efeito{
     return true;
   }
 
+  void addBonus(Map bonus){
+    int idx = _alvoAumento.indexWhere((e) => e["id"] == bonus["id"]);
+    if(idx > -1){
+      _alvoAumento[idx] = bonus;
+    }else{
+      _alvoAumento.add(bonus);
+    }
+    configBonus();
+  }
 
-  @override
-  void setGrad(valor){
+  void removeIndexBonus(int index){configBonus(); _alvoAumento.removeAt(index);}
+  List returnBonusList(){return _alvoAumento;}
+
+  void configBonus(){
     /*
-      ao alterar graduação de habilidade
-      tamList returnListOpt(){bém irá aumentar o bonus em intercambio 
+      reflete o bonus da classe para outras partes da ficha
     */
-    
-    super.setGrad(valor);
+    //personagem.validador
   }
 
   Future<List> returnListOpt() async{
@@ -906,12 +915,41 @@ class EfeitoBonus extends Efeito{
       "defAtaque":        defAtaque,
       "class":            "EfeitoBonus",
       "idCriacao":        idCriacao,
-      "alvoAumento":      alvoAumento,
+      "alvoAumento":      _alvoAumento,
       "opt":              opt,
       "custo":            custearAlteracoes(),
     };
   }
 
+}
+
+class EfeitoCrescimento extends EfeitoBonus{
+@override
+  Map<String, dynamic> retornaObj(){
+    /*
+      Retorna um json com os dados montados
+
+      Return:
+        Map Json - o Arquivo json
+    */
+    return{
+      "nome":             nome,
+      "e_id":             _idEfeito,
+      "efeito":           _nomeEfeito,
+      "graduacao":        _graduacao,
+      "acao":             _acao,
+      "alcance":          _alcance,
+      "duracao":          _duracao,
+      "modificadores":    _modificador,
+      "descricao":        desc,
+      "defAtaque":        defAtaque,
+      "class":            "EfeitoCrescimento",
+      "idCriacao":        idCriacao,
+      "alvoAumento":      _alvoAumento,
+      "opt":              opt,
+      "custo":            custearAlteracoes(),
+    };
+  }
 }
 
 // Variável de Manipulação de Poderes

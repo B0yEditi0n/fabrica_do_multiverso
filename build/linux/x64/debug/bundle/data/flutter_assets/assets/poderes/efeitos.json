@@ -881,7 +881,7 @@
         "alcance": 0,
         "duracao": 3,
         
-        "grupoOpt": "HABILIDADE",
+        "grupoOpt": "habilidades",
         "classe_manipulacao": "EfeitoBonus"
     },
     {

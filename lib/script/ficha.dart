@@ -201,6 +201,9 @@ class ManipulaPoderes{
       case "EfeitoBonus":
         poder = EfeitoBonus();
         break;
+      case "EfeitoBonus":
+        poder = EfeitoBonus();
+        break;
       case "EfeitoAflicao":
         poder = EfeitoAflicao();
         break;

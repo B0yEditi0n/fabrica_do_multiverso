@@ -64,6 +64,9 @@ class _powerEditState extends State<powerEdit> {
       case "EfeitoBonus":
         poder = EfeitoBonus();
         break;
+      case "EfeitoBonus":
+        poder = EfeitoBonus();
+        break;
       case "EfeitoAflicao":
         poder = EfeitoAflicao();
         break;
@@ -147,7 +150,7 @@ class _powerEditState extends State<powerEdit> {
       // Opções de Caracteristica aumentada ou Crescimento
       if(poder is EfeitoBonus){
         EfeitoBonus poderBonus = poder as EfeitoBonus;
-        caractAumentada = poderBonus.alvoAumento;
+        caractAumentada = poderBonus.returnBonusList();
       }
 
     });
@@ -683,7 +686,7 @@ class _powerEditState extends State<powerEdit> {
               ) : const SizedBox(),
 
               //# Caracteristica Aumentada ou Habilidade Aumentada
-              poder is EfeitoBonus ? Container(
+              poder is EfeitoBonus && poder is! EfeitoCrescimento ? Container(
                 decoration: BoxDecoration(
                   border: Border.all(color: Theme.of(context).colorScheme.primary),
                   borderRadius: BorderRadius.circular(10),
@@ -694,52 +697,49 @@ class _powerEditState extends State<powerEdit> {
                       height: MediaQuery.of(context).size.height * 0.20,
                       child: ListView.builder(
                         shrinkWrap: true,
-                        itemCount: compra.length,
+                        itemCount: caractAumentada.length,
                         itemBuilder: (BuildContext context, int index) {
                           return ListTile(
                             title: Row(
                               children: [
                                 // Identifica a opção comprada
-                                //Text('${compra[index]["desc"]} ${compra[index]["valor"]}'),
+                                TextButton(
+                                  child: Text('${caractAumentada[index]["nome"]} ${caractAumentada[index]["valor"]}'),
+                                  onPressed: () async{
+                                      EfeitoBonus poderBonus = poder as EfeitoBonus;
 
-                                // // Input de Descrição *se tiver   
-                                // compra[index]["espec"] != null && compra[index]["espec"] ? Row(
-                                //   children: [
-                                //     const SizedBox(width: 5),
-                                //     SizedBox(
-                                //       width: MediaQuery.of(context).size.width * 0.20,
-                                //       child: TextField(
-                                //         controller: listInputOption[index],
-                                //         onChanged: (String value){
-                                //           // Força o cast
-                                //           EfeitoBonus caracAumentada = poder as EfeitoBonus;
-                                //           //caracAumentada.setOptDesc(compra[index]["ID"], value);
-                                //           //poder.reinstanciarMetodo(poderCompra.retornaObj());
-                                //         },
-                                //         decoration: const InputDecoration(
-                                //           hintText: '',
-                                //         ),
-                                      
-                                //       ),
-                                //     ),
-                                //   ],
-                                // ) : const SizedBox(),
+                                      await showDialog(
+                                        context: context,
+                                        builder: ((BuildContext context) {
+                                          return PoupInputIntValue(
+                                            iniValor: 0, 
+                                            intValue: caractAumentada[index]["valor"],
+                                            titulo: "Valor de ${caractAumentada[index]["nome"]}"
+                                          );
+                                        })
+                                      ).then((result){
+                                        // Atualizar a Lista do Que Saiu
+                                        print(result);
+                                        caractAumentada[index]["valor"] = result;
+                                        poderBonus.addBonus(caractAumentada[index]);
+                                        setState(() {                                            
+                                          caractAumentada = [];
+                                          caractAumentada.addAll(poderBonus.returnBonusList());
+                                        });
+                                        
+                                      });
+                                  },
+                                ),
                               ]
                             ),
                             trailing: IconButton(
                               icon: const Icon(Icons.delete),
                               onPressed: () =>{
                                 setState(() {
-                                  // // força um cast para acessar metodos de compra
-                                  // EfeitoEscolha poderCompra = poder as EfeitoEscolha;
-                                  
-                                  // poderCompra.rmOpt(compra[index]["ID"]);
-                                  // listInputOption.removeAt(index);
-                                  // compra = poder.retornaObj()["opt"];
-                                  
-                                  
-                                  // // Atualiza o objeto inteiro
-                                  // objPoder = poder.retornaObj();
+                                  EfeitoBonus poderBonus = poder as EfeitoBonus;
+                                  poderBonus.removeIndexBonus(index);
+                                  caractAumentada = [];
+                                  caractAumentada.addAll(poderBonus.returnBonusList());
                                 })
                               },
                               ),
@@ -751,23 +751,27 @@ class _powerEditState extends State<powerEdit> {
                       padding: const EdgeInsets.all(8.0),
                       child: TextButton(
                         child: Text('Adicionar Compra de ${objPoder["efeito"]}'),
-                        onPressed: () async => {
+                        onPressed: () async {
+
+                          EfeitoBonus poderBonus = poder as EfeitoBonus;
+
                           await showDialog(
                             context: context,
                             builder: ((BuildContext context) {
-                              return AddCaractAumet();
+                              return AddCaractAumet(caracteristica:{});
                             })
-                          ).then((result)=>{
+                          ).then((result){
                             // Atualizar a Lista do Que Saiu
-                            setState(() {
-                              // compra = poder.retornaObj()["opt"];
-                              // while(compra.length > listInputOption.length){
-                              //   listInputOption.add(TextEditingController());
-                              // }
-                              // // Atualiza o objeto inteiro
-                              // objPoder = poder.retornaObj();
-                            })
-                          })
+                            if(result.isNotEmpty){
+                              // Verifica se já foi adicionado
+                              poderBonus.addBonus(result);
+                              setState(() {
+                                caractAumentada = [];
+                                caractAumentada.addAll(poderBonus.returnBonusList());
+                              });
+                            }
+                            
+                          });
                         },
                       ),
                     ),

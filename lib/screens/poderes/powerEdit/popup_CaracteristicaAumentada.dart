@@ -11,6 +11,9 @@ import 'dart:convert';
 //
 
 class AddCaractAumet extends StatefulWidget {
+  Map caracteristica = {};
+  AddCaractAumet({required this.caracteristica});
+
   @override
   _AddCaractAumetState createState() => _AddCaractAumetState();
 }
@@ -18,7 +21,6 @@ class AddCaractAumet extends StatefulWidget {
 class _AddCaractAumetState extends State<AddCaractAumet> {
   List caractCompra = [];
   Map caractSel = {};
-  int gradValue = 1;
 
   EfeitoBonus poderCompra = EfeitoBonus();
 
@@ -41,6 +43,7 @@ class _AddCaractAumetState extends State<AddCaractAumet> {
     setState(() {   
       caractCompra = listTemp;
       caractSel = caractCompra.first;
+      caractSel["valor"] = 1;
     });
 
     return true;
@@ -66,7 +69,9 @@ class _AddCaractAumetState extends State<AddCaractAumet> {
                   // Validar a entrada para evitar texto
                   // E Evita o máximo
                   setState((){
-                    gradValue = int.parse(value);
+                    if(value.isNotEmpty){
+                      caractSel["valor"] = int.parse(value);
+                    }
                   });  
                 }
               )
@@ -91,8 +96,7 @@ class _AddCaractAumetState extends State<AddCaractAumet> {
                 });
               },
 
-            ),
-            
+            ),            
           ]
         )
       ),
@@ -100,19 +104,15 @@ class _AddCaractAumetState extends State<AddCaractAumet> {
         TextButton(
           child: const Text('Adicionar'),
           onPressed: () async{
-            // Atualiza a Classe
-            
-            //poderCompra.addOpt(optSelecionado); 
-
             // Fecha o Popup
-            Navigator.of(context).pop();
+            Navigator.of(context).pop(caractSel);
           },
         ),
         TextButton(
           child: const Text('Cancelar'),
           onPressed: () {
             // Fecha o popup
-            Navigator.of(context).pop();
+            Navigator.of(context).pop({});
           },
         ),
       ],
