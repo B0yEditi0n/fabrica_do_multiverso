@@ -14,13 +14,12 @@ import 'package:fabrica_do_multiverso/script/poderes/lib_pacoteEfeitos.dart';
 class IntercambioModular{
   // Lista de Bonus
   List<Object> bonus = [];
+
+  List ofensive = [];
   // Essa classe fica reponsável por alterações
   // que devem acontecer fora do modulo
 
-  periciasOfensivas(){
-
-  }
-  addBonusPericiaOfensivo(int id, int index, int bonus){
+  void addBonusPericiaOfensivo(int id, int index, int bonus){
     /*
       Adiciona ou remove o bonus de uma pericia
       ofensiva a um poder
@@ -38,12 +37,63 @@ class IntercambioModular{
     /*
       Passando id o classe irá remover o atributo
       busancando aonde ele foi adicionado
-      Params:
-        - int id : id do bonus
+      Args:
+        - Params:
+          - int id : id do bonus
     */
 
   }
-  removeBonusPericiaOfensivo(int id, int index){
+
+  void removeBonusPericiaOfensivo(int id, int index){
+
+  }
+
+  ///**********************************************
+  //;/* Lógica de Bonus
+  ///**********************************************/
+
+  void addHabilidades(mapHab){
+    /* 
+      Metodo de Adição de Habilidades
+      Args:
+        - Params:
+          - Map mapHab: obj contendo bonus e origem
+    */
+
+    // Pega a Habilidade
+    int habIndex = personagem.habilidades.listHab.indexWhere((h)=>h["id"] == mapHab["id"]);
+    List currentBonus = personagem.habilidades.listHab[habIndex]["bonus"];
+    
+    // Verifica se o bonus já foi adicionado
+    int bonusIndex = currentBonus.indexWhere((b)=>b["idOrigem"] == mapHab["idOrigem"]);
+    if(bonusIndex >= 0){
+      personagem.habilidades.listHab[habIndex]["bonus"][bonusIndex] = mapHab;
+    }else{
+      personagem.habilidades.listHab[habIndex]["bonus"].add(mapHab);
+    }
+  }
+  void addBonus(bonusList){
+    /* 
+      metódo para passagem de bonus adicionados em qualquer
+      outro bonus
+      Args:
+        - Params:
+          - List bonusList: Maps contendo o alvo e a origem
+    */
+    for (Map b in bonusList){
+      //; Verifica ID peculiar Habilidades
+      switch (b["id"]) {
+        case "FOR" || "VIG" || "AGI" 
+          || "DES" || "LUT" || "INT"
+          || "PRO" || "PRE":
+            print("Habilidade setada");
+            addHabilidades(b);
+          break;
+        default:
+          // 
+
+      }
+    }
 
   }
 }

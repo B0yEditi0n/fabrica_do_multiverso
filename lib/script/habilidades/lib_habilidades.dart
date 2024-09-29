@@ -2,7 +2,7 @@ class Habilidade{
   String _id = "";
   String nome = "";
   int valor = 0;
-  int bonus  = 0; // Caso venha de alguma pode ou modificador
+  List bonus  = []; // Caso venha de alguma pode ou modificador
   
 
   bool ausente = false;
@@ -29,6 +29,15 @@ class Habilidade{
     }else{
       return -10;
     }
+  }
+
+  int valorTotal(){
+    int bonusTotal = 0;
+    for(Map b in bonus){
+      bonusTotal += int.parse("${b["valor"]}");
+    }
+
+    return bonusTotal + valor;
   }
 
   Map objHabilidade(){

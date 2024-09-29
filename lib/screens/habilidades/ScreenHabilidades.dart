@@ -16,11 +16,8 @@ class _ScreenHabilidadesState extends State<ScreenHabilidades> {
   List<Map> listHabilidade = [];
   Habilidade currentHabi = Habilidade();
   int custoTotal = 0;
-  //   'FORÇA', 'VIGOR', 'AGILIDADE', 'DESTREZA',
-  //   'LUTA', 'INTELECTO', 'PRONTIDÃO', 'PRESENÇA'
-  // ];
-  //
-  // final List<String> labels = [];
+
+  List<int> bonusTotal = [];
   List<TextEditingController> listInputs = [];
 
   //* Constante de estilo
@@ -46,12 +43,14 @@ class _ScreenHabilidadesState extends State<ScreenHabilidades> {
 
       // Instancia campos de input
       for (Map l in listHabilidade) {
+        Habilidade objHabili = Habilidade();
+        objHabili.initObject(l);
         if(l["ausente"] != true){ // Caso seja ausente o valor
           listInputs.add(TextEditingController(text: l["valor"].toString()));
         }else{
           listInputs.add(TextEditingController(text: '-'));
         }
-        
+        bonusTotal.add(objHabili.valorTotal());
       }
     });
     return 1;
@@ -130,11 +129,15 @@ class _ScreenHabilidadesState extends State<ScreenHabilidades> {
                         personagem.habilidades.listHab[index] = currentHabi.objHabilidade(),
 
                         setState(() {
-                          custoTotal = personagem.habilidades.calculaTotal();
+                          bonusTotal[index] = currentHabi.valorTotal();
+                          custoTotal = personagem.habilidades.calculaTotal();                          
                         }),
 
                       }),
-                    ),
+                    ),  
+
+                    // Bonus total da habilidade
+                    Text("Valor total ${bonusTotal[index]}"),
                   ],
                 );
               },

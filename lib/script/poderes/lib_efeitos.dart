@@ -2,8 +2,6 @@ import 'package:fabrica_do_multiverso/script/ficha.dart';
 import 'package:flutter/services.dart'; 
 import 'dart:convert';
 
-// intercambio
-import 'package:fabrica_do_multiverso/script/intercambio/intercambio.dart'; 
 class Efeito{
   String nome = '' ;
   String _nomeEfeito = '';
@@ -817,10 +815,9 @@ class EfeitoBonus extends Efeito{
 
   List _alvoAumento = [];
   List grupoOpt = [];
-  String idCriacao = '';
+  // P indica poder + o seu timestump
+  String idCriacao = "P${DateTime.now().millisecondsSinceEpoch.toRadixString(16)}";
   List opt = [];
-
-  Intercambio bonusObj = Intercambio(); // objeto de inicialização
 
   @override
   Future<bool> instanciarMetodo(String nome , String idEfeito) async{
@@ -837,9 +834,7 @@ class EfeitoBonus extends Efeito{
     */
     
     super.instanciarMetodo(nome, idEfeito);
-    // P indica poder + o seu timestump
     idCriacao = "P${DateTime.now().millisecondsSinceEpoch.toRadixString(16)}";
-    bonusObj.init(idCriacao, _alvoAumento);
 
     return true;
   }
@@ -860,6 +855,7 @@ class EfeitoBonus extends Efeito{
 
   void addBonus(Map bonus){
     int idx = _alvoAumento.indexWhere((e) => e["id"] == bonus["id"]);
+    bonus["idOrigem"] = idCriacao;
     if(idx > -1){
       _alvoAumento[idx] = bonus;
     }else{
@@ -869,7 +865,11 @@ class EfeitoBonus extends Efeito{
   }
 
   void removeIndexBonus(int index){configBonus(); _alvoAumento.removeAt(index);}
-  List returnBonusList(){return _alvoAumento;}
+  List returnBonusList(){
+    // Chama o incrementador 
+    personagem.validador.addBonus(_alvoAumento);
+    return _alvoAumento;
+  }
 
   void configBonus(){
     /*
@@ -921,6 +921,13 @@ class EfeitoBonus extends Efeito{
     };
   }
 
+  void destrutor(){
+    /*
+      a função destrutor é para remover bonus incrementados
+    */
+
+  }
+
 }
 
 class EfeitoCrescimento extends EfeitoBonus{
@@ -962,11 +969,15 @@ class EfeitoCrescimento extends EfeitoBonus{
       }
       
       _alvoAumento.add({
+        "idOrigem": idCriacao,
         "id": bonusT["alvo"],
         "valor": valorBonus,
         "nome": bonusT["nome"],
       });
     }
+
+    // Chama o incrementador 
+    personagem.validador.addBonus(_alvoAumento);
     
     return _alvoAumento;
   }

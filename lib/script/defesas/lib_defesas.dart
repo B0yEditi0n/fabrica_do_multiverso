@@ -5,7 +5,7 @@ class Defesa{
   String nome = "";
 
   int _valor = 0;
-  int bonus = 0;
+  List bonus = [];
   String idHabi = "";
 
   String idOpDefesa = "";
@@ -41,9 +41,16 @@ class Defesa{
     */
     int indexHab = personagem.habilidades.listHab.indexWhere((hab)=>hab["id"] == idHabi );
     Map habi = personagem.habilidades.listHab[indexHab];
+
+    // Bonus total
+    int bonusTotal = 0; 
+    for(Map b in bonus){ 
+      bonusTotal += int.parse("${b["valor"]}");
+    }
+
     // a sintaxe não reconhece como int, 
     // e parse int quebra caso caregado com int
-    return _valor + bonus + int.parse("${habi["valor"]}") + int.parse("${habi["bonus"]}");
+    return _valor + bonusTotal + int.parse("${habi["valor"]}") + int.parse("${habi["bonus"]}");
   }
   void setValor(valor){
     if(!imune){
@@ -73,6 +80,7 @@ class Defesa{
 
 class Resistencia extends Defesa{
   @override
+  
   void setValor(valor){
     //; nada fazer pos não pode comprar
     //; resistência direto
