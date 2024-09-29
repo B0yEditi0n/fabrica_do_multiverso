@@ -107,7 +107,7 @@ class Efeito{
   
   //? Modificações de atributos Classe 
   
-  alteraDuracao(novaDuracao){
+  void alteraDuracao(novaDuracao){
     /* 
       o metodo apenas avaiará qual alterações mecanicamente são permitidas
       ele não calculará custo isso fica a cargo do CustearAlteracoes
@@ -145,7 +145,7 @@ class Efeito{
     }
 
   }
-  alteraAcao(novaAcao){
+  void alteraAcao(novaAcao){
     /* 
       avalia alterações de ação disponiveis do efeito
 
@@ -179,7 +179,7 @@ class Efeito{
     }
   }
 
-  alteraAlcance(novoAlcance){
+  void alteraAlcance(novoAlcance){
     /* 
       avalia alterações de Alcance disponiveis do efeito
 
@@ -208,7 +208,7 @@ class Efeito{
   void setGrad(valor){
     _graduacao = valor;
   }
-  addModificador(objModificador){
+  void addModificador(objModificador){
     if(objModificador["grad"] == null){
       objModificador["grad"] = 1;
     }
@@ -220,17 +220,17 @@ class Efeito{
     }    
   }
   
-  delModificador(m_id){
+  void delModificador(m_id){
     int index = _modificador.indexWhere((mod) => mod["m_id"] == m_id);
     _modificador.removeAt(index);
   }
 
-  setDescMod(m_id, text){
+  void setDescMod(m_id, text){
     int index = _modificador.indexWhere((mod) => mod["m_id"] == m_id);
     _modificador[index]["text_desc"] = text;
   }
 
-  definirComoAtaque(bool eAtaque){
+  void definirComoAtaque(bool eAtaque){
     if(_padraoEfeito["alcance"] == 0 && eAtaque){
       _acao = 1;
       _alcance = 1;
@@ -477,7 +477,7 @@ class EfeitoEscolha extends Efeito{
   }
 
   // Metodos de tratamento do atributo OPT de escolha do efeito
-  addOpt(Map option){
+  void addOpt(Map option){
     if(_padraoEfeito["unico"]){ // apenas um unico efeito
       if(opt.length > 0){
         opt = [];
@@ -490,19 +490,19 @@ class EfeitoEscolha extends Efeito{
     
   }
 
-  optsetCusto(){
+  void optsetCusto(){
     // Implementado para ser utilizado com @override
 
     // Efeitos de compra implementam a graduação 
     // Efeitos de alteração de custo o custo base
   }
 
-  setOptDesc(m_id, text){
+  void setOptDesc(m_id, text){
     int index = opt.indexWhere((option) => option["ID"] == m_id);
     opt[index]["text_desc"] = text;
   }
 
-  rmOpt(id){
+  void rmOpt(id){
     int index = opt.indexWhere((option) => option["ID"] == id);
     opt.removeAt(index);
     // Atualiza Grad
@@ -552,7 +552,7 @@ class EfeitoEscolha extends Efeito{
 class EfeitoCompra extends EfeitoEscolha{
   /* Efeito de Escolha Define a Graduação e o custo é fixo */
   @override 
-  optsetCusto(){
+  void optsetCusto(){
     _graduacao = 0;
     for(Map option in opt){
       int valor = option["valor"];
@@ -565,7 +565,7 @@ class EfeitoCompra extends EfeitoEscolha{
 class EfeitoCustoVaria extends EfeitoEscolha{
   /* Efeito de Escolha Define a o custo base e a graduação é definida*/
   @override 
-  optsetCusto(){
+  void optsetCusto(){
     int custoBase = 0;
     _padraoEfeito["custo_base"] = 0;
     
@@ -684,7 +684,7 @@ class EfeitoOfensivo extends Efeito{
     return custoFinal;
   }
 
-  processaBonus(){
+  void processaBonus(){
     /*
       Contabiliza o Bonus Inserido dentro do efeito
     */
@@ -772,7 +772,7 @@ class EfeitoAflicao extends EfeitoOfensivo{
     return true;
   }
 
-  addCondicao(grau, txtCond){
+  void addCondicao(grau, txtCond){
     if([1, 2, 3].contains(grau)){
       _condicoes[grau] = txtCond;
     }
@@ -924,7 +924,54 @@ class EfeitoBonus extends Efeito{
 }
 
 class EfeitoCrescimento extends EfeitoBonus{
-@override
+  List _bonusTamanho = [];
+
+  @override
+  Future<bool> instanciarMetodo(String nome , String idEfeito) async{
+    await super.instanciarMetodo(nome, idEfeito);   
+    _bonusTamanho = _padraoEfeito["bonusTamanho"];
+    return true;
+  }
+  
+  @override
+  Future<bool> reinstanciarMetodo(Map objPoder) async{
+    await super.reinstanciarMetodo(objPoder);
+    _bonusTamanho = _padraoEfeito["bonusTamanho"];
+    return true;
+  }
+
+  @override
+  void setGrad(valor){
+    /* 
+      é efetuado um override para definir 
+      o bonus do efeito.
+    */
+    super.setGrad(valor);
+  }
+
+  @override
+  List returnBonusList(){
+    _alvoAumento = [];
+    int valorBonus = 0;
+    for(Map bonusT in _bonusTamanho){
+      // Atenção para valores negativos ou positivos
+      if(bonusT["multiplicador"] > 0){
+        valorBonus = (_graduacao * bonusT["multiplicador"]).floor();
+      }else{
+        valorBonus = (_graduacao * bonusT["multiplicador"]).ceil();
+      }
+      
+      _alvoAumento.add({
+        "id": bonusT["alvo"],
+        "valor": valorBonus,
+        "nome": bonusT["nome"],
+      });
+    }
+    
+    return _alvoAumento;
+  }
+
+  @override
   Map<String, dynamic> retornaObj(){
     /*
       Retorna um json com os dados montados

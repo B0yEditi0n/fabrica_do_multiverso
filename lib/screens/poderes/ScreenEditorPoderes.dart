@@ -61,8 +61,8 @@ class _powerEditState extends State<powerEdit> {
     // Reinstancia para zerar Objeto
     etiquetasModificadores = ["gerais"];
     switch (objPoder["class"]) {
-      case "EfeitoBonus":
-        poder = EfeitoBonus();
+      case "EfeitoCrescimento":
+        poder = EfeitoCrescimento();
         break;
       case "EfeitoBonus":
         poder = EfeitoBonus();
@@ -154,7 +154,6 @@ class _powerEditState extends State<powerEdit> {
       }
 
     });
-
   }
 
   @override
@@ -249,6 +248,14 @@ class _powerEditState extends State<powerEdit> {
                           //! Atualiza a Lista de poderes
                           setState(() {
                             objPoder = poder.retornaObj();
+                            // ataualização de efeito crescimento
+                            if(poder is EfeitoCrescimento){
+                              EfeitoCrescimento efeitoCrescimento = poder as EfeitoCrescimento;
+                              setState(() {
+                                caractAumentada = efeitoCrescimento.returnBonusList();
+                              });
+                              
+                            }
                           }) 
                         }
                       },
@@ -688,7 +695,7 @@ class _powerEditState extends State<powerEdit> {
               ) : const SizedBox(),
 
               //# Caracteristica Aumentada ou Habilidade Aumentada
-              poder is EfeitoBonus && poder is! EfeitoCrescimento ? Container(
+              poder is EfeitoBonus ? Container(
                 decoration: BoxDecoration(
                   border: Border.all(color: Theme.of(context).colorScheme.primary),
                   borderRadius: BorderRadius.circular(10),
@@ -696,7 +703,7 @@ class _powerEditState extends State<powerEdit> {
                 child: Column(
                   children: [
                     SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.20,
+                      height: MediaQuery.of(context).size.height * 0.35,
                       child: ListView.builder(
                         shrinkWrap: true,
                         itemCount: caractAumentada.length,
@@ -709,7 +716,6 @@ class _powerEditState extends State<powerEdit> {
                                   child: Text('${caractAumentada[index]["nome"]} ${caractAumentada[index]["valor"]}'),
                                   onPressed: () async{
                                       EfeitoBonus poderBonus = poder as EfeitoBonus;
-
                                       await showDialog(
                                         context: context,
                                         builder: ((BuildContext context) {
@@ -721,34 +727,38 @@ class _powerEditState extends State<powerEdit> {
                                         })
                                       ).then((result){
                                         // Atualizar a Lista do Que Saiu
-                                        print(result);
-                                        caractAumentada[index]["valor"] = result;
-                                        poderBonus.addBonus(caractAumentada[index]);
-                                        setState(() {                                            
-                                          caractAumentada = [];
-                                          caractAumentada.addAll(poderBonus.returnBonusList());
-                                        });
-                                        
+                                        if (poder is! EfeitoCrescimento){
+                                          caractAumentada[index]["valor"] = result;
+                                          poderBonus.addBonus(caractAumentada[index]);
+                                          setState(() {                                            
+                                            caractAumentada = [];
+                                            caractAumentada.addAll(poderBonus.returnBonusList());
+                                          });
+                                        }
                                       });
                                   },
                                 ),
                               ]
                             ),
-                            trailing: IconButton(
-                              icon: const Icon(Icons.delete),
-                              onPressed: () =>{
-                                setState(() {
-                                  EfeitoBonus poderBonus = poder as EfeitoBonus;
-                                  poderBonus.removeIndexBonus(index);
-                                  caractAumentada = [];
-                                  caractAumentada.addAll(poderBonus.returnBonusList());
-                                })
-                              },
-                              ),
+                            
+                            trailing:
+                              poder is! EfeitoCrescimento ?
+                                IconButton(
+                                icon: const Icon(Icons.delete),
+                                onPressed: () =>{
+                                  setState(() {
+                                    EfeitoBonus poderBonus = poder as EfeitoBonus;
+                                    poderBonus.removeIndexBonus(index);
+                                    caractAumentada = [];
+                                    caractAumentada.addAll(poderBonus.returnBonusList());
+                                  })
+                                },
+                                ) : const SizedBox(),
                           );
                         },
                       ),
                     ),
+                    poder is! EfeitoCrescimento ? 
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: TextButton(
@@ -776,7 +786,7 @@ class _powerEditState extends State<powerEdit> {
                           });
                         },
                       ),
-                    ),
+                    ) : const SizedBox(),
                   ],
                 ),
               ) : const SizedBox(),

@@ -938,7 +938,7 @@
         "classe_manipulacao": "EfeitoBonus"
     },
     {
-        "e_id": "PB06",
+        "e_id": "PB05",
         "efeito": "Crescimento",
         "escolha": false,
         "ofensivo": false,
@@ -948,13 +948,45 @@
         "acao": 3,
         "alcance": 0,
         "duracao": 3,
-        "grupoOpt": "CRE",
+        "bonusTamanho":[
+            {
+                "multiplicador": 1,
+                "alvo": "FOR",
+                "nome": "Força"
+            },
+            {
+                "multiplicador": 1,
+                "alvo": "VIG",
+                "nome": "Vigor"
+            },
+            {
+                "multiplicador": -1,
+                "alvo": "P004",
+                "nome": "Furtividade"
+            },
+            {
+                "multiplicador": 0.5,
+                "alvo": "P005",
+                "nome": "Intimidação"
+            },
+            {
+                "multiplicador": -0.5,
+                "alvo": "D001",
+                "nome": "Esquiva"
+            },
+            {
+                "multiplicador": -0.5,
+                "alvo": "D002",
+                "nome": "Aparar"
+            }
+
+        ],
         "classe_manipulacao": "EfeitoCrescimento"
     }
     ,
     {
         "e_id": "PB06",
-        "efeito": "Crescimento",
+        "efeito": "Encolhimento",
         "escolha": false,
         "ofensivo": false,
         "desc": false,
@@ -963,7 +995,29 @@
         "acao": 3,
         "alcance": 0,
         "duracao": 3,
-        "grupoOpt": "ENC",
+        "bonusTamanho":[
+            {
+                "multiplicador": -1,
+                "alvo": "P004",
+                "nome": "Furtividade"
+            },
+            {
+                "multiplicador": 0.5,
+                "alvo": "D001",
+                "nome": "Esquiva"
+            },
+            {
+                "multiplicador": 0.5,
+                "alvo": "D002",
+                "nome": "Aparar"
+            },
+            {
+                "multiplicador": -0.25,
+                "alvo": "FOR",
+                "nome": "Força"
+            }
+
+        ],
         "classe_manipulacao": "EfeitoCrescimento"
     }
 ]

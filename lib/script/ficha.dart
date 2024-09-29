@@ -33,6 +33,16 @@ class IntercambioModular{
 
     
   }
+
+  void removeBonusId(String id){
+    /*
+      Passando id o classe irá remover o atributo
+      busancando aonde ele foi adicionado
+      Params:
+        - int id : id do bonus
+    */
+
+  }
   removeBonusPericiaOfensivo(int id, int index){
 
   }
@@ -198,8 +208,8 @@ class ManipulaPoderes{
     // Cria um novo Efeito
     Efeito poder;
     switch (classe) {
-      case "EfeitoBonus":
-        poder = EfeitoBonus();
+      case "EfeitoCrescimento":
+        poder = EfeitoCrescimento();
         break;
       case "EfeitoBonus":
         poder = EfeitoBonus();
