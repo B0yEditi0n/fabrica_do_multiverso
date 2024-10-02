@@ -33,17 +33,6 @@ class IntercambioModular{
     
   }
 
-  void removeBonusId(String id){
-    /*
-      Passando id o classe irá remover o atributo
-      busancando aonde ele foi adicionado
-      Args:
-        - Params:
-          - int id : id do bonus
-    */
-
-  }
-
   void removeBonusPericiaOfensivo(int id, int index){
 
   }
@@ -86,16 +75,73 @@ class IntercambioModular{
         case "FOR" || "VIG" || "AGI" 
           || "DES" || "LUT" || "INT"
           || "PRO" || "PRE":
-            print("Habilidade setada");
             addHabilidades(b);
           break;
         default:
-          // 
-
+          // outros
+          var listRef = [];
+          int idxPedacoFicha = 0;
+          switch (b["id"].substring(0, 1)){            
+            case "D":
+              print("Defesa adição");
+              listRef = personagem.defesas.listaDefesas;
+              break;
+            case "P":
+              print("Pericia adição");
+              listRef = personagem.pericias.ListaPercias;
+              break;
+            case "V":
+              // print("Vantagem adição");
+              // personagem.vantagens.listaVantagens;
+          }
+          
+          // Separa a lógica de Vantagens de Defesas e Perícias
+          if (["P", "D"].contains(b["id"].substring(0, 1))){
+            idxPedacoFicha = listRef.indexWhere((r)=> r["id"] == b["id"]);
+            List bonus = listRef[idxPedacoFicha]["bonus"];
+            int idxBonus = bonus.indexWhere((bi)=>bi["idOrigem"] == b["idOrigem"]);
+            if(idxBonus >= 0){
+              bonus[idxBonus] = b;
+            }else{
+              bonus.add(b);
+            }
+          }
       }
     }
+  }
+
+  void removeBonusId(String id){
+      /*
+        Passando id o classe irá remover o atributo
+        busancando aonde ele foi adicionado
+        Args:
+          - Params:
+            - int id : id do bonus
+      */
+
+      List listRef;
+
+      List removeBonusIdInRange(List getList){
+        for(Map r in getList){
+          r["bonus"].removeWhere((b)=>b["idOrigem"] == id);
+        }
+        return getList;
+      }
+
+      // Habilidades
+      listRef = personagem.habilidades.listHab;
+      listRef = removeBonusIdInRange(listRef);
+
+      // Defesas 
+      listRef = personagem.defesas.listaDefesas;
+      listRef = removeBonusIdInRange(listRef);
+
+      // Pericias
+      listRef = personagem.pericias.ListaPercias;
+      listRef = removeBonusIdInRange(listRef);
 
   }
+
 }
 
 //# Classe de Manipulação de Habilidades
@@ -169,7 +215,7 @@ class ManipulaDefesas{
       "id": "D001",
       "nome": "Esquiva",
       "valor": 0,
-      "bonus": 0,
+      "bonus": [],
       "idHabi": "AGI",
       "idOpDefesa": "D004",
       "imune": false
@@ -181,7 +227,7 @@ class ManipulaDefesas{
       "id": "D002",
       "nome": "Aparar",
       "valor": 0,
-      "bonus": 0,
+      "bonus": [],
       "idHabi": "LUT",
       "idOpDefesa": "D004",
       "imune": false
@@ -193,7 +239,7 @@ class ManipulaDefesas{
       "id": "D003",
       "nome": "Fortitude",
       "valor": 0,
-      "bonus": 0,
+      "bonus": [],
       "idHabi": "VIG",
       "idOpDefesa": "D005",
       "imune": false
@@ -205,7 +251,7 @@ class ManipulaDefesas{
       "id": "D004",
       "nome": "Resistência",
       "valor": 0,
-      "bonus": 0,
+      "bonus": [],
       "idHabi": "VIG",
       "idOpDefesa": "",
       "imune": false
@@ -217,7 +263,7 @@ class ManipulaDefesas{
       "id": "D005",
       "nome": "Vontade",
       "valor": 0,
-      "bonus": 0,
+      "bonus": [],
       "idHabi": "PRO",
       "idOpDefesa": "D003",
       "imune": false

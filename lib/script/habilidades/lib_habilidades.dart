@@ -24,6 +24,7 @@ class Habilidade{
   }
 
   int total(){
+    /* Retorna o custo */
     if(!ausente){
       return valor * 2;
     }else{
@@ -32,6 +33,7 @@ class Habilidade{
   }
 
   int valorTotal(){
+    /* Retorna o bonus total */
     int bonusTotal = 0;
     for(Map b in bonus){
       bonusTotal += int.parse("${b["valor"]}");

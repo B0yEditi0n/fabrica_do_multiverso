@@ -225,17 +225,6 @@
         "classe_manipulacao": "EfeitoCompra"
     },
     {
-        "e_id": "E010",
-        "efeito": "Crescimento",
-        "ofensivo": false,
-        "desc": false,
-        "custo_base": 2,
-        "acao": 3,
-        "alcance": 0,
-        "duracao": 3,
-        "classe_manipulacao": "Efeito"
-    },
-    {
         "e_id": "E011",
         "efeito": "Criar",
         "ofensivo": true,
@@ -295,17 +284,6 @@
         "duracao": 1,
         "ofensivo": false,
         "custo_base": 1,
-        "desc": false,
-        "classe_manipulacao": "Efeito"
-    },
-    {
-        "e_id": "E015",
-        "efeito": "Encolhimento",
-        "ofensivo": false,
-        "custo_base": 1,
-        "acao": 1,
-        "alcance": 2,
-        "duracao": 1,
         "desc": false,
         "classe_manipulacao": "Efeito"
     },
@@ -676,27 +654,6 @@
         "classe_manipulacao": "EfeitoOfensivo"
     },
     {
-        "e_id": "E030",
-        "efeito": "Proteção",
-        "custo_base": 1,
-        "acao": 0,
-        "alcance": 0,
-        "duracao": 0,
-        "ofensivo": false,
-        "desc": false,
-        "modificadores":[
-            {
-                "e_id": "E044",
-                "nome": "Limitado a Resistência",
-                "fixo": false,
-                "custo_base": -1,
-                "limite": 1,
-                "desc": false
-            }
-        ],
-        "classe_manipulacao": "Efeito"
-    },
-    {
         "e_id": "E031",
         "efeito": "Rapidez",
         "custo_base": 1,
@@ -1016,7 +973,41 @@
                 "alvo": "FOR",
                 "nome": "Força"
             }
-
+        ],
+        "classe_manipulacao": "EfeitoCrescimento"
+    },
+    {
+        "e_id": "E030",
+        "efeito": "Proteção",
+        "custo_base": 1,
+        "acao": 0,
+        "alcance": 0,
+        "duracao": 0,
+        "ofensivo": false,
+        "desc": false,
+        "modificadores":[
+            {
+                "e_id": "E044",
+                "nome": "Limitado a Resistência",
+                "fixo": false,
+                "custo_base": -1,
+                "limite": 1,
+                "desc": false
+            },
+            {
+                "e_id": "E045",
+                "nome": "Impenetrável",
+                "fixo": true,
+                "custo_base": 1,
+                "desc": false
+            }
+        ],
+        "bonusTamanho":[
+            {
+                "multiplicador": 1,
+                "alvo": "D004",
+                "nome": "Proteção"
+            }
         ],
         "classe_manipulacao": "EfeitoCrescimento"
     }

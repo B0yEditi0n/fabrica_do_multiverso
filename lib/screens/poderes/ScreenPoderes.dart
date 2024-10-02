@@ -1,3 +1,4 @@
+import 'package:fabrica_do_multiverso/script/poderes/lib_efeitos.dart';
 import 'package:flutter/material.dart';
 
 // Screens de poderes
@@ -74,11 +75,27 @@ class _ScreenPoderesState extends State<ScreenPoderes> {
                 
                     IconButton(
                       icon: const  Icon(Icons.delete),
-                      onPressed: () =>{
-                        personagem.poderes.poderesLista.removeAt(index),
+                      onPressed: (){
+                        // Aciona o destrutor
+                        Map objInit = personagem.poderes.poderesLista[index];
+                        Efeito killPower;
+                        switch (objInit["class"]){
+                          case "EfeitoBonus":
+                            killPower = EfeitoBonus();
+                            break;
+                          case "EfeitoCrescimento":
+                            killPower = EfeitoCrescimento();
+                            break;
+                          default:
+                            killPower = Efeito();
+                        }
+                        killPower.reinstanciarMetodo(objInit);
+                        killPower.destrutor();
+
+                        personagem.poderes.poderesLista.removeAt(index);
                         setState(() {
                           poderes = personagem.poderes.listaDePoderes();  
-                        })
+                        });
                       }
                     ),
                   ],

@@ -6,6 +6,7 @@ class Pericia{
   String _idHabilidadeBase = "";
   int _valor = 0;
   bool _apenasTreinado = false;
+  List bonus = [];
   
   bool init(obj){
     id    = obj["id"];
@@ -46,6 +47,7 @@ class Pericia{
       "valor": _valor,
       "idHab": _idHabilidadeBase,
       "treinado": _apenasTreinado,
+      "bonus": bonus,
       "classe": "Pericia",
     });
   }

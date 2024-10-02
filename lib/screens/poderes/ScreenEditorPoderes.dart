@@ -733,6 +733,7 @@ class _powerEditState extends State<powerEdit> {
                                           setState(() {                                            
                                             caractAumentada = [];
                                             caractAumentada.addAll(poderBonus.returnBonusList());
+                                            objPoder = poder.retornaObj();
                                           });
                                         }
                                       });
@@ -751,6 +752,7 @@ class _powerEditState extends State<powerEdit> {
                                     poderBonus.removeIndexBonus(index);
                                     caractAumentada = [];
                                     caractAumentada.addAll(poderBonus.returnBonusList());
+                                    objPoder = poder.retornaObj();
                                   })
                                 },
                                 ) : const SizedBox(),
@@ -780,6 +782,7 @@ class _powerEditState extends State<powerEdit> {
                               setState(() {
                                 caractAumentada = [];
                                 caractAumentada.addAll(poderBonus.returnBonusList());
+                                objPoder = poder.retornaObj();
                               });
                             }
                             

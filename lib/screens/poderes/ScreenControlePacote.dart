@@ -145,11 +145,16 @@ class _ControladorDePacotesState extends State<ControladorDePacotes> {
               
                       IconButton(
                         icon: const  Icon(Icons.delete),
-                        onPressed: () =>{
-                          pacote.efeitos.removeAt(index),
+                        onPressed: (){
+                          // Aciona o destrutor
+                          Efeito deadPower = Efeito();
+                          deadPower.reinstanciarMetodo(pacote.efeitos[index]);
+                          deadPower.destrutor();
+
+                          pacote.efeitos.removeAt(index);
                           setState(() {
                             poderes = pacote.efeitos;
-                          })
+                          });
                         }
                       )
               

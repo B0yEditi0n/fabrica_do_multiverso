@@ -443,6 +443,12 @@ class Efeito{
     };
   }
 
+  void destrutor(){
+    /*
+      para ações no fim da fida de poderes
+      interface de metodo para sofrer override
+    */
+  }
 }
 
 class EfeitoEscolha extends Efeito{
@@ -867,6 +873,12 @@ class EfeitoBonus extends Efeito{
   void removeIndexBonus(int index){configBonus(); _alvoAumento.removeAt(index);}
   List returnBonusList(){
     // Chama o incrementador 
+    // Atualzia Valor do bonus
+    _graduacao = 0;
+    for(Map a in _alvoAumento){
+      int currentValor = a["valor"];
+      _graduacao += currentValor;
+    }
     personagem.validador.addBonus(_alvoAumento);
     return _alvoAumento;
   }
@@ -887,7 +899,6 @@ class EfeitoBonus extends Efeito{
       Returns: 
         bool:  indica sucesso e fim da execução do metodo
     */
-
     String jsonString = await rootBundle.loadString('assets/${_padraoEfeito["grupoOpt"]}.json');    
     List objetoJson = jsonDecode(jsonString);
     return objetoJson;
@@ -919,13 +930,15 @@ class EfeitoBonus extends Efeito{
       "opt":              opt,
       "custo":            custearAlteracoes(),
     };
+
   }
 
+  @override
   void destrutor(){
     /*
       a função destrutor é para remover bonus incrementados
     */
-
+    personagem.validador.removeBonusId(idCriacao);
   }
 
 }
@@ -945,15 +958,6 @@ class EfeitoCrescimento extends EfeitoBonus{
     await super.reinstanciarMetodo(objPoder);
     _bonusTamanho = _padraoEfeito["bonusTamanho"];
     return true;
-  }
-
-  @override
-  void setGrad(valor){
-    /* 
-      é efetuado um override para definir 
-      o bonus do efeito.
-    */
-    super.setGrad(valor);
   }
 
   @override

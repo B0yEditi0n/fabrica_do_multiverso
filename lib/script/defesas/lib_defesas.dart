@@ -1,4 +1,7 @@
+import 'dart:developer';
+
 import 'package:fabrica_do_multiverso/script/ficha.dart';
+import 'package:fabrica_do_multiverso/script/habilidades/lib_habilidades.dart';
 
 class Defesa{
   String _id = "";
@@ -21,8 +24,8 @@ class Defesa{
     idOpDefesa = obj["idOpDefesa"];
     imune = obj["imune"];
     idHabi = obj["idHabi"];
-    if(obj["imune"] != null && obj["imune"]){
-      bonus = obj["bonus"];
+    if(obj["imune"] != null || obj["imune"] != true){
+        bonus = obj["bonus"];
     }
   }
 
@@ -45,12 +48,17 @@ class Defesa{
     // Bonus total
     int bonusTotal = 0; 
     for(Map b in bonus){ 
+      // a sintaxe não reconhece como int, 
+      // e parse int quebra caso caregado com int
       bonusTotal += int.parse("${b["valor"]}");
     }
+    
+    // Instacia para recuperar valor total da habilidade
+    Habilidade currnetHabilidade = Habilidade();
+    currnetHabilidade.initObject(habi);
+    bonusTotal += currnetHabilidade.valorTotal();
 
-    // a sintaxe não reconhece como int, 
-    // e parse int quebra caso caregado com int
-    return _valor + bonusTotal + int.parse("${habi["valor"]}") + int.parse("${habi["bonus"]}");
+    return _valor + bonusTotal;
   }
   void setValor(valor){
     if(!imune){
