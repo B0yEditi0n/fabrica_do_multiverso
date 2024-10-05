@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'dart:convert';
 // Bibliotecas
 import 'package:fabrica_do_multiverso/script/ficha.dart';
+import 'package:fabrica_do_multiverso/script/vantagens/lib_vantagens.dart';
 // pop up
 import 'package:fabrica_do_multiverso/screens/vantagens/functions/addVantagens.dart';
 
@@ -13,6 +14,8 @@ class ScreenVantagens extends StatefulWidget {
 }
 
 class _ScreenVantagensState extends State<ScreenVantagens> {
+  int cutoTotal = 0;
+
   List repertorioVantagens = [];
   List vantagensDisponiveis = [];
   List addVantagens = [];
@@ -22,7 +25,7 @@ class _ScreenVantagensState extends State<ScreenVantagens> {
   // Carrega dados do JSON
   @override
   void initState() {
-    // TODO: implement initState
+    //TODO: implement initState
     super.initState();
     _carregaDados();
   }
@@ -33,7 +36,7 @@ class _ScreenVantagensState extends State<ScreenVantagens> {
     
     // Checa o que já foi adicionado
     setState(() {
-      addVantagens.addAll(personagem.vantagens.listaVantagens);  
+      addVantagens.addAll(personagem.vantagens.listaVantagens);
     });
 
     // remove já adicionados
@@ -72,69 +75,86 @@ class _ScreenVantagensState extends State<ScreenVantagens> {
             }),
       ),
 
-      body: ListView.builder(
-        itemCount: addVantagens.length,
-        itemBuilder: (BuildContext context, int index){
-          //print(addVantagens[index]["graduacao"]);
-          return InkWell(
-            child: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Card(
-                    child: Padding(
-                      padding: const EdgeInsets.all(15.0),
-                      child: Row(children:[
-                        Expanded(
-                          child: 
-                          addVantagens[index]["graduacao"] == 1 
-                          ? Text(
-                            "${addVantagens[index]["nome"]} ${addVantagens[index]["txtDec"].isNotEmpty 
-                            ? '(' + addVantagens[index]["txtDec"] + ')' 
-                            : ""}", 
-                          textAlign: TextAlign.center,
-                          )
-                          : Text(
-                            "${addVantagens[index]["nome"]}[${addVantagens[index]["graduacao"]}] ${addVantagens[index]["txtDec"].isNotEmpty 
-                            ? '(' + addVantagens[index]["txtDec"] + ')' 
-                            : ""}", 
-                            textAlign: TextAlign.center,
-                          )
+      body: Column(
+        children: [
+          Expanded(
+            child: ListView.builder(
+              itemCount: addVantagens.length,
+              itemBuilder: (BuildContext context, int index){
+
+                Vantagem currentVatagem = Vantagem();
+                currentVatagem.init(addVantagens[index]);
+                
+                return InkWell(
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: Card(
+                          child: Padding(
+                            padding: const EdgeInsets.all(15.0),
+                            child: Row(children:[
+                              Expanded(
+                                child: 
+                                currentVatagem.returnTotalGrad() == 1 
+                                ? Text(
+                                  "${addVantagens[index]["nome"]} ${addVantagens[index]["txtDec"].isNotEmpty
+                                  ? '(' + addVantagens[index]["txtDec"] + ')' 
+                                  : ""}", 
+                                textAlign: TextAlign.center,
+                                )
+                                : Text(
+                                  "${addVantagens[index]["nome"]}[${currentVatagem.returnTotalGrad()}] ${addVantagens[index]["txtDec"].isNotEmpty 
+                                  ? '(' + addVantagens[index]["txtDec"] + ')' 
+                                  : ""}", 
+                                  textAlign: TextAlign.center,
+                                )
+                              ),
+                              IconButton(
+                              icon: const  Icon(Icons.delete),
+                              onPressed: () =>{  
+                                  if(!addVantagens[index]["addByPower"]){
+                                    setState(() {
+                                    addVantagens.removeAt(index);
+                                    updateAvaliableAdvantage();
+                                  })
+                                  }
+                                  
+                                }
+                              ),
+                            ]),
+                          ),
                         ),
-                        IconButton(
-                        icon: const  Icon(Icons.delete),
-                        onPressed: () =>{  
-                            setState(() {
-                              addVantagens.removeAt(index);
-                              updateAvaliableAdvantage();
-                            })
-                          }
-                        ),
-                      ]),
-                    ),
+                      )
+                    ]
                   ),
-                )
-              ]
-            ),
-            onTap: () async{
-              // Ao selecionar uma vantagem já adicionada
-              objVantagems = {};
-              objVantagems = await Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => PopUpAddVantagem(repertorioVantagens: vantagensDisponiveis, obj: addVantagens[index]),
-                )
-              );
+                  onTap: () async{
+                    // Ao selecionar uma vantagem já adicionada
+                    objVantagems = {};
+                    objVantagems = await Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => PopUpAddVantagem(repertorioVantagens: vantagensDisponiveis, obj: addVantagens[index]),
+                      )
+                    );
+                    
+                    if(objVantagems.isNotEmpty){ 
+                      setState(() {
+                        addVantagens[index] = objVantagems;
+                      });
+                    }
+                
+                  },
+                
+                );
+              },
               
-              if(objVantagems.isNotEmpty){ 
-                setState(() {
-                  addVantagens[index] = objVantagems;
-                });
-              }
+            
+            ),
+          ),
 
-            }
-          );
-        }
 
+          Text("Total ${personagem.vantagens.cutoTotal()}")
+        ],
       ),
 
       floatingActionButton: FloatingActionButton(

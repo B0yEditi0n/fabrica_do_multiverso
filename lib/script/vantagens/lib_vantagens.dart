@@ -8,7 +8,12 @@ class Vantagem {
   String txtDec = ""; // texto inputado pelo usuário
   int _graduacao = 0;
   int limite = 0;
-  List bonus = [];
+
+  String idOrigem = ''; // ID do Poder criador
+  bool addByPower = false; // Adicionado por poder?
+  List bonus = []; // vantagem adicionada por bonus
+
+  List alvoBonus = []; // alvo de bonus da vantagem
 
 
   init(obj){
@@ -28,10 +33,29 @@ class Vantagem {
       txtDec = obj["txtDec"];
     }
 
-    if(obj["bonus"] != null){
+    if(obj["alvo_bonus"] != null){
       //bonus.addAll();
-      bonus.addAll(obj["bonus"].map((e) => e.toString() ).toList());
+      alvoBonus.addAll(obj["alvo_bonus"].map((e) => e.toString() ).toList());
     }
+
+    if(obj["idOrigem"] != null){idOrigem = obj["idOrigem"];}
+    if(obj["addByPower"] != null){ addByPower = true; }
+    if(obj["bonus"] != null){bonus.addAll(obj["bonus"]);}
+  }
+
+  int returnTotalGrad(){
+    int totalBonus = 0;
+    for (Map b in bonus){
+      totalBonus += b["valor"] as int;
+    }
+
+    return _graduacao + totalBonus;
+  }
+
+  int returnTotalCusto(){
+    // Bonus abatem o custo.
+    return _graduacao;
+
   }
 
   Map returnObj(){
@@ -43,7 +67,10 @@ class Vantagem {
       "graduado": graduado,
       "graduacao": _graduacao,
       "limite": limite,
-      "bonus": bonus,
+      "idOrigem": idOrigem,
+      "bonus": bonus,      
+      "addByPower" : addByPower,
+      "alvo_bonus": alvoBonus,
       "class": "Vantagem",
     };
   }

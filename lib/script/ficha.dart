@@ -1,4 +1,5 @@
 import 'package:fabrica_do_multiverso/script/pericias/lib_pericias.dart';
+import 'package:fabrica_do_multiverso/script/vantagens/lib_vantagens.dart';
 import 'package:flutter/services.dart'; // Biblioteca de Load files
 import 'dart:convert';                  // Biblitoeca de conversão de json
 
@@ -68,7 +69,8 @@ class IntercambioModular{
       Args:
         - Params:
           - List bonusList: Maps contendo o alvo e a origem
-    */
+    */   
+
     for (Map b in bonusList){
       //; Verifica ID peculiar Habilidades
       switch (b["id"]) {
@@ -83,19 +85,17 @@ class IntercambioModular{
           int idxPedacoFicha = 0;
           switch (b["id"].substring(0, 1)){            
             case "D":
-              print("Defesa adição");
               listRef = personagem.defesas.listaDefesas;
               break;
             case "P":
-              print("Pericia adição");
               listRef = personagem.pericias.ListaPercias;
               break;
             case "V":
-              // print("Vantagem adição");
-              // personagem.vantagens.listaVantagens;
+              listRef = personagem.vantagens.listaVantagens;
           }
           
           // Separa a lógica de Vantagens de Defesas e Perícias
+          // Adição de Pericias e Defesas
           if (["P", "D"].contains(b["id"].substring(0, 1))){
             idxPedacoFicha = listRef.indexWhere((r)=> r["id"] == b["id"]);
             List bonus = listRef[idxPedacoFicha]["bonus"];
@@ -104,6 +104,34 @@ class IntercambioModular{
               bonus[idxBonus] = b;
             }else{
               bonus.add(b);
+            }
+          }
+          // Adiçãode Vantagens
+          else if(b["id"].substring(0, 1) == "V"){
+            // Checa se existe algum bonus já
+            int index = listRef.indexWhere((v) => v["id"] == b["id"] );
+
+            // Caso tenha
+            if(index >= 0){
+              // Sobreescreve como add power
+              listRef[index]["bonus"].add({
+                "idOrigem": b["idOrigem"],
+                "valor" : b["valor"]
+              });
+            }
+            // Caso não tenha
+            else{
+              b["addByPower"] = true;
+              // Inicialização das Variáveis
+              b["graduacao"] = 0;
+              b["txtDec"] = "";
+              b["bonus"] = [];
+              b["bonus"].add({
+                "idOrigem": b["idOrigem"],
+                "valor" : b["valor"]
+              });
+
+              listRef.add(b);
             }
           }
       }
@@ -116,7 +144,7 @@ class IntercambioModular{
         busancando aonde ele foi adicionado
         Args:
           - Params:
-            - int id : id do bonus
+            - int id : id de origem do bonus
       */
 
       List listRef;
@@ -138,6 +166,11 @@ class IntercambioModular{
 
       // Pericias
       listRef = personagem.pericias.ListaPercias;
+      listRef = removeBonusIdInRange(listRef);
+
+      // Vantagens
+      listRef = personagem.vantagens.listaVantagens;
+      listRef.removeWhere((r) => r["addByPower"] && id == r["idOrigem"]); // Remove vantagens adicioadas por poderes
       listRef = removeBonusIdInRange(listRef);
 
   }
@@ -378,7 +411,6 @@ class ManipulaPoderes{
         poderes.add({
           "nome": poder["nome"],
           "efeito": poder["efeito"],
-          "efeitos": poder["efeitos"],
           "classe_manipulacao": poder["classe_manipulacao"]
           
         });
@@ -391,6 +423,19 @@ class ManipulaPoderes{
 //# Classe de manipulação de Perícias
 class ManipulaVantagens{
   List<Map> listaVantagens = [];
+
+  int cutoTotal(){
+    // calcula o custo total das vantagens
+    int totalCusto = 0;
+    for (Map v in listaVantagens){
+      Vantagem currentVantagem = Vantagem();
+      currentVantagem.init(v);
+
+      totalCusto += currentVantagem.returnTotalCusto();
+    }
+
+    return totalCusto;
+  }
 }
 //# Classe de manipulação de Perícias
 class ManipulaPericias{

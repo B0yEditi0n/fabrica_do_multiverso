@@ -861,16 +861,21 @@ class EfeitoBonus extends Efeito{
 
   void addBonus(Map bonus){
     int idx = _alvoAumento.indexWhere((e) => e["id"] == bonus["id"]);
+
+    // Afim de evitar erros checa se mapa tem valor 
+    if(bonus["valor"] == null){
+      bonus["valor"] = 1;
+    }
+
     bonus["idOrigem"] = idCriacao;
     if(idx > -1){
       _alvoAumento[idx] = bonus;
     }else{
       _alvoAumento.add(bonus);
     }
-    configBonus();
   }
 
-  void removeIndexBonus(int index){configBonus(); _alvoAumento.removeAt(index);}
+  void removeIndexBonus(int index){_alvoAumento.removeAt(index);}
   List returnBonusList(){
     // Chama o incrementador 
     // Atualzia Valor do bonus
@@ -879,7 +884,7 @@ class EfeitoBonus extends Efeito{
       int currentValor = a["valor"];
       _graduacao += currentValor;
     }
-    personagem.validador.addBonus(_alvoAumento);
+    configBonus();    
     return _alvoAumento;
   }
 
@@ -887,7 +892,12 @@ class EfeitoBonus extends Efeito{
     /*
       reflete o bonus da classe para outras partes da ficha
     */
-    //personagem.validador
+
+    // Limpa os bonus encontrados
+    // Limpa a Saida do Bonus
+    personagem.validador.removeBonusId(idCriacao);
+    // Adicioa bonus se tiver 
+    personagem.validador.addBonus(_alvoAumento);
   }
 
   Future<List> returnListOpt() async{
