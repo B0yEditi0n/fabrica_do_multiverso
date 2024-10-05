@@ -258,7 +258,7 @@
         "duracao": 1,
         "modificadores":[
             {
-                "e_id": "ED001",
+                "m_id": "ED001",
                 "nome": "Incurável",
                 "fixo": true,
                 "custo_base": 1,
@@ -266,7 +266,7 @@
                 "limite": 1
             },
             {
-                "e_id": "ED002",
+                "m_id": "ED002",
                 "nome": "Sonífero",
                 "fixo": false,
                 "custo_base": 0,
