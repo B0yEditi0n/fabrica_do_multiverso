@@ -118,11 +118,17 @@ class _ScreenHabilidadesState extends State<ScreenHabilidades> {
                       ],
                       onChanged: ((value) => {
                         currentHabi = personagem.habilidades.getIndex(index),
-                        if (int.tryParse(value) != null){
+                        if (
+                          int.tryParse(value) != null &&
+                          int.parse(value) >= -5
+                          ){
                           currentHabi.valor = int.parse(value),
                           currentHabi.ausente = false,
-                        }else if (value == '-'){
-                          currentHabi.valor = 0,
+                        }else if (
+                          ( value == '-' ) || 
+                          (int.tryParse(value) != null && int.parse(value) < -5)
+                          ){
+                          currentHabi.valor = -5,
                           currentHabi.ausente = true,
                         },
 
@@ -137,7 +143,9 @@ class _ScreenHabilidadesState extends State<ScreenHabilidades> {
                     ),  
 
                     // Bonus total da habilidade
-                    Text("Valor total ${bonusTotal[index]}"),
+                    personagem.habilidades.listHab[index]["ausente"]
+                    ? const Text("-")
+                    : Text("Valor total ${bonusTotal[index]}")
                   ],
                 );
               },
