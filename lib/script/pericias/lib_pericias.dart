@@ -1,4 +1,5 @@
 import 'package:fabrica_do_multiverso/script/ficha.dart';
+import 'package:fabrica_do_multiverso/script/habilidades/lib_habilidades.dart';
 
 class Pericia{
   String id = "";
@@ -16,6 +17,11 @@ class Pericia{
     if(obj["valor"] != null){
       _valor = obj["valor"];
     }
+
+    if(obj["bonus"] != null){
+      bonus = obj["bonus"];
+    }
+    
 
     return true;
   }
@@ -36,8 +42,20 @@ class Pericia{
       - Parms:
         - Return int: Valor total somado
     */
+
+    // Retorno do Bonus
+    int totalBonus = 0;
+    for (Map b in bonus){
+      int currentValue = b["valor"] as int;
+      totalBonus += currentValue;
+    }
+
+    // Total Habilidades
     Map mapHabilidade = personagem.habilidades.listHab.firstWhere((h)=>h["id"] == _idHabilidadeBase);
-    return mapHabilidade["valor"] + _valor;
+    Habilidade habilidadeObj = Habilidade();
+    habilidadeObj.initObject(mapHabilidade);
+
+    return habilidadeObj.valorTotal() + _valor + totalBonus;
   }
 
   Map returnObj(){

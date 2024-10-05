@@ -198,7 +198,7 @@ class ManipulaHabilidades{
     int totalHabi = 0;
     for(Map hab in listHab){
       instanciaHab.initObject(hab);
-      totalHabi += instanciaHab.total();
+      totalHabi += instanciaHab.custoTotal();
     }
     return totalHabi;
   }

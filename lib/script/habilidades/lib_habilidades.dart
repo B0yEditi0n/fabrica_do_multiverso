@@ -23,7 +23,7 @@ class Habilidade{
     return 1;
   }
 
-  int total(){
+  int custoTotal(){
     /* Retorna o custo */
     if(!ausente){
       return valor * 2;
