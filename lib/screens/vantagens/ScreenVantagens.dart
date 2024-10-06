@@ -37,6 +37,7 @@ class _ScreenVantagensState extends State<ScreenVantagens> {
     // Checa o que já foi adicionado
     setState(() {
       addVantagens.addAll(personagem.vantagens.listaVantagens);
+      personagem.vantagens.cutoTotal();
     });
 
     // remove já adicionados
@@ -46,6 +47,7 @@ class _ScreenVantagensState extends State<ScreenVantagens> {
   void _addNewAdvantage(Map obj){
     setState((){
       addVantagens.add(obj);
+      cutoTotal = personagem.vantagens.cutoTotal();
       // Remove dos Disponíveis
       vantagensDisponiveis.removeWhere((v) => v["id"] == obj["id"]);
     });
@@ -117,8 +119,9 @@ class _ScreenVantagensState extends State<ScreenVantagens> {
                                     setState(() {
                                     addVantagens.removeAt(index);
                                     updateAvaliableAdvantage();
+                                    cutoTotal = personagem.vantagens.cutoTotal();
                                   })
-                                  }
+                                  } 
                                   
                                 }
                               ),
@@ -140,6 +143,7 @@ class _ScreenVantagensState extends State<ScreenVantagens> {
                     if(objVantagems.isNotEmpty){ 
                       setState(() {
                         addVantagens[index] = objVantagems;
+                        cutoTotal = personagem.vantagens.cutoTotal();
                       });
                     }
                 
@@ -153,7 +157,7 @@ class _ScreenVantagensState extends State<ScreenVantagens> {
           ),
 
 
-          Text("Total ${personagem.vantagens.cutoTotal()}")
+          Text("Total $cutoTotal")
         ],
       ),
 

@@ -37,6 +37,7 @@ class _powerEditState extends State<powerEdit> {
 
   List etiquetasModificadores = [];
 
+  int acurado = 0;
   int bonusAtaque = 0;
   
   // Inputs de controle
@@ -138,7 +139,8 @@ class _powerEditState extends State<powerEdit> {
       // Bonus de Acerto & CD se tiver
       if(poder is EfeitoOfensivo){
         EfeitoOfensivo poderOfensivo = poder as EfeitoOfensivo;
-        bonusAtaque = poderOfensivo.bonusAcerto();        
+        bonusAtaque = poderOfensivo.totalBonusAcerto();
+        acurado = poderOfensivo.bonusAcerto();
       }
       // Exclusivo de Aflição
       if(poder is EfeitoAflicao && objPoder["condicoes"] != null){
@@ -505,19 +507,19 @@ class _powerEditState extends State<powerEdit> {
                           fontSize: 30,
                           fontWeight: FontWeight.normal,
                         ),),
-                        onPressed: () async => {
+                        onPressed: () async{
                           
                           if(poder is EfeitoOfensivo){
                             // chama um popupItem
-                            bonusAtaque = await Navigator.push(
+                            acurado = await Navigator.push(
                                 context,
-                                MaterialPageRoute(builder: (context) => PoupInputIntValue(intValue: bonusAtaque, titulo: 'Valor de Acerto')),
-                            ),
+                                MaterialPageRoute(builder: (context) => PoupInputIntValue(intValue: acurado, titulo: 'Valor de Acerto')),
+                            );
                             setState(() {
                               EfeitoOfensivo poderOfensivo = poder as EfeitoOfensivo;
-                              poderOfensivo.addBonus(bonusAtaque);
-                              objPoder = poderOfensivo.retornaObj();
-                            })
+                              poderOfensivo.addBonus(acurado);
+                              bonusAtaque = poderOfensivo.totalBonusAcerto();
+                            });
                           }
                       }
                     ) : const SizedBox(),

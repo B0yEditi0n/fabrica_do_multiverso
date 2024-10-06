@@ -22,7 +22,7 @@ class _PopUpAddSkillState extends State<PopUpAddSkill> {
   // Repetório de Efeitos Adicionados
   List ofensivePoderes = [];      // Repetório
   List addOfensivePoderes = [];   // Já adicionados
-  List<int> ListIdxPoderes = [];  // Indice que volta pra retorno
+  List<String> ListIdPoderes = [];  // Indice que volta pra retorno
 
   // Pericias Adicionaveis no Popup
   final List<Map<String, dynamic>> periciaListAdd = [
@@ -44,10 +44,10 @@ class _PopUpAddSkillState extends State<PopUpAddSkill> {
 
   void _addBonusOfensivo(){
     // Evita que o mesmo efeito seja add 2 vezes
-    if(addOfensivePoderes.length != ListIdxPoderes.length){
+    if(addOfensivePoderes.length != ListIdPoderes.length){
       setState(() {
         // Adiciona os poderes a Lista
-        addOfensivePoderes = ofensivePoderes.where((o)=>ListIdxPoderes.contains(o["index"])).toList();
+        addOfensivePoderes = ofensivePoderes.where((o)=>ListIdPoderes.contains(o["idCriacao"])).toList();
       });
     }
     
@@ -75,7 +75,7 @@ class _PopUpAddSkillState extends State<PopUpAddSkill> {
       periciaSelecionada["treinado"] = widget.obj["treinado"];
       inputDescrPericia.text = widget.obj["escopo"];
       if(widget.obj["bonusPoderes"] != null){
-        ListIdxPoderes = widget.obj["bonusPoderes"];
+        ListIdPoderes = widget.obj["bonusPoderes"];
         _addBonusOfensivo();
       }
       
@@ -151,12 +151,12 @@ class _PopUpAddSkillState extends State<PopUpAddSkill> {
                   MultiSelectDialogField(
                     items: ofensivePoderes.map<MultiSelectItem>((value) {
                       return MultiSelectItem(
-                        value["index"],
+                        value["idCriacao"],
                         "${value["nome"]}${value["nome"].isNotEmpty ? ":" : ""} ${value["efeito"]}"
                       );
                     }).toList(),
                     listType: MultiSelectListType.LIST,
-                    initialValue: ListIdxPoderes,
+                    initialValue: ListIdPoderes,
 
                     // Pop UP
                     title: const Text("Poderes"),
@@ -195,8 +195,8 @@ class _PopUpAddSkillState extends State<PopUpAddSkill> {
                     onConfirm: (results) {
                       setState(() {
                         // Evita Repetições ao adicionar
-                        ListIdxPoderes = [];
-                        ListIdxPoderes.addAll(results.cast<int>());
+                        ListIdPoderes = [];
+                        ListIdPoderes.addAll(results.cast<String>());
                         _addBonusOfensivo();                        
                       });
                     },
@@ -208,30 +208,16 @@ class _PopUpAddSkillState extends State<PopUpAddSkill> {
         ),
         actions: [
           //? Botões de remover(se tiver) cancelar e adicionar
-
-          widget.obj.isNotEmpty ?
-          TextButton(
-            child: const Text('Remover'),
-            onPressed: () {
-              // Fecha o popup
-              Navigator.of(context).pop({"remove": true});
-            },
-          ) : const SizedBox(),
-
-          TextButton(
-            child: const Text('Cancelar'),
-            onPressed: () {
-              // Fecha o popup
-              Navigator.of(context).pop({});
-            },
-          ),
-
           TextButton(
             child: const Text('Adicionar'),
             onPressed: () async{
               // Anexa Descrição e Valores a Perícias 
               periciaSelecionada["escopo"] = inputDescrPericia.text;
               periciaSelecionada["valor"] = 0;
+
+              if(widget.obj["valor"] != null){periciaSelecionada["valor"] = widget.obj["valor"];}
+              if(widget.obj["idCriacao"] != null){periciaSelecionada["idCriacao"]= widget.obj["idCriacao"];}
+
               if(["PA01", "PA02"].contains(periciaSelecionada["id"])){
                 periciaSelecionada["class"] = "PericiaAddAcerto";
                 if(periciaSelecionada["id"] == "PA01"){
@@ -240,7 +226,7 @@ class _PopUpAddSkillState extends State<PopUpAddSkill> {
                   periciaSelecionada["range"] = true;
                 }
                 // Anexa Poderes de Acerto
-                periciaSelecionada["bonusPoderes"] = ListIdxPoderes;
+                periciaSelecionada["bonusPoderes"] = ListIdPoderes;
               }else{
                 periciaSelecionada["class"] = "PericiaAdiciona";
               }
@@ -250,6 +236,16 @@ class _PopUpAddSkillState extends State<PopUpAddSkill> {
               Navigator.of(context).pop(periciaSelecionada);
             },
           ),
+          
+          TextButton(
+            child: const Text('Cancelar'),
+            onPressed: () {
+              // Fecha o popup
+              Navigator.of(context).pop({});
+            },
+          ),
+
+          
         ],
       );
   }

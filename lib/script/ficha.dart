@@ -1,5 +1,6 @@
 import 'package:fabrica_do_multiverso/script/pericias/lib_pericias.dart';
 import 'package:fabrica_do_multiverso/script/vantagens/lib_vantagens.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'; // Biblioteca de Load files
 import 'dart:convert';                  // Biblitoeca de conversão de json
 
@@ -20,22 +21,49 @@ class IntercambioModular{
   // Essa classe fica reponsável por alterações
   // que devem acontecer fora do modulo
 
-  void addBonusPericiaOfensivo(int id, int index, int bonus){
+  void deletePericiaWhere(String idPericia){
     /*
-      Adiciona ou remove o bonus de uma pericia
-      ofensiva a um poder
-
-      Args: 
-        - int id: id de indentificação de qual pericia a adicionou
-        - int index: identifica a posição do poder
-        - int bonus: bonus a ser adicionado
+      Deleta todos os bonus onde o Id de criação 
+      da perícia selecionado foi adicionado
+      - Params:
+        String idPericia - id de criação da Perícia
     */
 
-    
+    List poderes = personagem.poderes.poderesLista;
+    for(Map poder in poderes){
+      poder["bonus"].removeWhere((p) => p["acerto"]["idCriacao"] == idPericia);
+    }
   }
 
-  void removeBonusPericiaOfensivo(int id, int index){
+  void updatePericiaBonus(){
+    /*
+      Atualiza os Bonus de Pericia de todos os poderes
+    */
+    List listaOfensivePoderes = personagem.pericias.returnOfensiveEfeitos(0);
+    List listPericia = personagem.pericias.ListaPercias.where((p) => p["classe"] == "PericiaAddAcerto").toList();
 
+    for(Map pericia in listPericia){
+      // Delete tudo para evitar duplicade
+      deletePericiaWhere(pericia["idCriacao"]);
+
+      Pericia currentPericia = Pericia();
+      currentPericia.init(pericia);
+      for(Map poder in listaOfensivePoderes){
+        if(pericia["bonusPoderes"].contains(poder["idCriacao"])){
+
+          poder["bonus"].add({
+            "acerto": {
+              "idCriacao": pericia["idCriacao"],
+              "bonus": currentPericia.bonusTotal(),
+            }
+          });
+        };
+      }
+      // if(!["F1", "F2"].contains(ofensivo["idCriacao"])){
+      //   print(ofensivo);
+
+      // }
+    }
   }
 
   ///**********************************************
@@ -483,32 +511,46 @@ class ManipulaPericias{
     List poderes = personagem.poderes.poderesLista;
     List poderesFilter = [];
     //; Poderes ofensivos e Sendo perto ou a distância
-    List mapPoderes = poderes.map((p)=>(
-    // Efeitos Ofensivos nativos
-    (["EfeitoAflicao", "EfeitoOfensivo", "EfeitoDano"].contains(p["class"])
-    
-    // Efeitos Convetidos em Ofensivo
-    || p["defAtaque"] == true)
-    
-    // Alance sendo pero ou a ditância
-    //&& [1, 2].contains(p["alcance"]) 
-    && distancia == p["alcance"]
+    List mapPoderes = poderes.where((p)=>
+      // Efeitos Ofensivos nativos
+      (["EfeitoAflicao", "EfeitoOfensivo", "EfeitoDano"].contains(p["class"])
+      
+      // OU: Efeitos Convetidos em Ofensivo
+      || p["defAtaque"] == true)
+      
+      // E: Alance sendo pero ou a ditância
+      && [1, 2].contains(p["alcance"])
+    ).toList();
 
-    )).toList();
-
-    // Faz o append anexando o index
     for(int i=0; i < mapPoderes.length; i++){
-      if(mapPoderes[i]){
-        ListOfensive.add(poderes[i]);
-        ListOfensive.last["index"] = i;
-
-        // Apenda de acordo com a entrada
-        if(distancia == 0 || distancia == ListOfensive.last["alcance"]){
-          poderesFilter.add(ListOfensive.last);
-        }
+      // Apenda de acordo com o Range
+      if(distancia == 0 || distancia == mapPoderes[i]["alcance"]){
+        poderesFilter.add(mapPoderes[i]);
       }
       
     }
+
+    // Adiciona Desarmado (Perto)
+    if(distancia == 1){
+      poderesFilter.add({
+        "nome": "Desarmado",
+        "noPower": true,
+        "efeito": "Força",
+        "idCriacao": "F1"
+      });
+    }
+    
+    // Adicona Aremeço (a Distância)
+    if(distancia == 2){
+      poderesFilter.add({
+        "nome": "Arremeço",
+        "noPower": true,
+        "efeito": "Força",
+        "idCriacao": "F2"
+      });
+    }
+    
+
     return poderesFilter;
   }
 

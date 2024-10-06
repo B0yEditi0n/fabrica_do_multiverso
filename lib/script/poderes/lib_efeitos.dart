@@ -18,6 +18,8 @@ class Efeito{
   Map _padraoEfeito = {};
   //Map get padraoEfeito => _padraoEfeito;
   var _modificador = [];
+
+  String idCriacao = "";
   
   //*************************** */
   // Methodos de Inicialização 
@@ -34,12 +36,14 @@ class Efeito{
       Return:
         Map Json - o Arquivo json
     */
+
+    idCriacao = "P${DateTime.now().millisecondsSinceEpoch.toRadixString(16)}";
     
     this.nome = nome;
     _idEfeito = idEfeito;
 
     // carrega json Base e preenche atributos do objeto
-    var efeitos = await carregaJson();
+    List efeitos = await carregaJson();
 
     int index = efeitos.indexWhere((efeito) => efeito["e_id"] == idEfeito);
     Map efeitoAtual = efeitos[index];
@@ -66,7 +70,7 @@ class Efeito{
       Return:
         Map Json - o Arquivo json
     */
-
+    idCriacao = "P${DateTime.now().millisecondsSinceEpoch.toRadixString(16)}";
     nome = objPoder["nome"];
     _idEfeito = objPoder["e_id"];
     _graduacao = objPoder["graduacao"];
@@ -86,7 +90,7 @@ class Efeito{
     return true;
   }
 
-  Future carregaJson() async{
+  Future<List> carregaJson() async{
     /*
       carrega qualquer arquivo json necessário dentro do projeto
 
@@ -96,8 +100,8 @@ class Efeito{
         Map Json - o Arquivo json
     */
     
-    var jsonEfeitos = await rootBundle.loadString('assets/poderes/efeitos.json');
-    var objetoJson = jsonDecode(jsonEfeitos);
+    String jsonEfeitos = await rootBundle.loadString('assets/poderes/efeitos.json');
+    List objetoJson = jsonDecode(jsonEfeitos);
     return(objetoJson);
 
   }
@@ -430,6 +434,7 @@ class Efeito{
     return{
       "nome":             nome,
       "e_id":             _idEfeito,
+      "idCriacao":        idCriacao,
       "efeito":           _nomeEfeito,
       "graduacao":        _graduacao,
       "acao":             _acao,
@@ -537,6 +542,7 @@ class EfeitoEscolha extends Efeito{
     */
     return{
       "nome":             nome,
+      "idCriacao":        idCriacao,
       "e_id":             _idEfeito,
       "efeito":           _nomeEfeito,
       "graduacao":        _graduacao,
@@ -610,6 +616,15 @@ class EfeitoOfensivo extends Efeito{
   }
 
   int bonusAcerto(){return _bonusAcerto;}
+  int totalBonusAcerto(){
+    int bonusTotal = 0;
+    for(Map b in bonus){
+      if(b["acerto"] != null){
+        bonusTotal += b["acerto"]["bonus"] as int;
+      }
+    }
+    return _bonusAcerto + bonusTotal;
+  }
 
   int getCritico(){
     /*
@@ -704,6 +719,7 @@ class EfeitoOfensivo extends Efeito{
     */
     return{
       "nome":             nome,
+      "idCriacao":        idCriacao,
       "e_id":             _idEfeito,
       "efeito":           _nomeEfeito,
       "graduacao":        _graduacao,
@@ -739,6 +755,7 @@ class EfeitoDano extends EfeitoOfensivo{
     return{
       "nome":             nome,
       "e_id":             _idEfeito,
+      "idCriacao":        idCriacao,
       "efeito":           _nomeEfeito,
       "graduacao":        _graduacao,
       "acao":             _acao,
@@ -747,8 +764,8 @@ class EfeitoDano extends EfeitoOfensivo{
       "modificadores":    _modificador,
       "descricao":        desc,
       "defAtaque":        defAtaque,
-      "class":            _padraoEfeito["classe_manipulacao"],
-      "bonus":            bonus,      
+      "class":            "EfeitoDano",
+      "bonus":            bonus,
       "critico":          _critico,
       "acerto":           _bonusAcerto,
       "cd":               (_graduacao + 15),
@@ -792,6 +809,7 @@ class EfeitoAflicao extends EfeitoOfensivo{
     */
     return{
       "nome":             nome,
+      "idCriacao":        idCriacao,
       "e_id":             _idEfeito,
       "efeito":           _nomeEfeito,
       "graduacao":        _graduacao,
@@ -821,8 +839,6 @@ class EfeitoBonus extends Efeito{
 
   List _alvoAumento = [];
   List grupoOpt = [];
-  // P indica poder + o seu timestump
-  String idCriacao = "P${DateTime.now().millisecondsSinceEpoch.toRadixString(16)}";
   List opt = [];
 
   @override
@@ -840,7 +856,6 @@ class EfeitoBonus extends Efeito{
     */
     
     super.instanciarMetodo(nome, idEfeito);
-    idCriacao = "P${DateTime.now().millisecondsSinceEpoch.toRadixString(16)}";
 
     return true;
   }
@@ -850,10 +865,6 @@ class EfeitoBonus extends Efeito{
     super.reinstanciarMetodo(objPoder);    
     if(objPoder["alvoAumento"] != null){
       _alvoAumento = objPoder["alvoAumento"];
-    }
-
-    if(objPoder["idCriacao"] != null){
-      idCriacao = objPoder["idCriacao"];
     }
     
     return true;
@@ -925,6 +936,7 @@ class EfeitoBonus extends Efeito{
     */
     return{
       "nome":             nome,
+      "idCriacao":        idCriacao,
       "e_id":             _idEfeito,
       "efeito":           _nomeEfeito,
       "graduacao":        _graduacao,
@@ -935,7 +947,6 @@ class EfeitoBonus extends Efeito{
       "descricao":        desc,
       "defAtaque":        defAtaque,
       "class":            "EfeitoBonus",
-      "idCriacao":        idCriacao,
       "alvoAumento":      _alvoAumento,
       "opt":              opt,
       "custo":            custearAlteracoes(),
@@ -1006,6 +1017,7 @@ class EfeitoCrescimento extends EfeitoBonus{
     */
     return{
       "nome":             nome,
+      "idCriacao":        idCriacao,
       "e_id":             _idEfeito,
       "efeito":           _nomeEfeito,
       "graduacao":        _graduacao,
@@ -1016,7 +1028,6 @@ class EfeitoCrescimento extends EfeitoBonus{
       "descricao":        desc,
       "defAtaque":        defAtaque,
       "class":            "EfeitoCrescimento",
-      "idCriacao":        idCriacao,
       "alvoAumento":      _alvoAumento,
       "opt":              opt,
       "custo":            custearAlteracoes(),

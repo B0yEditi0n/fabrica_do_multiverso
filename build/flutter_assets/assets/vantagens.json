@@ -46,7 +46,7 @@
 		"nome": "ARMAS IMPROVISADAS",
 		"graduado": true,
 		"desc": false,
-		"bonus": [
+		"alvo_bonus": [
 			"DAMAGE_CLOSE"
 		],
 		"class": "Vantagem"
@@ -77,7 +77,7 @@
 		"nome": "ATAQUE À DISTÂNCIA",
 		"graduado": true,
 		"desc": false,
-		"bonus":[
+		"alvo_bonus":[
 			"ACERTO_RANGE"
 		],
 		"class": "Vantagem"
@@ -94,7 +94,7 @@
 		"nome": "ATAQUE CORPO-A-CORPO",
 		"graduado": true,
 		"desc": false,
-		"bonus":[
+		"alvo_bonus":[
 			"ACERTO_CLOSE"
 		],
 		"class": "Vantagem"
@@ -104,7 +104,7 @@
 		"nome": "ATAQUE DE EQUIPE",
 		"graduado": true,
 		"desc": false,
-		"bonus":[
+		"alvo_bonus":[
 			"ACERTO_CLOSE"
 		],
 		"limite": 2,
@@ -395,7 +395,7 @@
 		"nome": "INICIATIVA APRIMORADA",
 		"graduado": true,
 		"desc": false,
-		"bonus":[
+		"alvo_bonus":[
 			"INICIATIVA"
 		],
 		"class": "Vantagem"
@@ -441,7 +441,7 @@
 		"nome": "MAESTRIA EM ARREMESSO",
 		"graduado": false,
 		"desc": false,
-		"bonus": [
+		"alvo_bonus": [
 			"DAMAGE_RANGE"
 		],
 		"class": "Vantagem"
@@ -564,7 +564,7 @@
 		"nome": "ROLAMENTO DEFENSIVO",
 		"graduado": false,
 		"desc": false,
-		"bonus":[
+		"alvo_bonus":[
 			"RESISTANCE"
 		],
 		"class": "Vantagem"
@@ -574,7 +574,7 @@
 		"nome": "SAQUE RÁPIDO",
 		"graduado": false,
 		"desc": false,
-		"bonus":[
+		"alvo_bonus":[
 			"RESISTANCE"
 		],
 		"class": "Vantagem"

@@ -35,7 +35,7 @@ class _ScreenPoderesState extends State<ScreenPoderes> {
   }
   Future _addPoderes(Map objPoder) async{
     if(objEfeito["classe_manipulacao"] != "PacotesEfeitos"){
-      await personagem.poderes.novoPoder(objEfeito["nome"], objEfeito["e_id"], objEfeito["classeManipuladora"]);
+      await personagem.poderes.novoPoder(objEfeito["nome"], objEfeito["e_id"], objEfeito["classe_manipulacao"]);
     }else{
       await personagem.poderes.novoPacote(objEfeito["nome"], objEfeito["tipo"], objEfeito["efeito"]);
     }

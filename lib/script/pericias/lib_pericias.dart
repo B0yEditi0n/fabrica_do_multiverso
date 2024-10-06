@@ -103,6 +103,8 @@ class PericiaAdiciona extends Pericia{
 class PericiaAddAcerto extends PericiaAdiciona{
   List bonusPoderes = [];
   bool range = false;
+
+  String idCriacao = "";
   
   @override
   bool init(obj){
@@ -110,6 +112,13 @@ class PericiaAddAcerto extends PericiaAdiciona{
 
     range = obj["range"];
     if(obj["bonusPoderes"] != null){ bonusPoderes = obj["bonusPoderes"]; }    
+
+    if(obj["idCriacao"] != null){
+      idCriacao = obj["idCriacao"]; 
+    }else{
+      // S de Skill
+      idCriacao = "S${DateTime.now().millisecondsSinceEpoch.toRadixString(16)}";
+    }
 
     return true;
   }
@@ -120,18 +129,11 @@ class PericiaAddAcerto extends PericiaAdiciona{
     int _addId = DateTime.now().millisecondsSinceEpoch;
   }
 
-  addEfeitosOfensivos(int index){
-    /*
-      adiciona a lista de bonus um efeito da lista de efeitos
-    */
-    bonusPoderes.add(index);
-    personagem.validador.addBonusPericiaOfensivo(_addId, index, _valor);
-  }
-
   @override 
   Map returnObj(){
     return({
       "id": id,
+      "idCriacao": idCriacao,
       "nome": nome,
       "valor": _valor,
       "idHab": _idHabilidadeBase,

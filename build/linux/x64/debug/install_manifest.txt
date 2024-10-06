@@ -4,7 +4,6 @@
 /media/caio/caio.hdd/Documentos/fabrica_do_multiverso/build/linux/x64/debug/bundle/data/flutter_assets/packages/cupertino_icons/assets/CupertinoIcons.ttf
 /media/caio/caio.hdd/Documentos/fabrica_do_multiverso/build/linux/x64/debug/bundle/data/flutter_assets/packages/bootstrap_icons/fonts/BootstrapIcons.ttf
 /media/caio/caio.hdd/Documentos/fabrica_do_multiverso/build/linux/x64/debug/bundle/data/flutter_assets/FontManifest.json
-/media/caio/caio.hdd/Documentos/fabrica_do_multiverso/build/linux/x64/debug/bundle/data/flutter_assets/NOTICES
 /media/caio/caio.hdd/Documentos/fabrica_do_multiverso/build/linux/x64/debug/bundle/data/flutter_assets/version.json
 /media/caio/caio.hdd/Documentos/fabrica_do_multiverso/build/linux/x64/debug/bundle/data/flutter_assets/assets/habilidades.json
 /media/caio/caio.hdd/Documentos/fabrica_do_multiverso/build/linux/x64/debug/bundle/data/flutter_assets/assets/poderes.json
@@ -15,7 +14,6 @@
 /media/caio/caio.hdd/Documentos/fabrica_do_multiverso/build/linux/x64/debug/bundle/data/flutter_assets/assets/pericias.json
 /media/caio/caio.hdd/Documentos/fabrica_do_multiverso/build/linux/x64/debug/bundle/data/flutter_assets/assets/vantagens.json
 /media/caio/caio.hdd/Documentos/fabrica_do_multiverso/build/linux/x64/debug/bundle/data/flutter_assets/AssetManifest.json
-/media/caio/caio.hdd/Documentos/fabrica_do_multiverso/build/linux/x64/debug/bundle/data/flutter_assets/AssetManifest.bin.json
 /media/caio/caio.hdd/Documentos/fabrica_do_multiverso/build/linux/x64/debug/bundle/data/flutter_assets/shaders/ink_sparkle.frag
 /media/caio/caio.hdd/Documentos/fabrica_do_multiverso/build/linux/x64/debug/bundle/data/flutter_assets/kernel_blob.bin
 /media/caio/caio.hdd/Documentos/fabrica_do_multiverso/build/linux/x64/debug/bundle/data/flutter_assets/fonts/MaterialIcons-Regular.otf

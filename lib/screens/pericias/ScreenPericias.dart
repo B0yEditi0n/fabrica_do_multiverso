@@ -15,7 +15,7 @@ class ScreenPericias extends StatefulWidget {
 }
 
 class _ScreenPericiasState extends State<ScreenPericias> {
-  List<Map> ListaPercias = []; // Pericias Adiconais
+  List<Map> listaPercias = []; // Pericias Adiconais
   Pericia pericia = Pericia(); // Classe de Manipulação
   Map mapPericiaReturn = {};   // Mapa de Retorno
   int custoTotal = 0;          // Custo total
@@ -33,25 +33,23 @@ class _ScreenPericiasState extends State<ScreenPericias> {
   }
 
   void _initProg() {
-    List classPericias = personagem.pericias.ListaPercias;
-    for (Map mapPericias in classPericias) {
-      ListaPercias.add(mapPericias);
-    }
+    listaPercias = personagem.pericias.ListaPercias;
   }
   Future<bool> _updateTextInputList(){
     setState(() {
       // Adiciona e Remove input Text
       // conforme a quantidade de perícias
-      if(personagem.pericias.ListaPercias.length > listInputs.length){
-        while(personagem.pericias.ListaPercias.length > listInputs.length){
+      if(listaPercias.length > listInputs.length){
+        while(listaPercias.length > listInputs.length){
           listInputs.add(TextEditingController(text: "0"));
         }
-      }else if(personagem.pericias.ListaPercias.length < listInputs.length){
-        while(personagem.pericias.ListaPercias.length < listInputs.length){
+      }else if(listaPercias.length < listInputs.length){
+        while(listaPercias.length < listInputs.length){
           listInputs.removeLast();
         }
       }
     });
+    
     return Future<bool>.value(true);
   }
 
@@ -61,20 +59,10 @@ class _ScreenPericiasState extends State<ScreenPericias> {
       custoTotal = personagem.pericias.calculaTotal();
 
       // Instancia campos de input
-      for (Map p in ListaPercias) {
+      for (Map p in listaPercias) {
           listInputs.add(TextEditingController(text: p["valor"].toString()));
       }
     });
-  }
-
-  @override
-  void dispose() {
-    //! adição do Chat GPT ao código
-    // Certifica-se de descartar todos os controladores ao finalizar
-    for (var controller in listInputs) {
-      controller.dispose();
-    }
-    super.dispose();
   }
 
   @override
@@ -115,7 +103,7 @@ class _ScreenPericiasState extends State<ScreenPericias> {
                     
                   ),
                                 
-                  itemCount: ListaPercias.length,
+                  itemCount: listaPercias.length,
                   itemBuilder: (context, index){
                     Pericia pericia = Pericia();
 
@@ -123,65 +111,87 @@ class _ScreenPericiasState extends State<ScreenPericias> {
                       padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
                                 
                       child: GestureDetector(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
+                        child: Row(
                           children: [
-                            
-                            ListaPercias[index]["escopo"] != null
-                              ? Text("${ListaPercias[index]["nome"]}: (${ListaPercias[index]["escopo"]})")
-                              : Text(ListaPercias[index]["nome"]),
-                            const SizedBox(height: 1),
-                            SizedBox(
-                              width: 150,
-                              height: 100,
-                              child: Row(
-                                children: [
-                              
-                                  SizedBox(
-                                    width: 50,
-                                    // para evitar carregamentos asincronos
-                                    child: index < listInputs.length ? 
-                                    TextField(
-                                      controller: listInputs[index],
-                                      keyboardType: TextInputType.number,
-                                      inputFormatters: <TextInputFormatter>[
-                                        FilteringTextInputFormatter.digitsOnly
-                                      ],
-                                      textAlign: TextAlign.center,
-                                      decoration: const InputDecoration(
-                                        border: OutlineInputBorder(),
+                            //# Titulo da Perícia 
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                
+                                listaPercias[index]["escopo"] != null
+                                  ? Text("${listaPercias[index]["nome"]}: (${listaPercias[index]["escopo"]})")
+                                  : Text(listaPercias[index]["nome"]),
+                                const SizedBox(height: 1),
+                                SizedBox(
+                                  width: 150,
+                                  height: 100,
+                                  child: Row(
+                                    children: [
+                                  
+                                      SizedBox(
+                                        width: 50,
+                                        // # preenchimento da graduação
+                                        child: index < listInputs.length ? 
+                                        TextField(
+                                          controller: listInputs[index],
+                                          keyboardType: TextInputType.number,
+                                          inputFormatters: <TextInputFormatter>[
+                                            FilteringTextInputFormatter.digitsOnly
+                                          ],
+                                          textAlign: TextAlign.center,
+                                          decoration: const InputDecoration(
+                                            border: OutlineInputBorder(),
+                                          ),
+                                          onChanged: (value) =>{
+                                            if(int.tryParse(value) != null){
+                                              listaPercias[index]["valor"] = int.parse(value),
+                                            },                                
+                                            setState(() {
+                                              custoTotal = personagem.pericias.calculaTotal();
+                                            }),
+
+                                            // Atualiza Lista de Bonus de Adição
+                                            personagem.validador.updatePericiaBonus()
+                                          }
+                                        ) : const SizedBox(),
                                       ),
-                                      onChanged: (value) =>{
-                                        if(int.tryParse(value) != null){
-                                          personagem.pericias.ListaPercias[index]["valor"] = int.parse(value),
-                                        },                                
-                                        setState(() {
-                                          custoTotal = personagem.pericias.calculaTotal();
-                                        }),
-                                      }
-                                    ) : const SizedBox(),
+                                  
+                                      const SizedBox(width: 10),
+                                      // o metodo init pode não carregar a tempo da chamda de bonusTotal
+                                      // para evitar problemas refiz a chamada
+                                      pericia.init(listaPercias[index])
+                                        ? Text("Total: ${pericia.bonusTotal()}") 
+                                        : const Text("Total: "), 
+                                    ],
                                   ),
-                              
-                                  const SizedBox(width: 10),
-                                  // o metodo init pode não carregar a tempo da chamda de bonusTotal
-                                  // para evitar problemas refiz a chamada
-                                  pericia.init(ListaPercias[index])
-                                    ? Text("Total: ${pericia.bonusTotal()}") 
-                                    : const Text("Total: "), 
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
+                            listaPercias[index]["classe"] != "Pericia" ?
+                            IconButton(
+                              icon: const Icon(Icons.delete),
+
+                              onPressed: (){
+                                // Remove dos Poderes associados a esse bonus
+                                personagem.validador.deletePericiaWhere(listaPercias[index]["idCriacao"]);
+
+                                setState(() {
+                                  listaPercias.removeAt(index);  
+                                });
+                                  
+                              },
+                            ) : const SizedBox(),
                           ],
                         ),
 
-                        onDoubleTap: () async {
-                          //? efetua o loading novament para alteração de nomes
-                          if(["PericiaAdiciona", "PericiaAddAcerto"].contains(ListaPercias[index]["classe"])){
+                        onTap: () async {
+                          //? efetua o loading novament para alteração de pericias adicionais
+                          if(["PericiaAdiciona", "PericiaAddAcerto"].contains(listaPercias[index]["classe"])){
                             Map mapPericiaReturn;
                             mapPericiaReturn = await Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => PopUpAddSkill(obj: ListaPercias[index]))
+                              MaterialPageRoute(builder: (context) => PopUpAddSkill(obj: listaPercias[index]))
                             );
                             if(mapPericiaReturn.isNotEmpty){
                               if(mapPericiaReturn["remove"] == null || mapPericiaReturn["remove"] == false){
@@ -197,17 +207,21 @@ class _ScreenPericiasState extends State<ScreenPericias> {
                                 mntPericia.init(mapPericiaReturn);
 
                                 setState(() {                                    
-                                  ListaPercias[index] = mntPericia.returnObj();
+                                  listaPercias[index] = mntPericia.returnObj();
                                 });
+
                               }else if(mapPericiaReturn["remove"] == true){ // caso remove venha true é um pedido de remoção
                                 // Atualiza as Lista de perícias  
                                 setState(() {
-                                  personagem.pericias.ListaPercias.removeAt(index);
+                                  listaPercias.removeAt(index);
                                   _updateTextInputList();
-                                  ListaPercias = personagem.pericias.ListaPercias;
-                                });
-            
+                                  listaPercias = listaPercias;
+                                });            
                               }
+
+
+                              // Atualiza Lista de Bonus de Adição
+                              personagem.validador.updatePericiaBonus();
                             }
                           }
                         },
@@ -254,9 +268,12 @@ class _ScreenPericiasState extends State<ScreenPericias> {
               periAddicional.init(mapPericiaReturn);
 
               // Atualiza as Lista de perícias  
-              personagem.pericias.ListaPercias.add(periAddicional.returnObj());
+              listaPercias.add(periAddicional.returnObj());
               _updateTextInputList();
-              ListaPercias = personagem.pericias.ListaPercias;
+              listaPercias = listaPercias;
+
+              // Atualiza Lista de Bonus de Adição
+              personagem.validador.updatePericiaBonus();
             }) : null,
           },
         ),
