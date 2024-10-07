@@ -1,3 +1,6 @@
+import 'dart:developer';
+import 'dart:ffi';
+
 import 'package:fabrica_do_multiverso/screens/pericias/ScreenPericias.dart';
 import 'package:fabrica_do_multiverso/screens/vantagens/ScreenVantagens.dart';
 import 'package:flutter/services.dart';
@@ -5,6 +8,13 @@ import 'package:flutter/services.dart';
 import 'package:fabrica_do_multiverso/script/ficha.dart';
 import 'package:flutter/material.dart';
 import 'package:bootstrap_icons/bootstrap_icons.dart';
+
+// Import de imagens
+import 'dart:io';
+import 'package:file_picker/file_picker.dart';
+
+// Salvamento de Arquivos
+import 'package:archive/archive_io.dart'; // Zip
 
 // Temas
 import 'package:fabrica_do_multiverso/theme/theme.dart';
@@ -44,15 +54,22 @@ class FabricaHerois extends StatelessWidget {
   }
 }
 
+class ScreenInicial extends StatefulWidget {
+  const ScreenInicial({super.key});
 
-class ScreenInicial extends StatelessWidget {  
+  @override
+  State<ScreenInicial> createState() => _ScreenInicialState();
+}
+
+class _ScreenInicialState extends State<ScreenInicial> {
+  Uint8List fileImg = Uint8List(0); // Imagem do Personagem;
 
   TextEditingController txtControlName = TextEditingController();
   TextEditingController txtNP = TextEditingController();
 
   void _updateValue(){
     txtControlName.text = personagem.nomePersonagem;
-    txtNP.text = personagem.np.toString();    
+    txtNP.text = personagem.np.toString();
   }
   
   @override
@@ -145,6 +162,40 @@ class ScreenInicial extends StatelessWidget {
           //     fontSize: 20,
           //   ),
           // ),
+
+
+          // teste upload de ficha
+          IconButton(
+            icon: fileImg.isNotEmpty 
+              ? Image.memory(fileImg) 
+              : const Icon(BootstrapIcons.image, size: 50),
+
+            onPressed: () async{
+              const List<String> extension = ["img", "png", "jpeg", "jpg"];
+
+              FilePickerResult respostaPath = await FilePicker.platform.pickFiles(
+                type: FileType.image,
+                allowMultiple: false,
+                onFileLoading: (FilePickerStatus status) => print(status),
+                allowedExtensions: extension,
+                dialogTitle: "Imagem de Herói",
+                initialDirectory: "",
+                lockParentWindow: false, 
+              ) as FilePickerResult;
+
+              String pathFile = respostaPath.files.first.path as String;
+              //Uint8List bytes = await file.readAsBytes();
+              
+              //Uint8List tmpFile = 
+              setState(() {
+                fileImg = File(pathFile).readAsBytesSync();
+              });
+              
+            },
+          ),
+
+          const SizedBox( height:  50 ),
+
           Expanded(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center, 
@@ -152,6 +203,7 @@ class ScreenInicial extends StatelessWidget {
               children: [
                 Wrap(
                   children: [
+
                     //? Nome
                     SizedBox(
                       width: (MediaQuery.of(context).size.width * 0.6),
@@ -164,7 +216,9 @@ class ScreenInicial extends StatelessWidget {
                         },
                       ),
                     ),
+
                     const SizedBox(width: 10),
+
                     //? NP
                     SizedBox(
                       width: (MediaQuery.of(context).size.width * 0.3),
@@ -182,7 +236,7 @@ class ScreenInicial extends StatelessWidget {
                           _updateValue()
                         },
                       ),
-                    )
+                    ),
                   ],
                 ),
               ]
@@ -190,6 +244,34 @@ class ScreenInicial extends StatelessWidget {
           )
         ],
       ),
+
+      floatingActionButton: IconButton(
+        icon: const Icon(BootstrapIcons.floppy2_fill),
+        onPressed: () async{
+          // Pega Json e Transforma em File 
+          Map fichaFinal = personagem.returnObjJson();
+          
+          // Criando um Zip de Saida
+          InputStream byteFicha = InputStream(fichaFinal.toString());
+          InputStream byteImg = InputStream(fileImg);
+          //byteFicha.buffer = StringBuffer(fichaFinal.toString());
+          ZipFile zipFile = ZipFile();
+          
+
+          //! Um download Output deve ser posteriomente adicionado
+          //await zipFile.zipDirectoryAsync(Directory('/home/caio/Downloads'), filename: 'Personagem.zip');
+          //await zipFile.addDirectory(Directory('/home/caio/Downloads'));
+          // ArchiveFile jsonPersonage = 
+          // ArchiveFile zipImg = ;
+          
+          // fichaFinal.to;
+          // zipFile.addFile(); addArchiveFile(ArchiveFile.string("personage.json", fichaFinal.toString()));
+          // zipFile.addArchiveFile(ArchiveFile.noCompress("personagem", fileImg.length, fileImg));
+          // zipFile.closeSync();
+
+        },
+      ),
     );
+    
   }
 }

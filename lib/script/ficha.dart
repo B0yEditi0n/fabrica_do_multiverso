@@ -568,9 +568,9 @@ class Ficha{
   int acertoPer = 0;
 
   // Instancia da Ficha
-  ManipulaPoderes poderes = ManipulaPoderes();
   ManipulaHabilidades habilidades = ManipulaHabilidades();
   ManipulaDefesas defesas = ManipulaDefesas();
+  ManipulaPoderes poderes = ManipulaPoderes();
   ManipulaPericias pericias = ManipulaPericias();
   ManipulaVantagens vantagens = ManipulaVantagens();
   List<Map<String, String>> complicacoes = [];
@@ -583,6 +583,17 @@ class Ficha{
     await pericias.init();
 
     return 1;
+  }
+
+  Map returnObjJson(){
+    return {
+      habilidades: habilidades.listHab,
+      defesas: defesas.listaDefesas,
+      poderes: poderes.poderesLista,
+      pericias: pericias.ListaPercias,
+      vantagens: vantagens.listaVantagens,
+      complicacoes: complicacoes,
+    };
   }
   
 }
