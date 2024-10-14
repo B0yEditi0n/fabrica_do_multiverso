@@ -187,6 +187,15 @@ PKG_CONFIG_ARGN:STRING=
 //pkg-config executable
 PKG_CONFIG_EXECUTABLE:FILEPATH=/usr/bin/pkg-config
 
+//Value Computed by CMake
+file_saver_BINARY_DIR:STATIC=/media/caio/caio.hdd/Documentos/fabrica_do_multiverso/build/linux/x64/debug/plugins/file_saver
+
+//Value Computed by CMake
+file_saver_IS_TOP_LEVEL:STATIC=OFF
+
+//Value Computed by CMake
+file_saver_SOURCE_DIR:STATIC=/media/caio/caio.hdd/Documentos/fabrica_do_multiverso/linux/flutter/ephemeral/.plugin_symlinks/file_saver/linux
+
 //Path to a library.
 pkgcfg_lib_GIO_gio-2.0:FILEPATH=/usr/lib/x86_64-linux-gnu/libgio-2.0.so
 

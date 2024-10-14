@@ -1,6 +1,3 @@
-import 'dart:developer';
-import 'dart:ffi';
-
 import 'package:fabrica_do_multiverso/screens/pericias/ScreenPericias.dart';
 import 'package:fabrica_do_multiverso/screens/vantagens/ScreenVantagens.dart';
 import 'package:flutter/services.dart';
@@ -15,6 +12,9 @@ import 'package:file_picker/file_picker.dart';
 
 // Salvamento de Arquivos
 import 'package:archive/archive_io.dart'; // Zip
+import 'package:path_provider/path_provider.dart';
+import 'dart:convert' show utf8; // Sei lá o que
+import 'dart:io';
 
 // Temas
 import 'package:fabrica_do_multiverso/theme/theme.dart';
@@ -252,10 +252,33 @@ class _ScreenInicialState extends State<ScreenInicial> {
           Map fichaFinal = personagem.returnObjJson();
           
           // Criando um Zip de Saida
-          InputStream byteFicha = InputStream(fichaFinal.toString());
-          InputStream byteImg = InputStream(fileImg);
-          //byteFicha.buffer = StringBuffer(fichaFinal.toString());
-          ZipFile zipFile = ZipFile();
+          // Crie uma lista de arquivos para adicionar ao ZIP
+          List<int> fichaByte = utf8.encode(fichaFinal.toString());
+
+          // Crie um novo arquivo ZIP
+          final archive = Archive();
+
+          // Adicione arquivos ao ZIP
+          archive.addFile(ArchiveFile('ficha.json', fichaByte.length, fichaByte));
+          archive.addFile(ArchiveFile('imagem.jpg', fileImg.length, fileImg));
+
+          // Obtenha o diretório temporário
+          //final Directory directory = await getTemporaryDirectory();
+          //final String zipFilePath = '${directory.path}/ficha.zip';
+
+          // Crie o arquivo ZIP
+          final List<int> listzipData = ZipEncoder().encode(archive)!;
+          // final File zipFile = File(zipFilePath);
+          // await zipFile.writeAsBytes(listzipData);
+          
+          //Directory
+          Directory downladDir = await getApplicationDocumentsDirectory();
+          final String dirPath = downladDir.path;
+          
+          final File file = File('/home/caio/Downloads/ficha.zip');
+          
+          
+          await file.writeAsBytes(listzipData);
           
 
           //! Um download Output deve ser posteriomente adicionado
