@@ -11,10 +11,8 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 
 // Salvamento de Arquivos
-import 'package:archive/archive_io.dart'; // Zip
-import 'package:path_provider/path_provider.dart';
-import 'dart:convert' show utf8; // Sei lá o que
-import 'dart:io';
+import 'script/download.dart';
+
 
 // Temas
 import 'package:fabrica_do_multiverso/theme/theme.dart';
@@ -248,50 +246,8 @@ class _ScreenInicialState extends State<ScreenInicial> {
       floatingActionButton: IconButton(
         icon: const Icon(BootstrapIcons.floppy2_fill),
         onPressed: () async{
-          // Pega Json e Transforma em File 
-          Map fichaFinal = personagem.returnObjJson();
-          
-          // Criando um Zip de Saida
-          // Crie uma lista de arquivos para adicionar ao ZIP
-          List<int> fichaByte = utf8.encode(fichaFinal.toString());
-
-          // Crie um novo arquivo ZIP
-          final archive = Archive();
-
-          // Adicione arquivos ao ZIP
-          archive.addFile(ArchiveFile('ficha.json', fichaByte.length, fichaByte));
-          archive.addFile(ArchiveFile('imagem.jpg', fileImg.length, fileImg));
-
-          // Obtenha o diretório temporário
-          //final Directory directory = await getTemporaryDirectory();
-          //final String zipFilePath = '${directory.path}/ficha.zip';
-
-          // Crie o arquivo ZIP
-          final List<int> listzipData = ZipEncoder().encode(archive)!;
-          // final File zipFile = File(zipFilePath);
-          // await zipFile.writeAsBytes(listzipData);
-          
-          //Directory
-          Directory downladDir = await getApplicationDocumentsDirectory();
-          final String dirPath = downladDir.path;
-          
-          final File file = File('/home/caio/Downloads/ficha.zip');
-          
-          
-          await file.writeAsBytes(listzipData);
-          
-
-          //! Um download Output deve ser posteriomente adicionado
-          //await zipFile.zipDirectoryAsync(Directory('/home/caio/Downloads'), filename: 'Personagem.zip');
-          //await zipFile.addDirectory(Directory('/home/caio/Downloads'));
-          // ArchiveFile jsonPersonage = 
-          // ArchiveFile zipImg = ;
-          
-          // fichaFinal.to;
-          // zipFile.addFile(); addArchiveFile(ArchiveFile.string("personage.json", fichaFinal.toString()));
-          // zipFile.addArchiveFile(ArchiveFile.noCompress("personagem", fileImg.length, fileImg));
-          // zipFile.closeSync();
-
+          Download baixar = Download();
+          baixar.genericDownload(fileImg);
         },
       ),
     );

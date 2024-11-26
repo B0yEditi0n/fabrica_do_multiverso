@@ -587,12 +587,12 @@ class Ficha{
 
   Map returnObjJson(){
     return {
-      habilidades: habilidades.listHab,
-      defesas: defesas.listaDefesas,
-      poderes: poderes.poderesLista,
-      pericias: pericias.ListaPercias,
-      vantagens: vantagens.listaVantagens,
-      complicacoes: complicacoes,
+      "habilidades": habilidades.listHab,
+      "defesas": defesas.listaDefesas,
+      "poderes": poderes.poderesLista,
+      "pericias": pericias.ListaPercias,
+      "vantagens": vantagens.listaVantagens,
+      "complicacoes": complicacoes,
     };
   }
   
