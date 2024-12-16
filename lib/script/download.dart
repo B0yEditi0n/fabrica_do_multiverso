@@ -4,9 +4,15 @@ import 'dart:convert'; // Sei lá o que
 import 'dart:io';
 import 'package:flutter/services.dart';
 
+import 'package:archive/archive.dart';
+
+import 'dart:convert' show utf8;
+
 import 'package:background_downloader/background_downloader.dart';
 
 import 'package:fabrica_do_multiverso/script/ficha.dart';
+
+import 'package:file_picker/file_picker.dart';
 
 class Download{
   genericDownload(fileImg) async{
@@ -22,15 +28,9 @@ class Download{
           archive.addFile(ArchiveFile('ficha.json', fichaByte.length, fichaByte));
           archive.addFile(ArchiveFile('imagem.jpg', fileImg.length, fileImg));
 
-          // Obtenha o diretório temporário
-          //final Directory directory = await getTemporaryDirectory();
-          //final String zipFilePath = '${directory.path}/ficha.zip';
-
           // Crie o arquivo ZIP
           final List<int> listzipData = ZipEncoder().encode(archive)!;
-          // final File zipFile = File(zipFilePath);
-          // await zipFile.writeAsBytes(listzipData);
-          
+
           //Directory
           Directory downladDir = await getApplicationDocumentsDirectory();
           final String dirPath = downladDir.path;
@@ -39,18 +39,44 @@ class Download{
           
           
           await file.writeAsBytes(listzipData);
-          
 
-          //! Um download Output deve ser posteriomente adicionado
-          //await zipFile.zipDirectoryAsync(Directory('/home/caio/Downloads'), filename: 'Personagem.zip');
-          //await zipFile.addDirectory(Directory('/home/caio/Downloads'));
-          // ArchiveFile jsonPersonage = 
-          // ArchiveFile zipImg = ;
-          
-          // fichaFinal.to;
-          // zipFile.addFile(); addArchiveFile(ArchiveFile.string("personage.json", fichaFinal.toString()));
-          // zipFile.addArchiveFile(ArchiveFile.noCompress("personagem", fileImg.length, fileImg));
-          // zipFile.closeSync();
+  }
 
+  UploadFicha() async{
+    // Upload de Ficha
+    const List<String> extension = ["zip", "ZIP"];
+
+    FilePickerResult respostaPath = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowMultiple: false,
+      //onFileLoading: (FilePickerStatus status) => ,
+      allowedExtensions: extension,
+      dialogTitle: "Arquivo de Heroi",
+      initialDirectory: "",
+      lockParentWindow: false, 
+    ) as FilePickerResult;
+
+    String pathFile = respostaPath.files.first.path as String;
+    final archive = ZipDecoder().decodeBytes(File(pathFile).readAsBytesSync());
+
+    Map jsonFicha = {};
+
+    for (final entry in archive) {
+    if (entry.isFile) {
+      try {
+        String txtFicha = utf8.decode(entry.content);
+        jsonFicha = jsonDecode(txtFicha);
+      } catch (e) {
+        // o Aquivo não é de Texto
+        // Upload de Imagem
+
+      }
+    }
+
+    return({
+      "imagem": "",
+      "txtFicha": jsonFicha
+    });
+  }
   }
 }

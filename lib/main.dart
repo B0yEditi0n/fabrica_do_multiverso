@@ -83,16 +83,7 @@ class _ScreenInicialState extends State<ScreenInicial> {
           padding: EdgeInsets.zero,
           child: Column( children: [
             const DrawerHeader(
-              /*decoration: BoxDecoration(
-                color: Colors.blue,
-              ),*/
-              child: Text(
-                'Menu',
-                //style: TextStyle(
-                  //color: Colors.white,
-                  //fontSize: 24,
-                //),
-              ),
+              child: Text('Menu',),
             ),
 
             const Divider(),
@@ -144,6 +135,16 @@ class _ScreenInicialState extends State<ScreenInicial> {
                 Navigator.pushNamed(context, '/complicacoes');
               },
             ),
+
+            ListTile(
+              leading: const Icon(BootstrapIcons.upload),
+              title: const Text('Upload'),
+              onTap: () async {
+                Download upload = Download();
+                upload.UploadFicha();
+              },
+            ),
+
             const Divider(),
             
           ]),
