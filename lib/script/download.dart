@@ -15,36 +15,47 @@ import 'package:fabrica_do_multiverso/script/ficha.dart';
 import 'package:file_picker/file_picker.dart';
 
 class Download{
+  Uint8List img = Uint8List(0);
   genericDownload(fileImg) async{
     // Pega Json e Transforma em File
-          // Criando um Zip de Saida
-          // Crie uma lista de arquivos para adicionar ao ZIP
-          List<int> fichaByte = utf8.encode(json.encode(personagem.returnObjJson()).replaceAll(r'\"', '"'));
+    // Criando um Zip de Saida
+    // Crie uma lista de arquivos para adicionar ao ZIP
+    List<int> fichaByte = utf8.encode(json.encode(personagem.returnObjJson()).replaceAll(r'\"', '"'));
 
-          // Crie um novo arquivo ZIP
-          final archive = Archive();
+    // Crie um novo arquivo ZIP
+    final archive = Archive();
 
-          // Adicione arquivos ao ZIP
-          archive.addFile(ArchiveFile('ficha.json', fichaByte.length, fichaByte));
-          archive.addFile(ArchiveFile('imagem.jpg', fileImg.length, fileImg));
+    // Adicione arquivos ao ZIP
+    archive.addFile(ArchiveFile('ficha.json', fichaByte.length, fichaByte));
+    archive.addFile(ArchiveFile('imagem.jpg', fileImg.length, fileImg));
 
-          // Crie o arquivo ZIP
-          final List<int> listzipData = ZipEncoder().encode(archive)!;
+    // Crie o arquivo ZIP
+    final List<int> listzipData = ZipEncoder().encode(archive)!;
 
-          //Directory
-          Directory downladDir = await getApplicationDocumentsDirectory();
-          final String dirPath = downladDir.path;
-          
-          final File file = File('/home/caio/Downloads/ficha.zip');
-          
-          
-          await file.writeAsBytes(listzipData);
+    //Directory
+    Directory downladDir = await getApplicationDocumentsDirectory();
+    final String dirPath = downladDir.path;
+
+    String respostaPath = await FilePicker.platform.saveFile(
+      type: FileType.custom,
+      allowedExtensions: ["zip"],
+      dialogTitle: "Salvar Aquivo de Heroi",
+      initialDirectory: "",
+      lockParentWindow: false, 
+    ) as String;
+    
+    //final File file = File('/home/caio/Downloads/ficha.zip');
+    final File file = File("${respostaPath}.zip");
+    
+    
+    await file.writeAsBytes(listzipData);
 
   }
 
-  UploadFicha() async{
+  Future<dynamic> uploadFicha() async{
     // Upload de Ficha
     const List<String> extension = ["zip", "ZIP"];
+    Map jsonFicha = {};
 
     FilePickerResult respostaPath = await FilePicker.platform.pickFiles(
       type: FileType.custom,
@@ -59,24 +70,23 @@ class Download{
     String pathFile = respostaPath.files.first.path as String;
     final archive = ZipDecoder().decodeBytes(File(pathFile).readAsBytesSync());
 
-    Map jsonFicha = {};
+    
 
     for (final entry in archive) {
-    if (entry.isFile) {
-      try {
+      if (entry.isFile && entry.name.contains(RegExp(r'\.jpg$'))) {
+        try {
+          // o Aquivo não é de Texto
+          // Upload de Imagem
+          img = entry.content;
+        } catch (e) {
+          //
+        }
+      }else if (entry.isFile && entry.name.contains(RegExp(r'\.json$'))){
         String txtFicha = utf8.decode(entry.content);
         jsonFicha = jsonDecode(txtFicha);
-      } catch (e) {
-        // o Aquivo não é de Texto
-        // Upload de Imagem
-
       }
     }
 
-    return({
-      "imagem": "",
-      "txtFicha": jsonFicha
-    });
-  }
+    return( jsonFicha );
   }
 }

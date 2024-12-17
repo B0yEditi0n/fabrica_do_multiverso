@@ -585,6 +585,15 @@ class Ficha{
     return 1;
   }
 
+  Future<int> reInit(Map jsonReInit) async{
+    // await habilidades.init();
+    // await habilidades.init();
+    // await pericias.init();
+
+    return 1;
+  }
+
+
   Map returnObjJson(){
     return {
       "habilidades": habilidades.listHab,

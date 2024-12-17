@@ -141,7 +141,11 @@ class _ScreenInicialState extends State<ScreenInicial> {
               title: const Text('Upload'),
               onTap: () async {
                 Download upload = Download();
-                upload.UploadFicha();
+                personagem.reInit(await upload.uploadFicha());
+                // Repassa a imagem
+                setState((){
+                  fileImg = upload.img;
+                });
               },
             ),
 
@@ -166,12 +170,14 @@ class _ScreenInicialState extends State<ScreenInicial> {
           // teste upload de ficha
           IconButton(
             icon: fileImg.isNotEmpty 
-              ? Image.memory(fileImg) 
+              ? Image.memory(fileImg, 
+                  height: 300,                  
+                )
               : const Icon(BootstrapIcons.image, size: 50),
-
+          
             onPressed: () async{
               const List<String> extension = ["img", "png", "jpeg", "jpg"];
-
+          
               FilePickerResult respostaPath = await FilePicker.platform.pickFiles(
                 type: FileType.image,
                 allowMultiple: false,
@@ -181,11 +187,9 @@ class _ScreenInicialState extends State<ScreenInicial> {
                 initialDirectory: "",
                 lockParentWindow: false, 
               ) as FilePickerResult;
-
+          
               String pathFile = respostaPath.files.first.path as String;
-              //Uint8List bytes = await file.readAsBytes();
-              
-              //Uint8List tmpFile = 
+          
               setState(() {
                 fileImg = File(pathFile).readAsBytesSync();
               });
