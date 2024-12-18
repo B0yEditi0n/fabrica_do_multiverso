@@ -243,8 +243,8 @@ class ManipulaHabilidades{
     listHab.add(preHabilidade.objHabilidade());
 
   }
-  init(){
-    
+  void reInit(jsonHabilidades){
+    listHab = jsonHabilidades;
   }
 
   Habilidade getIndex(int index){
@@ -334,6 +334,11 @@ class ManipulaDefesas{
   init(){
 
   }
+
+  void reInit(jsonDefeas){
+    listaDefesas = jsonDefeas;
+  }
+
   int calculaTotal(){
     int total = 0;
     for(Map mapDefesa in listaDefesas){
@@ -350,6 +355,10 @@ class ManipulaPoderes{
   //Classe de Poderes
 
   List poderesLista = []; 
+
+  void reInit(jsonPoderes){
+
+  }
 
   novoPoder(nome, id, classe) async{    
     /*
@@ -452,6 +461,10 @@ class ManipulaPoderes{
 class ManipulaVantagens{
   List<Map> listaVantagens = [];
 
+  void reInit(jsonVantagens){
+    //listaVantagens = jsonVantagens;
+  }
+
   int cutoTotal(){
     // calcula o custo total das vantagens
     int totalCusto = 0;
@@ -488,6 +501,10 @@ class ManipulaPericias{
       }
     } 
     return 1;
+  }
+
+  void reInit(jsonPericias){
+    //ListaPercias = jsonPericias;
   }
 
   int calculaTotal(){
@@ -573,22 +590,27 @@ class Ficha{
   ManipulaPoderes poderes = ManipulaPoderes();
   ManipulaPericias pericias = ManipulaPericias();
   ManipulaVantagens vantagens = ManipulaVantagens();
-  List<Map<String, String>> complicacoes = [];
+  List complicacoes = [];
 
   IntercambioModular validador = IntercambioModular();
 
   Future<int> init() async{
-    // await habilidades.init();
-    await habilidades.init();
     await pericias.init();
 
     return 1;
   }
 
   Future<int> reInit(Map jsonReInit) async{
-    // await habilidades.init();
-    // await habilidades.init();
-    // await pericias.init();
+    nomePersonagem = jsonReInit["pesonagem"]["nome"];
+    np = jsonReInit["pesonagem"]["np"];
+
+    habilidades.reInit(jsonReInit["habilidades"]);
+    defesas.reInit(jsonReInit["defesas"]);
+    poderes.reInit(jsonReInit["poderes"]);
+    pericias.reInit(jsonReInit["pericias"]);
+    vantagens.reInit(jsonReInit["vantagens"]);
+
+    complicacoes = jsonReInit["complicacoes"].toList();
 
     return 1;
   }
@@ -596,6 +618,10 @@ class Ficha{
 
   Map returnObjJson(){
     return {
+      "pesonagem":{
+        "nome": nomePersonagem,
+        "np": np,
+      },
       "habilidades": habilidades.listHab,
       "defesas": defesas.listaDefesas,
       "poderes": poderes.poderesLista,

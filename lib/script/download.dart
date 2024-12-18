@@ -44,8 +44,12 @@ class Download{
       lockParentWindow: false, 
     ) as String;
     
-    //final File file = File('/home/caio/Downloads/ficha.zip');
-    final File file = File("${respostaPath}.zip");
+    
+    final File file = File( // Adiciona zip caso não tenha
+      respostaPath.contains(RegExp(r'\.zip$')) || respostaPath.contains(RegExp(r'\.ZIP$'))
+        ? respostaPath
+        : "$respostaPath.zip"
+    );
     
     
     await file.writeAsBytes(listzipData);

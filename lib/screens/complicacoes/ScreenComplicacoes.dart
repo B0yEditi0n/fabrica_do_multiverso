@@ -17,7 +17,7 @@ class ScreenComplicacoes extends StatefulWidget {
 }
 
 class _ScreenComplicacoesState extends State<ScreenComplicacoes> {
-  List<Map<String, String>> editComplicacoes = [];
+  List editComplicacoes = [];
   Map<String, String> complicacaoObj = {};
 
   @override
@@ -34,7 +34,7 @@ class _ScreenComplicacoesState extends State<ScreenComplicacoes> {
     return Scaffold(
         appBar: AppBar(
           //backgroundColor: Theme.of(context).colorScheme.inversePrimary,          
-          title: const Text("Poderes"),
+          title: const Text("Complicações"),
         ),
 
         body: ListView.builder(
