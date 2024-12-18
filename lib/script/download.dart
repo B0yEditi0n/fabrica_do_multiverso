@@ -60,7 +60,7 @@ class Download{
     // Upload de Ficha
     const List<String> extension = ["zip", "ZIP"];
     Map jsonFicha = {};
-
+    
     FilePickerResult respostaPath = await FilePicker.platform.pickFiles(
       type: FileType.custom,
       allowMultiple: false,
@@ -69,14 +69,14 @@ class Download{
       dialogTitle: "Arquivo de Heroi",
       initialDirectory: "",
       lockParentWindow: false, 
-    ) as FilePickerResult;
-
-    String pathFile = respostaPath.files.first.path as String;
-    final archive = ZipDecoder().decodeBytes(File(pathFile).readAsBytesSync());
-
+    ) as FilePickerResult;  
     
-
-    for (final entry in archive) {
+    
+    
+    if(respostaPath.files.isNotEmpty){
+      String pathFile = respostaPath.files.first.path as String;
+      final archive = ZipDecoder().decodeBytes(File(pathFile).readAsBytesSync());
+      for (final entry in archive) {
       if (entry.isFile && entry.name.contains(RegExp(r'\.jpg$'))) {
         try {
           // o Aquivo não é de Texto
@@ -89,7 +89,13 @@ class Download{
         String txtFicha = utf8.decode(entry.content);
         jsonFicha = jsonDecode(txtFicha);
       }
+      }
     }
+    
+
+    
+
+    
 
     return( jsonFicha );
   }

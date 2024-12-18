@@ -462,7 +462,8 @@ class ManipulaVantagens{
   List<Map> listaVantagens = [];
 
   void reInit(jsonVantagens){
-    //listaVantagens = jsonVantagens;
+    listaVantagens = [];
+    for(Map v in jsonVantagens){ listaVantagens.add(v); }
   }
 
   int cutoTotal(){
@@ -504,7 +505,22 @@ class ManipulaPericias{
   }
 
   void reInit(jsonPericias){
-    //ListaPercias = jsonPericias;
+    ListaPercias = [];
+
+
+    if(ListaPercias.isEmpty){ // Em caso de reinicio rápido
+      for(Map oPericia in jsonPericias){
+        Pericia pericia; 
+
+        oPericia["classe"] == "PericiaAddAcerto"
+          ? pericia = PericiaAddAcerto()
+          : pericia = Pericia();
+
+        pericia.init(oPericia);
+
+        ListaPercias.add(pericia.returnObj());
+      }
+    } 
   }
 
   int calculaTotal(){
