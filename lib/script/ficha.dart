@@ -357,7 +357,7 @@ class ManipulaPoderes{
   List poderesLista = []; 
 
   void reInit(jsonPoderes){
-
+    poderesLista = jsonPoderes as List;
   }
 
   novoPoder(nome, id, classe) async{    
@@ -448,6 +448,7 @@ class ManipulaPoderes{
         poderes.add({
           "nome": poder["nome"],
           "efeito": poder["efeito"],
+          "efeitos": poder["efeitos"],
           "classe_manipulacao": poder["classe_manipulacao"]
           
         });

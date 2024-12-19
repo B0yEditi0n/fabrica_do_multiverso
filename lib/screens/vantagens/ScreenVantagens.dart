@@ -37,7 +37,7 @@ class _ScreenVantagensState extends State<ScreenVantagens> {
     // Checa o que já foi adicionado
     setState(() {
       addVantagens.addAll(personagem.vantagens.listaVantagens);
-      personagem.vantagens.cutoTotal();
+      cutoTotal = personagem.vantagens.cutoTotal();
     });
 
     // remove já adicionados
@@ -101,14 +101,16 @@ class _ScreenVantagensState extends State<ScreenVantagens> {
                                 currentVatagem.returnTotalGrad() == 1 
                                 ? Text(
                                   "${addVantagens[index]["nome"]} ${addVantagens[index]["txtDec"].isNotEmpty
-                                  ? '(' + addVantagens[index]["txtDec"] + ')' 
-                                  : ""}", 
+                                    ? '(${addVantagens[index]["txtDec"]})' 
+                                    : ""
+                                  }", 
                                 textAlign: TextAlign.center,
                                 )
                                 : Text(
                                   "${addVantagens[index]["nome"]}[${currentVatagem.returnTotalGrad()}] ${addVantagens[index]["txtDec"].isNotEmpty 
-                                  ? '(' + addVantagens[index]["txtDec"] + ')' 
-                                  : ""}", 
+                                    ? '(${addVantagens[index]["txtDec"]})' 
+                                    : ""
+                                  }", 
                                   textAlign: TextAlign.center,
                                 )
                               ),
