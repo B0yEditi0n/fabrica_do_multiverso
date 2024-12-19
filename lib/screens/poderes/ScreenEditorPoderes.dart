@@ -144,9 +144,9 @@ class _powerEditState extends State<powerEdit> {
       }
       // Exclusivo de Aflição
       if(poder is EfeitoAflicao && objPoder["condicoes"] != null){
-        priCondica.text = objPoder["condicoes"][1];
-        segCondica.text = objPoder["condicoes"][2];
-        terCondica.text = objPoder["condicoes"][3];
+        priCondica.text = objPoder["condicoes"][0];
+        segCondica.text = objPoder["condicoes"][1];
+        terCondica.text = objPoder["condicoes"][2];
       }
 
       // Opções de Caracteristica aumentada ou Crescimento
@@ -564,7 +564,7 @@ class _powerEditState extends State<powerEdit> {
                       onChanged: (String value){
                         // Força o cast
                         EfeitoAflicao poderCompra = poder as EfeitoAflicao;
-                        poderCompra.addCondicao(1, value);
+                        poderCompra.addCondicao(0, value);
                       },
                       decoration: const InputDecoration(hintText: 'Primeira Condição'),
                     ),
@@ -577,7 +577,7 @@ class _powerEditState extends State<powerEdit> {
                       onChanged: (String value){
                         // Força o cast
                         EfeitoAflicao poderCompra = poder as EfeitoAflicao;
-                        poderCompra.addCondicao(2, value);                        
+                        poderCompra.addCondicao(1, value);                        
                       },
                       decoration: const InputDecoration(hintText: 'Segunda Condição',),
                     ),
@@ -590,7 +590,7 @@ class _powerEditState extends State<powerEdit> {
                       onChanged: (String value){
                         // Força o cast
                         EfeitoAflicao poderCompra = poder as EfeitoAflicao;
-                        poderCompra.addCondicao(3, value);
+                        poderCompra.addCondicao(2, value);
                       },
                       decoration: const InputDecoration(hintText: 'Terceira Condição',),
                     ),

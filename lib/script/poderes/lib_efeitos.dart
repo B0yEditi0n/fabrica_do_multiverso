@@ -553,7 +553,7 @@ class EfeitoEscolha extends Efeito{
       "descricao":        desc,
       "defAtaque":        defAtaque,
       "opt":              opt,
-      "class":            "EfeitoEscolha",
+      "class":            _padraoEfeito["classe_manipulacao"],
       "custo":            custearAlteracoes(),
     };
   }
@@ -729,7 +729,7 @@ class EfeitoOfensivo extends Efeito{
       "modificadores":    _modificador,
       "descricao":        desc,
       "defAtaque":        defAtaque,
-      "class":            "EfeitoOfensivo",
+      "class":            _padraoEfeito["classe_manipulacao"],
       "bonus":            bonus,
       "critico":          _critico,
       "acerto":           _bonusAcerto,
@@ -777,16 +777,16 @@ class EfeitoDano extends EfeitoOfensivo{
 
 //# classe Aflição
 class EfeitoAflicao extends EfeitoOfensivo{
-  Map<int, String> _condicoes = {
-    1: "",
-    2: "",
-    3: ""
-  };
+  List _condicoes = [
+    "",
+    "",
+    ""
+  ];
 
   @override
   Future<bool> reinstanciarMetodo(Map objPoder) async{
     super.reinstanciarMetodo(objPoder);    
-    if(objPoder["acerto"] != null){
+    if(objPoder["condicoes"] != null){
       _condicoes = objPoder["condicoes"];
     }
     
@@ -794,7 +794,7 @@ class EfeitoAflicao extends EfeitoOfensivo{
   }
 
   void addCondicao(grau, txtCond){
-    if([1, 2, 3].contains(grau)){
+    if([0, 1, 2].contains(grau)){
       _condicoes[grau] = txtCond;
     }
   }

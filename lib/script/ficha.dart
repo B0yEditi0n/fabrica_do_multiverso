@@ -634,6 +634,7 @@ class Ficha{
 
 
   Map returnObjJson(){
+
     return {
       "pesonagem":{
         "nome": nomePersonagem,
