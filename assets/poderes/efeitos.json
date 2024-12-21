@@ -949,58 +949,53 @@
             
         ],
         "modificadores":[
+
             {
-                "e_id": "ES01",
+                "m_id": "ED001",
                 "nome": "À Distância",
                 "fixo": false,
                 "custo_base": 1,
                 "limite": 1,
-                "limite_grad": true,
                 "desc": false
             },
             {
-                "e_id": "ES02",
+                "m_id": "ED002",
                 "nome": "Afeta Outros",
                 "fixo": false,
                 "custo_base": 1,
                 "limite": 1,
-                "limite_grad": true,
                 "desc": false
             },
             {
-                "e_id": "ES03",
+                "m_id": "ED003",
                 "nome": "Área",
                 "fixo": false,
                 "custo_base": 1,
                 "limite": 1,
-                "limite_grad": true,
                 "desc": false
             },
             {
-                "e_id": "ES04",
+                "m_id": "ED004",
                 "nome": "Dimensional",
                 "fixo": false,
                 "custo_base": 1,
                 "limite": 1,
-                "limite_grad": true,
                 "desc": false
             },
             {
-                "e_id": "ES05",
+                "m_id": "ED005",
                 "nome": "Inato",
                 "fixo": true,
                 "custo_base": 1,
                 "limite": 1,
-                "limite_grad": true,
                 "desc": false
             },
             {
-                "e_id": "ES06",
+                "m_id": "ED006",
                 "nome": "Estendido",
                 "fixo": true,
                 "custo_base": 1,
                 "limite": 1,
-                "limite_grad": false,
                 "desc": false
             }
         ],

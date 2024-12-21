@@ -5,7 +5,9 @@ flutter clean
 git add *
 
 # Armazenmento do Comentario
-echo "Comentario do push"
+echo "----------------------------------------"
+echo ""
+echo "Comentario do push:"
 read _comentario;
 git commit -m "$_comentario"
 
