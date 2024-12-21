@@ -1,10 +1,11 @@
 import 'package:fabrica_do_multiverso/script/poderes/lib_efeitos.dart';
+import 'package:fabrica_do_multiverso/script/poderes/lib_pacoteEfeitos.dart';
 import 'package:flutter/material.dart';
 
 // Screens de poderes
 import 'package:fabrica_do_multiverso/screens/poderes/ScreenEditorPoderes.dart';
-import 'package:fabrica_do_multiverso/screens/poderes/poderes/popup_addPoderes.dart';
 import 'package:fabrica_do_multiverso/screens/poderes/ScreenControlePacote.dart';
+import 'package:fabrica_do_multiverso/screens/poderes/poderes/popup_addPoderes.dart';
 
 // Instancia de Poderes
 import 'package:fabrica_do_multiverso/script/ficha.dart';
@@ -78,19 +79,26 @@ class _ScreenPoderesState extends State<ScreenPoderes> {
                       onPressed: (){
                         // Aciona o destrutor
                         Map objInit = personagem.poderes.poderesLista[index];
-                        Efeito killPower;
-                        switch (objInit["class"]){
-                          case "EfeitoBonus":
-                            killPower = EfeitoBonus();
-                            break;
-                          case "EfeitoCrescimento":
-                            killPower = EfeitoCrescimento();
-                            break;
-                          default:
-                            killPower = Efeito();
+
+                        if(objInit["class"] == "PacotesEfeitos"){
+                          Efeito killPower;
+                          switch (objInit["class"]){
+                            case "EfeitoBonus":
+                              killPower = EfeitoBonus();
+                              break;
+                            case "EfeitoCrescimento":
+                              killPower = EfeitoCrescimento();
+                              break;
+                            default:
+                              killPower = Efeito();
+                          }
+                          killPower.reinstanciarMetodo(objInit);
+                          killPower.destrutor();
+                        }else{
+                          PacotesEfeitos killEfeitos = PacotesEfeitos();
+                          killEfeitos.instanciarMetodo(objInit);
+                          killEfeitos.destrutor();
                         }
-                        killPower.reinstanciarMetodo(objInit);
-                        killPower.destrutor();
 
                         personagem.poderes.poderesLista.removeAt(index);
                         setState(() {

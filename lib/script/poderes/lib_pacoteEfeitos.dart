@@ -85,6 +85,41 @@ class PacotesEfeitos{
     return 0;
   }
 
+  void destrutor(){
+    for (var e in efeitos) {
+      switch (e["class"]) {
+        case "EfeitoCrescimento":
+          poder = EfeitoCrescimento();
+          break;
+        case "EfeitoBonus":
+          poder = EfeitoBonus();
+          break;
+        case "EfeitoAflicao":
+          poder = EfeitoAflicao();
+          break;
+        case "EfeitoDano":
+          poder = EfeitoDano();
+          break;
+        case "EfeitoCompra":
+          poder = EfeitoCompra();
+          break;
+        case "EfeitoCustoVaria":
+          poder = EfeitoCustoVaria();
+          break;
+        case "EfeitoOfensivo":
+          poder = EfeitoOfensivo();
+          break;
+        case "Efeito":
+        default:
+          poder = Efeito();
+          break;
+      }
+
+      poder.reinstanciarMetodo(e);
+      poder.destrutor();
+    }
+  }
+
   Map<String, dynamic> retornaObj(){
     /*
       Retorna um json com os dados montados

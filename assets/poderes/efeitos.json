@@ -741,6 +741,32 @@
         "duracao": 3,
         "ofensivo": false,
         "desc": false,
+        "opt": [
+            {
+                "ID": "OP01",
+                "desc": "Acurado um sentido",
+                "valor": 1,
+                "espec": true
+            },
+            {
+                "ID": "OP02",
+                "desc": "Acurado um sentido inteiro",
+                "valor": 2,
+                "espec": false
+            },
+            {
+                "ID": "OP03",
+                "desc": "À Distância",
+                "valor": 1,
+                "espec": false
+            },
+            {
+                "ID": "OP04",
+                "desc": "Aguçado",
+                "valor": 1,
+                "espec": false
+            },
+        ],
         "classe_manipulacao": "EfeitoCompra"
     },
     {
