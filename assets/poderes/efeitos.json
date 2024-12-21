@@ -123,6 +123,7 @@
                 "valor": 1,
                 "espec": true
             }
+
         ],
         "classe_manipulacao": "EfeitoCompra"
     },
@@ -745,13 +746,13 @@
             {
                 "ID": "OP01",
                 "desc": "Acurado um sentido",
-                "valor": 1,
+                "valor": 2,
                 "espec": true
             },
             {
                 "ID": "OP02",
-                "desc": "Acurado um sentido inteiro",
-                "valor": 2,
+                "desc": "Acurado inteiro",
+                "valor": 4,
                 "espec": false
             },
             {
@@ -762,10 +763,246 @@
             },
             {
                 "ID": "OP04",
-                "desc": "Aguçado",
+                "desc": "Aguçado um sentido",
                 "valor": 1,
                 "espec": false
             },
+            {
+                "ID": "OP05",
+                "desc": "Aguçado inteiro",
+                "valor": 2,
+                "espec": false
+            },
+            {
+                "ID": "OP06",
+                "desc": "Analítico um sentido",
+                "valor": 2,
+                "espec": false
+            },
+            {
+                "ID": "OP07",
+                "desc": "Analítico inteiro",
+                "valor": 2,
+                "espec": false
+            },
+            {
+                "ID": "OP08",
+                "desc": "Contra-ataca Camuflagem",
+                "valor": 2,
+                "espec": false
+            },
+            {
+                "ID": "OP09",
+                "desc": "Contra-ataca Ilusão",
+                "valor": 2,
+                "espec": false
+            },
+            {
+                "ID": "OP10",
+                "desc": "Detecção Perto",
+                "valor": 1,
+                "espec": false
+            },
+            {
+                "ID": "OP11",
+                "desc": "Detecção a Distância",
+                "valor": 1,
+                "espec": false
+            },
+            {
+                "ID": "OP12",
+                "desc": "Elo de Comunicação",
+                "valor": 1,
+                "espec": false
+            },
+            {
+                "ID": "OP13",
+                "desc": "Infravisão",
+                "valor": 1,
+                "espec": false
+            },
+            {
+                "ID": "OP14",
+                "desc": "Penetra Cobertura",
+                "valor": 4,
+                "espec": false
+            },
+            {
+                "ID": "OP15",
+                "desc": "Percepção",
+                "valor": 1,
+                "espec": false
+            },
+            {
+                "ID": "OP16",
+                "desc": "Póscognição",
+                "valor": 4,
+                "espec": false
+            },
+            {
+                "ID": "OP17",
+                "desc": "Precognição",
+                "valor": 4,
+                "espec": false
+            },
+            {
+                "ID": "OP18",
+                "desc": "Rádio",
+                "valor": 1,
+                "espec": false
+            },
+            {
+                "ID": "OP19",
+                "desc": "Radial um sentido",
+                "valor": 1,
+                "espec": false
+            },            {
+                "ID": "OP20",
+                "desc": "Radial inteiro",
+                "valor": 1,
+                "espec": false
+            },
+            {
+                "ID": "OP21",
+                "desc": "Rápido",
+                "valor": 1,
+                "espec": false
+            },
+            {
+                "ID": "OP22",
+                "desc": "Rastrear",
+                "valor": 1,
+                "espec": false
+            },
+            {
+                "ID": "OP23",
+                "desc": "Sentido de Direção",
+                "valor": 1,
+                "espec": false
+            },
+            {
+                "ID": "OP24",
+                "desc": "Sentido de Distância",
+                "valor": 1,
+                "espec": false
+            },
+            {
+                "ID": "OP25",
+                "desc": "Sentido de Perigo",
+                "valor": 1,
+                "espec": false
+            },
+            {
+                "ID": "OP26",
+                "desc": "Sentido de Tempo",
+                "valor": 1,
+                "espec": false
+            },
+            {
+                "ID": "OP27",
+                "desc": "Ultra-Audição",
+                "valor": 1,
+                "espec": false
+            },
+            {
+                "ID": "OP28",
+                "desc": "Ultravisão",
+                "valor": 1,
+                "espec": false
+            },
+            {
+                "ID": "OP29",
+                "desc": "Visão Microscópica poeira",
+                "valor": 1,
+                "espec": false
+            },
+            {
+                "ID": "OP30",
+                "desc": "Visão Microscópica células",
+                "valor": 2,
+                "espec": false
+            },
+            {
+                "ID": "OP31",
+                "desc": "Visão Microscópica DNA",
+                "valor": 3,
+                "espec": false
+            },
+            {
+                "ID": "OP32",
+                "desc": "Visão Microscópica Atómos",
+                "valor": 4,
+                "espec": false
+            },
+            {
+                "ID": "OP33",
+                "desc": "Visão na Penumbra",
+                "valor": 1,
+                "espec": false
+            },
+            {
+                "ID": "OP33",
+                "desc": "Visão no Escuro",
+                "valor": 1,
+                "espec": false
+            }           
+            
+        ],
+        "modificadores":[
+            {
+                "e_id": "ES01",
+                "nome": "À Distância",
+                "fixo": false,
+                "custo_base": 1,
+                "limite": 1,
+                "limite_grad": true,
+                "desc": false
+            },
+            {
+                "e_id": "ES02",
+                "nome": "Afeta Outros",
+                "fixo": false,
+                "custo_base": 1,
+                "limite": 1,
+                "limite_grad": true,
+                "desc": false
+            },
+            {
+                "e_id": "ES03",
+                "nome": "Área",
+                "fixo": false,
+                "custo_base": 1,
+                "limite": 1,
+                "limite_grad": true,
+                "desc": false
+            },
+            {
+                "e_id": "ES04",
+                "nome": "Dimensional",
+                "fixo": false,
+                "custo_base": 1,
+                "limite": 1,
+                "limite_grad": true,
+                "desc": false
+            },
+            {
+                "e_id": "ES05",
+                "nome": "Inato",
+                "fixo": true,
+                "custo_base": 1,
+                "limite": 1,
+                "limite_grad": true,
+                "desc": false
+            },
+            {
+                "e_id": "ES06",
+                "nome": "Estendido",
+                "fixo": true,
+                "custo_base": 1,
+                "limite": 1,
+                "limite_grad": false,
+                "desc": false
+            }
         ],
         "classe_manipulacao": "EfeitoCompra"
     },
