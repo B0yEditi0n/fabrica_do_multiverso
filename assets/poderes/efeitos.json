@@ -737,6 +737,7 @@
         "e_id": "E035",
         "efeito": "Sentidos",
         "custo_base": 1,
+        "unico": false,
         "acao": 3,
         "alcance": 4,
         "duracao": 3,
@@ -801,13 +802,13 @@
                 "ID": "OP10",
                 "desc": "Detecção Perto",
                 "valor": 1,
-                "espec": false
+                "espec": true
             },
             {
                 "ID": "OP11",
                 "desc": "Detecção a Distância",
                 "valor": 1,
-                "espec": false
+                "espec": true
             },
             {
                 "ID": "OP12",
@@ -831,7 +832,7 @@
                 "ID": "OP15",
                 "desc": "Percepção",
                 "valor": 1,
-                "espec": false
+                "espec": true
             },
             {
                 "ID": "OP16",
