@@ -1,0 +1,4 @@
+#Fri Dec 20 20:58:47 BRT 2024
+base.0=/media/caio/caio.hdd/Documentos/fabrica_do_multiverso/build/app/intermediates/dex/release/minifyReleaseWithR8/classes.dex
+path.0=classes.dex
+renamed.0=classes.dex

@@ -1,0 +1,13 @@
+com.mr.flutter.plugin.filepicker.file_picker-core-1.6.0-0 /home/caio/.gradle/caches/transforms-3/09792491a65371e067d6900f83395f20/transformed/core-1.6.0/res
+com.mr.flutter.plugin.filepicker.file_picker-jetified-window-1.0.0-beta04-1 /home/caio/.gradle/caches/transforms-3/62e5db5363e3ff532a44f2d020a71921/transformed/jetified-window-1.0.0-beta04/res
+com.mr.flutter.plugin.filepicker.file_picker-jetified-window-java-1.0.0-beta04-2 /home/caio/.gradle/caches/transforms-3/81caf77befab443eb3e6a65ee492c19e/transformed/jetified-window-java-1.0.0-beta04/res
+com.mr.flutter.plugin.filepicker.file_picker-jetified-annotation-experimental-1.1.0-3 /home/caio/.gradle/caches/transforms-3/e957153feb9460d82f13e4f059b536bb/transformed/jetified-annotation-experimental-1.1.0/res
+com.mr.flutter.plugin.filepicker.file_picker-main-4 /home/caio/.pub-cache/hosted/pub.dev/file_picker-8.1.2/android/src/main/res
+com.mr.flutter.plugin.filepicker.file_picker-release-5 /home/caio/.pub-cache/hosted/pub.dev/file_picker-8.1.2/android/src/release/res
+com.mr.flutter.plugin.filepicker.file_picker-pngs-6 /media/caio/caio.hdd/Documentos/fabrica_do_multiverso/build/file_picker/generated/res/pngs/release
+com.mr.flutter.plugin.filepicker.file_picker-resValues-7 /media/caio/caio.hdd/Documentos/fabrica_do_multiverso/build/file_picker/generated/res/resValues/release
+com.mr.flutter.plugin.filepicker.file_picker-rs-8 /media/caio/caio.hdd/Documentos/fabrica_do_multiverso/build/file_picker/generated/res/rs/release
+com.mr.flutter.plugin.filepicker.file_picker-mergeReleaseResources-9 /media/caio/caio.hdd/Documentos/fabrica_do_multiverso/build/file_picker/intermediates/incremental/release/mergeReleaseResources/merged.dir
+com.mr.flutter.plugin.filepicker.file_picker-mergeReleaseResources-10 /media/caio/caio.hdd/Documentos/fabrica_do_multiverso/build/file_picker/intermediates/incremental/release/mergeReleaseResources/stripped.dir
+com.mr.flutter.plugin.filepicker.file_picker-merged_res-11 /media/caio/caio.hdd/Documentos/fabrica_do_multiverso/build/file_picker/intermediates/merged_res/release
+com.mr.flutter.plugin.filepicker.file_picker-packaged_res-12 /media/caio/caio.hdd/Documentos/fabrica_do_multiverso/build/flutter_plugin_android_lifecycle/intermediates/packaged_res/release

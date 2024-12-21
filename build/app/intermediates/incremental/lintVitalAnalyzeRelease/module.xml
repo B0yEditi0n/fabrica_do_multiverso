@@ -1,0 +1,18 @@
+<lint-module
+    format="1"
+    dir="/media/caio/caio.hdd/Documentos/fabrica_do_multiverso/android/app"
+    name=":app"
+    type="APP"
+    maven="android:app:"
+    gradle="7.3.0"
+    buildFolder="/media/caio/caio.hdd/Documentos/fabrica_do_multiverso/build/app"
+    bootClassPath="/media/caio/caio.hdd/.flutter/sdk/platforms/android-34/android.jar:/media/caio/caio.hdd/.flutter/sdk/build-tools/30.0.3/core-lambda-stubs.jar"
+    javaSourceLevel="1.8"
+    compileTarget="android-34">
+  <lintOptions
+      abortOnError="true"
+      absolutePaths="true"
+      checkReleaseBuilds="true"
+      explainIssues="true"/>
+  <variant name="release"/>
+</lint-module>

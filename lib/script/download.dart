@@ -8,8 +8,6 @@ import 'package:archive/archive.dart';
 
 import 'dart:convert' show utf8;
 
-import 'package:background_downloader/background_downloader.dart';
-
 import 'package:fabrica_do_multiverso/script/ficha.dart';
 
 import 'package:file_picker/file_picker.dart';

@@ -1,0 +1,19 @@
+{
+    "logs": [
+        {
+            "outputFile": "com.example.fabrica_do_multiverso.app-mergeReleaseResources-9:/values-be/values-be.xml",
+            "map": [
+                {
+                    "source": "/home/caio/.gradle/caches/transforms-3/09792491a65371e067d6900f83395f20/transformed/core-1.6.0/res/values-be/values-be.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "100",
+                        "endOffsets": "151"
+                    }
+                }
+            ]
+        }
+    ]
+}
