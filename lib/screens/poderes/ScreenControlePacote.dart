@@ -48,7 +48,7 @@ class _ControladorDePacotesState extends State<ControladorDePacotes> {
 
   Future _addPoderes(Map objEfeito) async{
     
-    if(objEfeito["classe_manipulacao"] != "PacotesEfeitos"){
+    if(objEfeito["class"] != "PacotesEfeitos"){
       Efeito efeito = Efeito();
       await efeito.instanciarMetodo(objEfeito["nome"], objEfeito["e_id"])
       .then((resulte)=>{
@@ -132,7 +132,7 @@ class _ControladorDePacotesState extends State<ControladorDePacotes> {
                         child:
                           //# Card de Exibição
                           // Exibe os poderes ativos
-                          poderes[index]["classe_manipulacao"] != "PacotesEfeitos" 
+                          poderes[index]["class"] != "PacotesEfeitos" 
                           ? ListTile(
                             title: Text(poderes[index]['nome']),
                             subtitle: Text("${poderes[index]['efeito']} ${poderes[index]['graduacao']}"),
@@ -170,7 +170,7 @@ class _ControladorDePacotesState extends State<ControladorDePacotes> {
                     Map returnObjPoder = {};
                     Map inputObjEfeito = poderes[index];
 
-                    if(poderes[index]["classe_manipulacao"] != "PacotesEfeitos"){
+                    if(poderes[index]["class"] != "PacotesEfeitos"){
                       
                       returnObjPoder = await Navigator.push(
                         context,

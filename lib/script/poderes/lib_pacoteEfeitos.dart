@@ -133,7 +133,7 @@ class PacotesEfeitos{
       "tipo": getType(),
       "removivel": removivel,
       "custo": custearAlteracoes(),
-      "classe_manipulacao": "PacotesEfeitos",
+      "class": "PacotesEfeitos",
       "efeitos": efeitos,
     };
 

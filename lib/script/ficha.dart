@@ -178,8 +178,16 @@ class IntercambioModular{
       List listRef;
 
       List removeBonusIdInRange(List getList){
-        for(Map r in getList){
-          r["bonus"].removeWhere((b)=>b["idOrigem"] == id);
+        for(int i=0; i < getList.length; i++){
+          //Map r in getList){
+          Map r = getList[i];
+          if(r["bonus"].isNotEmpty){
+            int idx = r["bonus"].indexWhere((b)=>b["idOrigem"] == id);
+            if(idx > -1){
+              getList[i]["bonus"].removeAt(idx);
+            }
+          }
+          
         }
         return getList;
       }
@@ -436,12 +444,12 @@ class ManipulaPoderes{
       List poderes = [];
       
       for(poder in poderesLista){
-        if(poder["classe_manipulacao"] != "PacotesEfeitos"){
+        if(poder["class"] != "PacotesEfeitos"){
         poderes.add({
           "nome": poder["nome"],
           "efeito": poder["efeito"],
           "graduacao": poder["graduacao"],
-          "classe_manipulacao": poder["classe_manipulacao"]
+          "class": poder["class"]
           
         });
         }else{
@@ -449,7 +457,7 @@ class ManipulaPoderes{
           "nome": poder["nome"],
           "efeito": poder["efeito"],
           "efeitos": poder["efeitos"],
-          "classe_manipulacao": poder["classe_manipulacao"]
+          "class": poder["class"]
           
         });
       }

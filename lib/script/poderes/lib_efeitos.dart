@@ -70,7 +70,7 @@ class Efeito{
       Return:
         Map Json - o Arquivo json
     */
-    idCriacao = "P${DateTime.now().millisecondsSinceEpoch.toRadixString(16)}";
+    idCriacao = objPoder["idCriacao"];
     nome = objPoder["nome"];
     _idEfeito = objPoder["e_id"];
     _graduacao = objPoder["graduacao"];

@@ -35,8 +35,8 @@ class _ScreenPoderesState extends State<ScreenPoderes> {
     });
   }
   Future _addPoderes(Map objPoder) async{
-    if(objEfeito["classe_manipulacao"] != "PacotesEfeitos"){
-      await personagem.poderes.novoPoder(objEfeito["nome"], objEfeito["e_id"], objEfeito["classe_manipulacao"]);
+    if(objEfeito["class"] != "PacotesEfeitos"){
+      await personagem.poderes.novoPoder(objEfeito["nome"], objEfeito["e_id"], objEfeito["class"]);
     }else{
       await personagem.poderes.novoPacote(objEfeito["nome"], objEfeito["tipo"], objEfeito["efeito"]);
     }
@@ -64,7 +64,7 @@ class _ScreenPoderesState extends State<ScreenPoderes> {
                       child:
                         //# Card de Exibição
                         // Exibe os poderes ativos
-                        poderes[index]["classe_manipulacao"] != "PacotesEfeitos" 
+                        poderes[index]["class"] != "PacotesEfeitos" 
                         ? ListTile(
                           title: Text(poderes[index]['nome']),
                           subtitle: Text("${poderes[index]['efeito']} ${poderes[index]['graduacao']}"),
@@ -80,7 +80,7 @@ class _ScreenPoderesState extends State<ScreenPoderes> {
                         // Aciona o destrutor
                         Map objInit = personagem.poderes.poderesLista[index];
 
-                        if(objInit["class"] == "PacotesEfeitos"){
+                        if(objInit["class"] != "PacotesEfeitos"){
                           Efeito killPower;
                           switch (objInit["class"]){
                             case "EfeitoBonus":
@@ -109,7 +109,7 @@ class _ScreenPoderesState extends State<ScreenPoderes> {
                   ],
                   )
                 ),
-                poderes[index]["classe_manipulacao"] == "PacotesEfeitos" 
+                poderes[index]["class"] == "PacotesEfeitos" 
                 ? Padding(
                   padding: const EdgeInsets.only(left: 30.0),
                   child: Card(
@@ -137,7 +137,7 @@ class _ScreenPoderesState extends State<ScreenPoderes> {
               }
               Map returnObjPoder = {};
               Map inputObjEfeito = personagem.poderes.poderesLista[index];
-              if(poderes[index]["classe_manipulacao"] != "PacotesEfeitos"){
+              if(poderes[index]["class"] != "PacotesEfeitos"){
                 returnObjPoder = await Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => powerEdit(objEfeito: inputObjEfeito)),
