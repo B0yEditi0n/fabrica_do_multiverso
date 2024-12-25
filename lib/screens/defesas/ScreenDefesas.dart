@@ -100,12 +100,15 @@ class _screenDefesasState extends State<screenDefesas> {
                       Text(listDefesa[index]["nome"]),
                       const SizedBox(height: 10),
                       Row(
+                        spacing: 10,
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                      
-                          SizedBox(
-                            width: 50,
-                            child: TextField(
+                          // Evita que resistência tenha um input
+                          listDefesa[index]["id"] != "D004"
+                          ? SizedBox(
+                            width: 50,                            
+                            child: 
+                              TextField(
                               controller: listInputs[index],
                               keyboardType: TextInputType.number,
                               inputFormatters: <TextInputFormatter>[
@@ -125,9 +128,11 @@ class _screenDefesasState extends State<screenDefesas> {
                                 }),
                               }
                             ),
-                          ),
+                          ) : const SizedBox(),
 
-                          const SizedBox(width: 10),
+                          /*listDefesa[index]["id"] != "D004"
+                            ? const SizedBox(width: 10)
+                            : const SizedBox(),*/
 
                           Text("Total: ${defesa.bonusTotal()}"),
                         ],

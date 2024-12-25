@@ -60,6 +60,7 @@ class Defesa{
 
     return _valor + bonusTotal;
   }
+
   void setValor(valor){
     if(!imune){
       _valor = valor;
@@ -88,7 +89,19 @@ class Defesa{
 
 class Resistencia extends Defesa{
   @override
-  
+  int bonusTotal(){
+    int total = super.bonusTotal();
+
+    // Inclui a Vantagem Rolamento Defensivo
+    List vantagens = personagem.vantagens.listaVantagens;
+    int rolamentoDefensivo = 0;
+    if(vantagens.isNotEmpty){
+      rolamentoDefensivo = vantagens.firstWhere((e) => e["id"] == "V077");
+    }
+     
+    return total + rolamentoDefensivo;
+  }
+  @override  
   void setValor(valor){
     //; nada fazer pos não pode comprar
     //; resistência direto

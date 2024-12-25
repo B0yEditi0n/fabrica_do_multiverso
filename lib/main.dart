@@ -60,6 +60,9 @@ class ScreenInicial extends StatefulWidget {
 }
 
 class _ScreenInicialState extends State<ScreenInicial> {
+  validaNpPersonagem validador = validaNpPersonagem(); // objeto de validação 
+  List logError = [];
+
   Uint8List fileImg = Uint8List(0); // Imagem do Personagem;
 
   TextEditingController txtControlName = TextEditingController();
@@ -69,11 +72,22 @@ class _ScreenInicialState extends State<ScreenInicial> {
     txtControlName.text = personagem.nomePersonagem;
     txtNP.text = personagem.np.toString();
   }
+
+  void _validaFicha(){
+    setState((){
+      logError =  validador.validacaoGeral();
+    });
+
+  }
+
   
   @override
   Widget build(BuildContext context) {
     txtControlName.text = personagem.nomePersonagem;
-    txtNP.text = personagem.np.toString();    
+    txtNP.text = personagem.np.toString();
+
+    _validaFicha();
+
     return Scaffold(      
       appBar: AppBar(
         title: const Text('Visão Geral do Pesonagem'),
@@ -92,7 +106,8 @@ class _ScreenInicialState extends State<ScreenInicial> {
               leading: const Icon(BootstrapIcons.yin_yang),
               title: const Text('Habilidades'),
               onTap: () {
-                Navigator.pushNamed(context, '/habilidades');
+                Navigator.pushNamed(context, '/habilidades')
+                .then((value) => _validaFicha());
               },
             ),
 
@@ -100,7 +115,8 @@ class _ScreenInicialState extends State<ScreenInicial> {
               leading: const Icon(Icons.shield_outlined),
               title: const Text('Defesas'),
               onTap: () {
-                Navigator.pushNamed(context, '/defesas');
+                Navigator.pushNamed(context, '/defesas')
+                .then((value) => _validaFicha());
               },
             ),
 
@@ -108,7 +124,8 @@ class _ScreenInicialState extends State<ScreenInicial> {
               leading: const Icon(BootstrapIcons.battery_charging /*(BootstrapIcons.fire*/ ),
               title: const Text('Poderes'),
               onTap: () {
-                Navigator.pushNamed(context, '/poderes');
+                Navigator.pushNamed(context, '/poderes')
+                .then((value) => _validaFicha());
               },
             ),
             
@@ -116,7 +133,8 @@ class _ScreenInicialState extends State<ScreenInicial> {
               leading: const Icon(Icons.paid),
               title: const Text('Vantagens'),
               onTap: () {
-                Navigator.pushNamed(context, '/vantagens');
+                Navigator.pushNamed(context, '/vantagens')
+                .then((value) => _validaFicha());
               },
             ),
 
@@ -124,7 +142,8 @@ class _ScreenInicialState extends State<ScreenInicial> {
               leading: const Icon(BootstrapIcons.tools),
               title: const Text('Perícias'),
               onTap: () {
-                Navigator.pushNamed(context, '/pericias');
+                Navigator.pushNamed(context, '/pericias')
+                .then((value) => _validaFicha());
               },
             ),
 
@@ -132,7 +151,8 @@ class _ScreenInicialState extends State<ScreenInicial> {
               leading: const Icon(Icons.personal_injury),
               title: const Text('Complicações'),
               onTap: () {
-                Navigator.pushNamed(context, '/complicacoes');
+                Navigator.pushNamed(context, '/complicacoes')
+                .then((value) => _validaFicha());
               },
             ),
 

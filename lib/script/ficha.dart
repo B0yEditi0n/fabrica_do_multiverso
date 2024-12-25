@@ -12,6 +12,153 @@ import 'package:fabrica_do_multiverso/screens/defesas/ScreenDefesas.dart';
 import 'package:fabrica_do_multiverso/script/poderes/lib_efeitos.dart';
 import 'package:fabrica_do_multiverso/script/poderes/lib_pacoteEfeitos.dart';
 
+//# Classe de Validação de NP
+class validaNpPersonagem{
+  List logErros = [];
+
+  List _efeitos(){
+    return [];
+  }
+
+  List _defesas(){
+    /*
+      Valida defesas a Regra
+      
+      - Args:
+        Return: List [{
+          tipo: "D"
+          nome: nome das Defesas, 
+          msg: mensagem de erro, 
+          id: Lista com o id das Defesas
+        }]
+    */
+    int np = personagem.np;
+
+    List defesas = personagem.defesas.listaDefesas;
+    List logDefesas = [];
+    Defesa oDefesas = Defesa();
+
+    // Fortitude & Vontade
+    Map mapFortitude = defesas.firstWhere((d) => d["id"] == "D003");
+    oDefesas.init(mapFortitude);
+    int totalFortitude = oDefesas.bonusTotal();
+
+    Map mapVontade = defesas.firstWhere((d) => d["id"] == "D005");
+    oDefesas.init(mapVontade);
+    int totalVontade = oDefesas.bonusTotal();
+    
+
+    if( (totalFortitude + totalVontade) > 2*np ){
+      // Ultrapassa os limites do NP
+      logDefesas.add({
+        "tipo": "D",
+        "nome": "Vontade & Fortitude",
+        "msg": "Vontade e Fortitude, se econtram com ${(totalFortitude + totalVontade) - ( np * 2)} pontos fora do limite",
+        "id": ["D003", "D005"]
+      });
+    }
+
+    // Defesas Ativas & Resistência
+    Map mapEsquiva = defesas.firstWhere((d) => d["id"] == "D001");
+    oDefesas.init(mapEsquiva);
+    int totalEsquiva = oDefesas.bonusTotal();
+
+    Map mapAparar = defesas.firstWhere((d) => d["id"] == "D002");
+    oDefesas.init(mapAparar);
+    int totalAparar = oDefesas.bonusTotal();
+
+    // Resistência deve ser Processado
+    Map mapResistencia = defesas.firstWhere((d) => d["id"] == "D004");
+    Resistencia oResistencia = Resistencia();
+    oResistencia.init(mapResistencia);
+    int totalResistencia = oResistencia.bonusTotal();
+
+    if( totalAparar + totalResistencia > 2 * np){
+      logDefesas.add({
+        "tipo": "D",
+        "nome": "Aparar & Resistência",
+        "msg": "Aparar e Resistência, se econtram com ${(totalResistencia + totalAparar) - ( np * 2)} pontos fora do limite",
+        "id": ["D002", "D004"]
+      });
+
+    }
+    if ( totalEsquiva + totalResistencia > 2 * np){
+      logDefesas.add({
+        "tipo": "D",
+        "nome": "Esquiva & Resistência",
+        "msg": "Esquiva e Resistência, se econtram com ${(totalResistencia + totalEsquiva) - ( np * 2)} pontos fora do limite",
+        "id": ["D001", "D004"]
+      });
+    }
+
+    return logDefesas;
+  }
+
+  List _pericias(){
+    /*
+      Valida Perícias a Regra é simples 
+      10 + NP não podem ser superior ao bonus da perícias
+
+      - Args:
+        Return: List [{
+          tipo: "P"
+          nome: nome da Perícia, 
+          msg: mensagem de erro, 
+          id: List com o id da perícia 
+        }]
+    */
+    int np = personagem.np;
+
+    // Ignorar Pericias ofensiva, isso deve ir apenas para efeito
+    List pericias = personagem.pericias.ListaPercias;
+    List logPericia = [];
+    
+    for(Map p in pericias){
+      // Captura o valor
+      Pericia pericia = Pericia();
+      pericia.init(p);
+      int bonusTotal = pericia.bonusTotal();
+
+      // Validação de NP
+      if(bonusTotal > np + 10){
+        // o valor se encontra fora dos limites
+        // do NP
+        logPericia.add({
+          "tipo": "P",
+          "nome": p["nome"],
+          "msg": "a perícia ${p["nome"]}, se econtra com ${bonusTotal - ( np + 10)} pontos fora do limite",
+          "id": [p["id"]],
+        });
+      }
+    }
+
+    return logPericia;
+  }
+
+  List validacaoGeral(){
+    /*
+      Valida a ficha com base nas regras,
+      dentro de cada metódo as regras
+      podem ser melhor descritas
+
+      - Args:
+        Return: List [{
+          tipo: "P": Pericia, "D": Defesa, "E": Efetios
+          nome: nome do objeto, 
+          msg: mensagem de erro, 
+          id: id do objeto 
+        }]
+    */
+
+    logErros = []; // Limpa a lista de erros
+
+    logErros.addAll(_pericias());
+    logErros.addAll(_defesas());
+
+    return logErros;
+  }
+}
+
 //# Classe de intercambio entre os modulos
 class IntercambioModular{
   // Lista de Bonus

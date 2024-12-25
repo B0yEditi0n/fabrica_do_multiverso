@@ -562,7 +562,7 @@
 	{
 		"id": "V077",
 		"nome": "ROLAMENTO DEFENSIVO",
-		"graduado": false,
+		"graduado": true,
 		"desc": false,
 		"alvo_bonus":[
 			"RESISTANCE"
@@ -574,9 +574,6 @@
 		"nome": "SAQUE RÁPIDO",
 		"graduado": false,
 		"desc": false,
-		"alvo_bonus":[
-			"RESISTANCE"
-		],
 		"class": "Vantagem"
 	},
 	{

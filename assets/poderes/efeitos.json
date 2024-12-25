@@ -1146,7 +1146,7 @@
         "ofensivo": false,
         "desc": false,
         "unico": false,
-        "custo_base": 1,
+        "custo_base": 0.5,
         "acao": 3,
         "alcance": 0,
         "duracao": 3,
