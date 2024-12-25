@@ -141,7 +141,10 @@ class _ScreenInicialState extends State<ScreenInicial> {
               title: const Text('Upload'),
               onTap: () async {
                 Download upload = Download();
-                personagem.reInit(await upload.uploadFicha());
+                var ficha = await upload.uploadFicha();
+                if(ficha.isNotEmpty){
+                  personagem.reInit(ficha);
+                }                
                 // Repassa a imagem
                 setState((){
                   fileImg = upload.img;
@@ -177,23 +180,27 @@ class _ScreenInicialState extends State<ScreenInicial> {
           
             onPressed: () async{
               const List<String> extension = ["img", "png", "jpeg", "jpg"];
-          
-              FilePickerResult respostaPath = await FilePicker.platform.pickFiles(
-                type: FileType.image,
-                allowMultiple: false,
-                onFileLoading: (FilePickerStatus status) => print(status),
-                allowedExtensions: extension,
-                dialogTitle: "Imagem de Herói",
-                initialDirectory: "",
-                lockParentWindow: false, 
-              ) as FilePickerResult;
-          
-              String pathFile = respostaPath.files.first.path as String;
-          
-              setState(() {
-                fileImg = File(pathFile).readAsBytesSync();
-              });
-              
+
+              try {
+                              
+                FilePickerResult respostaPath = await FilePicker.platform.pickFiles(
+                  type: FileType.image,
+                  allowMultiple: false,
+                  onFileLoading: (FilePickerStatus status) => print(status),
+                  allowedExtensions: extension,
+                  dialogTitle: "Imagem de Herói",
+                  initialDirectory: "",
+                  lockParentWindow: false, 
+                ) as FilePickerResult;
+            
+                String pathFile = respostaPath.files.first.path as String;
+            
+                setState(() {
+                  fileImg = File(pathFile).readAsBytesSync();
+                });
+              } catch (e) {
+                // typeError
+              }
             },
           ),
 

@@ -1,16 +1,15 @@
 import 'package:archive/archive_io.dart'; // Zip
 import 'package:path_provider/path_provider.dart';
-import 'dart:convert'; // Sei lá o que
+import 'dart:convert'; // Conversões de Tipo
 import 'dart:io';
 import 'package:flutter/services.dart';
-
 import 'package:archive/archive.dart';
 
-import 'dart:convert' show utf8;
+import 'package:file_picker/file_picker.dart';
 
 import 'package:fabrica_do_multiverso/script/ficha.dart';
 
-import 'package:file_picker/file_picker.dart';
+
 
 class Download{
   Uint8List img = Uint8List(0);
@@ -30,28 +29,29 @@ class Download{
     // Crie o arquivo ZIP
     final List<int> listzipData = ZipEncoder().encode(archive)!;
 
-    //Directory
-    Directory downladDir = await getApplicationDocumentsDirectory();
-    final String dirPath = downladDir.path;
-
-    String respostaPath = await FilePicker.platform.saveFile(
-      type: FileType.custom,
-      allowedExtensions: ["zip"],
-      dialogTitle: "Salvar Aquivo de Heroi",
-      initialDirectory: "",
-      lockParentWindow: false, 
-    ) as String;
-    
-    
-    final File file = File( // Adiciona zip caso não tenha
-      respostaPath.contains(RegExp(r'\.zip$')) || respostaPath.contains(RegExp(r'\.ZIP$'))
-        ? respostaPath
-        : "$respostaPath.zip"
-    );
-    
-    
-    await file.writeAsBytes(listzipData);
-
+    try {
+      
+      String respostaPath = await FilePicker.platform.saveFile(
+        type: FileType.custom,
+        allowedExtensions: ["zip"],
+        dialogTitle: "Salvar Aquivo de Heroi",
+        initialDirectory: "",
+        lockParentWindow: false, 
+      ) as String;
+      
+      
+      final File file = File( // Adiciona zip caso não tenha
+        respostaPath.contains(RegExp(r'\.zip$')) || respostaPath.contains(RegExp(r'\.ZIP$'))
+          ? respostaPath
+          : "$respostaPath.zip"
+      );
+      
+      
+      await file.writeAsBytes(listzipData);
+      
+    } catch (e) {
+      // Type Error.
+    }
   }
 
   Future<dynamic> uploadFicha() async{
@@ -59,41 +59,39 @@ class Download{
     const List<String> extension = ["zip", "ZIP"];
     Map jsonFicha = {};
     
-    FilePickerResult respostaPath = await FilePicker.platform.pickFiles(
-      type: FileType.custom,
-      allowMultiple: false,
-      //onFileLoading: (FilePickerStatus status) => ,
-      allowedExtensions: extension,
-      dialogTitle: "Arquivo de Heroi",
-      initialDirectory: "",
-      lockParentWindow: false, 
-    ) as FilePickerResult;  
-    
-    
-    
-    if(respostaPath.files.isNotEmpty){
-      String pathFile = respostaPath.files.first.path as String;
-      final archive = ZipDecoder().decodeBytes(File(pathFile).readAsBytesSync());
-      for (final entry in archive) {
-      if (entry.isFile && entry.name.contains(RegExp(r'\.jpg$'))) {
-        try {
-          // o Aquivo não é de Texto
-          // Upload de Imagem
-          img = entry.content;
-        } catch (e) {
-          //
+    try {
+      
+      FilePickerResult respostaPath = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
+        allowMultiple: false,
+        //onFileLoading: (FilePickerStatus status) => ,
+        allowedExtensions: extension,
+        dialogTitle: "Arquivo de Heroi",
+        initialDirectory: "",
+        lockParentWindow: false, 
+      ) as FilePickerResult;        
+
+      if(respostaPath.files.isNotEmpty){
+        String pathFile = respostaPath.files.first.path as String;
+        final archive = ZipDecoder().decodeBytes(File(pathFile).readAsBytesSync());
+        for (final entry in archive) {
+        if (entry.isFile && entry.name.contains(RegExp(r'\.jpg$'))) {
+          try {
+            // o Aquivo não é de Texto
+            // Upload de Imagem
+            img = entry.content;
+          } catch (e) {
+            //
+          }
+        }else if (entry.isFile && entry.name.contains(RegExp(r'\.json$'))){
+          String txtFicha = utf8.decode(entry.content);
+          jsonFicha = jsonDecode(txtFicha);
         }
-      }else if (entry.isFile && entry.name.contains(RegExp(r'\.json$'))){
-        String txtFicha = utf8.decode(entry.content);
-        jsonFicha = jsonDecode(txtFicha);
+        }
       }
-      }
+    } catch (e) {
+      // Type Error 
     }
-    
-
-    
-
-    
 
     return( jsonFicha );
   }

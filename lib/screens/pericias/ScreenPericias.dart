@@ -144,7 +144,7 @@ class _ScreenPericiasState extends State<ScreenPericias> {
                                             border: OutlineInputBorder(),
                                           ),
                                           onChanged: (value) =>{
-                                            if(int.tryParse(value) != null){
+                                            if(RegExp(r'^[0-9]').hasMatch(value)){
                                               listaPercias[index]["valor"] = int.parse(value),
                                             },                                
                                             setState(() {

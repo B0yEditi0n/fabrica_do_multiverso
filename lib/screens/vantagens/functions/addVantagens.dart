@@ -104,10 +104,10 @@ class _PopUpAddVantagemState extends State<PopUpAddVantagem> {
 
                         onChanged: (value) => {                          
                           // Tem que ser numérico
-                          if (int.tryParse(value) != null){
-                            // Minimo
-                            
-                            if(int.parse(value) >= 1){                              
+                          if(RegExp(r'^[0-9]').hasMatch(value)){
+
+                            // Minimo                            
+                            if(int.parse(value) >= 1 && selectVantagem["limite"] != null){
                               // Dentro do Máximo                              
                               if ( selectVantagem["limite"] == 0 || int.parse(value) <= selectVantagem["limite"] ){
                                 setState(() {
@@ -118,7 +118,16 @@ class _PopUpAddVantagemState extends State<PopUpAddVantagem> {
                                   valueVantagem = selectVantagem["limite"];
                                 })
                               }
-                            }else{ // Fora do minimo
+                            }
+                            else if(selectVantagem["limite"]){
+                              // é graduado mas o limite não é defnido
+                              // Valor provavelmente será alertado nos limites de NP
+                              setState(() {
+                                valueVantagem = int.parse(value);
+                              })
+                              
+                            }
+                            else{ // Fora do minimo
                               setState(() {
                                 valueVantagem = 1;
                               })
