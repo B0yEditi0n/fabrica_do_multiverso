@@ -17,6 +17,28 @@ class validaNpPersonagem{
   List logErros = [];
 
   List _efeitos(){
+
+    // Filtrar Efeitos Ofensivos
+    List poderes = personagem.poderes.poderesLista.where(
+      (e) => ["EfeitoAflicao", "EfeitoOfensivo", "EfeitoDano"].contains(e["class"])
+    ).toList();
+
+    // // Desempacotar Efeitos
+    // List poderDePacote;
+    // for(Map pacote in  personagem.poderes.poderesLista.where((p)=>p["class"] == "PacotesEfeitos").toList()){
+    //   switch (pacote["tipo"]) {
+    //     case "L": // Só um nível
+          
+    //       break;
+    //     default:
+    //   }
+    // }
+
+    for(Map p in poderes){
+      // Encontra o 
+      
+    }
+
     return [];
   }
 
@@ -154,6 +176,7 @@ class validaNpPersonagem{
 
     logErros.addAll(_pericias());
     logErros.addAll(_defesas());
+    logErros.addAll(_efeitos());
 
     return logErros;
   }

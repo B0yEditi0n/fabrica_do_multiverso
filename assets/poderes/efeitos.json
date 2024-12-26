@@ -7,7 +7,7 @@
         "alcance": 1,
         "duracao": 1,
         "desc": false,
-        "classe_manipulacao": "EfeitoAflicao"
+        "class": "EfeitoAflicao"
 
     },
     {
@@ -19,7 +19,7 @@
         "duracao": 3,
         "ofensivo": false,
         "desc": false,
-        "classe_manipulacao": "Efeito"
+        "class": "Efeito"
     },
     {
         "e_id": "E003",
@@ -80,7 +80,7 @@
                 "espec": false
             }
         ],
-        "classe_manipulacao": "EfeitoCustoVaria"
+        "class": "EfeitoCustoVaria"
     },
     {
         "e_id": "E004",
@@ -125,7 +125,7 @@
             }
 
         ],
-        "classe_manipulacao": "EfeitoCompra"
+        "class": "EfeitoCompra"
     },
     {
         "e_id": "E005",
@@ -136,7 +136,7 @@
         "acao": 0,
         "alcance": 0,
         "duracao": 0,
-        "classe_manipulacao": "Efeito"
+        "class": "Efeito"
     },
     {
         "e_id": "E007",
@@ -199,7 +199,7 @@
             }
             
         ],
-        "classe_manipulacao": "EfeitoCompra"
+        "class": "EfeitoCompra"
     },
     {
         "e_id": "E008",
@@ -211,7 +211,7 @@
         "alcance": 4,
         "duracao": 3,
         "limite": 5,
-        "classe_manipulacao": "Efeito"
+        "class": "Efeito"
     },
     {
         "e_id": "E009",
@@ -223,7 +223,7 @@
         "alcance": 3,
         "duracao": 1,
         "unico": false,
-        "classe_manipulacao": "EfeitoCompra"
+        "class": "EfeitoCompra"
     },
     {
         "e_id": "E011",
@@ -234,7 +234,7 @@
         "alcance": 2,
         "duracao": 3,
         "desc": true,
-        "classe_manipulacao": "Efeito"
+        "class": "EfeitoOfensivo"
 
     },
     {
@@ -246,7 +246,7 @@
         "acao": 0,
         "alcance": 0,
         "duracao": 0,
-        "classe_manipulacao": "Efeito"
+        "class": "Efeito"
     },
     {
         "e_id": "E013",
@@ -275,7 +275,7 @@
                 "desc": false
             }            
         ],
-        "classe_manipulacao": "EfeitoDano"
+        "class": "EfeitoDano"
     },
     {
         "e_id": "E014",
@@ -286,7 +286,7 @@
         "ofensivo": false,
         "custo_base": 1,
         "desc": false,
-        "classe_manipulacao": "Efeito"
+        "class": "Efeito"
     },
     {
         "e_id": "E016",
@@ -297,7 +297,7 @@
         "alcance": 1,
         "duracao": 1,
         "desc": true,
-        "classe_manipulacao": "EfeitoOfensivo"
+        "class": "EfeitoOfensivo"
     },
     {
         "e_id": "E017",
@@ -307,7 +307,7 @@
         "alcance": 0,
         "duracao": 3,
         "desc": false,
-        "classe_manipulacao": "Efeito"
+        "class": "Efeito"
     },
     {
         "e_id": "E018",
@@ -352,7 +352,7 @@
                                 
             }
         ],
-        "classe_manipulacao": "EfeitoCustoVaria"
+        "class": "EfeitoCustoVaria"
     },
     {
         "e_id": "E019",
@@ -363,7 +363,7 @@
         "duracao": 0,
         "limite": 20,
         "desc": false,
-        "classe_manipulacao": "Efeito"
+        "class": "Efeito"
     },
     {
         "e_id": "E020",
@@ -526,7 +526,7 @@
                 "espec": false
             }
         ],
-        "classe_manipulacao": "EfeitoCompra"
+        "class": "EfeitoCompra"
     },
     {
         "e_id": "E021",
@@ -564,7 +564,7 @@
             }
 
         ],
-        "classe_manipulacao": "EfeitoCompra"
+        "class": "EfeitoCompra"
     },
     {
         "e_id": "E022",
@@ -574,7 +574,7 @@
         "alcance": 1,
         "duracao": 3,
         "desc": true,
-        "classe_manipulacao": "Efeito"
+        "class": "Efeito"
     },
     {
         "e_id": "E023",
@@ -585,7 +585,7 @@
         "duracao": 3,
         "ofensivo": true,
         "desc": false,
-        "classe_manipulacao": "EfeitoOfensivo"
+        "class": "EfeitoOfensivo"
     },
     {
         "e_id": "E024",
@@ -596,7 +596,7 @@
         "duracao": 0,
         "ofensivo": false,
         "desc": false,
-        "classe_manipulacao": "Efeito"
+        "class": "Efeito"
     },
     {
         "e_id": "E025",
@@ -608,7 +608,7 @@
         "ofensivo": false,
         "desc": true,
         "limite": 4,
-        "classe_manipulacao": "Efeito"
+        "class": "Efeito"
     },
     {
         "e_id": "E026",
@@ -619,7 +619,7 @@
         "duracao": 3,
         "ofensivo": true,
         "desc": false,
-        "classe_manipulacao": "EfeitoOfensivo"
+        "class": "EfeitoOfensivo"
     },
     {
         "e_id": "E027",
@@ -630,7 +630,7 @@
         "duracao": 0,
         "ofensivo": false,
         "desc": false,
-        "classe_manipulacao": "EfeitoCompra"
+        "class": "EfeitoCompra"
     },
     {
         "e_id": "E028",
@@ -641,7 +641,7 @@
         "duracao": 3,
         "ofensivo": false,
         "desc": false,
-        "classe_manipulacao": "Efeito"
+        "class": "Efeito"
     },
     {
         "e_id": "E029",
@@ -652,7 +652,7 @@
         "duracao": 1,
         "ofensivo": true,
         "desc": true,
-        "classe_manipulacao": "EfeitoOfensivo"
+        "class": "EfeitoOfensivo"
     },
     {
         "e_id": "E031",
@@ -663,7 +663,7 @@
         "duracao": 3,
         "ofensivo": false,
         "desc": false,
-        "classe_manipulacao": "Efeito"
+        "class": "Efeito"
     },
     {
         "e_id": "E032",
@@ -674,7 +674,7 @@
         "duracao": 0,
         "ofensivo": false,
         "desc": false,
-        "classe_manipulacao": "Efeito"
+        "class": "Efeito"
     },
     {
         "e_id": "E033",
@@ -685,7 +685,7 @@
         "duracao": 0,
         "ofensivo": false,
         "desc": false,
-        "classe_manipulacao": "Efeito"
+        "class": "Efeito"
     },
     {
         "e_id": "E034",
@@ -731,7 +731,7 @@
                                 
             }
         ],
-        "classe_manipulacao": "EfeitoCustoVaria"
+        "class": "EfeitoCustoVaria"
     },
     {
         "e_id": "E035",
@@ -1000,7 +1000,7 @@
                 "desc": false
             }
         ],
-        "classe_manipulacao": "EfeitoCompra"
+        "class": "EfeitoCompra"
     },
     {
         "e_id": "E036",
@@ -1011,7 +1011,7 @@
         "duracao": 1,
         "ofensivo": false,
         "desc": false,
-        "classe_manipulacao": "Efeito"
+        "class": "Efeito"
     },
     {
         "e_id": "E037",
@@ -1050,7 +1050,7 @@
             
 
         ],
-        "classe_manipulacao": "EfeitoCustoVaria"
+        "class": "EfeitoCustoVaria"
     },
     {
         "e_id": "E038",
@@ -1061,7 +1061,7 @@
         "duracao": 3,
         "ofensivo": false,
         "desc": true,
-        "classe_manipulacao": "Efeito"
+        "class": "Efeito"
     },
     {
         "e_id": "E039",
@@ -1072,7 +1072,7 @@
         "duracao": 3,
         "ofensivo": false,
         "desc": false,
-        "classe_manipulacao": "Efeito"
+        "class": "Efeito"
     },
     {
         "e_id": "E040",
@@ -1083,7 +1083,7 @@
         "duracao": 3,
         "ofensivo": false,
         "desc": false,
-        "classe_manipulacao": "Efeito"
+        "class": "Efeito"
     },
     {
         "e_id": "PB01",
@@ -1098,7 +1098,7 @@
         "duracao": 3,
         
         "grupoOpt": "habilidades",
-        "classe_manipulacao": "EfeitoBonus"
+        "class": "EfeitoBonus"
     },
     {
         "e_id": "PB02",
@@ -1123,7 +1123,7 @@
             }
         ],
         "grupoOpt": "defesas",
-        "classe_manipulacao": "EfeitoBonus"
+        "class": "EfeitoBonus"
     },
     {
         "e_id": "PB03",
@@ -1137,7 +1137,7 @@
         "alcance": 0,
         "duracao": 3,
         "grupoOpt":"vantagens",
-        "classe_manipulacao": "EfeitoBonus"
+        "class": "EfeitoBonus"
     },
     {
         "e_id": "PB04",
@@ -1151,7 +1151,7 @@
         "alcance": 0,
         "duracao": 3,
         "grupoOpt": "pericias",
-        "classe_manipulacao": "EfeitoBonus"
+        "class": "EfeitoBonus"
     },
     {
         "e_id": "PB05",
@@ -1197,7 +1197,7 @@
             }
 
         ],
-        "classe_manipulacao": "EfeitoCrescimento"
+        "class": "EfeitoCrescimento"
     }
     ,
     {
@@ -1233,7 +1233,7 @@
                 "nome": "Força"
             }
         ],
-        "classe_manipulacao": "EfeitoCrescimento"
+        "class": "EfeitoCrescimento"
     },
     {
         "e_id": "E030",
@@ -1268,6 +1268,6 @@
                 "nome": "Proteção"
             }
         ],
-        "classe_manipulacao": "EfeitoCrescimento"
+        "class": "EfeitoCrescimento"
     }
 ]

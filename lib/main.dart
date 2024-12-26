@@ -271,7 +271,21 @@ class _ScreenInicialState extends State<ScreenInicial> {
                 ),
               ]
             ),
-          )
+          ),
+          //# Lista de notificações
+          logError.isNotEmpty ?
+          ListView.builder(
+            itemCount: logError.length,
+            itemBuilder: (BuildContext context, int index){
+              InkWell(
+                child: Column(
+                  children: [
+                    //Card(child: Text(logError[index]["msg"]))
+                  ]
+                )
+              );
+            }
+          ) : const SizedBox(),
         ],
       ),
 
