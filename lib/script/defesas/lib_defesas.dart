@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:fabrica_do_multiverso/script/ficha.dart';
 import 'package:fabrica_do_multiverso/script/habilidades/lib_habilidades.dart';
+import 'package:fabrica_do_multiverso/script/vantagens/lib_vantagens.dart';
 
 class Defesa{
   String _id = "";
@@ -95,8 +96,10 @@ class Resistencia extends Defesa{
     // Inclui a Vantagem Rolamento Defensivo
     List vantagens = personagem.vantagens.listaVantagens;
     int rolamentoDefensivo = 0;
-    if(vantagens.isNotEmpty){
-      rolamentoDefensivo = vantagens.firstWhere((e) => e["id"] == "V077");
+    if(vantagens.any((e) => e["id"] == "V077")){
+      Vantagem objectRolamento = Vantagem();
+      objectRolamento.init(vantagens.where((e) => e["id"] == "V077") as Map);
+      rolamentoDefensivo = objectRolamento.returnTotalGrad();
     }
      
     return total + rolamentoDefensivo;

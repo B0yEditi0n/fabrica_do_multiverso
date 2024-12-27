@@ -119,7 +119,7 @@ class _PopUpAddVantagemState extends State<PopUpAddVantagem> {
                                 })
                               }
                             }
-                            else if(selectVantagem["limite"]){
+                            else if(selectVantagem["limite"] == null && selectVantagem["graduado"]){
                               // é graduado mas o limite não é defnido
                               // Valor provavelmente será alertado nos limites de NP
                               setState(() {

@@ -17,7 +17,7 @@ class validaNpPersonagem{
   List logErros = [];
 
   List _efeitos(){
-
+    List logEfeitos = [];
     // Filtrar Efeitos Ofensivos
     List poderes = personagem.poderes.poderesLista.where(
       (e) => ["EfeitoAflicao", "EfeitoOfensivo", "EfeitoDano"].contains(e["class"])
@@ -33,13 +33,53 @@ class validaNpPersonagem{
     //     default:
     //   }
     // }
+    
+    // Puxa Bonus das Vantagens
+    Vantagem objectVantagem = Vantagem();
+    List vantagens = personagem.vantagens.listaVantagens; 
+    int vantagemCorpoACorpo = 0;
+    int vantagemADistancia = 0;
 
+    if(vantagens.any((e) => e["id"] == "V013")){
+      // Corpo a Corpo
+      objectVantagem.init(vantagens.firstWhere(
+        (v)=>v["id"] == "V013"
+      ));
+      vantagemCorpoACorpo = objectVantagem.returnTotalGrad();
+    }
+    
+    if(vantagens.any((e) => e["id"] == "V011")){
+      // a Distância
+      objectVantagem.init(vantagens.firstWhere(
+        (v)=>v["id"] == "V011"
+      ));
+      vantagemADistancia = objectVantagem.returnTotalGrad();
+    }
+    
+
+    int bonusVantagem = 0;
+    
+    EfeitoOfensivo objectEfeito = EfeitoOfensivo(); 
     for(Map p in poderes){
-      // Encontra o 
+      // Encontra a origem do bonus
+      switch (p["alcance"]){
+        case 1: // Perto
+          // Vantagem corpo a corpo
+          bonusVantagem = vantagemCorpoACorpo;
+          break;  
+        case 2: // a Distância
+          bonusVantagem = vantagemADistancia;
+          break; 
+      }
+
+      objectEfeito.reinstanciarMetodo(p);
+
+      objectEfeito.bonusAcerto();
+      // Validação de Erro
       
     }
 
-    return [];
+    return logEfeitos;
   }
 
   List _defesas(){
