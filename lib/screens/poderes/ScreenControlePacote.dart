@@ -130,7 +130,7 @@ class _ControladorDePacotesState extends State<ControladorDePacotes> {
                     Row( children: <Widget> [
                       Expanded(
                         child:
-                          //# Card de Exibição
+                          //# Card de Exibição dos Efeitos
                           // Exibe os poderes ativos
                           poderes[index]["class"] != "PacotesEfeitos" 
                           ? ListTile(

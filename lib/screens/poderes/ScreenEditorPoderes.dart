@@ -46,6 +46,9 @@ class _powerEditState extends State<powerEdit> {
   List<TextEditingController> listInputModText = []; // Descrição de Modificador (se houver)
   List<TextEditingController> listInputOption = []; // Descrição de para Efeitos de compra de Opções (se houver)
 
+  // Exclusivo de Força
+  bool baseadoEmForca = false;
+
   // Exclusivo de Aflição
   TextEditingController priCondica = TextEditingController();
   TextEditingController segCondica = TextEditingController();
@@ -142,6 +145,12 @@ class _powerEditState extends State<powerEdit> {
         bonusAtaque = poderOfensivo.totalBonusAcerto();
         acurado = poderOfensivo.bonusAcerto();
       }
+
+      // Exclusivo de Dano
+      if(poder is EfeitoDano){
+        baseadoEmForca = objPoder["baseadoForca"];
+      }
+
       // Exclusivo de Aflição
       if(poder is EfeitoAflicao && objPoder["condicoes"] != null){
         priCondica.text = objPoder["condicoes"][0];
@@ -523,6 +532,23 @@ class _powerEditState extends State<powerEdit> {
                           }
                       }
                     ) : const SizedBox(),
+
+                    // BASEADO EM FORÇA (apenas para dano) 
+
+                    poder is EfeitoDano ?
+                      Column(
+                        children: [
+                          const Text("Baseado em Força"),
+                          Checkbox(
+                            value: baseadoEmForca,
+                            onChanged: (value) => setState((){
+                              baseadoEmForca = value!;
+                              EfeitoDano objectDano = poder as EfeitoDano;
+                              objectDano.baseadoForca = baseadoEmForca;
+                            }),
+                          )
+                        ],
+                      ): const SizedBox(),
                   ],
                 ),
               ) : const SizedBox(),

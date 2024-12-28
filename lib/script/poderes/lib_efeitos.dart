@@ -1,4 +1,5 @@
 import 'package:fabrica_do_multiverso/script/ficha.dart';
+import 'package:fabrica_do_multiverso/script/habilidades/lib_habilidades.dart';
 import 'package:flutter/services.dart'; 
 import 'dart:convert';
 
@@ -349,6 +350,8 @@ class Efeito{
     return custoFinal;
   }
 
+  int returnGraduacao(){ return _graduacao; }
+
   Map returnObjDefault() {
     return _padraoEfeito;
   }
@@ -488,7 +491,7 @@ class EfeitoEscolha extends Efeito{
   // Metodos de tratamento do atributo OPT de escolha do efeito
   void addOpt(Map option){
     if(_padraoEfeito["unico"]){ // apenas um unico efeito
-      if(opt.length > 0){
+      if(opt.isNotEmpty){
         opt = [];
       }
     }
@@ -744,6 +747,39 @@ class EfeitoOfensivo extends Efeito{
 //# classe Dano
 
 class EfeitoDano extends EfeitoOfensivo{
+  bool baseadoForca = false;
+
+  @override
+  Future<bool> reinstanciarMetodo(Map objPoder) async{
+    super.reinstanciarMetodo(objPoder);    
+    if(objPoder["baseadoForca"]){
+      baseadoForca = true;
+    }
+    
+    return true;
+  }
+
+  @override
+  int custearAlteracoes(){
+    int custoFinal = super.custearAlteracoes();
+
+    if(baseadoForca){ // Subtrai o valor de força
+      Habilidade objectHabilidade = Habilidade();
+      objectHabilidade.initObject(
+        personagem.habilidades.listHab.firstWhere((h)=>h["id"] == "FOR")
+      );
+
+      custoFinal -= objectHabilidade.valorTotal();
+
+      // Cuidado pro valor não ser inferior a 1
+      if(custoFinal < 1){
+        custoFinal = 1;
+      }
+    }
+    
+    return custoFinal;
+  }
+
   @override
   Map<String, dynamic> retornaObj(){
     /*
@@ -766,6 +802,7 @@ class EfeitoDano extends EfeitoOfensivo{
       "defAtaque":        defAtaque,
       "class":            _padraoEfeito["class"],
       "bonus":            bonus,
+      "baseadoForca":     baseadoForca,
       "critico":          _critico,
       "acerto":           _bonusAcerto,
       "cd":               (_graduacao + 15),

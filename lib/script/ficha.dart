@@ -7,7 +7,6 @@ import 'dart:convert';                  // Biblitoeca de conversão de json
 // Bibliotecas
 import 'package:fabrica_do_multiverso/script/defesas/lib_defesas.dart';
 import 'package:fabrica_do_multiverso/script/habilidades/lib_habilidades.dart';
-import 'package:fabrica_do_multiverso/screens/defesas/ScreenDefesas.dart';
 //import 'package:fabrica_do_multiverso/screens/screenPoderes/controlePoderes.dart';
 import 'package:fabrica_do_multiverso/script/poderes/lib_efeitos.dart';
 import 'package:fabrica_do_multiverso/script/poderes/lib_pacoteEfeitos.dart';
@@ -15,6 +14,8 @@ import 'package:fabrica_do_multiverso/script/poderes/lib_pacoteEfeitos.dart';
 //# Classe de Validação de NP
 class validaNpPersonagem{
   List logErros = [];
+
+  int np = personagem.np;
 
   List _efeitos(){
     List logEfeitos = [];
@@ -34,12 +35,26 @@ class validaNpPersonagem{
     //   }
     // }
     
-    // Puxa Bonus das Vantagens
+    
     Vantagem objectVantagem = Vantagem();
+    Habilidade objectHabilidade = Habilidade();
+    
     List vantagens = personagem.vantagens.listaVantagens; 
+    
+    int luta = 0;
     int vantagemCorpoACorpo = 0;
-    int vantagemADistancia = 0;
 
+    int destreza = 0;
+    int vantagemADistancia = 0;
+    
+    // Bonus de Habilidades;
+    objectHabilidade.initObject(personagem.habilidades.listHab.firstWhere((e)=>e["id"] == "LUT"));
+    luta = objectHabilidade.valorTotal();
+
+    objectHabilidade.initObject(personagem.habilidades.listHab.firstWhere((e)=>e["id"] == "DES"));
+    destreza = objectHabilidade.valorTotal();
+
+    // Puxa Bonus das Vantagens
     if(vantagens.any((e) => e["id"] == "V013")){
       // Corpo a Corpo
       objectVantagem.init(vantagens.firstWhere(
@@ -65,17 +80,39 @@ class validaNpPersonagem{
       switch (p["alcance"]){
         case 1: // Perto
           // Vantagem corpo a corpo
-          bonusVantagem = vantagemCorpoACorpo;
-          break;  
+          bonusVantagem = vantagemCorpoACorpo + luta;
+          break;
         case 2: // a Distância
-          bonusVantagem = vantagemADistancia;
+          bonusVantagem = vantagemADistancia + destreza;
           break; 
+        default: // Apenas o limite de NP
+
+
       }
 
       objectEfeito.reinstanciarMetodo(p);
 
-      objectEfeito.bonusAcerto();
       // Validação de Erro
+      if ( bonusVantagem + objectEfeito.totalBonusAcerto() + objectEfeito.returnGraduacao() > 2 * np){
+        // Limite Estourado
+        logEfeitos.add({
+          "tipo": "E",
+          "nome": objectEfeito.nome.isNotEmpty ? objectEfeito.nome : objectEfeito.returnObjDefault()["efeito"],
+          "msg": "${objectEfeito.nome.isNotEmpty ? objectEfeito.nome : objectEfeito.returnObjDefault()["efeito"]}, se econtram com ${bonusVantagem + objectEfeito.totalBonusAcerto() + objectEfeito.returnGraduacao() - ( np * 2)} pontos fora do limite",
+          "id": [objectEfeito.returnObjDefault()["efeito"]]
+        });
+      }
+      // Considera os limites de 50% de troca
+      else if( bonusVantagem + objectEfeito.totalBonusAcerto() > np * 1.5
+        || objectEfeito.returnGraduacao() > np * 1.5){
+        // Limite Estourado
+        logEfeitos.add({
+          "tipo": "E",
+          "nome": objectEfeito.nome,
+          "msg": "${objectEfeito.nome}, passa do limite de troca 50% NP",
+          "id": [objectEfeito.returnObjDefault()["efeito"]]
+        });
+      }
       
     }
 
