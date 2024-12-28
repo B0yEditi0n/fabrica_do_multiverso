@@ -752,7 +752,7 @@ class EfeitoDano extends EfeitoOfensivo{
   @override
   Future<bool> reinstanciarMetodo(Map objPoder) async{
     super.reinstanciarMetodo(objPoder);    
-    if(objPoder["baseadoForca"]){
+    if(objPoder["baseadoForca"] != null && objPoder["baseadoForca"]){
       baseadoForca = true;
     }
     

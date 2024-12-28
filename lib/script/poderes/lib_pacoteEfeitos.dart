@@ -144,19 +144,32 @@ class EfeitosAlternativos extends PacotesEfeitos{
 
 }
 
+
 class extractPacote{
   // Classe de Extração de Pacotes Para Contabilização dos Efeitos
-  extractPacote(Map mapPacote){
-    print(mapPacote);
-    switch(mapPacote["tipo"]){
-      case "F" || "R": // Extração é semelhante
-        break;
+  List getEfeitos(Map mapPacote){
+    List efeitos = [];
 
-      case "E" || "D":
-        break;
-
-      case "L":
-        break;
-    }
+    efeitos.addAll(linearizarPacote(mapPacote));
+    
+    return efeitos;
   }
+
+  List linearizarPacote(Map pacote){
+    List efeitos = [];
+    // Extrai os Elementos Ofensivos
+    for(Map p in pacote["efeitos"]){
+      // Checa é Ofensivo
+      if(["EfeitoAflicao", "EfeitoOfensivo", "EfeitoDano"].contains(p["class"])){
+        efeitos.add(p);
+      }
+      // Checa se há pacotes encapsulados
+      if(["PacotesEfeitos", "EfeitosAlternativos"].contains(p["class"])){
+        efeitos.addAll(getEfeitos(p));
+      }
+    }
+
+    return efeitos;
+  }
+
 }

@@ -32,9 +32,10 @@ class validaNpPersonagem{
 
      
     for(Map p in pacotes){
-      desmantelaPacote = extractPacote(p);
-      
-    };
+      desmantelaPacote = extractPacote();
+      // Converte os efeitos de arvore para Linear
+      poderes.addAll(desmantelaPacote.getEfeitos(p));
+    }
     
     
     Vantagem objectVantagem = Vantagem();
@@ -307,10 +308,6 @@ class IntercambioModular{
           });
         };
       }
-      // if(!["F1", "F2"].contains(ofensivo["idCriacao"])){
-      //   print(ofensivo);
-
-      // }
     }
   }
 
