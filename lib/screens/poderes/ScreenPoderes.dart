@@ -35,7 +35,7 @@ class _ScreenPoderesState extends State<ScreenPoderes> {
     });
   }
   Future _addPoderes(Map objPoder) async{
-    if(objEfeito["class"] != "PacotesEfeitos"){
+    if(!["EfeitosAlternativos", "PacotesEfeitos"].contains(objEfeito["class"])){
       await personagem.poderes.novoPoder(objEfeito["nome"], objEfeito["e_id"], objEfeito["class"]);
     }else{
       await personagem.poderes.novoPacote(objEfeito["nome"], objEfeito["tipo"], objEfeito["efeito"]);
@@ -64,7 +64,7 @@ class _ScreenPoderesState extends State<ScreenPoderes> {
                       child:
                         //# Card de Exibição
                         // Exibe os poderes ativos
-                        poderes[index]["class"] != "PacotesEfeitos" 
+                        !["EfeitosAlternativos", "PacotesEfeitos"].contains(poderes[index]["class"]) 
                         ? ListTile(
                           title: Text(poderes[index]['nome']),
                           subtitle: Text("${poderes[index]['efeito']} ${poderes[index]['graduacao']}"),
@@ -109,7 +109,7 @@ class _ScreenPoderesState extends State<ScreenPoderes> {
                   ],
                   )
                 ),
-                poderes[index]["class"] == "PacotesEfeitos" 
+                ["EfeitosAlternativos", "PacotesEfeitos"].contains(poderes[index]["class"]) 
                 ? Padding(
                   padding: const EdgeInsets.only(left: 30.0),
                   child: Card(
@@ -137,7 +137,7 @@ class _ScreenPoderesState extends State<ScreenPoderes> {
               }
               Map returnObjPoder = {};
               Map inputObjEfeito = personagem.poderes.poderesLista[index];
-              if(poderes[index]["class"] != "PacotesEfeitos"){
+              if(!["EfeitosAlternativos", "PacotesEfeitos"].contains(poderes[index]["class"])){
                 returnObjPoder = await Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => powerEdit(objEfeito: inputObjEfeito)),

@@ -139,3 +139,24 @@ class PacotesEfeitos{
 
   }
 }
+
+class EfeitosAlternativos extends PacotesEfeitos{
+
+}
+
+class extractPacote{
+  // Classe de Extração de Pacotes Para Contabilização dos Efeitos
+  extractPacote(Map mapPacote){
+    print(mapPacote);
+    switch(mapPacote["tipo"]){
+      case "F" || "R": // Extração é semelhante
+        break;
+
+      case "E" || "D":
+        break;
+
+      case "L":
+        break;
+    }
+  }
+}

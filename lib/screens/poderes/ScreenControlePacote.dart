@@ -22,6 +22,7 @@ class ControladorDePacotes extends StatefulWidget {
 class _ControladorDePacotesState extends State<ControladorDePacotes> {
   //# Declarações
   PacotesEfeitos pacote = PacotesEfeitos();
+   
   int indexPoder = -1;
   bool retornoDePacote = true;
   Map objPacote = {};
@@ -39,6 +40,7 @@ class _ControladorDePacotesState extends State<ControladorDePacotes> {
   }
 
   _updateAfterCreate(Efeito efeito){
+
     pacote.efeitos.add(efeito.retornaObj());
     setState(() {
       objPacote = pacote.retornaObj();
@@ -48,7 +50,7 @@ class _ControladorDePacotesState extends State<ControladorDePacotes> {
 
   Future _addPoderes(Map objEfeito) async{
     
-    if(objEfeito["class"] != "PacotesEfeitos"){
+    if(!["EfeitosAlternativos", "PacotesEfeitos"].contains(objEfeito["class"])){
       Efeito efeito = Efeito();
       await efeito.instanciarMetodo(objEfeito["nome"], objEfeito["e_id"])
       .then((resulte)=>{
@@ -66,14 +68,14 @@ class _ControladorDePacotesState extends State<ControladorDePacotes> {
         })
       });
     }
-    
-    
-    
-    
-    
   }
 
   _inicializarVariaveis(){
+    // Caso seja Efeito Alternativo ele só reinstancia
+    if(objPacote["class"] == "EfeitosAlternativos"){
+      pacote = EfeitosAlternativos();
+    }
+
     // inicialização do objeto
     objPacote = widget.objPacote;
     pacote.instanciarMetodo(objPacote);
@@ -81,7 +83,7 @@ class _ControladorDePacotesState extends State<ControladorDePacotes> {
 
     // define se os efeitos adionados devem ter nome
     if(["R", "E" "D"].contains(pacote.getType())){ nomearEfeitos = true; }
-    if(["L"].contains(pacote.getType())){ nomearEfeitos = true; }
+    if(["L"].contains(pacote.getType())){ nomearEfeitos = false; }
 
     nomePoder.text = pacote.nomePacote;
     
@@ -132,7 +134,7 @@ class _ControladorDePacotesState extends State<ControladorDePacotes> {
                         child:
                           //# Card de Exibição dos Efeitos
                           // Exibe os poderes ativos
-                          poderes[index]["class"] != "PacotesEfeitos" 
+                          !["EfeitosAlternativos", "PacotesEfeitos"].contains(poderes[index]["class"])
                           ? ListTile(
                             title: Text(poderes[index]['nome']),
                             subtitle: Text("${poderes[index]['efeito']} ${poderes[index]['graduacao']}"),
@@ -170,7 +172,7 @@ class _ControladorDePacotesState extends State<ControladorDePacotes> {
                     Map returnObjPoder = {};
                     Map inputObjEfeito = poderes[index];
 
-                    if(poderes[index]["class"] != "PacotesEfeitos"){
+                    if(!["EfeitosAlternativos", "PacotesEfeitos"].contains(poderes[index]["class"])){
                       
                       returnObjPoder = await Navigator.push(
                         context,

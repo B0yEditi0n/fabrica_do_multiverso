@@ -24,16 +24,17 @@ class validaNpPersonagem{
       (e) => ["EfeitoAflicao", "EfeitoOfensivo", "EfeitoDano"].contains(e["class"])
     ).toList();
 
-    // // Desempacotar Efeitos
-    // List poderDePacote;
-    // for(Map pacote in  personagem.poderes.poderesLista.where((p)=>p["class"] == "PacotesEfeitos").toList()){
-    //   switch (pacote["tipo"]) {
-    //     case "L": // Só um nível
-          
-    //       break;
-    //     default:
-    //   }
-    // }
+    // Desmantela os Pacotes
+    extractPacote desmantelaPacote;
+    List pacotes = personagem.poderes.poderesLista.where(
+      (e) => e["class"] == "PacotesEfeitos"
+    ).toList();
+
+     
+    for(Map p in pacotes){
+      desmantelaPacote = extractPacote(p);
+      
+    };
     
     
     Vantagem objectVantagem = Vantagem();
