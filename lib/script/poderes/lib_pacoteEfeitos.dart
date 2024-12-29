@@ -22,6 +22,9 @@ class PacotesEfeitos{
   // R - Removivel
   int _groupType = 0; 
 
+  // Id de Criação
+  String idCriacao = "";
+
   // ***************************
   // Methodos de Inicialização *
   // ***************************
@@ -46,6 +49,12 @@ class PacotesEfeitos{
       for(Map efeito in mapObject["efeitos"]){
         efeitos.add(efeito);
       }
+    }
+
+    if(mapObject["idCriacao"] != null){
+      idCriacao = mapObject["idCriacao"];
+    }else{
+      idCriacao = "A${DateTime.now().millisecondsSinceEpoch.toRadixString(16)}";
     }
 
     return true;  

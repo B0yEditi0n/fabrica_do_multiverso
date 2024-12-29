@@ -709,6 +709,51 @@ class ManipulaPoderes{
     }
     return poderes;
   }
+
+  Future<Efeito> instanciaPoder(Map mapPoder) async{
+    /*
+      Efetua a Instancia do poder e retorna com o 
+      respectiva classe alvo
+      
+      Arg:
+        Map mapPoder |  o objeto de inicialização do poder
+      Return:
+        Objeto Efeito ou qualquer filho de acordo com o objeto
+    */
+
+    Efeito poder;
+    switch (mapPoder["class"]) {
+      case "EfeitoCrescimento":
+        poder = EfeitoCrescimento();
+        break;
+      case "EfeitoBonus":
+        poder = EfeitoBonus();
+        break;
+      case "EfeitoAflicao":
+        poder = EfeitoAflicao();
+        break;
+      case "EfeitoDano":
+        poder = EfeitoDano();
+        break;
+      case "EfeitoCompra":
+        poder = EfeitoCompra();
+        break;
+      case "EfeitoCustoVaria":
+        poder = EfeitoCustoVaria();
+        break;
+      case "EfeitoOfensivo":
+        poder = EfeitoOfensivo();
+        break;
+      case "Efeito":
+      default:
+        poder = Efeito();
+        break;
+    }
+
+    await poder.instanciarMetodo(mapPoder["nome"], mapPoder["e_id"]);
+
+    return poder;
+  }
 }
 
 //# Classe de manipulação de Perícias

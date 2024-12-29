@@ -35,11 +35,14 @@ class _ControladorDePacotesState extends State<ControladorDePacotes> {
   @override
   void initState() {
     super.initState();
-    //objPacote = personagem.poderes.poderesLista[widget.indexPacote];
     _inicializarVariaveis();
   }
 
   _updateAfterCreate(Efeito efeito){
+    // Tratativa para Efeitos Alternativos e Efeitos Bonus
+    if(["D", "E"].contains(pacote.getType()) && efeito is EfeitoBonus){
+      print('enquadra');
+    }
 
     pacote.efeitos.add(efeito.retornaObj());
     setState(() {
@@ -51,11 +54,11 @@ class _ControladorDePacotesState extends State<ControladorDePacotes> {
   Future _addPoderes(Map objEfeito) async{
     
     if(!["EfeitosAlternativos", "PacotesEfeitos"].contains(objEfeito["class"])){
-      Efeito efeito = Efeito();
-      await efeito.instanciarMetodo(objEfeito["nome"], objEfeito["e_id"])
-      .then((resulte)=>{
+      Efeito efeito;
+      efeito = await personagem.poderes.instanciaPoder(objEfeito)
+      .then((efeito)=>
         _updateAfterCreate(efeito)
-      });
+      );
     }else{
       PacotesEfeitos enpacotado = PacotesEfeitos();
       await enpacotado.instanciarMetodo(objEfeito)

@@ -242,7 +242,6 @@ class _ScreenInicialState extends State<ScreenInicial> {
                         decoration: const InputDecoration(hintText: "Nome do Personagem"),
                         onChanged: (value)=>{
                           personagem.nomePersonagem = value,
-                          _updateValue()
                         },
                       ),
                     ),
@@ -263,7 +262,6 @@ class _ScreenInicialState extends State<ScreenInicial> {
                           if(int.tryParse(value) != null){
                             personagem.np = int.parse(value)
                           },
-                          _updateValue()
                         },
                       ),
                     ),
@@ -272,20 +270,22 @@ class _ScreenInicialState extends State<ScreenInicial> {
               ]
             ),
           ),
+
           //# Lista de notificações
-          logError.isNotEmpty ?
-          ListView.builder(
-            itemCount: logError.length,
-            itemBuilder: (BuildContext context, int index){
-              InkWell(
-                child: Column(
-                  children: [
-                    //Card(child: Text(logError[index]["msg"]))
-                  ]
-                )
-              );
-            }
-          ) : const SizedBox(),
+          // logError.isNotEmpty ?
+          // ListView.builder(
+          //   itemCount: logError.length,
+          //   itemBuilder: (BuildContext context, int index){
+          //     InkWell(
+          //       child: Column(
+          //         children: [
+          //           //Card(child: Text(logError[index]["msg"]))
+          //         ]
+          //       )
+          //     );
+          //   }
+          // ) : const SizedBox(),
+
         ],
       ),
 
