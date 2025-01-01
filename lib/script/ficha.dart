@@ -750,7 +750,7 @@ class ManipulaPoderes{
         break;
     }
 
-    await poder.instanciarMetodo(mapPoder["nome"], mapPoder["e_id"]);
+    poder.instanciarMetodo(mapPoder["nome"], mapPoder["e_id"]);
 
     return poder;
   }

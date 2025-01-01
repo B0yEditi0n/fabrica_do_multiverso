@@ -68,11 +68,6 @@ class _ScreenInicialState extends State<ScreenInicial> {
   TextEditingController txtControlName = TextEditingController();
   TextEditingController txtNP = TextEditingController();
 
-  void _updateValue(){
-    txtControlName.text = personagem.nomePersonagem;
-    txtNP.text = personagem.np.toString();
-  }
-
   void _validaFicha(){
     setState((){
       logError =  validador.validacaoGeral();

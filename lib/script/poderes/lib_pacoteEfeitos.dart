@@ -23,7 +23,7 @@ class PacotesEfeitos{
   int _groupType = 0; 
 
   // Id de Criação
-  String idCriacao = "";
+  String _idCriacao = "";
 
   // ***************************
   // Methodos de Inicialização *
@@ -52,9 +52,9 @@ class PacotesEfeitos{
     }
 
     if(mapObject["idCriacao"] != null){
-      idCriacao = mapObject["idCriacao"];
+      _idCriacao = mapObject["idCriacao"];
     }else{
-      idCriacao = "A${DateTime.now().millisecondsSinceEpoch.toRadixString(16)}";
+      _idCriacao = "A${DateTime.now().millisecondsSinceEpoch.toRadixString(16)}";
     }
 
     return true;  
@@ -82,6 +82,27 @@ class PacotesEfeitos{
     
     return String.fromCharCode(_groupType);
   }
+
+  void addPoder(Map objPoder){
+    /*
+      Adiciona poderes a lista de pacotes
+      e podem haver tratativas
+    */
+
+
+    // Tratativa para Efeitos Alternativos e Efeitos Bonus
+    // Efeitos ligados apenas porque são subtipos de EAs
+    if(["L", "D", "E"].contains(getType()) && objPoder["class"] == "EfeitoBonus"){
+      //? Implementar uma busca para casos como efeitos ligados?
+
+      // Sobreescrever o Valor do id de criação
+      objPoder["idCriacao"] = _idCriacao;
+
+    }
+
+    efeitos.add(objPoder);
+  }
+
 
   int custearAlteracoes(){
     /*
@@ -144,6 +165,7 @@ class PacotesEfeitos{
       "custo": custearAlteracoes(),
       "class": "PacotesEfeitos",
       "efeitos": efeitos,
+      "idCriacao": _idCriacao,
     };
 
   }

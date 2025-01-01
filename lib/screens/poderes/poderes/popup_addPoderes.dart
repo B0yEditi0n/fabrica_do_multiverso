@@ -43,7 +43,6 @@ class _DynamicDialogState extends State<DynamicDialog> {
       if(["E", "D"].contains(widget.tipo)){
         // Efeitos Alternativos podem incluir apenas efefeitos ligados
         int linkIndex = objPacotes.indexWhere((obj)=> obj["e_id"] == "P005");
-        print(objPacotes[linkIndex]);
         objEfeitos.add(objPacotes[linkIndex]);
       }
       

@@ -39,12 +39,8 @@ class _ControladorDePacotesState extends State<ControladorDePacotes> {
   }
 
   _updateAfterCreate(Efeito efeito){
-    // Tratativa para Efeitos Alternativos e Efeitos Bonus
-    if(["D", "E"].contains(pacote.getType()) && efeito is EfeitoBonus){
-      print('enquadra');
-    }
 
-    pacote.efeitos.add(efeito.retornaObj());
+    pacote.addPoder(efeito.retornaObj());
     setState(() {
       objPacote = pacote.retornaObj();
       poderes = pacote.efeitos;
@@ -54,9 +50,8 @@ class _ControladorDePacotesState extends State<ControladorDePacotes> {
   Future _addPoderes(Map objEfeito) async{
     
     if(!["EfeitosAlternativos", "PacotesEfeitos"].contains(objEfeito["class"])){
-      Efeito efeito;
-      efeito = await personagem.poderes.instanciaPoder(objEfeito)
-      .then((efeito)=>
+      await personagem.poderes.instanciaPoder(objEfeito)
+      .then((Efeito efeito)=>
         _updateAfterCreate(efeito)
       );
     }else{
@@ -74,18 +69,13 @@ class _ControladorDePacotesState extends State<ControladorDePacotes> {
   }
 
   _inicializarVariaveis(){
-    // Caso seja Efeito Alternativo ele só reinstancia
-    if(objPacote["class"] == "EfeitosAlternativos"){
-      pacote = EfeitosAlternativos();
-    }
-
     // inicialização do objeto
     objPacote = widget.objPacote;
     pacote.instanciarMetodo(objPacote);
     poderes.addAll(objPacote["efeitos"]);
 
     // define se os efeitos adionados devem ter nome
-    if(["R", "E" "D"].contains(pacote.getType())){ nomearEfeitos = true; }
+    if(["R", "E", "D"].contains(pacote.getType())){ nomearEfeitos = true; }
     if(["L"].contains(pacote.getType())){ nomearEfeitos = false; }
 
     nomePoder.text = pacote.nomePacote;
