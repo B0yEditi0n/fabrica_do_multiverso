@@ -42,6 +42,46 @@ class Habilidade{
     return bonusTotal + valor;
   }
 
+  List<int> valoresTotais(){
+    /*
+      Retorna uma lista de valores que esse objeto pode assumir 
+      caso haja efeitos aternativos do mesmo bonus
+    */
+
+    // 1 - Analisa se há mais de um bonus com o mesmo ID de criação
+    Map b;
+    int index = 0;
+    for(int i = 0; i < bonus.length; i++){
+      b = bonus[i];
+
+      if(bonus.any((bo) => bo["idCriacao"] == b["idCriacao"])){
+        bonus[i]['index'] = index;
+
+        int j = i;
+    // 2 - Classificar por indices
+        while(bonus.any( (bo) => 
+          bo["idCriacao"] == b["idCriacao"] 
+          && bo["index"] != null
+        )){
+          j++;
+          if(bonus[j]["idCriacao"] == b["idCriacao"]){
+            index++;
+            bonus[j]["index"] = index;
+          }          
+        }
+      }
+    }
+
+    // 3 - Checar se a herança possui lista de bonus (se Houver);
+
+    // 4 - Retornar uma lista pra cada indice
+    //  Somar não indices
+    //  Somar Indices   
+
+
+    return [];
+  }
+
   Map objHabilidade(){
     return{
       "id": _id,

@@ -903,6 +903,10 @@ class EfeitoBonus extends Efeito{
     if(objPoder["alvoAumento"] != null){
       _alvoAumento = objPoder["alvoAumento"];
     }
+
+    // Aplica o bonus
+    personagem.validador.removeBonusId(idCriacao);
+    personagem.validador.addBonus(_alvoAumento);
     
     return true;
   }
