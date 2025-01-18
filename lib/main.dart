@@ -13,7 +13,6 @@ import 'package:file_picker/file_picker.dart';
 // Salvamento de Arquivos
 import 'script/download.dart';
 
-
 // Temas
 import 'package:fabrica_do_multiverso/theme/theme.dart';
 // Screen de Habilidades
@@ -35,7 +34,7 @@ class FabricaHerois extends StatelessWidget {
     personagem.init();
     return MaterialApp(
       title: 'Fabrica de Heróis',
-      theme: temaPadrao(),//(
+      theme: temaPadrao(), //(
       //   primarySwatch: Colors.blue,
       // ),
       home: ScreenInicial(),
@@ -60,7 +59,7 @@ class ScreenInicial extends StatefulWidget {
 }
 
 class _ScreenInicialState extends State<ScreenInicial> {
-  validaNpPersonagem validador = validaNpPersonagem(); // objeto de validação 
+  validaNpPersonagem validador = validaNpPersonagem(); // objeto de validação
   List logError = [];
 
   Uint8List fileImg = Uint8List(0); // Imagem do Personagem;
@@ -68,14 +67,12 @@ class _ScreenInicialState extends State<ScreenInicial> {
   TextEditingController txtControlName = TextEditingController();
   TextEditingController txtNP = TextEditingController();
 
-  void _validaFicha(){
-    setState((){
-      logError =  validador.validacaoGeral();
+  void _validaFicha() {
+    setState(() {
+      logError = validador.validacaoGeral();
     });
-
   }
 
-  
   @override
   Widget build(BuildContext context) {
     txtControlName.text = personagem.nomePersonagem;
@@ -83,95 +80,87 @@ class _ScreenInicialState extends State<ScreenInicial> {
 
     _validaFicha();
 
-    return Scaffold(      
+    return Scaffold(
       appBar: AppBar(
         title: const Text('Visão Geral do Pesonagem'),
       ),
       drawer: Drawer(
         child: Padding(
           padding: EdgeInsets.zero,
-          child: Column( children: [
+          child: Column(children: [
             const DrawerHeader(
-              child: Text('Menu',),
+              child: Text(
+                'Menu',
+              ),
             ),
-
             const Divider(),
-
             ListTile(
               leading: const Icon(BootstrapIcons.yin_yang),
               title: const Text('Habilidades'),
               onTap: () {
                 Navigator.pushNamed(context, '/habilidades')
-                .then((value) => _validaFicha());
+                    .then((value) => _validaFicha());
               },
             ),
-
             ListTile(
               leading: const Icon(Icons.shield_outlined),
               title: const Text('Defesas'),
               onTap: () {
                 Navigator.pushNamed(context, '/defesas')
-                .then((value) => _validaFicha());
+                    .then((value) => _validaFicha());
               },
             ),
-
             ListTile(
-              leading: const Icon(BootstrapIcons.battery_charging /*(BootstrapIcons.fire*/ ),
+              leading: const Icon(
+                  BootstrapIcons.battery_charging /*(BootstrapIcons.fire*/),
               title: const Text('Poderes'),
               onTap: () {
                 Navigator.pushNamed(context, '/poderes')
-                .then((value) => _validaFicha());
+                    .then((value) => _validaFicha());
               },
             ),
-            
             ListTile(
               leading: const Icon(Icons.paid),
               title: const Text('Vantagens'),
               onTap: () {
                 Navigator.pushNamed(context, '/vantagens')
-                .then((value) => _validaFicha());
+                    .then((value) => _validaFicha());
               },
             ),
-
             ListTile(
               leading: const Icon(BootstrapIcons.tools),
               title: const Text('Perícias'),
               onTap: () {
                 Navigator.pushNamed(context, '/pericias')
-                .then((value) => _validaFicha());
+                    .then((value) => _validaFicha());
               },
             ),
-
             ListTile(
               leading: const Icon(Icons.personal_injury),
               title: const Text('Complicações'),
               onTap: () {
                 Navigator.pushNamed(context, '/complicacoes')
-                .then((value) => _validaFicha());
+                    .then((value) => _validaFicha());
               },
             ),
-
             ListTile(
               leading: const Icon(BootstrapIcons.upload),
               title: const Text('Upload'),
               onTap: () async {
                 Download upload = Download();
                 var ficha = await upload.uploadFicha();
-                if(ficha.isNotEmpty){
+                if (ficha.isNotEmpty) {
                   personagem.reInit(ficha);
-                }                
+                }
                 // Repassa a imagem
-                setState((){
+                setState(() {
                   fileImg = upload.img;
                 });
               },
             ),
-
             const Divider(),
-            
           ]),
         ),
-        
       ),
       body: Column(
         children: [
@@ -184,32 +173,31 @@ class _ScreenInicialState extends State<ScreenInicial> {
           //   ),
           // ),
 
-
           // teste upload de ficha
           IconButton(
-            icon: fileImg.isNotEmpty 
-              ? Image.memory(fileImg, 
-                  height: 300,                  
-                )
-              : const Icon(BootstrapIcons.image, size: 50),
-          
-            onPressed: () async{
+            icon: fileImg.isNotEmpty
+                ? Image.memory(
+                    fileImg,
+                    height: 300,
+                  )
+                : const Icon(BootstrapIcons.image, size: 50),
+            onPressed: () async {
               const List<String> extension = ["img", "png", "jpeg", "jpg"];
 
               try {
-                              
-                FilePickerResult respostaPath = await FilePicker.platform.pickFiles(
+                FilePickerResult respostaPath =
+                    await FilePicker.platform.pickFiles(
                   type: FileType.image,
                   allowMultiple: false,
                   onFileLoading: (FilePickerStatus status) => print(status),
                   allowedExtensions: extension,
                   dialogTitle: "Imagem de Herói",
                   initialDirectory: "",
-                  lockParentWindow: false, 
+                  lockParentWindow: false,
                 ) as FilePickerResult;
-            
+
                 String pathFile = respostaPath.files.first.path as String;
-            
+
                 setState(() {
                   fileImg = File(pathFile).readAsBytesSync();
                 });
@@ -219,51 +207,50 @@ class _ScreenInicialState extends State<ScreenInicial> {
             },
           ),
 
-          const SizedBox( height:  50 ),
+          const SizedBox(height: 50),
 
           Expanded(
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.center, 
-              crossAxisAlignment: CrossAxisAlignment.start, 
-              children: [
-                Wrap(
-                  children: [
-
-                    //? Nome
-                    SizedBox(
-                      width: (MediaQuery.of(context).size.width * 0.6),
-                      child: TextField(
-                        controller: txtControlName,
-                        decoration: const InputDecoration(hintText: "Nome do Personagem"),
-                        onChanged: (value)=>{
-                          personagem.nomePersonagem = value,
-                        },
-                      ),
-                    ),
-
-                    const SizedBox(width: 10),
-
-                    //? NP
-                    SizedBox(
-                      width: (MediaQuery.of(context).size.width * 0.3),
-                      child: TextField(
-                        controller: txtNP,
-                        decoration: const InputDecoration(hintText: "Nível de Poder"),
-                        keyboardType: TextInputType.number,
-                        inputFormatters: <TextInputFormatter>[
-                          FilteringTextInputFormatter.digitsOnly
-                        ],
-                        onChanged: (value)=>{
-                          if(int.tryParse(value) != null){
-                            personagem.np = int.parse(value)
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Wrap(
+                    children: [
+                      //? Nome
+                      SizedBox(
+                        width: (MediaQuery.of(context).size.width * 0.6),
+                        child: TextField(
+                          controller: txtControlName,
+                          decoration: const InputDecoration(
+                              hintText: "Nome do Personagem"),
+                          onChanged: (value) => {
+                            personagem.nomePersonagem = value,
                           },
-                        },
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-              ]
-            ),
+
+                      const SizedBox(width: 10),
+
+                      //? NP
+                      SizedBox(
+                        width: (MediaQuery.of(context).size.width * 0.3),
+                        child: TextField(
+                          controller: txtNP,
+                          decoration:
+                              const InputDecoration(hintText: "Nível de Poder"),
+                          keyboardType: TextInputType.number,
+                          inputFormatters: <TextInputFormatter>[
+                            FilteringTextInputFormatter.digitsOnly
+                          ],
+                          onChanged: (value) => {
+                            if (int.tryParse(value) != null)
+                              {personagem.np = int.parse(value)},
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ]),
           ),
 
           //# Lista de notificações
@@ -280,18 +267,15 @@ class _ScreenInicialState extends State<ScreenInicial> {
           //     );
           //   }
           // ) : const SizedBox(),
-
         ],
       ),
-
       floatingActionButton: IconButton(
         icon: const Icon(BootstrapIcons.floppy2_fill),
-        onPressed: () async{
+        onPressed: () async {
           Download baixar = Download();
           baixar.genericDownload(fileImg);
         },
       ),
     );
-    
   }
 }

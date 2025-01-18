@@ -2,7 +2,7 @@ import 'package:fabrica_do_multiverso/script/pericias/lib_pericias.dart';
 import 'package:fabrica_do_multiverso/script/vantagens/lib_vantagens.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'; // Biblioteca de Load files
-import 'dart:convert';                  // Biblitoeca de conversão de json
+import 'dart:convert'; // Biblitoeca de conversão de json
 
 // Bibliotecas
 import 'package:fabrica_do_multiverso/script/defesas/lib_defesas.dart';
@@ -11,102 +11,104 @@ import 'package:fabrica_do_multiverso/script/habilidades/lib_habilidades.dart';
 import 'package:fabrica_do_multiverso/script/poderes/lib_efeitos.dart';
 import 'package:fabrica_do_multiverso/script/poderes/lib_pacoteEfeitos.dart';
 
+import 'dart:developer' as dev;
+
 //# Classe de Validação de NP
-class validaNpPersonagem{
+class validaNpPersonagem {
   List logErros = [];
 
   int np = personagem.np;
 
-  List _efeitos(){
+  List _efeitos() {
     List logEfeitos = [];
     // Filtrar Efeitos Ofensivos
-    List poderes = personagem.poderes.poderesLista.where(
-      (e) => ["EfeitoAflicao", "EfeitoOfensivo", "EfeitoDano"].contains(e["class"])
-    ).toList();
+    List poderes = personagem.poderes.poderesLista
+        .where((e) => ["EfeitoAflicao", "EfeitoOfensivo", "EfeitoDano"]
+            .contains(e["class"]))
+        .toList();
 
     // Desmantela os Pacotes
     extractPacote desmantelaPacote;
-    List pacotes = personagem.poderes.poderesLista.where(
-      (e) => e["class"] == "PacotesEfeitos"
-    ).toList();
+    List pacotes = personagem.poderes.poderesLista
+        .where((e) => e["class"] == "PacotesEfeitos")
+        .toList();
 
-     
-    for(Map p in pacotes){
+    for (Map p in pacotes) {
       desmantelaPacote = extractPacote();
       // Converte os efeitos de arvore para Linear
       poderes.addAll(desmantelaPacote.getEfeitos(p));
     }
-    
-    
+
     Vantagem objectVantagem = Vantagem();
     Habilidade objectHabilidade = Habilidade();
-    
-    List vantagens = personagem.vantagens.listaVantagens; 
-    
+
+    List vantagens = personagem.vantagens.listaVantagens;
+
     int luta = 0;
     int vantagemCorpoACorpo = 0;
 
     int destreza = 0;
     int vantagemADistancia = 0;
-    
+
     // Bonus de Habilidades;
-    objectHabilidade.initObject(personagem.habilidades.listHab.firstWhere((e)=>e["id"] == "LUT"));
+    objectHabilidade.initObject(
+        personagem.habilidades.listHab.firstWhere((e) => e["id"] == "LUT"));
     luta = objectHabilidade.valorTotal();
 
-    objectHabilidade.initObject(personagem.habilidades.listHab.firstWhere((e)=>e["id"] == "DES"));
+    objectHabilidade.initObject(
+        personagem.habilidades.listHab.firstWhere((e) => e["id"] == "DES"));
     destreza = objectHabilidade.valorTotal();
 
     // Puxa Bonus das Vantagens
-    if(vantagens.any((e) => e["id"] == "V013")){
+    if (vantagens.any((e) => e["id"] == "V013")) {
       // Corpo a Corpo
-      objectVantagem.init(vantagens.firstWhere(
-        (v)=>v["id"] == "V013"
-      ));
+      objectVantagem.init(vantagens.firstWhere((v) => v["id"] == "V013"));
       vantagemCorpoACorpo = objectVantagem.returnTotalGrad();
     }
-    
-    if(vantagens.any((e) => e["id"] == "V011")){
+
+    if (vantagens.any((e) => e["id"] == "V011")) {
       // a Distância
-      objectVantagem.init(vantagens.firstWhere(
-        (v)=>v["id"] == "V011"
-      ));
+      objectVantagem.init(vantagens.firstWhere((v) => v["id"] == "V011"));
       vantagemADistancia = objectVantagem.returnTotalGrad();
     }
-    
 
     int bonusVantagem = 0;
-    
-    EfeitoOfensivo objectEfeito = EfeitoOfensivo(); 
-    for(Map p in poderes){
+
+    EfeitoOfensivo objectEfeito = EfeitoOfensivo();
+    for (Map p in poderes) {
       // Encontra a origem do bonus
-      switch (p["alcance"]){
+      switch (p["alcance"]) {
         case 1: // Perto
           // Vantagem corpo a corpo
           bonusVantagem = vantagemCorpoACorpo + luta;
           break;
         case 2: // a Distância
           bonusVantagem = vantagemADistancia + destreza;
-          break; 
+          break;
         default: // Apenas o limite de NP
-
-
       }
 
       objectEfeito.reinstanciarMetodo(p);
 
       // Validação de Erro
-      if ( bonusVantagem + objectEfeito.totalBonusAcerto() + objectEfeito.returnGraduacao() > 2 * np){
+      if (bonusVantagem +
+              objectEfeito.totalBonusAcerto() +
+              objectEfeito.returnGraduacao() >
+          2 * np) {
         // Limite Estourado
         logEfeitos.add({
           "tipo": "E",
-          "nome": objectEfeito.nome.isNotEmpty ? objectEfeito.nome : objectEfeito.returnObjDefault()["efeito"],
-          "msg": "${objectEfeito.nome.isNotEmpty ? objectEfeito.nome : objectEfeito.returnObjDefault()["efeito"]}, se econtram com ${bonusVantagem + objectEfeito.totalBonusAcerto() + objectEfeito.returnGraduacao() - ( np * 2)} pontos fora do limite",
+          "nome": objectEfeito.nome.isNotEmpty
+              ? objectEfeito.nome
+              : objectEfeito.returnObjDefault()["efeito"],
+          "msg":
+              "${objectEfeito.nome.isNotEmpty ? objectEfeito.nome : objectEfeito.returnObjDefault()["efeito"]}, se econtram com ${bonusVantagem + objectEfeito.totalBonusAcerto() + objectEfeito.returnGraduacao() - (np * 2)} pontos fora do limite",
           "id": [objectEfeito.returnObjDefault()["efeito"]]
         });
       }
       // Considera os limites de 50% de troca
-      else if( bonusVantagem + objectEfeito.totalBonusAcerto() > np * 1.5
-        || objectEfeito.returnGraduacao() > np * 1.5){
+      else if (bonusVantagem + objectEfeito.totalBonusAcerto() > np * 1.5 ||
+          objectEfeito.returnGraduacao() > np * 1.5) {
         // Limite Estourado
         logEfeitos.add({
           "tipo": "E",
@@ -115,13 +117,12 @@ class validaNpPersonagem{
           "id": [objectEfeito.returnObjDefault()["efeito"]]
         });
       }
-      
     }
 
     return logEfeitos;
   }
 
-  List _defesas(){
+  List _defesas() {
     /*
       Valida defesas a Regra
       
@@ -147,14 +148,14 @@ class validaNpPersonagem{
     Map mapVontade = defesas.firstWhere((d) => d["id"] == "D005");
     oDefesas.init(mapVontade);
     int totalVontade = oDefesas.bonusTotal();
-    
 
-    if( (totalFortitude + totalVontade) > 2*np ){
+    if ((totalFortitude + totalVontade) > 2 * np) {
       // Ultrapassa os limites do NP
       logDefesas.add({
         "tipo": "D",
         "nome": "Vontade & Fortitude",
-        "msg": "Vontade e Fortitude, se econtram com ${(totalFortitude + totalVontade) - ( np * 2)} pontos fora do limite",
+        "msg":
+            "Vontade e Fortitude, se econtram com ${(totalFortitude + totalVontade) - (np * 2)} pontos fora do limite",
         "id": ["D003", "D005"]
       });
     }
@@ -174,20 +175,21 @@ class validaNpPersonagem{
     oResistencia.init(mapResistencia);
     int totalResistencia = oResistencia.bonusTotal();
 
-    if( totalAparar + totalResistencia > 2 * np){
+    if (totalAparar + totalResistencia > 2 * np) {
       logDefesas.add({
         "tipo": "D",
         "nome": "Aparar & Resistência",
-        "msg": "Aparar e Resistência, se econtram com ${(totalResistencia + totalAparar) - ( np * 2)} pontos fora do limite",
+        "msg":
+            "Aparar e Resistência, se econtram com ${(totalResistencia + totalAparar) - (np * 2)} pontos fora do limite",
         "id": ["D002", "D004"]
       });
-
     }
-    if ( totalEsquiva + totalResistencia > 2 * np){
+    if (totalEsquiva + totalResistencia > 2 * np) {
       logDefesas.add({
         "tipo": "D",
         "nome": "Esquiva & Resistência",
-        "msg": "Esquiva e Resistência, se econtram com ${(totalResistencia + totalEsquiva) - ( np * 2)} pontos fora do limite",
+        "msg":
+            "Esquiva e Resistência, se econtram com ${(totalResistencia + totalEsquiva) - (np * 2)} pontos fora do limite",
         "id": ["D001", "D004"]
       });
     }
@@ -195,7 +197,7 @@ class validaNpPersonagem{
     return logDefesas;
   }
 
-  List _pericias(){
+  List _pericias() {
     /*
       Valida Perícias a Regra é simples 
       10 + NP não podem ser superior ao bonus da perícias
@@ -213,21 +215,23 @@ class validaNpPersonagem{
     // Ignorar Pericias ofensiva, isso deve ir apenas para efeito
     List pericias = personagem.pericias.ListaPercias;
     List logPericia = [];
-    
-    for(Map p in pericias){
+
+    for (Map p in pericias) {
       // Captura o valor
       Pericia pericia = Pericia();
       pericia.init(p);
       int bonusTotal = pericia.bonusTotal();
+      //List toais = pericia.valoresTotais();
 
       // Validação de NP
-      if(bonusTotal > np + 10){
+      if (bonusTotal > np + 10) {
         // o valor se encontra fora dos limites
         // do NP
         logPericia.add({
           "tipo": "P",
           "nome": p["nome"],
-          "msg": "a perícia ${p["nome"]}, se econtra com ${bonusTotal - ( np + 10)} pontos fora do limite",
+          "msg":
+              "a perícia ${p["nome"]}, se econtra com ${bonusTotal - (np + 10)} pontos fora do limite",
           "id": [p["id"]],
         });
       }
@@ -236,7 +240,7 @@ class validaNpPersonagem{
     return logPericia;
   }
 
-  List validacaoGeral(){
+  List validacaoGeral() {
     /*
       Valida a ficha com base nas regras,
       dentro de cada metódo as regras
@@ -262,7 +266,7 @@ class validaNpPersonagem{
 }
 
 //# Classe de intercambio entre os modulos
-class IntercambioModular{
+class IntercambioModular {
   // Lista de Bonus
   List<Object> bonus = [];
 
@@ -270,7 +274,7 @@ class IntercambioModular{
   // Essa classe fica reponsável por alterações
   // que devem acontecer fora do modulo
 
-  void deletePericiaWhere(String idPericia){
+  void deletePericiaWhere(String idPericia) {
     /*
       Deleta todos os bonus onde o Id de criação 
       da perícia selecionado foi adicionado
@@ -279,34 +283,36 @@ class IntercambioModular{
     */
 
     List poderes = personagem.poderes.poderesLista;
-    for(Map poder in poderes){
+    for (Map poder in poderes) {
       poder["bonus"].removeWhere((p) => p["acerto"]["idCriacao"] == idPericia);
     }
   }
 
-  void updatePericiaBonus(){
+  void updatePericiaBonus() {
     /*
       Atualiza os Bonus de Pericia de todos os poderes
     */
     List listaOfensivePoderes = personagem.pericias.returnOfensiveEfeitos(0);
-    List listPericia = personagem.pericias.ListaPercias.where((p) => p["classe"] == "PericiaAddAcerto").toList();
+    List listPericia = personagem.pericias.ListaPercias
+        .where((p) => p["classe"] == "PericiaAddAcerto")
+        .toList();
 
-    for(Map pericia in listPericia){
+    for (Map pericia in listPericia) {
       // Delete tudo para evitar duplicade
       deletePericiaWhere(pericia["idCriacao"]);
 
       Pericia currentPericia = Pericia();
       currentPericia.init(pericia);
-      for(Map poder in listaOfensivePoderes){
-        if(pericia["bonusPoderes"].contains(poder["idCriacao"])){
-
+      for (Map poder in listaOfensivePoderes) {
+        if (pericia["bonusPoderes"].contains(poder["idCriacao"])) {
           poder["bonus"].add({
             "acerto": {
               "idCriacao": pericia["idCriacao"],
               "bonus": currentPericia.bonusTotal(),
             }
           });
-        };
+        }
+        ;
       }
     }
   }
@@ -315,7 +321,7 @@ class IntercambioModular{
   //;/* Lógica de Bonus
   ///**********************************************/
 
-  void addHabilidades(mapHab){
+  void addHabilidades(mapHab) {
     /* 
       Metodo de Adição de Habilidades
       Args:
@@ -324,39 +330,47 @@ class IntercambioModular{
     */
 
     // Pega a Habilidade
-    int habIndex = personagem.habilidades.listHab.indexWhere((h)=>h["id"] == mapHab["id"]);
+    int habIndex = personagem.habilidades.listHab
+        .indexWhere((h) => h["id"] == mapHab["id"]);
     List currentBonus = personagem.habilidades.listHab[habIndex]["bonus"];
-    
+
     // Verifica se o bonus já foi adicionado
-    int bonusIndex = currentBonus.indexWhere((b)=>b["idOrigem"] == mapHab["idOrigem"]);
-    if(bonusIndex >= 0){
+    int bonusIndex =
+        currentBonus.indexWhere((b) => b["idOrigem"] == mapHab["idOrigem"]);
+    if (bonusIndex >= 0) {
       personagem.habilidades.listHab[habIndex]["bonus"][bonusIndex] = mapHab;
-    }else{
+    } else {
       personagem.habilidades.listHab[habIndex]["bonus"].add(mapHab);
     }
   }
-  void addBonus(bonusList){
+
+  void addBonus(bonusList) {
     /* 
       metódo para passagem de bonus adicionados em qualquer
       outro bonus
       Args:
         - Params:
           - List bonusList: Maps contendo o alvo e a origem
-    */   
+    */
 
-    for (Map b in bonusList){
+    for (Map b in bonusList) {
       //; Verifica ID peculiar Habilidades
       switch (b["id"]) {
-        case "FOR" || "VIG" || "AGI" 
-          || "DES" || "LUT" || "INT"
-          || "PRO" || "PRE":
-            addHabilidades(b);
+        case "FOR" ||
+              "VIG" ||
+              "AGI" ||
+              "DES" ||
+              "LUT" ||
+              "INT" ||
+              "PRO" ||
+              "PRE":
+          addHabilidades(b);
           break;
         default:
           // outros
           var listRef = [];
           int idxPedacoFicha = 0;
-          switch (b["id"].substring(0, 1)){            
+          switch (b["id"].substring(0, 1)) {
             case "D":
               listRef = personagem.defesas.listaDefesas;
               break;
@@ -366,43 +380,39 @@ class IntercambioModular{
             case "V":
               listRef = personagem.vantagens.listaVantagens;
           }
-          
+
           // Separa a lógica de Vantagens de Defesas e Perícias
           // Adição de Pericias e Defesas
-          if (["P", "D"].contains(b["id"].substring(0, 1))){
-            idxPedacoFicha = listRef.indexWhere((r)=> r["id"] == b["id"]);
+          if (["P", "D"].contains(b["id"].substring(0, 1))) {
+            idxPedacoFicha = listRef.indexWhere((r) => r["id"] == b["id"]);
             List bonus = listRef[idxPedacoFicha]["bonus"];
-            int idxBonus = bonus.indexWhere((bi)=>bi["idOrigem"] == b["idOrigem"]);
-            if(idxBonus >= 0){
+            int idxBonus =
+                bonus.indexWhere((bi) => bi["idOrigem"] == b["idOrigem"]);
+            if (idxBonus >= 0) {
               bonus[idxBonus] = b;
-            }else{
+            } else {
               bonus.add(b);
             }
           }
           // Adiçãode Vantagens
-          else if(b["id"].substring(0, 1) == "V"){
+          else if (b["id"].substring(0, 1) == "V") {
             // Checa se existe algum bonus já
-            int index = listRef.indexWhere((v) => v["id"] == b["id"] );
+            int index = listRef.indexWhere((v) => v["id"] == b["id"]);
 
             // Caso tenha
-            if(index >= 0){
+            if (index >= 0) {
               // Sobreescreve como add power
-              listRef[index]["bonus"].add({
-                "idOrigem": b["idOrigem"],
-                "valor" : b["valor"]
-              });
+              listRef[index]["bonus"]
+                  .add({"idOrigem": b["idOrigem"], "valor": b["valor"]});
             }
             // Caso não tenha
-            else{
+            else {
               b["addByPower"] = true;
               // Inicialização das Variáveis
               b["graduacao"] = 0;
               b["txtDec"] = "";
               b["bonus"] = [];
-              b["bonus"].add({
-                "idOrigem": b["idOrigem"],
-                "valor" : b["valor"]
-              });
+              b["bonus"].add({"idOrigem": b["idOrigem"], "valor": b["valor"]});
 
               listRef.add(b);
             }
@@ -411,8 +421,8 @@ class IntercambioModular{
     }
   }
 
-  void removeBonusId(String id){
-      /*
+  void removeBonusId(String id) {
+    /*
         Passando id o classe irá remover o atributo
         busancando aonde ele foi adicionado
         Args:
@@ -420,49 +430,48 @@ class IntercambioModular{
             - int id : id de origem do bonus
       */
 
-      List listRef;
+    List listRef;
 
-      List removeBonusIdInRange(List getList){
-        for(int i=0; i < getList.length; i++){
-          //Map r in getList){
-          Map r = getList[i];
-          if(r["bonus"].isNotEmpty){
-            int idx = r["bonus"].indexWhere((b)=>b["idOrigem"] == id);
-            if(idx > -1){
-              getList[i]["bonus"].removeAt(idx);
-            }
+    List removeBonusIdInRange(List getList) {
+      for (int i = 0; i < getList.length; i++) {
+        //Map r in getList){
+        Map r = getList[i];
+        if (r["bonus"].isNotEmpty) {
+          int idx = r["bonus"].indexWhere((b) => b["idOrigem"] == id);
+          if (idx > -1) {
+            getList[i]["bonus"].removeAt(idx);
           }
-          
         }
-        return getList;
       }
+      return getList;
+    }
 
-      // Habilidades
-      listRef = personagem.habilidades.listHab;
-      listRef = removeBonusIdInRange(listRef);
+    // Habilidades
+    listRef = personagem.habilidades.listHab;
+    listRef = removeBonusIdInRange(listRef);
 
-      // Defesas 
-      listRef = personagem.defesas.listaDefesas;
-      listRef = removeBonusIdInRange(listRef);
+    // Defesas
+    listRef = personagem.defesas.listaDefesas;
+    listRef = removeBonusIdInRange(listRef);
 
-      // Pericias
-      listRef = personagem.pericias.ListaPercias;
-      listRef = removeBonusIdInRange(listRef);
+    // Pericias
+    listRef = personagem.pericias.ListaPercias;
+    listRef = removeBonusIdInRange(listRef);
 
-      // Vantagens
-      listRef = personagem.vantagens.listaVantagens;
-      listRef.removeWhere((r) => r["addByPower"] && id == r["idOrigem"]); // Remove vantagens adicioadas por poderes
-      listRef = removeBonusIdInRange(listRef);
-
+    // Vantagens
+    listRef = personagem.vantagens.listaVantagens;
+    listRef.removeWhere((r) =>
+        r["addByPower"] &&
+        id == r["idOrigem"]); // Remove vantagens adicioadas por poderes
+    listRef = removeBonusIdInRange(listRef);
   }
-
 }
 
 //# Classe de Manipulação de Habilidades
-class ManipulaHabilidades{
+class ManipulaHabilidades {
   List listHab = [];
-  
-  ManipulaHabilidades(){
+
+  ManipulaHabilidades() {
     Habilidade forHabilidade = Habilidade();
     forHabilidade.init("FOR", 0, "Força");
     listHab.add(forHabilidade.objHabilidade());
@@ -494,23 +503,22 @@ class ManipulaHabilidades{
     Habilidade preHabilidade = Habilidade();
     preHabilidade.init("PRE", 0, "Presença");
     listHab.add(preHabilidade.objHabilidade());
-
   }
-  void reInit(jsonHabilidades){
+  void reInit(jsonHabilidades) {
     listHab = jsonHabilidades;
   }
 
-  Habilidade getIndex(int index){
+  Habilidade getIndex(int index) {
     Map obj = listHab[index];
     Habilidade habilidade = Habilidade();
     habilidade.initObject(obj);
     return habilidade;
   }
 
-  int calculaTotal(){
+  int calculaTotal() {
     Habilidade instanciaHab = Habilidade();
     int totalHabi = 0;
-    for(Map hab in listHab){
+    for (Map hab in listHab) {
       instanciaHab.initObject(hab);
       totalHabi += instanciaHab.custoTotal();
     }
@@ -519,10 +527,10 @@ class ManipulaHabilidades{
 }
 
 //# Classe de Manipulação de Habilidades
-class ManipulaDefesas{
+class ManipulaDefesas {
   List listaDefesas = [];
 
-  ManipulaDefesas(){
+  ManipulaDefesas() {
     // Anexa as Defesas
     Defesa esquiva = Defesa();
     esquiva.init({
@@ -584,17 +592,15 @@ class ManipulaDefesas{
     });
     listaDefesas.add(vontade.returnObj());
   }
-  init(){
+  init() {}
 
-  }
-
-  void reInit(jsonDefeas){
+  void reInit(jsonDefeas) {
     listaDefesas = jsonDefeas;
   }
 
-  int calculaTotal(){
+  int calculaTotal() {
     int total = 0;
-    for(Map mapDefesa in listaDefesas){
+    for (Map mapDefesa in listaDefesas) {
       Defesa defesa = Defesa();
       defesa.init(mapDefesa);
       total += defesa.custoTotal();
@@ -604,16 +610,16 @@ class ManipulaDefesas{
 }
 
 //# Classe de Manipulação de Poderes
-class ManipulaPoderes{
+class ManipulaPoderes {
   //Classe de Poderes
 
-  List poderesLista = []; 
+  List poderesLista = [];
 
-  void reInit(jsonPoderes){
+  void reInit(jsonPoderes) {
     poderesLista = jsonPoderes as List;
   }
 
-  novoPoder(nome, id, classe) async{    
+  novoPoder(nome, id, classe) async {
     /*
       inicialização das classes de efeito
       selecionadas pela primeira vez (Provavelmente no add poder)
@@ -658,7 +664,7 @@ class ManipulaPoderes{
     poderesLista.add(objPoder);
   }
 
-  novoPacote(nome, tipo, efeito){
+  novoPacote(nome, tipo, efeito) {
     /*
       inicialização de um pacote de efeitos
       selecionadas pela primeira vez (Provavelmente no add poder)
@@ -680,37 +686,33 @@ class ManipulaPoderes{
 
     Map objPackge = pacote.retornaObj();
     poderesLista.add(objPackge);
-
-    
   }
 
-  List<dynamic> listaDePoderes(){
-      Map poder = {};
-      List poderes = [];
-      
-      for(poder in poderesLista){
-        if(poder["class"] != "PacotesEfeitos"){
+  List<dynamic> listaDePoderes() {
+    Map poder = {};
+    List poderes = [];
+
+    for (poder in poderesLista) {
+      if (poder["class"] != "PacotesEfeitos") {
         poderes.add({
           "nome": poder["nome"],
           "efeito": poder["efeito"],
           "graduacao": poder["graduacao"],
           "class": poder["class"]
-          
         });
-        }else{
+      } else {
         poderes.add({
           "nome": poder["nome"],
           "efeito": poder["efeito"],
           "efeitos": poder["efeitos"],
           "class": poder["class"]
-          
         });
       }
     }
     return poderes;
   }
 
-  Future<Efeito> instanciaPoder(Map mapPoder) async{
+  Future<Efeito> instanciaPoder(Map mapPoder) async {
     /*
       Efetua a Instancia do poder e retorna com o 
       respectiva classe alvo
@@ -757,18 +759,20 @@ class ManipulaPoderes{
 }
 
 //# Classe de manipulação de Perícias
-class ManipulaVantagens{
+class ManipulaVantagens {
   List<Map> listaVantagens = [];
 
-  void reInit(jsonVantagens){
+  void reInit(jsonVantagens) {
     listaVantagens = [];
-    for(Map v in jsonVantagens){ listaVantagens.add(v); }
+    for (Map v in jsonVantagens) {
+      listaVantagens.add(v);
+    }
   }
 
-  int cutoTotal(){
+  int cutoTotal() {
     // calcula o custo total das vantagens
     int totalCusto = 0;
-    for (Map v in listaVantagens){
+    for (Map v in listaVantagens) {
       Vantagem currentVantagem = Vantagem();
       currentVantagem.init(v);
 
@@ -778,60 +782,62 @@ class ManipulaVantagens{
     return totalCusto;
   }
 }
+
 //# Classe de manipulação de Perícias
-class ManipulaPericias{
+class ManipulaPericias {
   List<Map> ListaPercias = [];
 
   //Armazena Pericias Ofensivas
   List ListOfensive = [];
 
-  Future<int> init() async{
+  Future<int> init() async {
     /*
       instancia a lista de pericias armazenadas
     */
     String jsonEfeitos = await rootBundle.loadString('assets/pericias.json');
     List objetoJson = jsonDecode(jsonEfeitos);
 
-    if(ListaPercias.isEmpty){ // Em caso de reinicio rápido
-      for(Map oPericia in objetoJson){
+    if (ListaPercias.isEmpty) {
+      // Em caso de reinicio rápido
+      for (Map oPericia in objetoJson) {
         Pericia pericia = Pericia();
         pericia.init(oPericia);
 
         ListaPercias.add(pericia.returnObj());
       }
-    } 
+    }
     return 1;
   }
 
-  void reInit(jsonPericias){
+  void reInit(jsonPericias) {
     ListaPercias = [];
 
-
-    if(ListaPercias.isEmpty){ // Em caso de reinicio rápido
-      for(Map oPericia in jsonPericias){
-        Pericia pericia; 
+    if (ListaPercias.isEmpty) {
+      // Em caso de reinicio rápido
+      for (Map oPericia in jsonPericias) {
+        Pericia pericia;
 
         oPericia["classe"] == "PericiaAddAcerto"
-          ? pericia = PericiaAddAcerto()
-          : pericia = Pericia();
+            ? pericia = PericiaAddAcerto()
+            : pericia = Pericia();
 
         pericia.init(oPericia);
 
         ListaPercias.add(pericia.returnObj());
       }
-    } 
+    }
   }
 
-  int calculaTotal(){
+  int calculaTotal() {
     int total = 0;
-    for(Map p in ListaPercias){
+    for (Map p in ListaPercias) {
       total += int.parse("${p["valor"]}");
     }
 
-    return ( total / 2 ).ceil();
+    return (total / 2).ceil();
   }
-  
-  List returnOfensiveEfeitos(int distancia){
+
+  List returnOfensiveEfeitos(int distancia) {
     /*
       retorna uma lista de poderes compativeis com a 
       perícias, e realoca a lista de poderes se alterados
@@ -843,27 +849,28 @@ class ManipulaPericias{
     List poderes = personagem.poderes.poderesLista;
     List poderesFilter = [];
     //; Poderes ofensivos e Sendo perto ou a distância
-    List mapPoderes = poderes.where((p)=>
-      // Efeitos Ofensivos nativos
-      (["EfeitoAflicao", "EfeitoOfensivo", "EfeitoDano"].contains(p["class"])
-      
-      // OU: Efeitos Convetidos em Ofensivo
-      || p["defAtaque"] == true)
-      
-      // E: Alance sendo pero ou a ditância
-      && [1, 2].contains(p["alcance"])
-    ).toList();
+    List mapPoderes = poderes
+        .where((p) =>
+            // Efeitos Ofensivos nativos
+            (["EfeitoAflicao", "EfeitoOfensivo", "EfeitoDano"]
+            .contains(p["class"])
 
-    for(int i=0; i < mapPoderes.length; i++){
+            // OU: Efeitos Convetidos em Ofensivo
+            || p["defAtaque"] == true)
+
+            // E: Alance sendo pero ou a ditância
+            && [1, 2].contains(p["alcance"]))
+        .toList();
+
+    for (int i = 0; i < mapPoderes.length; i++) {
       // Apenda de acordo com o Range
-      if(distancia == 0 || distancia == mapPoderes[i]["alcance"]){
+      if (distancia == 0 || distancia == mapPoderes[i]["alcance"]) {
         poderesFilter.add(mapPoderes[i]);
       }
-      
     }
 
     // Adiciona Desarmado (Perto)
-    if(distancia == 1){
+    if (distancia == 1) {
       poderesFilter.add({
         "nome": "Desarmado",
         "noPower": true,
@@ -871,9 +878,9 @@ class ManipulaPericias{
         "idCriacao": "F1"
       });
     }
-    
+
     // Adicona Aremeço (a Distância)
-    if(distancia == 2){
+    if (distancia == 2) {
       poderesFilter.add({
         "nome": "Arremeço",
         "noPower": true,
@@ -881,18 +888,15 @@ class ManipulaPericias{
         "idCriacao": "F2"
       });
     }
-    
 
     return poderesFilter;
   }
-
-  
 }
 
 //# Classe de Manipulação de Ficha
 // esse metodo será acessível para todos
 // para manipulação
-class Ficha{
+class Ficha {
   String nomePersonagem = '';
   int np = 10;
 
@@ -909,13 +913,13 @@ class Ficha{
 
   IntercambioModular validador = IntercambioModular();
 
-  Future<int> init() async{
+  Future<int> init() async {
     await pericias.init();
 
     return 1;
   }
 
-  Future<int> reInit(Map jsonReInit) async{
+  Future<int> reInit(Map jsonReInit) async {
     nomePersonagem = jsonReInit["pesonagem"]["nome"];
     np = jsonReInit["pesonagem"]["np"];
 
@@ -930,11 +934,9 @@ class Ficha{
     return 1;
   }
 
-
-  Map returnObjJson(){
-
+  Map returnObjJson() {
     return {
-      "pesonagem":{
+      "pesonagem": {
         "nome": nomePersonagem,
         "np": np,
       },
@@ -946,7 +948,6 @@ class Ficha{
       "complicacoes": complicacoes,
     };
   }
-  
 }
 
 Ficha personagem = Ficha();

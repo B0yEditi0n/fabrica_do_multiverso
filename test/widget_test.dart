@@ -10,10 +10,24 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:fabrica_do_multiverso/main.dart';
 
-import 'package:fabrica_do_multiverso/script/poderes/lib_efeitos.dart';
+import 'package:fabrica_do_multiverso/script/ficha.dart';
+import 'package:fabrica_do_multiverso/script/habilidades/lib_habilidades.dart';
 
 void main() {
-  var pkg = EfeitoCompra();
-  pkg.instanciarMetodo( 'Força Vital', 'E020');
-  
+  //
+  // Teste com Força
+  //
+  Map forca = {
+    "id": "FOR",
+    "nome": "Força",
+    "valor": 5,
+    "bonus": [
+      {"id": "FOR", "valor": 8, "nome": "Força", "idOrigem": "A1947a71e604"},
+      {"idOrigem": "P1947a735449", "id": "FOR", "valor": 3, "nome": "Força"}
+    ],
+    "ausente": false
+  };
+  Habilidade testHab = Habilidade();
+  testHab.initObject(forca);
+  List habilidades = testHab.valoresTotais();
 }

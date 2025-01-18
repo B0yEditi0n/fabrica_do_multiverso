@@ -3,6 +3,8 @@ import 'package:fabrica_do_multiverso/script/habilidades/lib_habilidades.dart';
 import 'package:flutter/services.dart'; 
 import 'dart:convert';
 
+import 'dart:developer' as dev;
+
 class Efeito{
   String nome = '' ;
   String _nomeEfeito = '';
@@ -20,7 +22,7 @@ class Efeito{
   //Map get padraoEfeito => _padraoEfeito;
   var _modificador = [];
 
-  String idCriacao = "";
+  String _idCriacao = "";
   
   //*************************** */
   // Methodos de Inicialização 
@@ -38,7 +40,7 @@ class Efeito{
         Map Json - o Arquivo json
     */
 
-    idCriacao = "P${DateTime.now().millisecondsSinceEpoch.toRadixString(16)}";
+    _idCriacao = "P${DateTime.now().millisecondsSinceEpoch.toRadixString(16)}";
     
     this.nome = nome;
     _idEfeito = idEfeito;
@@ -71,7 +73,7 @@ class Efeito{
       Return:
         Map Json - o Arquivo json
     */
-    idCriacao = objPoder["idCriacao"];
+    _idCriacao = objPoder["idCriacao"];
     nome = objPoder["nome"];
     _idEfeito = objPoder["e_id"];
     _graduacao = objPoder["graduacao"];
@@ -437,7 +439,7 @@ class Efeito{
     return{
       "nome":             nome,
       "e_id":             _idEfeito,
-      "idCriacao":        idCriacao,
+      "idCriacao":        _idCriacao,
       "efeito":           _nomeEfeito,
       "graduacao":        _graduacao,
       "acao":             _acao,
@@ -543,22 +545,12 @@ class EfeitoEscolha extends Efeito{
       Return:
         Map Json - o Arquivo json
     */
-    return{
-      "nome":             nome,
-      "idCriacao":        idCriacao,
-      "e_id":             _idEfeito,
-      "efeito":           _nomeEfeito,
-      "graduacao":        _graduacao,
-      "acao":             _acao,
-      "alcance":          _alcance,
-      "duracao":          _duracao,
-      "modificadores":    _modificador,
-      "descricao":        desc,
-      "defAtaque":        defAtaque,
-      "opt":              opt,
-      "class":            _padraoEfeito["class"],
-      "custo":            custearAlteracoes(),
-    };
+    Map<String, dynamic> objReturn = super.retornaObj();
+
+    objReturn["opt"] = opt;
+    objReturn["custo"] = custearAlteracoes();
+
+    return objReturn;
   }
 }
 
@@ -720,26 +712,15 @@ class EfeitoOfensivo extends Efeito{
       Return:
         Map Json - o Arquivo json
     */
-    return{
-      "nome":             nome,
-      "idCriacao":        idCriacao,
-      "e_id":             _idEfeito,
-      "efeito":           _nomeEfeito,
-      "graduacao":        _graduacao,
-      "acao":             _acao,
-      "alcance":          _alcance,
-      "duracao":          _duracao,
-      "modificadores":    _modificador,
-      "descricao":        desc,
-      "defAtaque":        defAtaque,
-      "class":            _padraoEfeito["class"],
-      "bonus":            bonus,
-      "critico":          _critico,
-      "acerto":           _bonusAcerto,
-      "cd":               (_graduacao + 10),
-      "custo":            custearAlteracoes(),
-      
-    };
+    Map<String, dynamic> objReturn = super.retornaObj();
+
+    objReturn["bonus"] = bonus;
+    objReturn["critico"] = _critico;
+    objReturn["acerto"] = _bonusAcerto;
+    objReturn["cd"] = (_graduacao + 10);
+    objReturn["custo"] = custearAlteracoes();
+
+    return objReturn;
   }
 
 }
@@ -788,27 +769,14 @@ class EfeitoDano extends EfeitoOfensivo{
       Return:
         Map Json - o Arquivo json
     */
-    return{
-      "nome":             nome,
-      "e_id":             _idEfeito,
-      "idCriacao":        idCriacao,
-      "efeito":           _nomeEfeito,
-      "graduacao":        _graduacao,
-      "acao":             _acao,
-      "alcance":          _alcance,
-      "duracao":          _duracao,
-      "modificadores":    _modificador,
-      "descricao":        desc,
-      "defAtaque":        defAtaque,
-      "class":            _padraoEfeito["class"],
-      "bonus":            bonus,
-      "baseadoForca":     baseadoForca,
-      "critico":          _critico,
-      "acerto":           _bonusAcerto,
-      "cd":               (_graduacao + 15),
-      "custo":            custearAlteracoes(),
-      
-    };
+    
+    Map<String, dynamic> objReturn = super.retornaObj();
+
+    objReturn["baseadoForca"] = baseadoForca;
+    objReturn["cd"] = (_graduacao + 15);
+    objReturn["custo"] = custearAlteracoes();
+
+    return objReturn;
   }
 }
 
@@ -844,27 +812,12 @@ class EfeitoAflicao extends EfeitoOfensivo{
       Return:
         Map Json - o Arquivo json
     */
-    return{
-      "nome":             nome,
-      "idCriacao":        idCriacao,
-      "e_id":             _idEfeito,
-      "efeito":           _nomeEfeito,
-      "graduacao":        _graduacao,
-      "acao":             _acao,
-      "alcance":          _alcance,
-      "duracao":          _duracao,
-      "modificadores":    _modificador,
-      "descricao":        desc,
-      "defAtaque":        defAtaque,
-      "class":            _padraoEfeito["class"],
-      "acerto":           _bonusAcerto,
-      "bonus":            bonus,
-      "critico":          _critico,
-      "cd":               (_graduacao + 10),
-      "condicoes":        _condicoes,
-      "custo":            custearAlteracoes(),
-      
-    };
+
+    Map<String, dynamic> objReturn = super.retornaObj();
+    objReturn["condicoes"] = _condicoes;
+    objReturn["custo"] = custearAlteracoes();
+
+    return objReturn;
   }
 }
 
@@ -877,6 +830,8 @@ class EfeitoBonus extends Efeito{
   List _alvoAumento = [];
   List grupoOpt = [];
   List opt = [];
+
+  String _idArranjo = "";
 
   @override
   Future<bool> instanciarMetodo(String nome , String idEfeito) async{
@@ -903,9 +858,12 @@ class EfeitoBonus extends Efeito{
     if(objPoder["alvoAumento"] != null){
       _alvoAumento = objPoder["alvoAumento"];
     }
+    if(objPoder["idArranjo"] != null){
+      _idArranjo = objPoder["idArranjo"];
+    }
 
     // Aplica o bonus
-    personagem.validador.removeBonusId(idCriacao);
+    personagem.validador.removeBonusId(_idCriacao);
     personagem.validador.addBonus(_alvoAumento);
     
     return true;
@@ -919,7 +877,8 @@ class EfeitoBonus extends Efeito{
       bonus["valor"] = 1;
     }
 
-    bonus["idOrigem"] = idCriacao;
+    bonus["idOrigem"] = _idCriacao;
+    bonus["idArranjo"] = _idArranjo;
     if(idx > -1){
       _alvoAumento[idx] = bonus;
     }else{
@@ -947,7 +906,7 @@ class EfeitoBonus extends Efeito{
 
     // Limpa os bonus encontrados
     // Limpa a Saida do Bonus
-    personagem.validador.removeBonusId(idCriacao);
+    personagem.validador.removeBonusId(_idCriacao);
     // Adicioa bonus se tiver 
     personagem.validador.addBonus(_alvoAumento);
   }
@@ -975,24 +934,15 @@ class EfeitoBonus extends Efeito{
       Return:
         Map Json - o Arquivo json
     */
-    return{
-      "nome":             nome,
-      "idCriacao":        idCriacao,
-      "e_id":             _idEfeito,
-      "efeito":           _nomeEfeito,
-      "graduacao":        _graduacao,
-      "acao":             _acao,
-      "alcance":          _alcance,
-      "duracao":          _duracao,
-      "modificadores":    _modificador,
-      "descricao":        desc,
-      "defAtaque":        defAtaque,
-      "class":            _padraoEfeito["class"],
-      "alvoAumento":      _alvoAumento,
-      "opt":              opt,
-      "custo":            custearAlteracoes(),
-    };
 
+    Map<String, dynamic> objReturn = super.retornaObj();
+
+    objReturn["idArranjo"] = _idArranjo;
+    objReturn["alvoAumento"] = _alvoAumento;
+    objReturn["opt"] = opt;
+    objReturn["custo"] = custearAlteracoes();
+
+    return objReturn;
   }
 
   @override
@@ -1000,7 +950,7 @@ class EfeitoBonus extends Efeito{
     /*
       a função destrutor é para remover bonus incrementados
     */
-    personagem.validador.removeBonusId(idCriacao);
+    personagem.validador.removeBonusId(_idCriacao);
   }
 
 }
@@ -1035,7 +985,8 @@ class EfeitoCrescimento extends EfeitoBonus{
       }
       
       _alvoAumento.add({
-        "idOrigem": idCriacao,
+        "idOrigem": _idCriacao,
+        "idArranjo": _idArranjo,
         "id": bonusT["alvo"],
         "valor": valorBonus,
         "nome": bonusT["nome"],
@@ -1056,23 +1007,10 @@ class EfeitoCrescimento extends EfeitoBonus{
       Return:
         Map Json - o Arquivo json
     */
-    return{
-      "nome":             nome,
-      "idCriacao":        idCriacao,
-      "e_id":             _idEfeito,
-      "efeito":           _nomeEfeito,
-      "graduacao":        _graduacao,
-      "acao":             _acao,
-      "alcance":          _alcance,
-      "duracao":          _duracao,
-      "modificadores":    _modificador,
-      "descricao":        desc,
-      "defAtaque":        defAtaque,
-      "class":            _padraoEfeito["class"],
-      "alvoAumento":      _alvoAumento,
-      "opt":              opt,
-      "custo":            custearAlteracoes(),
-    };
+
+    Map<String, dynamic> objReturn = super.retornaObj();
+    objReturn["custo"] = custearAlteracoes();
+    return objReturn;
   }
 }
 

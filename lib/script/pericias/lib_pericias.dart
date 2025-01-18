@@ -1,32 +1,31 @@
 import 'package:fabrica_do_multiverso/script/ficha.dart';
 import 'package:fabrica_do_multiverso/script/habilidades/lib_habilidades.dart';
 
-class Pericia{
+class Pericia {
   String id = "";
   String nome = "";
   String _idHabilidadeBase = "";
   int _valor = 0;
   bool _apenasTreinado = false;
   List bonus = [];
-  
-  bool init(obj){
-    id    = obj["id"];
-    nome  = obj["nome"];
+
+  bool init(obj) {
+    id = obj["id"];
+    nome = obj["nome"];
     _idHabilidadeBase = obj["idHab"];
     _apenasTreinado = obj["treinado"];
-    if(obj["valor"] != null){
+    if (obj["valor"] != null) {
       _valor = obj["valor"];
     }
 
-    if(obj["bonus"] != null){
+    if (obj["bonus"] != null) {
       bonus = obj["bonus"];
     }
-    
 
     return true;
   }
 
-  setValor(int valor){
+  setValor(int valor) {
     /*
       Define o valor do Bonus da Perícia
       Args: 
@@ -35,7 +34,7 @@ class Pericia{
     _valor = valor;
   }
 
-  int bonusTotal(){
+  int bonusTotal() {
     /*
       Calcula Bonus Total somando o valor
       da perícias e habilidade
@@ -45,21 +44,39 @@ class Pericia{
 
     // Retorno do Bonus
     int totalBonus = 0;
-    for (Map b in bonus){
+    for (Map b in bonus) {
       int currentValue = b["valor"] as int;
       totalBonus += currentValue;
     }
 
     // Total Habilidades
-    Map mapHabilidade = personagem.habilidades.listHab.firstWhere((h)=>h["id"] == _idHabilidadeBase);
+    Map mapHabilidade = personagem.habilidades.listHab
+        .firstWhere((h) => h["id"] == _idHabilidadeBase);
     Habilidade habilidadeObj = Habilidade();
     habilidadeObj.initObject(mapHabilidade);
 
     return habilidadeObj.valorTotal() + _valor + totalBonus;
   }
 
-  Map returnObj(){
-    return({
+  List valoresTotais() {
+    /*
+      - Extrai valores de perícias considerando
+      os efeitos alternativos em perícias e nas habilidades
+     */
+
+    // Busca Valores de habilidade
+    Map mapHabilidade = personagem.habilidades.listHab
+        .firstWhere((h) => h["id"] == _idHabilidadeBase);
+    Habilidade habilidadeObj = Habilidade();
+    habilidadeObj.initObject(mapHabilidade);
+
+    List habilidadeTotais = habilidadeObj.valoresTotais();
+
+    return [];
+  }
+
+  Map returnObj() {
+    return ({
       "id": id,
       "nome": nome,
       "valor": _valor,
@@ -69,15 +86,14 @@ class Pericia{
       "classe": "Pericia",
     });
   }
-
 }
 
 //# Especialidade
-class PericiaAdiciona extends Pericia{
+class PericiaAdiciona extends Pericia {
   String escopo = "";
 
   @override
-  bool init(obj){
+  bool init(obj) {
     super.init(obj);
 
     escopo = obj["escopo"];
@@ -85,9 +101,9 @@ class PericiaAdiciona extends Pericia{
     return true;
   }
 
-  @override 
-  Map returnObj(){
-    return({
+  @override
+  Map returnObj() {
+    return ({
       "id": id,
       "nome": nome,
       "valor": _valor,
@@ -100,38 +116,41 @@ class PericiaAdiciona extends Pericia{
 }
 
 //# Ataque
-class PericiaAddAcerto extends PericiaAdiciona{
+class PericiaAddAcerto extends PericiaAdiciona {
   List bonusPoderes = [];
   bool range = false;
 
   String idCriacao = "";
-  
+
   @override
-  bool init(obj){
+  bool init(obj) {
     super.init(obj);
 
     range = obj["range"];
-    if(obj["bonusPoderes"] != null){ bonusPoderes = obj["bonusPoderes"]; }    
+    if (obj["bonusPoderes"] != null) {
+      bonusPoderes = obj["bonusPoderes"];
+    }
 
-    if(obj["idCriacao"] != null){
-      idCriacao = obj["idCriacao"]; 
-    }else{
+    if (obj["idCriacao"] != null) {
+      idCriacao = obj["idCriacao"];
+    } else {
       // S de Skill
       idCriacao = "S${DateTime.now().millisecondsSinceEpoch.toRadixString(16)}";
     }
 
     return true;
   }
+
   // esse valor será utilzidado para indetificar onde seu bonus foi addicionado
-  int _addId = 0; 
+  int _addId = 0;
   @override
-  PericiaAdiciona(){
+  PericiaAdiciona() {
     int _addId = DateTime.now().millisecondsSinceEpoch;
   }
 
-  @override 
-  Map returnObj(){
-    return({
+  @override
+  Map returnObj() {
+    return ({
       "id": id,
       "idCriacao": idCriacao,
       "nome": nome,

@@ -141,12 +141,21 @@ class _ControladorDePacotesState extends State<ControladorDePacotes> {
                       IconButton(
                         icon: const  Icon(Icons.delete),
                         onPressed: (){
+                          
+                          Map efeitoEnpacotado = pacote.efeitos[index];
                           // Aciona o destrutor
-                          Efeito deadPower = Efeito();
-                          deadPower.reinstanciarMetodo(pacote.efeitos[index]);
-                          deadPower.destrutor();
+                          if(efeitoEnpacotado["class"] != "PacotesEfeitos"){
+                            Efeito deadPower = Efeito();                
+                            deadPower.reinstanciarMetodo(pacote.efeitos[index]);
+                            deadPower.destrutor();
+                          }else{
+                            PacotesEfeitos deadPackege = PacotesEfeitos();
+                            deadPackege.instanciarMetodo(pacote.efeitos[index]);
+                            deadPackege.destrutor();
+                          }
 
-                          pacote.efeitos.removeAt(index);
+                          pacote.efeitos.removeAt(index);          
+
                           setState(() {
                             poderes = pacote.efeitos;
                           });
