@@ -18,15 +18,27 @@ void main() {
   // Teste com Força
   //
   Map forca = {
-    "id": "FOR",
-    "nome": "Força",
-    "valor": 5,
-    "bonus": [
-      {"id": "FOR", "valor": 8, "nome": "Força", "idOrigem": "A1947a71e604"},
-      {"idOrigem": "P1947a735449", "id": "FOR", "valor": 3, "nome": "Força"}
-    ],
-    "ausente": false
-  };
+      "id": "FOR",
+      "nome": "Força",
+      "valor": 5,
+      "bonus": [
+        {
+          "idOrigem": "P1947b639ffd",
+          "idArranjo": "A1947b638673",
+          "id": "FOR",
+          "valor": 1,
+          "nome": "Força"
+        },
+        {
+          "id": "FOR",
+          "valor": 5,
+          "nome": "Força",
+          "idOrigem": "P1947b6449e5",
+          "idArranjo": "A1947b638673"
+        }
+      ],
+      "ausente": false
+    };
   Habilidade testHab = Habilidade();
   testHab.initObject(forca);
   List habilidades = testHab.valoresTotais();

@@ -470,7 +470,7 @@ class EfeitoEscolha extends Efeito{
   // Implementação dos Construtores para os atributos adicionais
   @override
   Future<bool> reinstanciarMetodo(Map objPoder) async{
-    super.reinstanciarMetodo(objPoder);
+    await super.reinstanciarMetodo(objPoder);
     if(objPoder["opt"] != null){
       opt = objPoder["opt"];
     }
@@ -592,7 +592,7 @@ class EfeitoOfensivo extends Efeito{
   // Implementação dos Construtores para os atributos adicionais
   @override
   Future<bool> reinstanciarMetodo(Map objPoder) async{
-    super.reinstanciarMetodo(objPoder);    
+    await super.reinstanciarMetodo(objPoder);    
     if(objPoder["acerto"] != null){
       _bonusAcerto = objPoder["acerto"];
     }
@@ -732,7 +732,7 @@ class EfeitoDano extends EfeitoOfensivo{
 
   @override
   Future<bool> reinstanciarMetodo(Map objPoder) async{
-    super.reinstanciarMetodo(objPoder);    
+    await super.reinstanciarMetodo(objPoder);    
     if(objPoder["baseadoForca"] != null && objPoder["baseadoForca"]){
       baseadoForca = true;
     }
@@ -790,7 +790,7 @@ class EfeitoAflicao extends EfeitoOfensivo{
 
   @override
   Future<bool> reinstanciarMetodo(Map objPoder) async{
-    super.reinstanciarMetodo(objPoder);    
+    await super.reinstanciarMetodo(objPoder);
     if(objPoder["condicoes"] != null){
       _condicoes = objPoder["condicoes"];
     }
@@ -854,7 +854,7 @@ class EfeitoBonus extends Efeito{
 
   @override
   Future<bool> reinstanciarMetodo(Map objPoder) async{
-    super.reinstanciarMetodo(objPoder);    
+    await super.reinstanciarMetodo(objPoder);
     if(objPoder["alvoAumento"] != null){
       _alvoAumento = objPoder["alvoAumento"];
     }

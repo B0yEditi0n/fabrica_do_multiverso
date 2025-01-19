@@ -64,23 +64,35 @@ class Habilidade {
       otherBonus.addAll(bonusLoop);
       otherBonus.removeAt(i);
 
-      if (otherBonus.any((bo) => bo["idOrigem"] == b["idOrigem"])) {
-        int iFound =
-            otherBonus.indexWhere((bo) => bo["idOrigem"] == b["idOrigem"]);
-        Map bonusFound = otherBonus[iFound];
+      List arryBonus = [];
+      if(otherBonus.any((bo) => bo["idArranjo"] == b["idArranjo"] && b["idArranjo"] != null)){
+        // Adiciona o Atual da Lista e o Separa do Loop
+        arryBonus.add(b);
+        bonusLoop.removeAt(i);
 
-        bonusAlternativo.add({
-          b,
-          bonusFound,
-        });
+        // Puxa os Efeitos Alternativos do Mesmo 
+        // Grupo de b
+        while(bonusLoop.any((bo) => bo["idArranjo"] == b["idArranjo"])) {
+          int iFound = bonusLoop.indexWhere(
+            (bo) => bo["idArranjo"] == b["idArranjo"]
+          );
+          Map bonusFound = bonusLoop[iFound];
 
-        // Remove id encontrado para não duplica consulta
-        bonusLoop.removeAt(iFound);
-      }
-      i++;
+          arryBonus.add(bonusFound);
+
+          // Remove id encontrado para não duplica consulta
+          bonusLoop.removeAt(iFound);
+        }
+        bonusAlternativo.add(arryBonus);
+      }else{
+        // Deixo no Else porque caso encotre isso embaralhá 
+        // a contagem
+        i++;
+      }      
     } while (i < bonusLoop.length);
 
-    // 2 - Checar se a herança possui lista de bonus (se Houver);
+    // Em bonusLoop todos os Efeitos de arranjo estão separados
+    // Em bonusLoop coneterá efeitos não oriundos de EA;
 
     // 3 - Retornar uma lista pra cada indice
     //  Somar não indices
