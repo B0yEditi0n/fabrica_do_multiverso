@@ -20,26 +20,63 @@ void main() {
   Map forca = {
       "id": "FOR",
       "nome": "Força",
-      "valor": 5,
+      "valor": 2,
       "bonus": [
         {
-          "idOrigem": "P1947b639ffd",
-          "idArranjo": "A1947b638673",
+          "idOrigem": "P1948063b613",
+          "idArranjo": "A19480638e96",
+          "id": "FOR",
+          "valor": 5,
+          "nome": "Força"
+        },
+        {
+          "id": "FOR",
+          "valor": 8,
+          "nome": "Força",
+          "idOrigem": "P1948063dc80",
+          "idArranjo": "A19480638e96"
+        },
+        {
+          "id": "FOR",
+          "valor": 4,
+          "nome": "Força",
+          "idOrigem": "P194806498e4",
+          "idArranjo": "A19480647dfc"
+        },
+        {
+          "idOrigem": "P1948064d4dc",
+          "idArranjo": "A19480647dfc",
+          "id": "FOR",
+          "valor": 2,
+          "nome": "Força"
+        },
+        {
+          "idOrigem": "P19480658417",
+          "idArranjo": "A19480654a96",
           "id": "FOR",
           "valor": 1,
           "nome": "Força"
         },
         {
           "id": "FOR",
-          "valor": 5,
+          "valor": 2,
           "nome": "Força",
-          "idOrigem": "P1947b6449e5",
-          "idArranjo": "A1947b638673"
+          "idOrigem": "P19480655e0e",
+          "idArranjo": "A19480654a96"
+        },
+        {
+          "id": "FOR",
+          "valor": 3,
+          "nome": "Força",
+          "idOrigem": "P1948067f077",
+          "idArranjo": ""
         }
       ],
       "ausente": false
     };
+    
   Habilidade testHab = Habilidade();
   testHab.initObject(forca);
   List habilidades = testHab.valoresTotais();
+  print(habilidades);
 }

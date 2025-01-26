@@ -255,8 +255,6 @@ class validaNpPersonagem {
         }]
     */
 
-    //dev.debugger();
-
     logErros = []; // Limpa a lista de erros
 
     logErros.addAll(_pericias());

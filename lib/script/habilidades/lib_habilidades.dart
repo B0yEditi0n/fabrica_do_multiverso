@@ -1,3 +1,5 @@
+import 'dart:developer' as dev;
+
 class Habilidade {
   String _id = "";
   String nome = "";
@@ -56,8 +58,8 @@ class Habilidade {
 
     bonusLoop.addAll(bonus);
 
-    do {
-      b = bonus[i];
+    while (i < bonusLoop.length){
+      b = bonusLoop[i];
 
       // Remove o Elemento atual da busca
       otherBonus = [];
@@ -65,7 +67,7 @@ class Habilidade {
       otherBonus.removeAt(i);
 
       List arryBonus = [];
-      if(otherBonus.any((bo) => bo["idArranjo"] == b["idArranjo"] && b["idArranjo"] != null)){
+      if(otherBonus.any((bo) => bo["idArranjo"] == b["idArranjo"] && b["idArranjo"] != "")){
         // Adiciona o Atual da Lista e o Separa do Loop
         arryBonus.add(b);
         bonusLoop.removeAt(i);
@@ -89,16 +91,57 @@ class Habilidade {
         // a contagem
         i++;
       }      
-    } while (i < bonusLoop.length);
+    }
 
-    // Em bonusLoop todos os Efeitos de arranjo estão separados
+    // Em bonusAlternativo todos os Efeitos de arranjo estão separados
     // Em bonusLoop coneterá efeitos não oriundos de EA;
 
-    // 3 - Retornar uma lista pra cada indice
-    //  Somar não indices
-    //  Somar Indices
+    // Calcula Bonus Fixo
+    int bonusFixo = 0;
+    for (Map b in bonusLoop){
+      bonusFixo += b["valor"] as int;
+    }
 
-    return [];
+
+    // Faz o calculo recursivo de todos o possíveis bonus
+    List<int> lenIdx = [];  // contem o indice arry
+    // int x = 0; // Posição Atual no Arry
+    int idxA = 0; // Idex do Arry Atual
+
+    int inxTmp = 0;
+
+    // inicializa lenIdx
+    for(var b in bonusAlternativo){lenIdx.add(0);}
+
+    List<int> bonusAlternativoTotal = [];
+
+    while(idxA < bonusAlternativo.length){
+      idxA = 0; // Incia no primeiro arry
+
+      print('Arry; $lenIdx');
+
+      // Calcula o bonus
+      int total = bonusFixo + valor;
+      for(int i=0; i<lenIdx.length; i++){
+        total += bonusAlternativo[i][lenIdx[i]]["valor"] as int;          
+      }
+      bonusAlternativoTotal.add(total);
+
+      // - Lógica de Incremento
+      lenIdx[idxA]++;
+      while( idxA < bonusAlternativo.length
+      && lenIdx[idxA] >= bonusAlternativo[idxA].length ){
+        // Zerá o indice atual
+        lenIdx[idxA] = 0;
+
+        // Incrementa o Próximo se Existir
+        idxA++;
+        if(idxA < bonusAlternativo.length){ lenIdx[idxA]++; }
+      }
+
+    }
+    
+    return [bonusAlternativoTotal];
   }
 
   Map objHabilidade() {
