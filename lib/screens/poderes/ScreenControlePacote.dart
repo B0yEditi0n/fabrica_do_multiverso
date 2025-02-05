@@ -30,6 +30,9 @@ class _ControladorDePacotesState extends State<ControladorDePacotes> {
   List poderes = [];
   bool nomearEfeitos = true;
 
+  // Variável exclusiva de Arry
+  List<bool> activeArry = [];
+
   // Controle de texto
   TextEditingController nomePoder = TextEditingController();
   @override
@@ -38,16 +41,23 @@ class _ControladorDePacotesState extends State<ControladorDePacotes> {
     _inicializarVariaveis();
   }
 
-  _updateAfterCreate(Efeito efeito){
+  void _updateAfterCreate(Efeito efeito){
 
     pacote.addPoder(efeito.retornaObj());
     setState(() {
       objPacote = pacote.retornaObj();
       poderes = pacote.efeitos;
+      if(activeArry.isEmpty){
+        activeArry.add(true);
+      }else{
+        activeArry.add(false);
+      }
+      
     });
+    pacote.indexPoderAtivo = activeArry.indexWhere((a) => a);
   }
 
-  Future _addPoderes(Map objEfeito) async{
+  Future<void> _addPoderes(Map objEfeito) async{
     
     if(!["EfeitosAlternativos", "PacotesEfeitos"].contains(objEfeito["class"])){
       await personagem.poderes.instanciaPoder(objEfeito)
@@ -68,7 +78,7 @@ class _ControladorDePacotesState extends State<ControladorDePacotes> {
     }
   }
 
-  _inicializarVariaveis(){
+  void _inicializarVariaveis(){
     // inicialização do objeto
     objPacote = widget.objPacote;
     pacote.instanciarMetodo(objPacote);
@@ -79,7 +89,15 @@ class _ControladorDePacotesState extends State<ControladorDePacotes> {
     if(["L"].contains(pacote.getType())){ nomearEfeitos = false; }
 
     nomePoder.text = pacote.nomePacote;
-    
+
+    // Inicializa o Arry Ativo
+    if(["E", "D"].contains(pacote.getType())){ 
+      for(var i=0; i < objPacote["efeitos"].length; i++){
+        if(pacote.indexPoderAtivo < objPacote["efeitos"].length && pacote.indexPoderAtivo == i){activeArry.add(true);} 
+        else if(i == 0 && pacote.indexPoderAtivo >= objPacote["efeitos"].length){activeArry.add(true);}
+        else{activeArry.add(false);}
+      }
+    }
   }
 
   //# Widgets
@@ -125,10 +143,26 @@ class _ControladorDePacotesState extends State<ControladorDePacotes> {
                     Row( children: <Widget> [
                       Expanded(
                         child:
+                          // Caso sejam Arranjos de EAs I
+
+
                           //# Card de Exibição dos Efeitos
                           // Exibe os poderes ativos
                           !["EfeitosAlternativos", "PacotesEfeitos"].contains(poderes[index]["class"])
                           ? ListTile(
+                            leading: ["E", "D"].contains(pacote.getType()) 
+                              ? Checkbox(
+                              value: activeArry[index],
+                              onChanged: (bool? value) =>{
+                                if(activeArry[index] != true){
+                                  setState(() {
+                                    activeArry[activeArry.indexWhere((a) => a == true)] = false;
+                                    activeArry[index] = true;                                    
+                                  })
+                                },
+                                pacote.indexPoderAtivo = activeArry.indexWhere((a) => a)
+                              },
+                            ) : const SizedBox(),
                             title: Text(poderes[index]['nome']),
                             subtitle: Text("${poderes[index]['efeito']} ${poderes[index]['graduacao']}"),
                           ) 
@@ -158,7 +192,13 @@ class _ControladorDePacotesState extends State<ControladorDePacotes> {
 
                           setState(() {
                             poderes = pacote.efeitos;
+                            activeArry.removeAt(index);
+                            if(!activeArry.any((e)=>e == true)){
+                              activeArry[0] = true;
+                            }
                           });
+
+                          pacote.indexPoderAtivo = activeArry.indexWhere((a) => a);
                         }
                       )
               

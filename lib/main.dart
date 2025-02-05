@@ -37,9 +37,9 @@ class FabricaHerois extends StatelessWidget {
       theme: temaPadrao(), //(
       //   primarySwatch: Colors.blue,
       // ),
-      home: ScreenInicial(),
+      home: const ScreenInicial(),
       routes: {
-        '/home': (context) => ScreenInicial(),
+        '/home': (context) => const ScreenInicial(),
         '/habilidades': (context) => const ScreenHabilidades(),
         '/defesas': (context) => const screenDefesas(),
         '/poderes': (context) => const ScreenPoderes(),

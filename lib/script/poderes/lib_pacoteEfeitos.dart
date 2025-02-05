@@ -25,6 +25,9 @@ class PacotesEfeitos {
   // Id de Criação
   String _idCriacao = "";
 
+  // Controle de Efeitos Ativos (EAs)
+  int indexPoderAtivo = 0;
+
   // ***************************
   // Methodos de Inicialização *
   // ***************************
@@ -54,8 +57,11 @@ class PacotesEfeitos {
     if (mapObject["idCriacao"] != null) {
       _idCriacao = mapObject["idCriacao"];
     } else {
-      _idCriacao =
-          "A${DateTime.now().millisecondsSinceEpoch.toRadixString(16)}";
+      _idCriacao = "A${DateTime.now().millisecondsSinceEpoch.toRadixString(16)}";
+    }
+
+    if(mapObject["active"] != null){
+      indexPoderAtivo = mapObject["active"];      
     }
 
     return true;
@@ -175,6 +181,7 @@ class PacotesEfeitos {
       "class": "PacotesEfeitos",
       "efeitos": efeitos,
       "idCriacao": _idCriacao,
+      "active": indexPoderAtivo,
     };
   }
 }
