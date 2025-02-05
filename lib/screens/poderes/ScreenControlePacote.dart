@@ -54,7 +54,7 @@ class _ControladorDePacotesState extends State<ControladorDePacotes> {
       }
       
     });
-    pacote.indexPoderAtivo = activeArry.indexWhere((a) => a);
+    pacote.defineActive(activeArry.indexWhere((a) => a));
   }
 
   Future<void> _addPoderes(Map objEfeito) async{
@@ -93,8 +93,8 @@ class _ControladorDePacotesState extends State<ControladorDePacotes> {
     // Inicializa o Arry Ativo
     if(["E", "D"].contains(pacote.getType())){ 
       for(var i=0; i < objPacote["efeitos"].length; i++){
-        if(pacote.indexPoderAtivo < objPacote["efeitos"].length && pacote.indexPoderAtivo == i){activeArry.add(true);} 
-        else if(i == 0 && pacote.indexPoderAtivo >= objPacote["efeitos"].length){activeArry.add(true);}
+        if(pacote.activeEfeito() < objPacote["efeitos"].length && pacote.activeEfeito() == i){activeArry.add(true);} 
+        else if(i == 0 && pacote.activeEfeito() >= objPacote["efeitos"].length){activeArry.add(true);}
         else{activeArry.add(false);}
       }
     }
@@ -160,7 +160,7 @@ class _ControladorDePacotesState extends State<ControladorDePacotes> {
                                     activeArry[index] = true;                                    
                                   })
                                 },
-                                pacote.indexPoderAtivo = activeArry.indexWhere((a) => a)
+                                pacote.defineActive(activeArry.indexWhere((a) => a))
                               },
                             ) : const SizedBox(),
                             title: Text(poderes[index]['nome']),
@@ -198,7 +198,7 @@ class _ControladorDePacotesState extends State<ControladorDePacotes> {
                             }
                           });
 
-                          pacote.indexPoderAtivo = activeArry.indexWhere((a) => a);
+                          pacote.defineActive(activeArry.indexWhere((a) => a));
                         }
                       )
               

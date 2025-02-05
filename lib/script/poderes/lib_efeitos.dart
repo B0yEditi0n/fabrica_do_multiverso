@@ -833,6 +833,10 @@ class EfeitoBonus extends Efeito{
 
   String _idArranjo = "";
 
+  // caso esteja encapsulado em um arry
+  // Ele só deve somar se estiver ativo
+  bool active = true; 
+
   @override
   Future<bool> instanciarMetodo(String nome , String idEfeito) async{
     /*
@@ -861,6 +865,8 @@ class EfeitoBonus extends Efeito{
     if(objPoder["idArranjo"] != null){
       _idArranjo = objPoder["idArranjo"];
     }
+
+    if(objPoder["active"] != null && objPoder["active"]){active = true;}
 
     // Aplica o bonus
     personagem.validador.removeBonusId(_idCriacao);
@@ -940,6 +946,7 @@ class EfeitoBonus extends Efeito{
     objReturn["idArranjo"] = _idArranjo;
     objReturn["alvoAumento"] = _alvoAumento;
     objReturn["opt"] = opt;
+    if(active){objReturn["active"] = active;}
     objReturn["custo"] = custearAlteracoes();
 
     return objReturn;
@@ -1010,6 +1017,7 @@ class EfeitoCrescimento extends EfeitoBonus{
 
     Map<String, dynamic> objReturn = super.retornaObj();
     objReturn["custo"] = custearAlteracoes();
+    
     return objReturn;
   }
 }

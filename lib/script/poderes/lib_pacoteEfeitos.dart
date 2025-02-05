@@ -26,7 +26,7 @@ class PacotesEfeitos {
   String _idCriacao = "";
 
   // Controle de Efeitos Ativos (EAs)
-  int indexPoderAtivo = 0;
+  int _indexPoderAtivo = 0;
 
   // ***************************
   // Methodos de Inicialização *
@@ -61,7 +61,7 @@ class PacotesEfeitos {
     }
 
     if(mapObject["active"] != null){
-      indexPoderAtivo = mapObject["active"];      
+      _indexPoderAtivo = mapObject["active"];      
     }
 
     return true;
@@ -108,6 +108,43 @@ class PacotesEfeitos {
     }
 
     efeitos.add(objPoder);
+  }
+
+  int activeEfeito() => _indexPoderAtivo;
+  void defineActive(int index){
+    /*
+      define qual o efeito ativo
+      e faz a validação correta dentre os Ids.
+    */
+
+    // Replica alteração em efeitos de Bonus
+    Efeito poderActive = Efeito();
+    // - Limpa o Atual (se houver)
+    int eIdx = efeitos.indexWhere(
+      (e) => e["active"] == true && ["EfeitoBonus", "EfeitoCrescimento"].contains(e["class"])
+    );
+    if(eIdx > -1){
+      switch(efeitos[eIdx]["class"]){
+        case "EfeitoCrescimento":
+          poderActive = EfeitoCrescimento();
+          break;
+        case "EfeitoBonus":
+          poderActive = EfeitoBonus();
+          break;
+      }
+      efeitos[eIdx]["active"] = false;
+      poderActive.reinstanciarMetodo(efeitos[eIdx]);
+      efeitos[eIdx] = poderActive.retornaObj();
+    }
+
+    // - Ativa se for bonus
+    if(["EfeitoBonus", "EfeitoCrescimento"].contains(efeitos[index]["class"])){
+      efeitos[index]["active"] = true;
+      poderActive.reinstanciarMetodo(efeitos[index]);
+      efeitos[index] = poderActive.retornaObj();
+    }
+
+    _indexPoderAtivo = index;
   }
 
   int custearAlteracoes() {
@@ -181,7 +218,7 @@ class PacotesEfeitos {
       "class": "PacotesEfeitos",
       "efeitos": efeitos,
       "idCriacao": _idCriacao,
-      "active": indexPoderAtivo,
+      "active": _indexPoderAtivo,
     };
   }
 }
