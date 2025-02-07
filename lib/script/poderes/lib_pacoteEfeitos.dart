@@ -111,40 +111,50 @@ class PacotesEfeitos {
   }
 
   int activeEfeito() => _indexPoderAtivo;
-  void defineActive(int index){
+  Future<bool> defineActive(int index) async{
     /*
       define qual o efeito ativo
       e faz a validação correta dentre os Ids.
     */
 
     // Replica alteração em efeitos de Bonus
-    Efeito poderActive = Efeito();
+    EfeitoBonus poderActive = EfeitoBonus();
     // - Limpa o Atual (se houver)
+    while(efeitos.any(
+      (e) => e["active"] == true && ["EfeitoBonus", "EfeitoCrescimento"].contains(e["class"])
+    )){
     int eIdx = efeitos.indexWhere(
       (e) => e["active"] == true && ["EfeitoBonus", "EfeitoCrescimento"].contains(e["class"])
     );
-    if(eIdx > -1){
-      switch(efeitos[eIdx]["class"]){
-        case "EfeitoCrescimento":
-          poderActive = EfeitoCrescimento();
-          break;
-        case "EfeitoBonus":
-          poderActive = EfeitoBonus();
-          break;
-      }
-      efeitos[eIdx]["active"] = false;
-      poderActive.reinstanciarMetodo(efeitos[eIdx]);
+    // if(eIdx > -1){
+    switch(efeitos[eIdx]["class"]){
+      case "EfeitoCrescimento":
+        poderActive = EfeitoCrescimento();
+        break;
+      case "EfeitoBonus":
+        poderActive = EfeitoBonus();
+        break;
+      // }
+    }
+      await poderActive.reinstanciarMetodo(efeitos[eIdx]);
+      poderActive.active = false;
+      poderActive.configBonus(); // Recarrega os Bonus
       efeitos[eIdx] = poderActive.retornaObj();
     }
 
     // - Ativa se for bonus
-    if(["EfeitoBonus", "EfeitoCrescimento"].contains(efeitos[index]["class"])){
-      efeitos[index]["active"] = true;
-      poderActive.reinstanciarMetodo(efeitos[index]);
-      efeitos[index] = poderActive.retornaObj();
+    if(index > -1){
+      if(["EfeitoBonus", "EfeitoCrescimento"].contains(efeitos[index]["class"])){
+        await poderActive.reinstanciarMetodo(efeitos[index]);
+        poderActive.active = true;
+        poderActive.configBonus(); // Recarrega os Bonus
+        efeitos[index] = poderActive.retornaObj();
+      }
     }
 
     _indexPoderAtivo = index;
+
+    return true;
   }
 
   int custearAlteracoes() {

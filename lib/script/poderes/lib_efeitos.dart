@@ -866,11 +866,15 @@ class EfeitoBonus extends Efeito{
       _idArranjo = objPoder["idArranjo"];
     }
 
-    if(objPoder["active"] != null && objPoder["active"]){active = true;}
+    if(objPoder["active"] != null){active = objPoder["active"];}
 
     // Aplica o bonus
-    personagem.validador.removeBonusId(_idCriacao);
-    personagem.validador.addBonus(_alvoAumento);
+    configBonus();
+    // personagem.validador.removeBonusId(_idCriacao);
+    // if(active){
+    //   personagem.validador.addBonus(_alvoAumento);  
+    // }
+    
     
     return true;
   }
@@ -914,7 +918,10 @@ class EfeitoBonus extends Efeito{
     // Limpa a Saida do Bonus
     personagem.validador.removeBonusId(_idCriacao);
     // Adicioa bonus se tiver 
-    personagem.validador.addBonus(_alvoAumento);
+    if(active){
+      personagem.validador.addBonus(_alvoAumento);
+    }
+    
   }
 
   Future<List> returnListOpt() async{
@@ -946,7 +953,7 @@ class EfeitoBonus extends Efeito{
     objReturn["idArranjo"] = _idArranjo;
     objReturn["alvoAumento"] = _alvoAumento;
     objReturn["opt"] = opt;
-    if(active){objReturn["active"] = active;}
+    objReturn["active"] = active;
     objReturn["custo"] = custearAlteracoes();
 
     return objReturn;
@@ -1001,7 +1008,9 @@ class EfeitoCrescimento extends EfeitoBonus{
     }
 
     // Chama o incrementador 
-    personagem.validador.addBonus(_alvoAumento);
+    if(active){
+      personagem.validador.addBonus(_alvoAumento);  
+    }   
     
     return _alvoAumento;
   }

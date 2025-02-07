@@ -41,20 +41,24 @@ class _ControladorDePacotesState extends State<ControladorDePacotes> {
     _inicializarVariaveis();
   }
 
-  void _updateAfterCreate(Efeito efeito){
+  void _updateAfterCreate(Efeito efeito) async {
 
     pacote.addPoder(efeito.retornaObj());
     setState(() {
       objPacote = pacote.retornaObj();
-      poderes = pacote.efeitos;
       if(activeArry.isEmpty){
         activeArry.add(true);
       }else{
         activeArry.add(false);
       }
-      
     });
-    pacote.defineActive(activeArry.indexWhere((a) => a));
+
+    await pacote.defineActive(activeArry.indexWhere((a) => a == true));
+
+    setState((){
+      poderes = pacote.efeitos;
+    });
+    
   }
 
   Future<void> _addPoderes(Map objEfeito) async{
@@ -67,13 +71,23 @@ class _ControladorDePacotesState extends State<ControladorDePacotes> {
     }else{
       PacotesEfeitos enpacotado = PacotesEfeitos();
       await enpacotado.instanciarMetodo(objEfeito)
-      .then((resulte)=>{
+      .then((resulte) async => {
         // Apos a chamada atualiza a lista
         pacote.efeitos.add(enpacotado.retornaObj()),
         setState(() {
           objPacote = pacote.retornaObj();
+          if(activeArry.isEmpty){
+            activeArry.add(true);
+          }else{
+            activeArry.add(false);
+          }
+        }),
+        
+        await pacote.defineActive(activeArry.indexWhere((a) => a == true)),
+
+        setState(() {
           poderes = pacote.efeitos;
-        })
+        }),
       });
     }
   }
@@ -153,14 +167,14 @@ class _ControladorDePacotesState extends State<ControladorDePacotes> {
                             leading: ["E", "D"].contains(pacote.getType()) 
                               ? Checkbox(
                               value: activeArry[index],
-                              onChanged: (bool? value) =>{
+                              onChanged: (bool? value) async => {
                                 if(activeArry[index] != true){
                                   setState(() {
                                     activeArry[activeArry.indexWhere((a) => a == true)] = false;
                                     activeArry[index] = true;                                    
                                   })
                                 },
-                                pacote.defineActive(activeArry.indexWhere((a) => a))
+                                await pacote.defineActive(activeArry.indexWhere((a) => a == true))
                               },
                             ) : const SizedBox(),
                             title: Text(poderes[index]['nome']),
@@ -174,7 +188,7 @@ class _ControladorDePacotesState extends State<ControladorDePacotes> {
               
                       IconButton(
                         icon: const  Icon(Icons.delete),
-                        onPressed: (){
+                        onPressed: () async {
                           
                           Map efeitoEnpacotado = pacote.efeitos[index];
                           // Aciona o destrutor
@@ -191,14 +205,20 @@ class _ControladorDePacotesState extends State<ControladorDePacotes> {
                           pacote.efeitos.removeAt(index);          
 
                           setState(() {
-                            poderes = pacote.efeitos;
                             activeArry.removeAt(index);
-                            if(!activeArry.any((e)=>e == true)){
+                            if(!activeArry.any((e)=> e) && activeArry.isNotEmpty){
                               activeArry[0] = true;
                             }
                           });
+                          
+                          await pacote.defineActive(activeArry.indexWhere((a) => a == true));
 
-                          pacote.defineActive(activeArry.indexWhere((a) => a));
+                          setState(() {
+                            
+                            poderes = pacote.efeitos;
+                          });
+
+                          
                         }
                       )
               

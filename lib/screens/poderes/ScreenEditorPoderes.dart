@@ -804,7 +804,7 @@ class _powerEditState extends State<powerEdit> {
                             })
                           ).then((result){
                             // Atualizar a Lista do Que Saiu
-                            if(result.isNotEmpty){
+                            if(result.isNotEmpty ){
                               // Verifica se já foi adicionado
                               poderBonus.addBonus(result);
                               setState(() {
