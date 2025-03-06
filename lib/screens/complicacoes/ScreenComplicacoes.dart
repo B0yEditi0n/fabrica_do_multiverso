@@ -1,10 +1,5 @@
 import 'package:flutter/material.dart';
 
-// Screens de poderes
-import 'package:fabrica_do_multiverso/screens/poderes/ScreenEditorPoderes.dart';
-import 'package:fabrica_do_multiverso/screens/poderes/poderes/popup_addPoderes.dart';
-import 'package:fabrica_do_multiverso/screens/poderes/ScreenControlePacote.dart';
-
 // Instancia de Poderes
 import 'package:fabrica_do_multiverso/script/ficha.dart';
 import 'package:flutter/widgets.dart';

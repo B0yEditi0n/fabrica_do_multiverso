@@ -397,7 +397,10 @@ class IntercambioModular {
 
     List poderes = personagem.poderes.poderesLista;
     for (Map poder in poderes) {
-      poder["bonus"].removeWhere((p) => p["acerto"]["idCriacao"] == idPericia);
+      if(poder["bonus"] != null){// Evita erros em caso de vazio
+        poder["bonus"].removeWhere((p) => p["acerto"]["idCriacao"] == idPericia);
+      } 
+      
     }
   }
 
@@ -424,8 +427,10 @@ class IntercambioModular {
               "bonus": currentPericia.bonusTotal(),
             }
           });
+          // Reflete Alteração
+          int idxP = personagem.poderes.poderesLista.indexWhere((p)=> p["idCriacao"] == poder["idCriacao"]);
+          personagem.poderes.poderesLista[idxP] = poder;
         }
-        ;
       }
     }
   }

@@ -25,7 +25,7 @@ class Pericia {
     return true;
   }
 
-  setValor(int valor) {
+  void setValor(int valor) {
     /*
       Define o valor do Bonus da Perícia
       Args: 
@@ -102,7 +102,7 @@ class PericiaAdiciona extends Pericia {
   }
 
   @override
-  Map returnObj() {
+  Map returnObj() {    
     return ({
       "id": id,
       "nome": nome,
@@ -150,17 +150,13 @@ class PericiaAddAcerto extends PericiaAdiciona {
 
   @override
   Map returnObj() {
-    return ({
-      "id": id,
-      "idCriacao": idCriacao,
-      "nome": nome,
-      "valor": _valor,
-      "idHab": _idHabilidadeBase,
-      "treinado": _apenasTreinado,
-      "bonusPoderes": bonusPoderes,
-      "escopo": escopo,
-      "range": range,
-      "classe": "PericiaAddAcerto",
-    });
+    Map returnObj = super.returnObj();
+
+    returnObj["bonusPoderes"] = bonusPoderes;
+    returnObj["range"] = range;
+    returnObj["classe"] = "PericiaAddAcerto";
+    returnObj["idCriacao"] = idCriacao;
+
+    return returnObj;
   }
 }
