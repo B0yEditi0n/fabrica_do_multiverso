@@ -24,6 +24,9 @@ import 'package:fabrica_do_multiverso/screens/poderes/ScreenPoderes.dart';
 // Screen de Poderes
 import 'package:fabrica_do_multiverso/screens/complicacoes/ScreenComplicacoes.dart';
 
+// Compnentes
+import 'package:fabrica_do_multiverso/screens/components/logErros.dart';
+
 void main() {
   runApp(FabricaHerois());
 }
@@ -46,6 +49,7 @@ class FabricaHerois extends StatelessWidget {
         '/vantagens': (context) => const ScreenVantagens(),
         '/pericias': (context) => const ScreenPericias(),
         '/complicacoes': (context) => const ScreenComplicacoes(),
+        '/componentLog': (context) => const LogPopupError(),
       },
     );
   }
@@ -83,6 +87,7 @@ class _ScreenInicialState extends State<ScreenInicial> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Visão Geral do Pesonagem'),
+
       ),
       drawer: Drawer(
         child: Padding(
@@ -158,6 +163,15 @@ class _ScreenInicialState extends State<ScreenInicial> {
                 });
               },
             ),
+
+            //logError.isNotEmpty ?
+              ListTile(
+                leading: const Icon(BootstrapIcons.exclamation_triangle_fill),
+                title: Text('Erros ${logError.length}'),
+                onTap: () async {
+                  Navigator.pushNamed(context, '/componentLog');
+                },
+              ), // : const SizedBox(),
             const Divider(),
           ]),
         ),
