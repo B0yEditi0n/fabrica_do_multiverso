@@ -723,7 +723,7 @@ class _powerEditState extends State<powerEdit> {
               ) : const SizedBox(),
 
               //# Caracteristica Aumentada ou Habilidade Aumentada
-              poder is EfeitoBonus ? Container(
+              poder is EfeitoBonus && poder is! EfeitoCrescimento ? Container(
                 decoration: BoxDecoration(
                   border: Border.all(color: Theme.of(context).colorScheme.primary),
                   borderRadius: BorderRadius.circular(10),

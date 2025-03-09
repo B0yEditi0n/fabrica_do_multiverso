@@ -566,22 +566,22 @@ class IntercambioModular {
 
     // Habilidades
     listRef = personagem.habilidades.listHab;
-    listRef = removeBonusIdInRange(listRef);
+    personagem.habilidades.listHab = removeBonusIdInRange(listRef);
 
     // Defesas
     listRef = personagem.defesas.listaDefesas;
-    listRef = removeBonusIdInRange(listRef);
+    personagem.defesas.listaDefesas = removeBonusIdInRange(listRef);
 
     // Pericias
     listRef = personagem.pericias.ListaPercias;
-    listRef = removeBonusIdInRange(listRef);
+    personagem.pericias.ListaPercias = removeBonusIdInRange(listRef) as List<Map<dynamic, dynamic>>;
 
     // Vantagens
     listRef = personagem.vantagens.listaVantagens;
     listRef.removeWhere((r) =>
         r["addByPower"] &&
         id == r["idOrigem"]); // Remove vantagens adicioadas por poderes
-    listRef = removeBonusIdInRange(listRef);
+    personagem.vantagens.listaVantagens = removeBonusIdInRange(listRef) as List<Map<dynamic, dynamic>>;
   }
 }
 

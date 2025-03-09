@@ -1198,8 +1198,7 @@
 
         ],
         "class": "EfeitoCrescimento"
-    }
-    ,
+    },
     {
         "e_id": "PB06",
         "efeito": "Encolhimento",

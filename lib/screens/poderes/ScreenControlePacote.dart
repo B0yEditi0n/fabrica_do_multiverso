@@ -46,14 +46,18 @@ class _ControladorDePacotesState extends State<ControladorDePacotes> {
     pacote.addPoder(efeito.retornaObj());
     setState(() {
       objPacote = pacote.retornaObj();
-      if(activeArry.isEmpty){
-        activeArry.add(true);
-      }else{
-        activeArry.add(false);
+      if(["E", "D"].contains(pacote.getType())){
+        if(activeArry.isEmpty){
+          activeArry.add(true);
+        }else{
+          activeArry.add(false);
+        }
       }
     });
 
-    await pacote.defineActive(activeArry.indexWhere((a) => a == true));
+    if(["E", "D"].contains(pacote.getType())){
+      await pacote.defineActive(activeArry.indexWhere((a) => a == true));
+    }
 
     setState((){
       poderes = pacote.efeitos;
@@ -76,14 +80,18 @@ class _ControladorDePacotesState extends State<ControladorDePacotes> {
         pacote.efeitos.add(enpacotado.retornaObj()),
         setState(() {
           objPacote = pacote.retornaObj();
-          if(activeArry.isEmpty){
-            activeArry.add(true);
-          }else{
-            activeArry.add(false);
+          if(["E", "D"].contains(pacote.getType())){
+            if(activeArry.isEmpty){
+              activeArry.add(true);
+            }else{
+              activeArry.add(false);
+            }
           }
         }),
         
-        await pacote.defineActive(activeArry.indexWhere((a) => a == true)),
+        if(["E", "D"].contains(pacote.getType())){
+          await pacote.defineActive(activeArry.indexWhere((a) => a == true)),
+        },
 
         setState(() {
           poderes = pacote.efeitos;
@@ -194,25 +202,26 @@ class _ControladorDePacotesState extends State<ControladorDePacotes> {
                           // Aciona o destrutor
                           if(efeitoEnpacotado["class"] != "PacotesEfeitos"){
                             Efeito deadPower = Efeito();                
-                            deadPower.reinstanciarMetodo(pacote.efeitos[index]);
+                            await deadPower.reinstanciarMetodo(pacote.efeitos[index]);
                             deadPower.destrutor();
                           }else{
                             PacotesEfeitos deadPackege = PacotesEfeitos();
-                            deadPackege.instanciarMetodo(pacote.efeitos[index]);
+                            await deadPackege.instanciarMetodo(pacote.efeitos[index]);
                             deadPackege.destrutor();
                           }
 
                           pacote.efeitos.removeAt(index);          
 
-                          setState(() {
-                            activeArry.removeAt(index);
-                            if(!activeArry.any((e)=> e) && activeArry.isNotEmpty){
-                              activeArry[0] = true;
-                            }
-                          });
-                          
-                          await pacote.defineActive(activeArry.indexWhere((a) => a == true));
-
+                          // Remove actives em pacotes de EA
+                          if(["E", "D"].contains(pacote.getType())){
+                            setState(() {
+                              if(!activeArry.any((e)=> e) && activeArry.isNotEmpty){
+                                activeArry[0] = true;
+                              }                                                         
+                            });
+                            
+                            await pacote.defineActive(activeArry.indexWhere((a) => a == true));
+                          }
                           setState(() {
                             
                             poderes = pacote.efeitos;

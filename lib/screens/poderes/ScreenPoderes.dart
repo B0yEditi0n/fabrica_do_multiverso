@@ -76,7 +76,7 @@ class _ScreenPoderesState extends State<ScreenPoderes> {
                 
                     IconButton(
                       icon: const  Icon(Icons.delete),
-                      onPressed: (){
+                      onPressed: ()async {
                         // Aciona o destrutor
                         Map objInit = personagem.poderes.poderesLista[index];
 
@@ -92,11 +92,11 @@ class _ScreenPoderesState extends State<ScreenPoderes> {
                             default:
                               killPower = Efeito();
                           }
-                          killPower.reinstanciarMetodo(objInit);
+                          await killPower.reinstanciarMetodo(objInit);
                           killPower.destrutor();
                         }else{
                           PacotesEfeitos killEfeitos = PacotesEfeitos();
-                          killEfeitos.instanciarMetodo(objInit);
+                          await killEfeitos.instanciarMetodo(objInit);
                           killEfeitos.destrutor();
                         }
 

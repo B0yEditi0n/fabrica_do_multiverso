@@ -23,6 +23,7 @@ class Efeito{
   var _modificador = [];
 
   String _idCriacao = "";
+  String _idArranjo = "";
   
   //*************************** */
   // Methodos de Inicialização 
@@ -830,8 +831,6 @@ class EfeitoBonus extends Efeito{
   List _alvoAumento = [];
   List grupoOpt = [];
   List opt = [];
-
-  String _idArranjo = "";
 
   // caso esteja encapsulado em um arry
   // Ele só deve somar se estiver ativo
