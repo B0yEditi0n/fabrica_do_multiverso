@@ -1,0 +1,88 @@
+Flutter crash report.
+Please report a bug at https://github.com/flutter/flutter/issues.
+
+## command
+
+flutter run --machine --start-paused -d edge --devtools-server-address http://127.0.0.1:9100/ --target C:\Users\caio\Documents\fabrica_do_multiverso\lib\main.dart
+
+## exception
+
+StateError: Bad state: No running isolate (inspector is not set).
+
+```
+#0      ChromeProxyService.inspector (package:dwds/src/services/chrome_proxy_service.dart:79:7)
+#1      _waitForResumeEventToRunMain.<anonymous closure> (package:dwds/src/dwds_vm_client.dart:464:30)
+#2      _rootRunUnary (dart:async/zone.dart:1546:13)
+#3      _CustomZone.runUnary (dart:async/zone.dart:1429:19)
+#4      _CustomZone.runUnaryGuarded (dart:async/zone.dart:1329:7)
+#5      _BufferingStreamSubscription._sendData (dart:async/stream_impl.dart:381:11)
+#6      _DelayedData.perform (dart:async/stream_impl.dart:573:14)
+#7      _PendingEvents.handleNext (dart:async/stream_impl.dart:678:11)
+#8      _PendingEvents.schedule.<anonymous closure> (dart:async/stream_impl.dart:649:7)
+#9      StackZoneSpecification._run (package:stack_trace/src/stack_zone_specification.dart:207:15)
+#10     StackZoneSpecification._registerCallback.<anonymous closure> (package:stack_trace/src/stack_zone_specification.dart:114:48)
+#11     _rootRun (dart:async/zone.dart:1517:47)
+#12     _CustomZone.run (dart:async/zone.dart:1422:19)
+#13     _CustomZone.runGuarded (dart:async/zone.dart:1321:7)
+#14     _CustomZone.bindCallbackGuarded.<anonymous closure> (dart:async/zone.dart:1362:23)
+#15     StackZoneSpecification._run (package:stack_trace/src/stack_zone_specification.dart:207:15)
+#16     StackZoneSpecification._registerCallback.<anonymous closure> (package:stack_trace/src/stack_zone_specification.dart:114:48)
+#17     _rootRun (dart:async/zone.dart:1525:13)
+#18     _CustomZone.run (dart:async/zone.dart:1422:19)
+#19     _CustomZone.runGuarded (dart:async/zone.dart:1321:7)
+#20     _CustomZone.bindCallbackGuarded.<anonymous closure> (dart:async/zone.dart:1362:23)
+#21     _microtaskLoop (dart:async/schedule_microtask.dart:40:21)
+#22     _startMicrotaskLoop (dart:async/schedule_microtask.dart:49:5)
+#23     _runPendingImmediateCallback (dart:isolate-patch/isolate_patch.dart:128:13)
+#24     _RawReceivePort._handleMessage (dart:isolate-patch/isolate_patch.dart:195:5)
+```
+
+## flutter doctor
+
+```
+[✓] Flutter (Channel stable, 3.29.3, on Microsoft Windows [versÆo 10.0.26100.4349], locale pt-BR) [1.675ms]
+    • Flutter version 3.29.3 on channel stable at C:\Users\caio\flutter
+    • Upstream repository https://github.com/flutter/flutter.git
+    • Framework revision ea121f8859 (3 months ago), 2025-04-11 19:10:07 +0000
+    • Engine revision cf56914b32
+    • Dart version 3.7.2
+    • DevTools version 2.42.3
+
+[✓] Windows Version (11 Pro 64-bit, 24H2, 2009) [5,3s]
+
+[✗] Android toolchain - develop for Android devices [27ms]
+    ✗ Unable to locate Android SDK.
+      Install Android Studio from: https://developer.android.com/studio/index.html
+      On first launch it will assist you in installing the Android SDK components.
+      (or visit https://flutter.dev/to/windows-android-setup for detailed instructions).
+      If the Android SDK has been installed to a custom location, please use
+      `flutter config --android-sdk` to update to that location.
+
+
+[✓] Chrome - develop for the web [9ms]
+    • CHROME_EXECUTABLE = C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe
+
+[✗] Visual Studio - develop Windows apps [9ms]
+    ✗ Visual Studio not installed; this is necessary to develop Windows apps.
+      Download at https://visualstudio.microsoft.com/downloads/.
+      Please install the "Desktop development with C++" workload, including all of its default components
+
+[!] Android Studio (not installed) [6ms]
+    • Android Studio not found; download from https://developer.android.com/studio/index.html
+      (or visit https://flutter.dev/to/windows-android-setup for detailed instructions).
+
+[✓] VS Code (version unknown) [6ms]
+    • VS Code at C:\Users\caio\AppData\Local\Programs\Microsoft VS Code
+    • Flutter extension version 3.114.0
+    ✗ Unable to determine VS Code version.
+
+[✓] Connected device (3 available) [990ms]
+    • Windows (desktop) • windows • windows-x64    • Microsoft Windows [versÆo 10.0.26100.4349]
+    • Chrome (web)      • chrome  • web-javascript • unknown
+    • Edge (web)        • edge    • web-javascript • Microsoft Edge 138.0.3351.65
+
+[✓] Network resources [1.230ms]
+    • All expected network resources are available.
+
+! Doctor found issues in 3 categories.
+```

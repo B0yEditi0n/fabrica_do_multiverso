@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'dart:typed_data';
 
 import '../../script/download.dart';
+import '../../script/printer.dart';
 
 class SavePopUp extends StatelessWidget{
     final Uint8List fileImg;
@@ -44,7 +45,7 @@ class SavePopUp extends StatelessWidget{
                             Text('PDF Para impressão', style: TextStyle(fontSize: 30)),
                           ]
                         ),
-                        onPressed: () => Download.generatePDF(),
+                        onPressed: () => Printer.generatePDF(),
                       ),
               
                       ElevatedButton(

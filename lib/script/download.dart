@@ -9,12 +9,6 @@ import 'package:file_picker/file_picker.dart';
 
 import 'package:fabrica_do_multiverso/script/ficha.dart';
 
-
-// Criação de PDFs
-import 'package:pdf/widgets.dart' as pw;
-import 'package:pdf/pdf.dart';
-import 'package:printing/printing.dart';
-
 class Download{
   Uint8List img = Uint8List(0);
   static genericDownload(fileImg) async{
@@ -100,24 +94,4 @@ class Download{
     return( jsonFicha );
   }
 
-
-  static void generatePDF() async{
-    pw.Document doc = pw.Document();
-    doc.addPage(
-      pw.Page(
-        pageFormat: PdfPageFormat.a4.portrait,
-        margin: const pw.EdgeInsets.all(12),
-        build: (pw.Context context) {
-          return pw.Column(
-            children: [
-              pw.Text('PDF')
-            ]
-          );
-        }
-      )
-    );
-
-
-    await Printing.sharePdf(bytes: await doc.save(), filename: 'ficha.pdf');
-  }
 }

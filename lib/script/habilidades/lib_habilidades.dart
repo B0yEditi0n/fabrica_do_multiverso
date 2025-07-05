@@ -143,7 +143,7 @@ class Habilidade {
     
     return [bonusAlternativoTotal];
   }
-
+  
   Map objHabilidade() {
     return {
       "id": _id,

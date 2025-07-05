@@ -633,6 +633,15 @@ class ManipulaHabilidades {
     return habilidade;
   }
 
+  Map getItem(String id){
+    /*
+      Esse metodo uma das mapas de habilidade com base
+      no seu ID chamado, o objetivo é facilitar a chamada direta
+    */
+    return listHab.firstWhere((h) => h["id"] == id);
+    
+  }
+
   int calculaTotal() {
     Habilidade instanciaHab = Habilidade();
     int totalHabi = 0;
