@@ -26,6 +26,7 @@ import 'package:fabrica_do_multiverso/screens/complicacoes/ScreenComplicacoes.da
 
 // Compnentes
 import 'package:fabrica_do_multiverso/screens/components/logErros.dart';
+import 'package:fabrica_do_multiverso/screens/components/save_option_component.dart';
 
 void main() {
   runApp(FabricaHerois());
@@ -286,8 +287,10 @@ class _ScreenInicialState extends State<ScreenInicial> {
       floatingActionButton: IconButton(
         icon: const Icon(BootstrapIcons.floppy2_fill),
         onPressed: () async {
-          Download baixar = Download();
-          baixar.genericDownload(fileImg);
+          showDialog(
+            context: context,
+            builder: (context) => SavePopUp(fileImg: fileImg)
+          );
         },
       ),
     );
