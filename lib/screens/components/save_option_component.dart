@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 
 import 'dart:typed_data';
 
-import '../../script/download.dart';
-import '../../script/printer.dart';
+import 'package:fabrica_do_multiverso/script/download.dart';
+import 'printer.dart';
 
 class SavePopUp extends StatelessWidget{
     final Uint8List fileImg;
