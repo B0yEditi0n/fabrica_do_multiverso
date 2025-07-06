@@ -28,6 +28,8 @@ class Defesa{
     if(obj["imune"] != null || obj["imune"] != true){
         bonus = obj["bonus"];
     }
+
+    return this;
   }
 
   int custoTotal(){
@@ -37,7 +39,7 @@ class Defesa{
       return 0;
     }    
   }
-  int bonusTotal(){
+  int bonusTotal([bool sumBonus = true]){
     /*
       Soma o valor da habilidade e da defesa para calcular o valor 
       total de defesa
@@ -48,12 +50,14 @@ class Defesa{
 
     // Bonus total
     int bonusTotal = 0; 
-    for(Map b in bonus){ 
-      // a sintaxe não reconhece como int, 
-      // e parse int quebra caso caregado com int
-      bonusTotal += int.parse("${b["valor"]}");
-    }
-    
+    if(sumBonus){// retorno opcional para facilitar contas de ficha
+      for(Map b in bonus){ 
+        // a sintaxe não reconhece como int, 
+        // e parse int quebra caso caregado com int
+        bonusTotal += int.parse("${b["valor"]}");
+      }
+    }  
+
     // Instacia para recuperar valor total da habilidade
     Habilidade currnetHabilidade = Habilidade();
     currnetHabilidade.initObject(habi);
@@ -90,7 +94,7 @@ class Defesa{
 
 class Resistencia extends Defesa{
   @override
-  int bonusTotal(){
+  int bonusTotal([bool sumBonus = true]){
     int total = super.bonusTotal();
 
     // Inclui a Vantagem Rolamento Defensivo

@@ -37,7 +37,20 @@ class Printer{
       pw.Text(
         personagem.nomePersonagem, 
         style: headerTxtStyle,
+      ),
+
+      pw.SizedBox(height: 5),
+
+      pw.Container(
+        margin: const pw.EdgeInsets.all(1),
+        padding: const pw.EdgeInsets.all(3),
+        decoration: pw.BoxDecoration(
+          border: pw.Border.all(),
+        ),
+        child: pw.Text("${personagem.np} (${personagem.np * 15})")
+        
       )
+      
     ]
   );
 
@@ -102,12 +115,12 @@ class Printer{
         border: pw.TableBorder.all(),
 
         columnWidths: {
-          0: const pw.FixedColumnWidth(100),
-          1: const pw.FixedColumnWidth(100), 
-          2: const pw.FixedColumnWidth(100),
-          3: const pw.FixedColumnWidth(100),
-          4: const pw.FixedColumnWidth(100),
-          5: const pw.FixedColumnWidth(100)
+          0: const pw.FixedColumnWidth(80),
+          1: const pw.FixedColumnWidth(80), 
+          2: const pw.FixedColumnWidth(80),
+          3: const pw.FixedColumnWidth(80),
+          4: const pw.FixedColumnWidth(80),
+          5: const pw.FixedColumnWidth(80)
         },
         children: [
           pw.TableRow(
@@ -117,6 +130,15 @@ class Printer{
               headerRowTable('Fortitude'),
               headerRowTable('Resistência'),
               headerRowTable('Vontade')
+            ]
+          ),
+          pw.TableRow(
+            children: [              
+              cellRowTable(personagem.defesas.returnForPrint('D001')),
+              cellRowTable(personagem.defesas.returnForPrint('D002')),
+              cellRowTable(personagem.defesas.returnForPrint('D003')),
+              cellRowTable(personagem.defesas.returnForPrint('D004')),
+              cellRowTable(personagem.defesas.returnForPrint('D005'))
             ]
           )
         ]
@@ -141,8 +163,7 @@ class Printer{
           return pw.Column(
             children: [
               pw.Row(
-                children: [
-                pw.Column(
+                children: [pw.Column(
                   crossAxisAlignment: pw.CrossAxisAlignment.start,
                   children:[
                     infoHeader(),

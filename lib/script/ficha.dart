@@ -721,6 +721,20 @@ class ManipulaDefesas {
   }
   init() {}
 
+  Map returnId(String id) => listaDefesas.firstWhere((d)=> d["id"] == id);
+  String returnForPrint(String id){
+    Defesa defesa = Defesa().init(returnId(id));
+
+    if(defesa.imune){ return '-'; }
+
+    if (defesa.bonus.isNotEmpty){
+      return '${defesa.bonusTotal(false) } / ${defesa.bonusTotal()}';
+    }else{
+      return defesa.bonusTotal().toString();
+    }
+    
+  }
+
   void reInit(jsonDefeas) {
     listaDefesas = jsonDefeas;
   }
