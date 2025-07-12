@@ -45,7 +45,7 @@ class FabricaHerois extends StatelessWidget {
       routes: {
         '/home': (context) => const ScreenInicial(),
         '/habilidades': (context) => const ScreenHabilidades(),
-        '/defesas': (context) => const screenDefesas(),
+        '/defesas': (context) => const ScreenDefesas(),
         '/poderes': (context) => const ScreenPoderes(),
         '/vantagens': (context) => const ScreenVantagens(),
         '/pericias': (context) => const ScreenPericias(),
@@ -64,7 +64,7 @@ class ScreenInicial extends StatefulWidget {
 }
 
 class _ScreenInicialState extends State<ScreenInicial> {
-  validaNpPersonagem validador = validaNpPersonagem(); // objeto de validação
+  ValidaNpPersonagem validador = ValidaNpPersonagem(); // objeto de validação
   List logError = [];
 
   Uint8List fileImg = Uint8List(0); // Imagem do Personagem;
@@ -188,7 +188,6 @@ class _ScreenInicialState extends State<ScreenInicial> {
           //   ),
           // ),
 
-          // teste upload de ficha
           IconButton(
             icon: fileImg.isNotEmpty
                 ? Image.memory(

@@ -6,13 +6,13 @@ import 'package:flutter/services.dart';
 import 'package:fabrica_do_multiverso/script/ficha.dart';
 import 'package:fabrica_do_multiverso/script/defesas/lib_defesas.dart';
 
-class screenDefesas extends StatefulWidget {
-  const screenDefesas({super.key});
+class ScreenDefesas extends StatefulWidget {
+  const ScreenDefesas({super.key});
   @override
-  _screenDefesasState createState() => _screenDefesasState();
+  _ScreenDefesasState createState() => _ScreenDefesasState();
 }
 
-class _screenDefesasState extends State<screenDefesas> {
+class _ScreenDefesasState extends State<ScreenDefesas> {
   List<Map> listDefesa = [];
   Defesa defesa = Defesa();
   int custoTotal = 0;
@@ -89,6 +89,8 @@ class _screenDefesasState extends State<screenDefesas> {
               itemCount: listDefesa.length,
               itemBuilder: (context, index) {
                 Defesa defesa = Defesa();
+                // Coloca uma exessão para Resistência
+                listDefesa[index]["id"] == "D004" ? defesa = Resistencia() : null;
                 defesa.init(listDefesa[index]);
                 
                 return Padding(

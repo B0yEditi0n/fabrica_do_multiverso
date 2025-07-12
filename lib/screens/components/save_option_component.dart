@@ -45,7 +45,7 @@ class SavePopUp extends StatelessWidget{
                             Text('PDF Para impressão', style: TextStyle(fontSize: 30)),
                           ]
                         ),
-                        onPressed: () => Printer.generatePDF(),
+                        onPressed: () => Printer.generatePDF(fileImg),
                       ),
               
                       ElevatedButton(

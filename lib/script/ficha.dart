@@ -14,7 +14,7 @@ import 'package:fabrica_do_multiverso/script/poderes/lib_pacoteEfeitos.dart';
 import 'dart:developer' as dev;
 
 //# Classe de Validação de NP
-class validaNpPersonagem {
+class ValidaNpPersonagem {
   List logErros = [];
 
   int np = personagem.np;
@@ -723,7 +723,11 @@ class ManipulaDefesas {
 
   Map returnId(String id) => listaDefesas.firstWhere((d)=> d["id"] == id);
   String returnForPrint(String id){
-    Defesa defesa = Defesa().init(returnId(id));
+    Defesa defesa;
+
+    id == 'D004' 
+    ? defesa = Resistencia().init(returnId(id)) 
+    : defesa = Defesa().init(returnId(id));
 
     if(defesa.imune){ return '-'; }
 

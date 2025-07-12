@@ -15,7 +15,7 @@ class Defesa{
   String idOpDefesa = "";
   bool imune = false;
 
-  init(obj){
+  Defesa init(obj){
     _id = obj["id"];
     nome = obj["nome"];
     if(obj["valor"] != null){
@@ -98,11 +98,11 @@ class Resistencia extends Defesa{
     int total = super.bonusTotal();
 
     // Inclui a Vantagem Rolamento Defensivo
-    List vantagens = personagem.vantagens.listaVantagens;
+    List vantagens  = personagem.vantagens.listaVantagens;
     int rolamentoDefensivo = 0;
     if(vantagens.any((e) => e["id"] == "V077")){
       Vantagem objectRolamento = Vantagem();
-      objectRolamento.init(vantagens.where((e) => e["id"] == "V077") as Map);
+      objectRolamento.init(vantagens.firstWhere((e) => e["id"] == "V077") as Map);
       rolamentoDefensivo = objectRolamento.returnTotalGrad();
     }
      

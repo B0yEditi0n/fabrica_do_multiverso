@@ -1,5 +1,7 @@
 // Arquivo de Ficha
 import 'package:fabrica_do_multiverso/script/ficha.dart';
+import 'package:fabrica_do_multiverso/script/vantagens/lib_vantagens.dart';
+import 'package:flutter/material.dart';
 
 // Criação de PDFs
 import 'package:pdf/widgets.dart' as pw;
@@ -7,6 +9,10 @@ import 'package:pdf/pdf.dart';
 import 'package:printing/printing.dart';
 
 import 'package:flutter/services.dart' show rootBundle;
+import 'dart:typed_data';
+
+// Importação da Lógica de processamento dos Widgets
+import 'package:fabrica_do_multiverso/script/defesas/lib_defesas.dart';
 
 class Printer{
   //
@@ -108,6 +114,7 @@ class Printer{
     ]);
 
   static pw.Widget defesas() => pw.Column(
+    mainAxisAlignment: pw.MainAxisAlignment.start,
     crossAxisAlignment: pw.CrossAxisAlignment.start,
     children: [
       pw.Text('Defesas', style: headerTxtStyle),
@@ -133,7 +140,7 @@ class Printer{
             ]
           ),
           pw.TableRow(
-            children: [              
+            children: [
               cellRowTable(personagem.defesas.returnForPrint('D001')),
               cellRowTable(personagem.defesas.returnForPrint('D002')),
               cellRowTable(personagem.defesas.returnForPrint('D003')),
@@ -148,7 +155,30 @@ class Printer{
     
   );
 
-  static void generatePDF() async{
+  static pw.Widget ofensiva() => pw.Column(
+    
+    children: [
+      pw.Text('Ofensiva', style: headerTxtStyle),
+    ]
+  );
+
+  static pw.Widget vantagens() => pw.Column(
+    mainAxisAlignment: pw.MainAxisAlignment.start,  
+    children: [
+      pw.Text('Vantagens', style: headerTxtStyle),
+    ]
+  );
+
+  static pw.Widget pericias() => pw.Column(
+    mainAxisAlignment: pw.MainAxisAlignment.start,  
+    children: [
+      pw.Text('Perícias', style: headerTxtStyle),
+    ]
+  );
+  
+
+
+  static void generatePDF(Uint8List fileImg) async{
     pw.Document doc = pw.Document();
 
     // Carrega as Fontes
@@ -161,17 +191,41 @@ class Printer{
         margin: const pw.EdgeInsets.all(25),
         build: (pw.Context context) {
           return pw.Column(
+            mainAxisAlignment: pw.MainAxisAlignment.start,
+            crossAxisAlignment: pw.CrossAxisAlignment.start,
             children: [
               pw.Row(
-                children: [pw.Column(
-                  crossAxisAlignment: pw.CrossAxisAlignment.start,
-                  children:[
-                    infoHeader(),
-                    habilidades(),
-                    defesas()
-                  ]
-                )
-              ])
+                mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                children: [
+                  pw.Flexible(
+                    flex: 1,
+                    child: pw.Column(
+                      crossAxisAlignment: pw.CrossAxisAlignment.start,
+                      children:[
+                        infoHeader(),
+                        habilidades(),
+                      ]
+                  )),
+                  // Cabeçalho Inicial
+                  
+                  // Imagem 
+                  pw.Flexible(
+                    flex: 1,
+                    child: pw.Padding(
+                      padding: const pw.EdgeInsets.all(5),
+                      child: pw.Image(
+                        pw.MemoryImage(fileImg),
+                        height: 150,
+                        alignment: pw.Alignment.center
+
+                    ))
+                  )
+                  
+              ]),
+              defesas(),
+              ofensiva(),
+              vantagens(),
+              pericias()
             ]
           );
         }
