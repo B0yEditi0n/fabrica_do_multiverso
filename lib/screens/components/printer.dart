@@ -20,12 +20,13 @@ import 'dart:developer' as dev;
 class Printer{
   //
   //TODO: Configurações de Fontes & Texto
-  // 
+  //
+  static pw.Font robotFont = pw.Font();
   static pw.Font headerFont = pw.Font();
   static pw.TextStyle headerTxtStyle = const pw.TextStyle();
   
   // Configuração da Fonte
-  static pw.Text headerRowTable (String txt) => pw.Text(
+  static pw.Text headerRowTable(String txt) => pw.Text(
     txt,
     textAlign: pw.TextAlign.center,
     style: pw.TextStyle(
@@ -252,7 +253,22 @@ class Printer{
     List<pw.TableRow> tableRows = [];
 
     for(int i = 0; i < personagem.complicacoes.length; i++){
-      
+      tableRows.add(pw.TableRow(
+        
+        // repeat: true,
+        // verticalAlignment: pw.TableCellVerticalAlignment.full,
+        children: [
+          pw.Padding(padding: const pw.EdgeInsets.only(left: 15, right: 15),
+          child: pw.Wrap(children:[
+              pw.RichText(text: pw.TextSpan(text: "\t\u2022\t", style: pw.TextStyle(font: robotFont, fontWeight: pw.FontWeight.normal),
+              children: [
+                pw.TextSpan(text: personagem.complicacoes[i]["titulo"] + ": ", style: pw.TextStyle(fontWeight: pw.FontWeight.bold)), 
+                pw.TextSpan(text: personagem.complicacoes[i]["desc"], style: pw.TextStyle(fontWeight: pw.FontWeight.normal))
+              ]
+              ))
+            ])
+          )
+      ]));
     }
 
     return pw.Column(
@@ -260,9 +276,13 @@ class Printer{
       children: [
         pw.Text('Complicações', style: headerTxtStyle),  
         pw.Table(
-          
-          children: [
-          ]      
+          border: const pw.TableBorder(
+            top: pw.BorderSide(color: PdfColor(0, 0, 0), width: 1),
+            left: pw.BorderSide(color: PdfColor(0, 0, 0), width: 1),
+            right: pw.BorderSide(color: PdfColor(0, 0, 0), width: 1),
+            bottom: pw.BorderSide(color: PdfColor(0, 0, 0), width: 1),
+          ),
+          children: tableRows
         )
       ]
     );
@@ -273,6 +293,7 @@ class Printer{
 
     // Carrega as Fontes
     headerFont = pw.Font.ttf(await rootBundle.load('fonts/Impact.ttf'));
+    robotFont = await PdfGoogleFonts.robotoLight ();
     headerTxtStyle = pw.TextStyle(font: headerFont, fontSize: 20);   
 
     doc.addPage(
@@ -293,9 +314,9 @@ class Printer{
                       crossAxisAlignment: pw.CrossAxisAlignment.start,
                       children:[
                         infoHeader(),
-                        pw.SizedBox(height: 5),
+                        pw.SizedBox(height: 1.5),
                         habilidades(),
-                        pw.SizedBox(height: 5),
+                        pw.SizedBox(height: 1.5),
                       ]
                   )),
                   // Cabeçalho Inicial
