@@ -34,6 +34,8 @@ class Pericia {
     _valor = valor;
   }
 
+  int onlyGrad() => _valor;
+
   int bonusTotal() {
     /*
       Calcula Bonus Total somando o valor

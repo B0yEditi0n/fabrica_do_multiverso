@@ -41,7 +41,11 @@ class Vantagem {
     if(obj["idOrigem"] != null){idOrigem = obj["idOrigem"];}
     if(obj["addByPower"] != null){ addByPower = true; }
     if(obj["bonus"] != null){bonus.addAll(obj["bonus"]);}
+
+    return this;
   }
+
+  int grad() => _graduacao;
 
   int returnTotalGrad(){
     int totalBonus = 0;

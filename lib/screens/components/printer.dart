@@ -1,5 +1,6 @@
 // Arquivo de Ficha
 import 'package:fabrica_do_multiverso/script/ficha.dart';
+import 'package:fabrica_do_multiverso/script/pericias/lib_pericias.dart';
 import 'package:fabrica_do_multiverso/script/vantagens/lib_vantagens.dart';
 import 'package:flutter/material.dart';
 
@@ -13,6 +14,8 @@ import 'dart:typed_data';
 
 // Importação da Lógica de processamento dos Widgets
 import 'package:fabrica_do_multiverso/script/defesas/lib_defesas.dart';
+
+import 'dart:developer' as dev;
 
 class Printer{
   //
@@ -163,13 +166,18 @@ class Printer{
 
   static pw.Widget vantagens() {
     List<pw.TableRow> tablesRows = [];
-    List<pw.Text> contentRows = [];
+    List<pw.Text> contentRows;
     // Ordena Vantagens por Ordem Alfábetica
     personagem.vantagens.listaVantagens.sort((a, b) => a["nome"].compareTo(b["nome"]));
 
-    pw.Text descVantagem(mapVantagem) => pw.Text(
-        "${mapVantagem["nome"]}"
-    );
+    pw.Text descVantagem(mapVantagem){
+      Vantagem objVantagem = Vantagem().init(mapVantagem);
+      return pw.Text(
+        "${objVantagem.nome} ${objVantagem.graduado
+        ? "[${objVantagem.grad() != objVantagem.returnTotalGrad() ? "*" : ''}${objVantagem.returnTotalGrad()}]" 
+        : ''}"
+      );
+    } 
 
     int nMax = personagem.vantagens.listaVantagens.length;
 
@@ -186,7 +194,6 @@ class Printer{
       tablesRows.add(pw.TableRow(children: contentRows));
     }
     
-
     return pw.Column(
       mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,  
       crossAxisAlignment: pw.CrossAxisAlignment.start,
@@ -200,12 +207,46 @@ class Printer{
     );
   }
 
-  static pw.Widget pericias() => pw.Column(
-    mainAxisAlignment: pw.MainAxisAlignment.start,  
-    children: [
-      pw.Text('Perícias', style: headerTxtStyle),
-    ]
-  );
+  static pw.Widget pericias() {
+    List<pw.TableRow> tablesRows = [];
+    List<pw.Text> contentRows;
+
+    int nMax = personagem.pericias.ListaPercias.length;
+
+    pw.Text descPericia(Map mapPericia){
+      Pericia objPericia = Pericia();
+      objPericia.init(mapPericia);
+      
+      return pw.Text(
+        "${objPericia.nome}(${objPericia.onlyGrad()}) +${objPericia.bonusTotal()}"
+      );
+    }
+
+    for(int i = 0; i <= nMax / 2; i++){
+      contentRows = [];
+
+      Map mapPericiaRight = personagem.pericias.ListaPercias[i];
+      contentRows.add(descPericia(mapPericiaRight));
+
+      if(nMax ~/ 2 + 1 + i < nMax){
+        Map mapPericiaLeft = personagem.pericias.ListaPercias[nMax ~/ 2 + 1 + i];
+        contentRows.add(descPericia(mapPericiaLeft));
+      }
+
+      tablesRows.add(pw.TableRow(children:contentRows));
+    }
+
+    return pw.Column(
+      mainAxisAlignment: pw.MainAxisAlignment.start,
+      crossAxisAlignment: pw.CrossAxisAlignment.start,
+      children: [
+        pw.Text('Perícias', style: headerTxtStyle),
+        pw.Table(
+          children: tablesRows
+        )
+      ] 
+    );
+  }
   
 
 
