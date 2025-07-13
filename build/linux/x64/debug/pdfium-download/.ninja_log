@@ -1,0 +1,21 @@
+# ninja log v5
+8286	8319	1752349536265906684	pdfium-download-prefix/src/pdfium-download-stamp/pdfium-download-install	d8b02c441cf9dd5b
+8349	8401	1752349536345908559	CMakeFiles/pdfium-download-complete	1a6b81c33e46302b
+8258	8286	1752349536231905887	pdfium-download-prefix/src/pdfium-download-stamp/pdfium-download-build	f5b2175a5ea2b128
+8194	8225	1752349536171904480	/home/gleice/Documentos/fabrica_do_multiverso/build/linux/x64/debug/pdfium-download/pdfium-download-prefix/src/pdfium-download-stamp/pdfium-download-patch	e744ba9b830bb565
+8167	8194	1752349536139903730	/home/gleice/Documentos/fabrica_do_multiverso/build/linux/x64/debug/pdfium-download/pdfium-download-prefix/src/pdfium-download-stamp/pdfium-download-update	3200dceee1dab057
+8225	8258	1752349536204905254	/home/gleice/Documentos/fabrica_do_multiverso/build/linux/x64/debug/pdfium-download/pdfium-download-prefix/src/pdfium-download-stamp/pdfium-download-configure	2da6ee67af0b0877
+8349	8401	1752349536345908559	/home/gleice/Documentos/fabrica_do_multiverso/build/linux/x64/debug/pdfium-download/pdfium-download-prefix/src/pdfium-download-stamp/pdfium-download-done	1a6b81c33e46302b
+8349	8401	1752349536345908559	/home/gleice/Documentos/fabrica_do_multiverso/build/linux/x64/debug/pdfium-download/CMakeFiles/pdfium-download-complete	1a6b81c33e46302b
+8225	8258	1752349536204905254	pdfium-download-prefix/src/pdfium-download-stamp/pdfium-download-configure	2da6ee67af0b0877
+8286	8319	1752349536265906684	/home/gleice/Documentos/fabrica_do_multiverso/build/linux/x64/debug/pdfium-download/pdfium-download-prefix/src/pdfium-download-stamp/pdfium-download-install	d8b02c441cf9dd5b
+1	29	1752349527975693309	pdfium-download-prefix/src/pdfium-download-stamp/pdfium-download-mkdir	874f171ced2917bb
+1	29	1752349527975693309	/home/gleice/Documentos/fabrica_do_multiverso/build/linux/x64/debug/pdfium-download/pdfium-download-prefix/src/pdfium-download-stamp/pdfium-download-mkdir	874f171ced2917bb
+29	8167	1752349536111903074	pdfium-download-prefix/src/pdfium-download-stamp/pdfium-download-download	49f55a407a7fbb9
+29	8167	1752349536111903074	/home/gleice/Documentos/fabrica_do_multiverso/build/linux/x64/debug/pdfium-download/pdfium-download-prefix/src/pdfium-download-stamp/pdfium-download-download	49f55a407a7fbb9
+8167	8194	1752349536139903730	pdfium-download-prefix/src/pdfium-download-stamp/pdfium-download-update	3200dceee1dab057
+8194	8225	1752349536171904480	pdfium-download-prefix/src/pdfium-download-stamp/pdfium-download-patch	e744ba9b830bb565
+8319	8349	1752349536294907363	pdfium-download-prefix/src/pdfium-download-stamp/pdfium-download-test	b60418b24f08296b
+8258	8286	1752349536231905887	/home/gleice/Documentos/fabrica_do_multiverso/build/linux/x64/debug/pdfium-download/pdfium-download-prefix/src/pdfium-download-stamp/pdfium-download-build	f5b2175a5ea2b128
+8349	8401	1752349536345908559	pdfium-download-prefix/src/pdfium-download-stamp/pdfium-download-done	1a6b81c33e46302b
+8319	8349	1752349536294907363	/home/gleice/Documentos/fabrica_do_multiverso/build/linux/x64/debug/pdfium-download/pdfium-download-prefix/src/pdfium-download-stamp/pdfium-download-test	b60418b24f08296b

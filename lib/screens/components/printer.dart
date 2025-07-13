@@ -156,18 +156,49 @@ class Printer{
   );
 
   static pw.Widget ofensiva() => pw.Column(
-    
     children: [
       pw.Text('Ofensiva', style: headerTxtStyle),
     ]
   );
 
-  static pw.Widget vantagens() => pw.Column(
-    mainAxisAlignment: pw.MainAxisAlignment.start,  
-    children: [
-      pw.Text('Vantagens', style: headerTxtStyle),
-    ]
-  );
+  static pw.Widget vantagens() {
+    List<pw.TableRow> tablesRows = [];
+    List<pw.Text> contentRows = [];
+    // Ordena Vantagens por Ordem Alfábetica
+    personagem.vantagens.listaVantagens.sort((a, b) => a["nome"].compareTo(b["nome"]));
+
+    pw.Text descVantagem(mapVantagem) => pw.Text(
+        "${mapVantagem["nome"]}"
+    );
+
+    int nMax = personagem.vantagens.listaVantagens.length;
+
+    for (int i = 0; i < nMax / 2; i++) {
+      contentRows = [];
+
+      Map leftVantagem = personagem.vantagens.listaVantagens[i];
+      contentRows.add(descVantagem(leftVantagem));
+
+      if(nMax ~/ 2 + 1 + i < nMax){
+        Map rightVantagem = personagem.vantagens.listaVantagens[nMax ~/ 2 + 1 + i];
+        contentRows.add(descVantagem(rightVantagem));
+      }
+      tablesRows.add(pw.TableRow(children: contentRows));
+    }
+    
+
+    return pw.Column(
+      mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,  
+      crossAxisAlignment: pw.CrossAxisAlignment.start,
+      mainAxisSize: pw.MainAxisSize.max,
+      children: [
+        pw.Text('Vantagens', style: headerTxtStyle),
+        pw.Table(
+          children: tablesRows          
+        )
+      ]
+    );
+  }
 
   static pw.Widget pericias() => pw.Column(
     mainAxisAlignment: pw.MainAxisAlignment.start,  
@@ -209,17 +240,18 @@ class Printer{
                   // Cabeçalho Inicial
                   
                   // Imagem 
-                  pw.Flexible(
-                    flex: 1,
-                    child: pw.Padding(
-                      padding: const pw.EdgeInsets.all(5),
-                      child: pw.Image(
-                        pw.MemoryImage(fileImg),
-                        height: 150,
-                        alignment: pw.Alignment.center
+                  fileImg.isNotEmpty ?
+                    pw.Flexible(
+                      flex: 1,
+                      child: pw.Padding(
+                        padding: const pw.EdgeInsets.all(5),
+                        child: pw.Image(
+                          pw.MemoryImage(fileImg),
+                          height: 150,
+                          alignment: pw.Alignment.center
 
-                    ))
-                  )
+                      ))
+                    ) : pw.SizedBox()
                   
               ]),
               defesas(),

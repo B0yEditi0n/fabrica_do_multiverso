@@ -1,0 +1,3 @@
+/home/gleice/Documentos/fabrica_do_multiverso/build/linux/x64/debug/pdfium-download/CMakeFiles/pdfium-download.dir
+/home/gleice/Documentos/fabrica_do_multiverso/build/linux/x64/debug/pdfium-download/CMakeFiles/edit_cache.dir
+/home/gleice/Documentos/fabrica_do_multiverso/build/linux/x64/debug/pdfium-download/CMakeFiles/rebuild_cache.dir
