@@ -247,8 +247,26 @@ class Printer{
       ] 
     );
   }
-  
 
+  static pw.Widget complicacoes(){
+    List<pw.TableRow> tableRows = [];
+
+    for(int i = 0; i < personagem.complicacoes.length; i++){
+      
+    }
+
+    return pw.Column(
+      crossAxisAlignment: pw.CrossAxisAlignment.start,
+      children: [
+        pw.Text('Complicações', style: headerTxtStyle),  
+        pw.Table(
+          
+          children: [
+          ]      
+        )
+      ]
+    );
+  }
 
   static void generatePDF(Uint8List fileImg) async{
     pw.Document doc = pw.Document();
@@ -275,7 +293,9 @@ class Printer{
                       crossAxisAlignment: pw.CrossAxisAlignment.start,
                       children:[
                         infoHeader(),
+                        pw.SizedBox(height: 5),
                         habilidades(),
+                        pw.SizedBox(height: 5),
                       ]
                   )),
                   // Cabeçalho Inicial
@@ -296,9 +316,26 @@ class Printer{
                   
               ]),
               defesas(),
+              pw.SizedBox(height: 5),
               ofensiva(),
+              pw.SizedBox(height: 5),
               vantagens(),
+              pw.SizedBox(height: 5),
               pericias()
+            ]
+          );
+        }
+      )
+    );
+
+    doc.addPage(
+      pw.Page(
+        pageFormat: PdfPageFormat.a4.portrait,
+        margin: const pw.EdgeInsets.all(25),
+        build: (pw.Context context) {
+          return pw.Column(
+            children: [
+              complicacoes()
             ]
           );
         }
