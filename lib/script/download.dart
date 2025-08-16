@@ -9,6 +9,7 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'dart:developer';
 
 import 'package:file_picker/file_picker.dart';
+import 'package:universal_html/html.dart' as html;
 
 import 'package:fabrica_do_multiverso/script/ficha.dart';
 
@@ -31,27 +32,48 @@ class Download{
     final List<int> listzipData = ZipEncoder().encode(archive)!;
 
     try {
+      debugger();
+      if(kIsWeb){
+        //
+        // Salvar em Platafromas na Web
+        //
+
+        final blob = html.Blob([listzipData], 'application/zip');
+
+
+        final String url = html.Url.createObjectUrlFromBlob(blob);
+        html.AnchorElement(href: url)
+        ..setAttribute('download', 'ficha.zip')
+        ..click();
+
+        // Libera a URL
+        html.Url.revokeObjectUrl(url);
+      }else{
+        //
+        // Salvar em Platafromas Normais
+        //
       
-      String respostaPath = await FilePicker.platform.saveFile(
-        type: FileType.custom,
-        allowedExtensions: ["zip"],
-        dialogTitle: "Salvar Aquivo de Heroi",
-        initialDirectory: "",
-        lockParentWindow: false, 
-      ) as String;
-      
-      
-      final File file = File( // Adiciona zip caso não tenha
-        respostaPath.contains(RegExp(r'\.zip$')) || respostaPath.contains(RegExp(r'\.ZIP$'))
-          ? respostaPath
-          : "$respostaPath.zip"
-      );
-      
-      
-      await file.writeAsBytes(listzipData);
-      
+        String respostaPath = await FilePicker.platform.saveFile(
+          type: FileType.custom,
+          allowedExtensions: ["zip"],
+          dialogTitle: "Salvar Aquivo de Heroi",
+          initialDirectory: "",
+          lockParentWindow: false, 
+        ) as String;
+        
+        
+        final File file = File( // Adiciona zip caso não tenha
+          respostaPath.contains(RegExp(r'\.zip$')) || respostaPath.contains(RegExp(r'\.ZIP$'))
+            ? respostaPath
+            : "$respostaPath.zip"
+        );
+        
+        
+        await file.writeAsBytes(listzipData);
+      }
     } catch (e) {
       // Type Error.
+      print(e.toString());
     }
   }
 
@@ -79,7 +101,6 @@ class Download{
       //
 
       if(respostaPath.files.isNotEmpty){
-        debugger();
         Archive archive;
 
         //

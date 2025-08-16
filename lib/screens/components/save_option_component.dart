@@ -6,6 +6,8 @@ import 'dart:typed_data';
 import 'package:fabrica_do_multiverso/script/download.dart';
 import 'printer.dart';
 
+import 'dart:developer';
+
 class SavePopUp extends StatelessWidget{
     final Uint8List fileImg;
     const SavePopUp({super.key, required this.fileImg});
