@@ -5,6 +5,9 @@ import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:archive/archive.dart';
 
+import 'package:flutter/foundation.dart' show kIsWeb;
+import 'dart:developer';
+
 import 'package:file_picker/file_picker.dart';
 
 import 'package:fabrica_do_multiverso/script/ficha.dart';
@@ -58,7 +61,9 @@ class Download{
     Map jsonFicha = {};
     
     try {
-      
+      //
+      // Cria o Pop UP dialogo
+      //
       FilePickerResult respostaPath = await FilePicker.platform.pickFiles(
         type: FileType.custom,
         allowMultiple: false,
@@ -69,9 +74,27 @@ class Download{
         lockParentWindow: false, 
       ) as FilePickerResult;        
 
+      //
+      // Pega os arquivos do popup
+      //
+
       if(respostaPath.files.isNotEmpty){
-        String pathFile = respostaPath.files.first.path as String;
-        final archive = ZipDecoder().decodeBytes(File(pathFile).readAsBytesSync());
+        debugger();
+        Archive archive;
+
+        //
+        // Navegadores não tem acessoa path porem carregam os byte consido
+        // já Plataformas leam a path e precisam coletar o byte de outra forma
+        //
+
+        if(!kIsWeb){
+          String pathFile = respostaPath.files.first.path as String;
+          archive = ZipDecoder().decodeBytes(File(pathFile).readAsBytesSync());
+        }else{
+          archive = ZipDecoder().decodeBytes(respostaPath.files.first.bytes!);
+        }
+        
+        
         for (final entry in archive) {
         if (entry.isFile && entry.name.contains(RegExp(r'\.jpg$'))) {
           try {
@@ -89,6 +112,7 @@ class Download{
       }
     } catch (e) {
       // Type Error 
+      print(e.toString());
     }
 
     return( jsonFicha );
