@@ -1,6 +1,7 @@
 import 'package:fabrica_do_multiverso/screens/pericias/ScreenPericias.dart';
 import 'package:fabrica_do_multiverso/screens/vantagens/ScreenVantagens.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 import 'package:fabrica_do_multiverso/script/ficha.dart';
 import 'package:flutter/material.dart';
@@ -196,27 +197,31 @@ class _ScreenInicialState extends State<ScreenInicial> {
                   )
                 : const Icon(BootstrapIcons.image, size: 50),
             onPressed: () async {
-              const List<String> extension = ["img", "png", "jpeg", "jpg"];
-
               try {
                 FilePickerResult respostaPath =
                     await FilePicker.platform.pickFiles(
                   type: FileType.image,
                   allowMultiple: false,
-                  onFileLoading: (FilePickerStatus status) => print(status),
-                  allowedExtensions: extension,
                   dialogTitle: "Imagem de Herói",
                   initialDirectory: "",
                   lockParentWindow: false,
                 ) as FilePickerResult;
 
-                String pathFile = respostaPath.files.first.path as String;
+                final Uint8List imgUploaded;
+                if(kIsWeb){
+                  imgUploaded = respostaPath.files.first.bytes!;
+                }else{
+                  String pathFile = respostaPath.files.first.path as String;
+                  imgUploaded = File(pathFile).readAsBytesSync();
+                }
+                  
 
                 setState(() {
-                  fileImg = File(pathFile).readAsBytesSync();
+                  fileImg = imgUploaded;
                 });
               } catch (e) {
                 // typeError
+                print(e.toString());
               }
             },
           ),

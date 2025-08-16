@@ -32,7 +32,6 @@ class Download{
     final List<int> listzipData = ZipEncoder().encode(archive)!;
 
     try {
-      debugger();
       if(kIsWeb){
         //
         // Salvar em Platafromas na Web
