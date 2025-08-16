@@ -20,8 +20,8 @@ class _PopUpAddSkillState extends State<PopUpAddSkill> {
   Map periciaSelecionada ={};
 
   // Repetório de Efeitos Adicionados
-  List ofensivePoderes = [];      // Repetório
-  List addOfensivePoderes = [];   // Já adicionados
+  List ofensivePoderes = [];        // Repetório
+  List addOfensivePoderes = [];     // Já adicionados
   List<String> ListIdPoderes = [];  // Indice que volta pra retorno
 
   // Pericias Adicionaveis no Popup
@@ -124,16 +124,18 @@ class _PopUpAddSkillState extends State<PopUpAddSkill> {
                 onChanged: (value) {
                   // caso seja um retorno atualiza a lista de Poderes
                   // Atualiza o estado das variáveis
-                  setState(() {
+                  
                     periciaSelecionada = value!;     
                     if(["PA01", "PA02"].contains(periciaSelecionada["id"])){ // Em caso de ofensivo estruturar lista
                       int rangeOfensive = 0;
                       periciaSelecionada["id"] == "PA01" ? rangeOfensive = 1 : null;
                       periciaSelecionada["id"] == "PA02" ? rangeOfensive = 2 : null;
-                      ofensivePoderes = personagem.pericias.returnOfensiveEfeitos(rangeOfensive);
+                      setState(() {
+                        ofensivePoderes = personagem.pericias.returnOfensiveEfeitos(rangeOfensive);
+                      });
                     }
                     
-                  });
+                  
                 },
                 items: periciaListAdd.map<DropdownMenuItem<Map>>((value) {
                   return DropdownMenuItem<Map>(

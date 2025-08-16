@@ -394,20 +394,41 @@ class IntercambioModular {
       - Params:
         String idPericia - id de criação da Perícia
     */
-
-    List poderes = personagem.poderes.poderesLista;
-    for (Map poder in poderes) {
-      if(poder["bonus"] != null){// Evita erros em caso de vazio
-        poder["bonus"].removeWhere((p) => p["acerto"]["idCriacao"] == idPericia);
-      } 
-      
+    removePericias(List poderes){
+      for (Map poder in poderes) {
+        if(poder["bonus"] != null){// Evita erros em caso de vazio
+          poder["bonus"].removeWhere((p) => p["acerto"]["idCriacao"] == idPericia);
+        }else if(poder["class"] == "PacotesEfeitos"){
+          removePericias(poder["efeitos"]);
+        }
+      }
     }
+
+    removePericias(personagem.poderes.poderesLista);
+    
   }
 
   void updatePericiaBonus() {
     /*
       Atualiza os Bonus de Pericia de todos os poderes
     */
+
+    editPodewerList(Map poder, List listaP){
+      // Nível Root
+      if(listaP.any((p)=> p["idCriacao"] == poder["idCriacao"])){
+        int idxP = listaP.indexWhere((p)=> p["idCriacao"] == poder["idCriacao"]);
+        listaP[idxP] = poder;
+      }
+
+      // Considera os pacotes
+      if(listaP.any((p)=> p["class"] == "PacotesEfeitos")){
+        for(Map pe in listaP.where((p)=> p["class"] == "PacotesEfeitos").toList()){
+          editPodewerList(poder, pe["efeitos"]);
+        }    
+      }
+    }
+
+
     List listaOfensivePoderes = personagem.pericias.returnOfensiveEfeitos(0);
     List listPericia = personagem.pericias.ListaPercias
         .where((p) => p["classe"] == "PericiaAddAcerto")
@@ -427,9 +448,10 @@ class IntercambioModular {
               "bonus": currentPericia.bonusTotal(),
             }
           });
+
           // Reflete Alteração
-          int idxP = personagem.poderes.poderesLista.indexWhere((p)=> p["idCriacao"] == poder["idCriacao"]);
-          personagem.poderes.poderesLista[idxP] = poder;
+          editPodewerList(poder, personagem.poderes.poderesLista);
+          
         }
       }
     }
@@ -991,21 +1013,42 @@ class ManipulaPericias {
         - int distancia : 0 retornar tudo, 1 para perto, 2 para distância
         - Return: List<Map>: Retorna a Lista de poderes compativeis com acerto
     */
+
+    List buscaListaPoderes(List listPoderes){
+      List efeitosReturn = [];
+
+      // Busca por Lista
+      List pacotes = listPoderes.where((p) =>
+        p["class"] == 'PacotesEfeitos'
+      ).toList();
+      
+      // Busca efeito empacotados também
+      for(final pacote in pacotes){
+        efeitosReturn.addAll(buscaListaPoderes(pacote["efeitos"]));
+      }
+
+      // Efeitos que estão a nível "Raiz"
+      efeitosReturn.addAll(
+        listPoderes.where((p) =>
+          // Efeitos Ofensivos nativos
+          (["EfeitoAflicao", "EfeitoOfensivo", "EfeitoDano"]
+          .contains(p["class"])
+
+          // OU: Efeitos Convetidos em Ofensivo
+          || p["defAtaque"] == true)
+
+          // E: Alance sendo pero ou a ditância
+          && [1, 2].contains(p["alcance"]))
+        .toList()
+      );
+
+      return efeitosReturn;
+    }
+    
     List poderes = personagem.poderes.poderesLista;
     List poderesFilter = [];
     //; Poderes ofensivos e Sendo perto ou a distância
-    List mapPoderes = poderes
-        .where((p) =>
-            // Efeitos Ofensivos nativos
-            (["EfeitoAflicao", "EfeitoOfensivo", "EfeitoDano"]
-            .contains(p["class"])
-
-            // OU: Efeitos Convetidos em Ofensivo
-            || p["defAtaque"] == true)
-
-            // E: Alance sendo pero ou a ditância
-            && [1, 2].contains(p["alcance"]))
-        .toList();
+    List mapPoderes = buscaListaPoderes(poderes);
 
     for (int i = 0; i < mapPoderes.length; i++) {
       // Apenda de acordo com o Range

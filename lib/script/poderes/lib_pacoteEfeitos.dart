@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:fabrica_do_multiverso/script/poderes/lib_efeitos.dart';
+import 'package:uuid/uuid.dart';
 
 class PacotesEfeitos {
   // Os efeitos anexados a esse pacote
@@ -57,7 +58,8 @@ class PacotesEfeitos {
     if (mapObject["idCriacao"] != null) {
       _idCriacao = mapObject["idCriacao"];
     } else {
-      _idCriacao = "A${DateTime.now().millisecondsSinceEpoch.toRadixString(16)}";
+      const uuid = Uuid();
+      _idCriacao = "A${uuid.v4()}";
     }
 
     if(mapObject["active"] != null){

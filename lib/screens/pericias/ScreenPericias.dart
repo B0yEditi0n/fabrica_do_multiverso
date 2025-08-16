@@ -65,6 +65,33 @@ class _ScreenPericiasState extends State<ScreenPericias> {
     });
   }
 
+  void appendNewListFields(){
+    // anexa a lista
+    if(mapPericiaReturn.isNotEmpty){
+      // updateNewFields(){
+      Pericia periAddicional;
+      if(mapPericiaReturn["class"] == "PericiaAdiciona"){
+        periAddicional = PericiaAdiciona();
+      }else if(mapPericiaReturn["class"] == "PericiaAddAcerto"){
+        periAddicional = PericiaAddAcerto();
+      }else{
+        // caso haja futuras Implementações
+        periAddicional = Pericia();
+      }
+
+      periAddicional.init(mapPericiaReturn);
+
+      setState((){
+        listaPercias.add(periAddicional.returnObj());
+      });
+      _updateTextInputList();
+      
+      // Atualiza Lista de Bonus de Adição
+      personagem.validador.updatePericiaBonus();
+
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
@@ -214,9 +241,8 @@ class _ScreenPericiasState extends State<ScreenPericias> {
                                 // Atualiza as Lista de perícias  
                                 setState(() {
                                   listaPercias.removeAt(index);
-                                  _updateTextInputList();
-                                  listaPercias = listaPercias;
-                                });            
+                                });
+                                _updateTextInputList();
                               }
 
 
@@ -252,30 +278,8 @@ class _ScreenPericiasState extends State<ScreenPericias> {
               MaterialPageRoute(builder: (context) => PopUpAddSkill(obj: {}))
             ),
 
-            // anexa a lista
-            mapPericiaReturn.isNotEmpty ?
-            setState((){
-              Pericia periAddicional;
-              if(mapPericiaReturn["class"] == "PericiaAdiciona"){
-                periAddicional = PericiaAdiciona();
-              }else if(mapPericiaReturn["class"] == "PericiaAddAcerto"){
-                periAddicional = PericiaAddAcerto();
-              }else{
-                // caso haja futuras Implementações
-                periAddicional = Pericia();
-              }
-
-              periAddicional.init(mapPericiaReturn);
-
-              // Atualiza as Lista de perícias  
-              listaPercias.add(periAddicional.returnObj());
-              _updateTextInputList();
-              listaPercias = listaPercias;
-
-              // Atualiza Lista de Bonus de Adição
-              personagem.validador.updatePericiaBonus();
-            }) : null,
-          },
+            appendNewListFields()
+          }
         ),
     );
   }

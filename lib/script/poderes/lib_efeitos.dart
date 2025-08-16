@@ -2,6 +2,7 @@ import 'package:fabrica_do_multiverso/script/ficha.dart';
 import 'package:fabrica_do_multiverso/script/habilidades/lib_habilidades.dart';
 import 'package:flutter/services.dart'; 
 import 'dart:convert';
+import 'package:uuid/uuid.dart';
 
 import 'dart:developer' as dev;
 
@@ -40,8 +41,8 @@ class Efeito{
       Return:
         Map Json - o Arquivo json
     */
-
-    _idCriacao = "P${DateTime.now().millisecondsSinceEpoch.toRadixString(16)}";
+    const uuid = Uuid();
+    _idCriacao = "P${uuid.v4()}";
     
     this.nome = nome;
     _idEfeito = idEfeito;
@@ -248,6 +249,8 @@ class Efeito{
 
     }
   }
+
+  String idCriacao() => _idCriacao;
 
   // ********************************
   // * Methodos de Retorno do objto *

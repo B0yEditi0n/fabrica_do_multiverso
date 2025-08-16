@@ -1,5 +1,6 @@
 import 'package:fabrica_do_multiverso/script/ficha.dart';
 import 'package:fabrica_do_multiverso/script/habilidades/lib_habilidades.dart';
+import 'package:uuid/uuid.dart';
 
 class Pericia {
   String id = "";
@@ -137,7 +138,8 @@ class PericiaAddAcerto extends PericiaAdiciona {
       idCriacao = obj["idCriacao"];
     } else {
       // S de Skill
-      idCriacao = "S${DateTime.now().millisecondsSinceEpoch.toRadixString(16)}";
+      const uuid = Uuid();
+      idCriacao = "S${uuid.v4()}";
     }
 
     return true;

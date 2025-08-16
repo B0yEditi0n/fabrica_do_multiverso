@@ -42,7 +42,8 @@ class Download{
 
         final String url = html.Url.createObjectUrlFromBlob(blob);
         html.AnchorElement(href: url)
-        ..setAttribute('download', 'ficha.zip')
+        
+        ..setAttribute('download', '${personagem.nomePersonagem} NP: ${personagem.np}, ${DateTime.now()}.zip')
         ..click();
 
         // Libera a URL
