@@ -1,0 +1,80 @@
+[
+    {
+        "id": "P001",
+        "nome": "Acrobacias",
+        "idHab": "AGI",
+        "treinado": true
+    },
+    {
+        "id": "P002",
+        "nome": "Atletismo",
+        "idHab": "FOR",
+        "treinado": true
+    },
+    {
+        "id": "P003",
+        "nome": "Enganação",
+        "idHab": "PRE",
+        "treinado": false
+    },
+    {
+        "id": "P004",
+        "nome": "Furtividade",
+        "idHab": "AGI",
+        "treinado": false
+    },
+    {
+        "id": "P005",
+        "nome": "Intimidação",
+        "idHab": "PRE",
+        "treinado": false
+    },
+    {
+        "id": "P006",
+        "nome": "Intuição",
+        "idHab": "PRO",
+        "treinado": false
+    },
+    {
+        "id": "P007",
+        "nome": "Investigação",
+        "idHab": "INT",
+        "treinado": true
+    },
+    {
+        "id": "P008",
+        "nome": "Percepção",
+        "idHab": "PRO",
+        "treinado": false
+    },
+    {
+        "id": "P009",
+        "nome": "Persuasão",
+        "idHab": "PRE",
+        "treinado": false
+    },
+    {
+        "id": "P010",
+        "nome": "Prestidigitação",
+        "idHab": "DES",
+        "treinado": true
+    },
+    {
+        "id": "P011",
+        "nome": "Tecnologia",
+        "idHab": "INT",
+        "treinado": true
+    },
+    {
+        "id": "P012",
+        "nome": "Tratamento",
+        "idHab": "INT",
+        "treinado": true
+    },
+    {
+        "id": "P013",
+        "nome": "Veículos",
+        "idHab": "DES",
+        "treinado": true
+    }
+]

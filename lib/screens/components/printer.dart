@@ -28,13 +28,20 @@ class Printer{
   static pw.TextStyle headerTxtStyle = const pw.TextStyle();
   
   // Configuração da Fonte
-  static pw.Text headerRowTable(String txt) => pw.Text(
+  static pw.Widget headerRowTable(String txt) => 
+  pw.Container(
+    decoration: const pw.BoxDecoration(color: PdfColor(0, 0, 0)),
+    child: pw.Text(
     txt,
     textAlign: pw.TextAlign.center,
     style: pw.TextStyle(
-      fontWeight: pw.FontWeight.bold
-    )
+      fontWeight: pw.FontWeight.bold,
+      color: const PdfColor(1, 1, 1)
+    ),
+  )
+  
   );
+  
 
   static pw.Text cellRowTable (String txt) => pw.Text(
     txt,
@@ -61,7 +68,7 @@ class Printer{
         decoration: pw.BoxDecoration(
           border: pw.Border.all(),
         ),
-        child: pw.Text("${personagem.np} (${personagem.np * 15})")
+        child: pw.Text("NP ${personagem.np} (${personagem.np * 15} pontos)")
         
       )
       
@@ -130,12 +137,12 @@ class Printer{
         border: pw.TableBorder.all(),
 
         columnWidths: {
-          0: const pw.FixedColumnWidth(80),
-          1: const pw.FixedColumnWidth(80), 
-          2: const pw.FixedColumnWidth(80),
-          3: const pw.FixedColumnWidth(80),
-          4: const pw.FixedColumnWidth(80),
-          5: const pw.FixedColumnWidth(80)
+          0: const pw.FixedColumnWidth(50),
+          1: const pw.FixedColumnWidth(50), 
+          2: const pw.FixedColumnWidth(50),
+          3: const pw.FixedColumnWidth(50),
+          4: const pw.FixedColumnWidth(50),
+          5: const pw.FixedColumnWidth(50)
         },
         children: [
           pw.TableRow(
@@ -192,8 +199,8 @@ class Printer{
       Map leftVantagem = personagem.vantagens.listaVantagens[i];
       contentRows.add(descVantagem(leftVantagem));
 
-      if(nMax ~/ 2 + 1 + i < nMax){
-        Map rightVantagem = personagem.vantagens.listaVantagens[nMax ~/ 2 + 1 + i];
+      if((nMax / 2).ceil() + i < nMax){
+        Map rightVantagem = personagem.vantagens.listaVantagens[(nMax / 2).ceil() + i];
         contentRows.add(descVantagem(rightVantagem));
       }
       tablesRows.add(pw.TableRow(children: contentRows));
@@ -227,14 +234,14 @@ class Printer{
       );
     }
 
-    for(int i = 0; i <= nMax / 2; i++){
+    for(int i = 0; i < nMax / 2; i++){
       contentRows = [];
 
       Map mapPericiaRight = personagem.pericias.ListaPercias[i];
       contentRows.add(descPericia(mapPericiaRight));
 
-      if(nMax ~/ 2 + 1 + i < nMax){
-        Map mapPericiaLeft = personagem.pericias.ListaPercias[nMax ~/ 2 + 1 + i];
+      if((nMax / 2).ceil() + i < nMax){
+        Map mapPericiaLeft = personagem.pericias.ListaPercias[(nMax / 2).ceil() + i];
         contentRows.add(descPericia(mapPericiaLeft));
       }
 

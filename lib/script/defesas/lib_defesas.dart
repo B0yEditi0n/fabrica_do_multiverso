@@ -95,7 +95,7 @@ class Defesa{
 class Resistencia extends Defesa{
   @override
   int bonusTotal([bool sumBonus = true]){
-    int total = super.bonusTotal();
+    int total = super.bonusTotal(sumBonus);
 
     // Inclui a Vantagem Rolamento Defensivo
     List vantagens  = personagem.vantagens.listaVantagens;
