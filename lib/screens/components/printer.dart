@@ -13,7 +13,9 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'dart:typed_data';
 
 // Importação da Lógica de processamento dos Widgets
-import 'package:fabrica_do_multiverso/script/defesas/lib_defesas.dart';
+// import 'package:fabrica_do_multiverso/script/defesas/lib_defesas.dart';
+
+import 'package:fabrica_do_multiverso/script/printer/poderes.dart';
 
 import 'dart:developer' as dev;
 
@@ -38,6 +40,8 @@ class Printer{
     txt,
     textAlign: pw.TextAlign.center,
   );
+
+  static const int sizedWidgetColumn = 560;
 
   // TODO: Wigets para compor o PDF
 
@@ -249,6 +253,25 @@ class Printer{
     );
   }
 
+  static Future<pw.Widget> poderes() async {
+    //dev.debugger(message: 'debbuger de poderes');
+    List<pw.Widget> content = [];
+
+    content.add(pw.Text('Poderes', style: headerTxtStyle));
+    content.addAll(await WidPdgPoderes.classificador(personagem.poderes.poderesLista));
+
+    return pw.Row(
+
+      children: [
+        pw.Column(
+          mainAxisAlignment: pw.MainAxisAlignment.start,
+          crossAxisAlignment: pw.CrossAxisAlignment.start,
+          children: content // 
+        )
+      ]
+    );
+  } 
+
   static pw.Widget complicacoes(){
     List<pw.TableRow> tableRows = [];
 
@@ -258,33 +281,48 @@ class Printer{
         // repeat: true,
         // verticalAlignment: pw.TableCellVerticalAlignment.full,
         children: [
-          pw.Padding(padding: const pw.EdgeInsets.only(left: 15, right: 15),
-          child: pw.Wrap(children:[
-              pw.RichText(text: pw.TextSpan(text: "\t\u2022\t", style: pw.TextStyle(font: robotFont, fontWeight: pw.FontWeight.normal),
-              children: [
-                pw.TextSpan(text: personagem.complicacoes[i]["titulo"] + ": ", style: pw.TextStyle(fontWeight: pw.FontWeight.bold)), 
-                pw.TextSpan(text: personagem.complicacoes[i]["desc"], style: pw.TextStyle(fontWeight: pw.FontWeight.normal))
-              ]
-              ))
-            ])
+          pw.Padding(padding: const pw.EdgeInsets.only(left: 1, right: 1),
+          child:pw.Padding(padding: const pw.EdgeInsets.only(left: 5, right: 5),
+              child: 
+              pw.Row(children: [
+                pw.Text(personagem.complicacoes[i]["titulo"] + ": ", style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+                pw.Text(personagem.complicacoes[i]["desc"], style: pw.TextStyle(fontWeight: pw.FontWeight.normal),
+                overflow: pw.TextOverflow.visible
+                )
+              ])
+              
+              //pw.Flexible(
+                // child: pw.RichText(text: pw.TextSpan(text: "\u2022\t", style: pw.TextStyle(font: robotFont, fontWeight: pw.FontWeight.normal),
+                //   children: [
+                //     pw.TextSpan(text: personagem.complicacoes[i]["titulo"] + ": ", style: pw.TextStyle(fontWeight: pw.FontWeight.bold)), 
+                //     pw.TextSpan(text: personagem.complicacoes[i]["desc"], style: pw.TextStyle(fontWeight: pw.FontWeight.normal))
+                //   ]
+                // ))
+              //)
           )
+        )
       ]));
     }
 
-    return pw.Column(
+    return pw.Row(
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: [
-        pw.Text('Complicações', style: headerTxtStyle),  
-        pw.Table(
-          border: const pw.TableBorder(
-            top: pw.BorderSide(color: PdfColor(0, 0, 0), width: 1),
-            left: pw.BorderSide(color: PdfColor(0, 0, 0), width: 1),
-            right: pw.BorderSide(color: PdfColor(0, 0, 0), width: 1),
-            bottom: pw.BorderSide(color: PdfColor(0, 0, 0), width: 1),
-          ),
-          children: tableRows
-        )
-      ]
+        pw.Column(
+          mainAxisAlignment: pw.MainAxisAlignment.start,
+          crossAxisAlignment: pw.CrossAxisAlignment.start,
+          children: [
+            pw.Text('Complicações', style: headerTxtStyle),
+            pw.Table(
+              border: const pw.TableBorder(
+                top: pw.BorderSide(color: PdfColor(0, 0, 0), width: 1),
+                left: pw.BorderSide(color: PdfColor(0, 0, 0), width: 1),
+                right: pw.BorderSide(color: PdfColor(0, 0, 0), width: 1),
+                bottom: pw.BorderSide(color: PdfColor(0, 0, 0), width: 1),
+              ),
+              children: tableRows
+            )
+          ]
+      )]
     );
   }
 
@@ -349,6 +387,8 @@ class Printer{
       )
     );
 
+    pw.Widget pdfWidgetPoderes = await poderes();
+
     doc.addPage(
       pw.Page(
         pageFormat: PdfPageFormat.a4.portrait,
@@ -356,6 +396,7 @@ class Printer{
         build: (pw.Context context) {
           return pw.Column(
             children: [
+              pdfWidgetPoderes,
               complicacoes()
             ]
           );

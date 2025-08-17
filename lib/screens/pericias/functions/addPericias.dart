@@ -172,8 +172,6 @@ class _PopUpAddSkillState extends State<PopUpAddSkill> {
                       color: Colors.white
                     ),
 
-
-
                     decoration: BoxDecoration(
                       //color: PrimaryScrollController.withOpacity(0.1),
                       borderRadius: const BorderRadius.all(Radius.circular(40)),
@@ -198,9 +196,9 @@ class _PopUpAddSkillState extends State<PopUpAddSkill> {
                       setState(() {
                         // Evita Repetições ao adicionar
                         ListIdPoderes = [];
-                        ListIdPoderes.addAll(results.cast<String>());
-                        _addBonusOfensivo();                        
+                        ListIdPoderes.addAll(results.cast<String>());                        
                       });
+                      _addBonusOfensivo();
                     },
                   )
                 ],
