@@ -64,35 +64,11 @@ class _powerEditState extends State<powerEdit> {
     objPoder = widget.objEfeito;
     // Reinstancia para zerar Objeto
     etiquetasModificadores = ["gerais"];
-    switch (objPoder["class"]) {
-      case "EfeitoCrescimento":
-        poder = EfeitoCrescimento();
-        break;
-      case "EfeitoBonus":
-        poder = EfeitoBonus();
-        break;
-      case "EfeitoAflicao":
-        poder = EfeitoAflicao();
-        break;
-      case "EfeitoDano":
-        poder = EfeitoDano();
-        etiquetasModificadores += ["ofensivos"];
-        break;
-      case "EfeitoCompra":
-        poder = EfeitoCompra();
-        break;
-      case "EfeitoCustoVaria":
-        poder = EfeitoCustoVaria();
-        break;
-      case "EfeitoOfensivo":
-        poder = EfeitoOfensivo();
-        break;
-      case "Efeito":
-      default:
-        poder = Efeito();
-        break;
+    if(objPoder["class"] == "EfeitoDano"){
+      etiquetasModificadores += ["ofensivos"];
     }
-    poder.reinstanciarMetodo(objPoder).then((valor)=>_updateData());
+    poder = await Efeito.init(objPoder);
+    _updateData();
     //_updateData();
     return true;
   }

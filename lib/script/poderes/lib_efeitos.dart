@@ -94,6 +94,38 @@ class Efeito{
 
     return true;
   }
+  static Future<Efeito> init(Map objPoder) async{
+    Efeito poder = Efeito();
+    switch (objPoder["class"]) {
+      case "EfeitoCrescimento":
+        poder = EfeitoCrescimento();
+        break;
+      case "EfeitoBonus":
+        poder = EfeitoBonus();
+        break;
+      case "EfeitoAflicao":
+        poder = EfeitoAflicao();
+        break;
+      case "EfeitoDano":
+        poder = EfeitoDano();
+        break;
+      case "EfeitoCompra":
+        poder = EfeitoCompra();
+        break;
+      case "EfeitoCustoVaria":
+        poder = EfeitoCustoVaria();
+        break;
+      case "EfeitoOfensivo":
+        poder = EfeitoOfensivo();
+        break;
+      case "Efeito":
+      default:
+        poder = Efeito();
+        break;
+    }
+    await poder.reinstanciarMetodo(objPoder);
+    return poder;
+  }
 
   Future<List> carregaJson() async{
     /*
@@ -316,9 +348,9 @@ class Efeito{
     }
 
     // - Soma dos Modificadores
-    var custoModGrad = 0;
-    var custoModfixo = 0;
-    for(var mod in _modificador){
+    int custoModGrad = 0;
+    int custoModfixo = 0;
+    for(Map mod in _modificador){
       if(mod["fixo"]){
         // Custo fixo
         custoModfixo = (mod["grad"] * mod["custo_base"]) + custoModfixo;
@@ -1034,4 +1066,4 @@ class EfeitoCrescimento extends EfeitoBonus{
 }
 
 // Variável de Manipulação de Poderes
-var poder = Efeito();
+Efeito poder = Efeito();

@@ -3,6 +3,66 @@ import 'package:pdf/pdf.dart';
 
 import 'package:fabrica_do_multiverso/script/poderes/lib_efeitos.dart';
 
+class PowerGeneric{
+  static Efeito ef = Efeito();
+  static Map power = {};
+  
+  static List<pw.Widget> title(){
+    List<pw.Widget> powerTitle = [];
+    // criação do Nome
+    if(power["nome"] != ""){
+      powerTitle.add(
+        pw.Text(power["nome"] + ': ', style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+      );
+      powerTitle.add(
+        pw.Text(power["efeito"])
+      );
+    }else{
+      powerTitle.add(
+        pw.Text(power["efeito"] + ': ', style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+      );
+    }
+
+    // Add graduação
+    powerTitle.add(pw.Text(' ${ef.returnGraduacao()}'));
+    return powerTitle;
+  }
+  
+  static pw.Text modify(Map modify) => pw.Text(
+    ", ${modify["nome"]}" + // ${modify["desc"]}
+    '${(modify["fixo"] || modify["grad"] > 2) ? modify["grad"] : ""}'
+  );
+
+  static pw.Text custo() => pw.Text(' - ${ef.custearAlteracoes()} pontos');
+
+  static render(Map power){
+    init(power);
+
+    List<pw.Widget> powerContent = [];
+
+    powerContent.addAll(title());
+
+    if(power["class"] == "EfeitoAflicao"){
+
+    }
+
+    // Modificadores
+    for (Map m in power["modificadores"] ) {
+      powerContent.add(modify(m));
+    }
+
+    // Custo
+    powerContent.add(custo());
+
+    return pw.Row( children: powerContent );
+  }
+
+  static init(powerImport) async{
+    await ef.reinstanciarMetodo(powerImport);
+    power = ef.retornaObj();
+  }
+}
+
 class WidPdgPoderes{
   static pdfBlack() => const PdfColor(0, 0, 0);
 
@@ -11,57 +71,24 @@ class WidPdgPoderes{
     border: pw.Border.all(color: WidPdgPoderes.pdfBlack(), style: pw.BorderStyle.solid, width: 0.5)
   );
 
-
-  //
   // Construção para poderes genéricos
-  //
+  static Future<pw.Widget> genericPower(Map power)async => PowerGeneric.render(power);
 
-  static pw.Text modify(Map modify) => pw.Text(
-    ", ${modify["nome"]}" + // ${modify["desc"]}
-    '${(modify["fixo"] || modify["grad"] > 2) ? modify["grad"] : ""}'
-  );
-  static Future<pw.Widget> genericPower(Map power)async{
-    Efeito ef = Efeito();
-    await ef.reinstanciarMetodo(power);
-    
-    List<pw.Widget> powerContent = [];
-
-    // criação do Nome
-    if(power["nome"] != ""){
-      powerContent.add(
-        pw.Text(power["nome"] + ': ', style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
-      );
-      powerContent.add(
-        pw.Text(power["efeito"])
-      );
-    }else{
-      powerContent.add(
-        pw.Text(power["efeito"] + ': ', style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
-      );
-    }
-
-    // Modificadores
-    for (Map m in power["modificadores"] ) {
-      powerContent.add(WidPdgPoderes.modify(m));
-    }
-
-    // Custo
-    powerContent.add(pw.Text(' - total: ${ef.custearAlteracoes()}'));
-
-    return pw.Row( children: powerContent );
-  }
-
-  static Future<pw.Widget> packege(Map packged) async =>
-  pw.SizedBox(
-    child: pw.Container(
-      decoration: decorationBorder(),
-      padding: const pw.EdgeInsets.all(5),
-      width: 560,
-      //margin: const pw.EdgeInsets.all(),
-      child: pw.Column(
-        children: await WidPdgPoderes.classificador(packged["efeitos"])
+  static Future<pw.Widget> packege(Map packged) async => pw.Column(
+    children: [
+      pw.Text(packged["nome"]),
+      pw.SizedBox(
+        child: pw.Container(
+          decoration: decorationBorder(),
+          padding: const pw.EdgeInsets.all(5),
+          width: 560,
+          //margin: const pw.EdgeInsets.all(),
+          child: pw.Column(
+            children: await WidPdgPoderes.classificador(packged["efeitos"])
+          )
+        )
       )
-    )
+    ]
   );
 
 
