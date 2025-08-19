@@ -3,23 +3,25 @@ import 'package:pdf/pdf.dart';
 
 import 'package:fabrica_do_multiverso/script/poderes/lib_efeitos.dart';
 
+import 'dart:developer';
+
 class PowerGeneric{
-  static Efeito ef = Efeito();
-  static Map power = {};
+  Efeito ef = Efeito();
+  Map power = {};
   
-  static List<pw.Widget> title(){
+  List<pw.Widget> title(){
     List<pw.Widget> powerTitle = [];
     // criação do Nome
     if(power["nome"] != ""){
       powerTitle.add(
-        pw.Text(power["nome"] + ': ', style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+        pw.Text('${power["nome"]}: ', style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
       );
       powerTitle.add(
         pw.Text(power["efeito"])
       );
     }else{
       powerTitle.add(
-        pw.Text(power["efeito"] + ': ', style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+        pw.Text('${power["efeito"]}: ', style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
       );
     }
 
@@ -28,22 +30,35 @@ class PowerGeneric{
     return powerTitle;
   }
   
-  static pw.Text modify(Map modify) => pw.Text(
+  pw.Text modify(Map modify) => pw.Text(
     ", ${modify["nome"]}" + // ${modify["desc"]}
     '${(modify["fixo"] || modify["grad"] > 2) ? modify["grad"] : ""}'
   );
 
-  static pw.Text custo() => pw.Text(' - ${ef.custearAlteracoes()} pontos');
+  pw.Text custo() => pw.Text(' - ${ef.custearAlteracoes()} pontos');
 
-  static render(Map power){
-    init(power);
+  render(Map power)async{
+    await init(power);
 
     List<pw.Widget> powerContent = [];
 
     powerContent.addAll(title());
 
     if(power["class"] == "EfeitoAflicao"){
-
+      powerContent.add(pw.Text(' ['));
+      if(power["condicoes"][0] != ""){
+        powerContent.add(pw.Text(power["condicoes"][0]));
+      }
+          
+      if(power["condicoes"][1] != ""){
+        powerContent.add(pw.Text(", ${power["condicoes"][1]}, "));
+      }
+    
+      if(power["condicoes"][2] != ""){
+        powerContent.add(pw.Text(power["condicoes"][2]));
+      }
+      powerContent.add(pw.Text(']'));
+      
     }
 
     // Modificadores
@@ -57,9 +72,10 @@ class PowerGeneric{
     return pw.Row( children: powerContent );
   }
 
-  static init(powerImport) async{
-    await ef.reinstanciarMetodo(powerImport);
+  init(powerImport) async{
+    ef = await Efeito.init(powerImport);
     power = ef.retornaObj();
+    return this;
   }
 }
 
@@ -72,7 +88,7 @@ class WidPdgPoderes{
   );
 
   // Construção para poderes genéricos
-  static Future<pw.Widget> genericPower(Map power)async => PowerGeneric.render(power);
+  static Future<pw.Widget> genericPower(Map power)async => await PowerGeneric().render(power);
 
   static Future<pw.Widget> packege(Map packged) async => pw.Column(
     children: [
