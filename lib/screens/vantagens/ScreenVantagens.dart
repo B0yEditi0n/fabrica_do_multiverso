@@ -18,7 +18,7 @@ class _ScreenVantagensState extends State<ScreenVantagens> {
 
   List repertorioVantagens = [];
   List vantagensDisponiveis = [];
-  List addVantagens = [];
+  List addVantagens = personagem.vantagens.listaVantagens;
   
   Map objVantagems = {};
 
@@ -36,7 +36,6 @@ class _ScreenVantagensState extends State<ScreenVantagens> {
     
     // Checa o que já foi adicionado
     setState(() {
-      addVantagens.addAll(personagem.vantagens.listaVantagens);
       cutoTotal = personagem.vantagens.cutoTotal();
     });
 
@@ -71,8 +70,6 @@ class _ScreenVantagensState extends State<ScreenVantagens> {
             icon: const Icon(Icons.arrow_back),
             onPressed: () async => {
               // Fecha A Aplicação & passando alterações
-              personagem.vantagens.listaVantagens = [],
-              personagem.vantagens.listaVantagens.addAll(addVantagens.map((e) => e)),
               Navigator.of(context).pop()
             }),
       ),
@@ -118,11 +115,11 @@ class _ScreenVantagensState extends State<ScreenVantagens> {
                               icon: const  Icon(Icons.delete),
                               onPressed: () =>{  
                                   if(!addVantagens[index]["addByPower"]){
+                                    updateAvaliableAdvantage(),
                                     setState(() {
-                                    addVantagens.removeAt(index);
-                                    updateAvaliableAdvantage();
-                                    cutoTotal = personagem.vantagens.cutoTotal();
-                                  })
+                                      addVantagens.removeAt(index);                                    
+                                      cutoTotal = personagem.vantagens.cutoTotal();
+                                    })
                                   } 
                                   
                                 }
@@ -135,18 +132,21 @@ class _ScreenVantagensState extends State<ScreenVantagens> {
                   ),
                   onTap: () async{
                     // Ao selecionar uma vantagem já adicionada
-                    objVantagems = {};
-                    objVantagems = await Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => PopUpAddVantagem(repertorioVantagens: vantagensDisponiveis, obj: addVantagens[index]),
-                      )
-                    );
-                    
-                    if(objVantagems.isNotEmpty){ 
-                      setState(() {
+                    if(addVantagens[index]["desc"] 
+                    || addVantagens[index]["graduado"]){
+                      objVantagems = {};
+                      objVantagems = await Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => PopUpAddVantagem(repertorioVantagens: vantagensDisponiveis, obj: addVantagens[index]),
+                        )
+                      );
+                      
+                      if(objVantagems.isNotEmpty){ 
                         addVantagens[index] = objVantagems;
-                        cutoTotal = personagem.vantagens.cutoTotal();
-                      });
+                        setState(() {                        
+                          cutoTotal = personagem.vantagens.cutoTotal();
+                        });
+                      }
                     }
                 
                   },
@@ -158,8 +158,7 @@ class _ScreenVantagensState extends State<ScreenVantagens> {
             ),
           ),
 
-
-          Text("Total $cutoTotal")
+          Text("Total ${cutoTotal.toString()}")
         ],
       ),
 
@@ -173,7 +172,10 @@ class _ScreenVantagensState extends State<ScreenVantagens> {
             MaterialPageRoute(builder: (context) => PopUpAddVantagem(repertorioVantagens: vantagensDisponiveis, obj: {}),
             )
           ),
-          if(objVantagems.isNotEmpty){ _addNewAdvantage(objVantagems) }
+          if(objVantagems.isNotEmpty){ _addNewAdvantage(objVantagems) },
+          setState((){
+            cutoTotal = personagem.vantagens.cutoTotal();
+          })
         },
       ),
     );

@@ -99,10 +99,10 @@ class _powerEditState extends State<powerEdit> {
   _updateData(){
     // Atualiza o estado da interface após a operação assíncrona
     
-    setState(() {
-      // com a reinstancia é refazer o obj
-      objPoder = poder.retornaObj();
+    // com a reinstancia é refazer o obj
+    objPoder = poder.retornaObj();
 
+    setState(() {
       inputTextNomePoder.text = objPoder["nome"];
 
       // Converte as Variáveis para texto
