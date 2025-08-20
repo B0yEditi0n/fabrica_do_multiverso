@@ -280,35 +280,28 @@ class Printer{
   } 
 
   static pw.Widget complicacoes(){
-    List<pw.TableRow> tableRows = [];
+    List<pw.Widget> containerRows = [];
 
     for(int i = 0; i < personagem.complicacoes.length; i++){
-      tableRows.add(pw.TableRow(
-        
-        // repeat: true,
-        // verticalAlignment: pw.TableCellVerticalAlignment.full,
-        children: [
+      // containerRows.add(pw.Text("\u2022\t", style: pw.TextStyle(font: robotFont, fontWeight: pw.FontWeight.normal)));
+      containerRows.add(
           pw.Padding(padding: const pw.EdgeInsets.only(left: 1, right: 1),
           child:pw.Padding(padding: const pw.EdgeInsets.only(left: 5, right: 5),
               child: 
-              pw.Row(children: [
-                pw.Text(personagem.complicacoes[i]["titulo"] + ": ", style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
-                pw.Text(personagem.complicacoes[i]["desc"], style: pw.TextStyle(fontWeight: pw.FontWeight.normal),
-                overflow: pw.TextOverflow.visible
-                )
-              ])
-              
-              //pw.Flexible(
-                // child: pw.RichText(text: pw.TextSpan(text: "\u2022\t", style: pw.TextStyle(font: robotFont, fontWeight: pw.FontWeight.normal),
-                //   children: [
-                //     pw.TextSpan(text: personagem.complicacoes[i]["titulo"] + ": ", style: pw.TextStyle(fontWeight: pw.FontWeight.bold)), 
-                //     pw.TextSpan(text: personagem.complicacoes[i]["desc"], style: pw.TextStyle(fontWeight: pw.FontWeight.normal))
-                //   ]
+                pw.RichText(
+                  overflow: pw.TextOverflow.clip,
+                  text: pw.TextSpan(text: "",
+                  children: [
+                    //pw.TextSpan(text: "\u2022\t", style: pw.TextStyle(font: robotFont, fontWeight: pw.FontWeight.normal)),
+                    pw.TextSpan(text: personagem.complicacoes[i]["titulo"] + ": ", style: pw.TextStyle(fontWeight: pw.FontWeight.bold)), 
+                    pw.TextSpan(text: personagem.complicacoes[i]["desc"])
+                  ]
+                ))
                 // ))
               //)
           )
         )
-      ]));
+      );
     }
 
     return pw.Row(
@@ -319,14 +312,19 @@ class Printer{
           crossAxisAlignment: pw.CrossAxisAlignment.start,
           children: [
             pw.Text('Complicações', style: headerTxtStyle),
-            pw.Table(
-              border: const pw.TableBorder(
-                top: pw.BorderSide(color: PdfColor(0, 0, 0), width: 1),
-                left: pw.BorderSide(color: PdfColor(0, 0, 0), width: 1),
-                right: pw.BorderSide(color: PdfColor(0, 0, 0), width: 1),
-                bottom: pw.BorderSide(color: PdfColor(0, 0, 0), width: 1),
-              ),
-              children: tableRows
+            pw.Container(
+              decoration: pw.BoxDecoration(border: 
+              pw.Border.all(
+                color: const PdfColor(0, 0, 0), 
+                style: pw.BorderStyle.solid,
+                width: 1,
+              )),
+              width: sizedWidgetColumn.toDouble(),
+              child: pw.Column(
+                crossAxisAlignment: pw.CrossAxisAlignment.start,
+                mainAxisSize: pw.MainAxisSize.max,
+                children: containerRows,
+              )
             )
           ]
       )]

@@ -155,7 +155,7 @@ class Efeito{
         int novaDuracao - um valor a ser definido em duração
 
     */ 
-    var duracaoPadrao = _padraoEfeito["duracao"];
+    int duracaoPadrao = _padraoEfeito["duracao"];
     switch (duracaoPadrao) {
       case 1 || 2: 
         // Instantaneo ou Concentração
@@ -192,7 +192,7 @@ class Efeito{
         int novaAcao - um valor a ser definido em duração
 
     */ 
-    var acaoPadrao = _padraoEfeito["acao"];
+    int acaoPadrao = _padraoEfeito["acao"];
     switch (acaoPadrao){
       //case 0:
       /* não pode pode case 0 pois isso é alterdação
@@ -226,7 +226,7 @@ class Efeito{
         int novaDuracao - um valor a ser definido em duração
 
     */ 
-    var alcancePadrao = _padraoEfeito["alcance"];
+    int alcancePadrao = _padraoEfeito["alcance"];
     switch (alcancePadrao){
       case 0:
         // Pessoal

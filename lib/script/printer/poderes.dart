@@ -5,71 +5,104 @@ import 'package:fabrica_do_multiverso/script/poderes/lib_efeitos.dart';
 
 import 'dart:developer';
 
+const int sizedWidgetColumn = 560;
+
 class PowerGeneric{
   Efeito ef = Efeito();
   Map power = {};
   
-  List<pw.Widget> title(){
-    List<pw.Widget> powerTitle = [];
+  List<pw.TextSpan> title(){
+    List<pw.TextSpan> powerTitle = [];
     // criação do Nome
     if(power["nome"] != ""){
       powerTitle.add(
-        pw.Text('${power["nome"]}: ', style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+        pw.TextSpan(text: '${power["nome"]}: ', style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
       );
       powerTitle.add(
-        pw.Text(power["efeito"])
+        pw.TextSpan(text: power["efeito"])
       );
     }else{
       powerTitle.add(
-        pw.Text('${power["efeito"]}: ', style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+        pw.TextSpan(text: '${power["efeito"]}: ', style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
       );
     }
 
     // Add graduação
-    powerTitle.add(pw.Text(' ${ef.returnGraduacao()}'));
+    powerTitle.add(pw.TextSpan(text: ' ${ef.returnGraduacao()}'));
     return powerTitle;
   }
   
-  pw.Text modify(Map modify) => pw.Text(
-    ", ${modify["nome"]}" + // ${modify["desc"]}
-    '${(modify["fixo"] || modify["grad"] > 2) ? modify["grad"] : ""}'
+  pw.TextSpan modify(Map modify) => pw.TextSpan(
+    text:
+    ", ${modify["nome"]}",
+    children:[
+      pw.TextSpan(text: '${(modify["fixo"] || modify["grad"] > 2) ? modify["grad"] : ""}')
+    ]
+    // ${modify["desc"]}
+    
   );
 
-  pw.Text custo() => pw.Text(' - ${ef.custearAlteracoes()} pontos');
+  pw.TextSpan custo() => pw.TextSpan(text: ' - ${ef.custearAlteracoes()} pontos');
 
-  render(Map power)async{
+  Future<pw.Widget> render(Map power)async{
     await init(power);
 
-    List<pw.Widget> powerContent = [];
+    List<pw.TextSpan> powerContent = [];
 
     powerContent.addAll(title());
 
     if(power["class"] == "EfeitoAflicao"){
-      powerContent.add(pw.Text(' ['));
+      powerContent.add(const pw.TextSpan(text: ' ['));
       if(power["condicoes"][0] != ""){
-        powerContent.add(pw.Text(power["condicoes"][0]));
+        powerContent.add(pw.TextSpan(text: power["condicoes"][0]));
       }
           
       if(power["condicoes"][1] != ""){
-        powerContent.add(pw.Text(", ${power["condicoes"][1]}, "));
+        powerContent.add(pw.TextSpan(text: ", ${power["condicoes"][1]}, "));
       }
     
       if(power["condicoes"][2] != ""){
-        powerContent.add(pw.Text(power["condicoes"][2]));
+        powerContent.add(pw.TextSpan(text: power["condicoes"][2]));
       }
-      powerContent.add(pw.Text(']'));
+      powerContent.add(const pw.TextSpan(text:']'));
       
     }
 
+    //#
+    //# Modificadores
+    //#
+
+    // checa se distância é padrão
+    if(ef.returnObjDefault()["alcance"] != power["alcance"]){
+      powerContent.add(modify({
+        "nome": ef.returnStrAlcance(),
+        "fixo": false,
+        "grad": 0
+      }));
+    }
     // Modificadores
     for (Map m in power["modificadores"] ) {
       powerContent.add(modify(m));
     }
+    // Duração
+    if(ef.returnObjDefault()["duracao"] != power["duracao"]){
+      powerContent.add(modify({
+        "nome": ef.returnStrDuracao(),
+        "fixo": false,
+        "grad": 0
+      }));
+    }
+    // Criar uma tratativa para reação
+    // acao
 
     // Custo
     powerContent.add(custo());
 
-    return pw.Row( children: powerContent );
+    return pw.RichText( 
+      overflow: pw.TextOverflow.clip,
+      text: pw.TextSpan(text:'',
+      children: powerContent 
+    ));
   }
 
   init(powerImport) async{
@@ -100,6 +133,7 @@ class WidPdgPoderes{
           width: 560,
           //margin: const pw.EdgeInsets.all(),
           child: pw.Column(
+            crossAxisAlignment: pw.CrossAxisAlignment.start,
             children: await WidPdgPoderes.classificador(packged["efeitos"])
           )
         )
