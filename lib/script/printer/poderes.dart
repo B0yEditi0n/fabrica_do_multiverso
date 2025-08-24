@@ -52,7 +52,7 @@ class PowerGeneric{
     powerContent.addAll(title());
 
     if(power["class"] == "EfeitoAflicao"){
-      powerContent.add(const pw.TextSpan(text: ' ['));
+      powerContent.add(const pw.TextSpan(text: ' ('));
       if(power["condicoes"][0] != ""){
         powerContent.add(pw.TextSpan(text: power["condicoes"][0]));
       }
@@ -64,13 +64,22 @@ class PowerGeneric{
       if(power["condicoes"][2] != ""){
         powerContent.add(pw.TextSpan(text: power["condicoes"][2]));
       }
-      powerContent.add(const pw.TextSpan(text:']'));
+      powerContent.add(const pw.TextSpan(text:')'));
       
     }
 
     //#
     //# Modificadores
     //#
+
+    if(power["class"] == "EfeitoBonus"){
+      powerContent.add(const pw.TextSpan(text:' ('));
+      for(Map alv in power["alvoAumento"]){
+        powerContent.add(pw.TextSpan(text: "${alv["nome"]}: ${alv["valor"]}"));
+      }
+      powerContent.add(const pw.TextSpan(text:')'));
+    }
+    
 
     // checa se distância é padrão
     if(ef.returnObjDefault()["alcance"] != power["alcance"]){
@@ -151,6 +160,8 @@ class WidPdgPoderes{
       switch (pd["class"]){
         case "PacotesEfeitos":
           wigetPoderes.add(await packege(pd));
+          break;
+        case "":
           break;
         default:
           wigetPoderes.add(await WidPdgPoderes.genericPower(pd));

@@ -8,10 +8,22 @@ class Habilidade {
 
   bool ausente = false;
 
-  init(id, valor, nome) {
+  Habilidade init(id, valor, nome) {
     _id = id;
     this.valor = valor;
     this.nome = nome;
+
+    return this;
+  }
+
+  Habilidade reInit(object){
+    _id = object["id"];
+    nome = object["nome"];
+    ausente = object["ausente"];
+    valor = object["valor"];
+    bonus = object["bonus"];
+
+    return this;
   }
 
   int initObject(object) {
@@ -42,7 +54,7 @@ class Habilidade {
 
     return bonusTotal + valor;
   }
-
+  
   List valoresTotais() {
     /*
       Retorna uma lista de valores que esse objeto pode assumir 

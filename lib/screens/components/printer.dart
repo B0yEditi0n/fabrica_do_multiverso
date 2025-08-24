@@ -2,6 +2,7 @@
 import 'package:fabrica_do_multiverso/script/ficha.dart';
 import 'package:fabrica_do_multiverso/script/pericias/lib_pericias.dart';
 import 'package:fabrica_do_multiverso/script/vantagens/lib_vantagens.dart';
+import 'package:fabrica_do_multiverso/script/habilidades/lib_habilidades.dart';
 import 'package:flutter/material.dart';
 
 // Criação de PDFs
@@ -75,6 +76,15 @@ class Printer{
     ]
   );
 
+  static String totalHabilidades(mapHabi){
+    String retValue = mapHabi["valor"].toString();
+
+    if((mapHabi["bonus"] as List).isNotEmpty){
+      retValue += " / ${Habilidade().reInit(mapHabi).valorTotal()}";
+    }
+    return retValue;
+  }
+
   static pw.Widget habilidades() => pw.Column(
     crossAxisAlignment: pw.CrossAxisAlignment.start,
     children: [  
@@ -102,10 +112,10 @@ class Printer{
           ),
 
           pw.TableRow(children: [
-            cellRowTable(personagem.habilidades.getItem("FOR")["valor"].toString()),
-            cellRowTable(personagem.habilidades.getItem("AGI")["valor"].toString()),
-            cellRowTable(personagem.habilidades.getItem("LUT")["valor"].toString()),
-            cellRowTable(personagem.habilidades.getItem("PRO")["valor"].toString())
+            cellRowTable(totalHabilidades(personagem.habilidades.getItem("FOR"))),
+            cellRowTable(totalHabilidades(personagem.habilidades.getItem("AGI"))),
+            cellRowTable(totalHabilidades(personagem.habilidades.getItem("LUT"))),
+            cellRowTable(totalHabilidades(personagem.habilidades.getItem("PRO")))
           ]),
 
           pw.TableRow(
@@ -118,10 +128,10 @@ class Printer{
           ),
 
           pw.TableRow(children: [
-            cellRowTable(personagem.habilidades.getItem("VIG")["valor"].toString()),
-            cellRowTable(personagem.habilidades.getItem("DES")["valor"].toString()),
-            cellRowTable(personagem.habilidades.getItem("INT")["valor"].toString()),
-            cellRowTable(personagem.habilidades.getItem("PRE")["valor"].toString())
+            cellRowTable(totalHabilidades(personagem.habilidades.getItem("VIG"))),
+            cellRowTable(totalHabilidades(personagem.habilidades.getItem("DES"))),
+            cellRowTable(totalHabilidades(personagem.habilidades.getItem("INT"))),
+            cellRowTable(totalHabilidades(personagem.habilidades.getItem("PRE")))
           ]),
 
         ]
