@@ -1,0 +1,35 @@
+[
+    {
+        "id": "D001",
+        "nome": "Esquiva",
+        "valor": 0,
+        "bonus": 0,
+        "idHabi": "AGI",
+        "idOpDefesa": "D004"
+    },
+    {
+        "id": "D002",
+        "nome": "Aparar",
+        "valor": 0,
+        "bonus": 0,
+        "idHabi": "LUT",
+        "idOpDefesa": "D004"
+    },
+    {
+        "id": "D003",
+        "nome": "Fortitude",
+        "valor": 0,
+        "bonus": 0,
+        "idHabi": "VIG",
+        "idOpDefesa": "D005"
+    },
+
+    {
+        "id": "D005",
+        "nome": "Vontade",
+        "valor": 0,
+        "bonus": 0,
+        "idHabi": "PRO",
+        "idOpDefesa": "D003"
+    }
+]

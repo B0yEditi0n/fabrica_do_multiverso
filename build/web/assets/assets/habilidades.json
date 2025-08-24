@@ -1,0 +1,42 @@
+[
+    {    
+        "id":"FOR",
+        "valor": 0,
+        "nome": "Força"
+    },
+    {    
+        "id":"VIG",
+        "valor": 0,
+        "nome": "Vigor"
+    },
+    {    
+        "id":"AGI",
+        "valor": 0,
+        "nome": "Agilidade"
+    },
+    {    
+        "id":"DES",
+        "valor": 0,
+        "nome": "Destreza"
+    },
+    {    
+        "id":"LUT",
+        "valor": 0,
+        "nome": "Luta"
+    },
+    {    
+        "id":"INT",
+        "valor": 0,
+        "nome": "Intelecto"
+    },
+    {    
+        "id":"PRO",
+        "valor": 0,
+        "nome": "Prontidão"
+    },
+    {    
+        "id":"PRE",
+        "valor": 0,
+        "nome": "Presença"
+    }
+]
