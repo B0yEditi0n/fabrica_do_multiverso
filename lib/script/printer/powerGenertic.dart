@@ -70,9 +70,44 @@ class PowerGeneric{
     return powerContent;
   }
 
-  compra(){
+  //
+  // Efeitos de Escolha (EfeitoCompra / EfeitoCustoVaria)
+  // Imprime as opções que foram efetivamente selecionadas em "opt"
+  //
+  List<pw.TextSpan> compra(){
     List<pw.TextSpan> powerContent = [];
-    print(ef);
+
+    // Apenas EfeitoEscolha e suas filhas (EfeitoCompra, EfeitoCustoVaria) possuem "opt"
+    if(power["opt"] == null || (power["opt"] as List).isEmpty){
+      return powerContent;
+    }
+
+    List opt = power["opt"] as List;
+
+    powerContent.add(const pw.TextSpan(text: ' ('));
+    for(int i = 0; i < opt.length; i++){
+      Map o = opt[i];
+
+      // Nome da opção escolhida - tenta os campos mais prováveis do
+      // json de origem (grupoOpt) antes de cair no ID puro
+      String nomeOpt = (o["nome"] ?? o["name"] ?? o["desc"] ?? o["ID"] ?? '')
+          .toString();
+
+      // Texto livre digitado pelo usuário para essa opção (quando existir)
+      String textoLivre = (o["text_desc"] ?? '').toString();
+
+      // Valor/graduação individual da opção, quando fizer sentido exibir
+      String valorOpt = (o["valor"] != null && (o["valor"] as num) > 1)
+          ? ' ${o["valor"]}'
+          : '';
+
+      powerContent.add(pw.TextSpan(
+        text:
+            '${i > 0 ? ", " : ""}$nomeOpt$valorOpt${textoLivre.isNotEmpty ? " ($textoLivre)" : ""}',
+      ));
+    }
+    powerContent.add(const pw.TextSpan(text: ')'));
+
     return powerContent;
   }
 
@@ -82,7 +117,7 @@ class PowerGeneric{
     //# Modificadores
     //#
 
-    if(power["class"] == "EfeitoBonus"){
+    if(power["class"] == "EfeitoBonus" || power["class"] == "EfeitoCrescimento"){
       powerContent.add(const pw.TextSpan(text:' ('));
       for(Map alv in power["alvoAumento"]){
         powerContent.add(pw.TextSpan(text: "${alv["nome"]}: ${alv["valor"]}"));
@@ -137,8 +172,11 @@ class PowerGeneric{
   }
 
   init(powerImport) async{
+    dev.debugger();
     ef = await Efeito.init(powerImport);
-    altenativo = !!powerImport["alternativo"];
+    
+    print(powerImport);
+    altenativo = powerImport["alternativo"] == true;
     power = ef.retornaObj();
     return this;
   }

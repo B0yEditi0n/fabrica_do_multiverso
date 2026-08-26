@@ -11,7 +11,11 @@ import 'package:fabrica_do_multiverso/script/printer/powerGenertic.dart';
 
 import 'dart:developer';
 
-const int sizedWidgetColumn = 560;
+// Largura útil da página A4 retrato com as margens de 25pt usadas em
+// Printer.generatePDF (595.28pt - 25pt - 25pt). Mantido como fonte única
+// para não haver caixas maiores que a área imprimível.
+// Se um dia mudar as margens em Printer.generatePDF, ajuste aqui também.
+const double sizedWidgetColumn = 545;
 
 
 class WidPdgPoderes{
@@ -41,7 +45,7 @@ class WidPdgPoderes{
         child: pw.Container(
           decoration: decorationBorder(),
           padding: const pw.EdgeInsets.all(5),
-          width: 560,
+          width: sizedWidgetColumn,
           //margin: const pw.EdgeInsets.all(),
           child: pw.Column(
             crossAxisAlignment: pw.CrossAxisAlignment.start,
