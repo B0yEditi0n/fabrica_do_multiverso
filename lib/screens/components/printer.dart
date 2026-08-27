@@ -199,8 +199,9 @@ class Printer {
   // Ofensiva - resumo de ataque de cada efeito ofensivo/dano/aflição
   // (mesma regra de bônus usada em ValidaNpPersonagem._efeitos())
   //
-  static Future<pw.Widget> ofensiva() async {
-    List<pw.TableRow> linhas = [];
+
+static Future<pw.Widget> ofensiva() async {
+    List<pw.Widget> itens = [];
 
     // Bônus de Habilidades
     Habilidade objectHabilidade = Habilidade();
@@ -212,6 +213,9 @@ class Printer {
 
     objectHabilidade.initObject(personagem.habilidades.getItem("FOR"));
     int forca = objectHabilidade.valorTotal();
+
+    objectHabilidade.initObject(personagem.habilidades.getItem("AGI"));
+    int agilidade = objectHabilidade.valorTotal();
 
     // Bônus de Vantagens (Ataque Corpo a Corpo / a Distância)
     List vantagens = personagem.vantagens.listaVantagens;
@@ -229,55 +233,73 @@ class Printer {
       vantagemADistancia = objectVantagem.returnTotalGrad();
     }
 
+    // Iniciativa = Agilidade + 4x graduação de "Iniciativa Aprimorada" (se houver)
+    // Obs: não há um ID fixo para essa vantagem no modelo de dados hoje,
+    // então a busca é feita pelo nome. Ajuste aqui se o ID for conhecido.
+    int bonusIniciativa = 0;
+    Map? vantagemIniciativa = vantagens.cast<Map>().firstWhere(
+        (v) => (v["nome"] ?? '').toString().toLowerCase().contains('iniciativa'),
+        orElse: () => {});
+    if (vantagemIniciativa != null && vantagemIniciativa.isNotEmpty) {
+      objectVantagem.init(vantagemIniciativa);
+      bonusIniciativa = objectVantagem.returnTotalGrad() * 4;
+    }
+    int iniciativa = agilidade + bonusIniciativa;
+
     // Efeitos Ofensivos: junta os de Perto (+ Desarmado) e a Distância (+ Arremesso)
     List poderes = [];
     poderes.addAll(personagem.pericias.returnOfensiveEfeitos(1));
     poderes.addAll(personagem.pericias.returnOfensiveEfeitos(2));
 
-    for (Map p in poderes) {
-      linhas.add(await _linhaOfensiva(
-          p, luta, destreza, forca, vantagemCorpoACorpo, vantagemADistancia));
+    // Desarmado/Arremesso sempre primeiro na lista, como no modelo
+    List nativos = poderes.where((p) => p["noPower"] == true).toList()
+      ..sort((a, b) => a["idCriacao"] == "F1" ? -1 : 1);
+    List outros = poderes.where((p) => p["noPower"] != true).toList();
+    poderes = [...nativos, ...outros];
+
+    for (int i = 0; i < poderes.length; i++) {
+      itens.add(await _blocoAtaque(poderes[i], luta, destreza, forca,
+          vantagemCorpoACorpo, vantagemADistancia));
     }
 
-    if (linhas.isEmpty) {
-      linhas.add(pw.TableRow(children: [
-        pw.Padding(
-          padding: const pw.EdgeInsets.all(4),
-          child: pw.Text('Nenhum efeito ofensivo cadastrado.'),
-        ),
-      ]));
+    if (itens.isEmpty) {
+      itens.add(pw.Text('Nenhum efeito ofensivo cadastrado.'));
     }
 
     return pw.Column(
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: [
         sectionHeader('Ofensiva'),
-        pw.Table(
-          border: pw.TableBorder.all(),
-          columnWidths: const {
-            0: pw.FlexColumnWidth(3),
-            1: pw.FlexColumnWidth(2),
-            2: pw.FlexColumnWidth(2),
-            3: pw.FlexColumnWidth(4),
-          },
-          children: [
-            pw.TableRow(children: [
-              headerRowTable('Ataque'),
-              headerRowTable('Alcance'),
-              headerRowTable('Acerto'),
-              headerRowTable('Efeito / CD'),
+        pw.Align(
+          alignment: pw.Alignment.centerRight,
+          child: pw.RichText(
+            text: pw.TextSpan(children: [
+              pw.TextSpan(
+                text: 'Iniciativa ',
+                style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+              ),
+              pw.TextSpan(text: iniciativa >= 0 ? '+$iniciativa' : '$iniciativa'),
             ]),
-            ...linhas,
-          ],
+          ),
+        ),
+        pw.SizedBox(height: 4),
+        pw.Column(
+          crossAxisAlignment: pw.CrossAxisAlignment.start,
+          children: itens,
         ),
       ],
     );
   }
 
-  static Future<pw.TableRow> _linhaOfensiva(Map p, int luta, int destreza,
+  // Monta um bloco de duas linhas: "Nome: Acerto +X | Dano/Efeito Y" e
+  // "CD: Z Resistência" (quando houver CD calculável).
+  static Future<pw.Widget> _blocoAtaque(Map p, int luta, int destreza,
       int forca, int vantagemCorpoACorpo, int vantagemADistancia) async {
-    pw.Widget padded(pw.Widget child) =>
-        pw.Padding(padding: const pw.EdgeInsets.all(3), child: child);
+    String nome;
+    String strAcerto;
+    String labelEfeito;
+    String valorEfeito;
+    String cdValor = '';
 
     // Ataques "genéricos" que não vem de um poder cadastrado (Desarmado / Arremesso)
     if (p["noPower"] == true) {
@@ -286,155 +308,87 @@ class Printer {
           ? luta + vantagemCorpoACorpo
           : destreza + vantagemADistancia;
 
-      return pw.TableRow(children: [
-        padded(cellRowTable(p["nome"])),
-        padded(cellRowTable(ePerto ? 'Perto' : 'À Distância')),
-        padded(cellRowTable('+$bonusAcerto')),
-        padded(cellRowTable('Dano $forca (CD ${forca + 15})')),
-      ]);
-    }
+      nome = p["nome"];
+      strAcerto = '+$bonusAcerto';
+      labelEfeito = 'Dano';
+      valorEfeito = '$forca';
+      cdValor = '${forca + 15} Resistência';
+    } else {
+      // Instancia o efeito real de acordo com a classe salva no Map
+      Efeito objectEfeito = await Efeito.init(p);
+      Map objEfeitoJson = objectEfeito.retornaObj();
 
-    // Instancia o efeito real de acordo com a classe salva no Map
-    Efeito objectEfeito = await Efeito.init(p);
-    Map objEfeitoJson = objectEfeito.retornaObj();
+      int alcance = p["alcance"] ?? objEfeitoJson["alcance"];
+      int bonusVantagem = alcance == 1
+          ? luta + vantagemCorpoACorpo
+          : alcance == 2
+              ? destreza + vantagemADistancia
+              : 0;
 
-    int alcance = p["alcance"] ?? objEfeitoJson["alcance"];
-    int bonusVantagem = alcance == 1
-        ? luta + vantagemCorpoACorpo
-        : alcance == 2
-            ? destreza + vantagemADistancia
-            : 0;
+      int totalAcerto = bonusVantagem;
+      if (objectEfeito is EfeitoOfensivo) {
+        totalAcerto += objectEfeito.totalBonusAcerto();
+      }
 
-    int totalAcerto = bonusVantagem;
-    if (objectEfeito is EfeitoOfensivo) {
-      totalAcerto += objectEfeito.totalBonusAcerto();
-    }
+      nome = objectEfeito.nome.isNotEmpty
+          ? objectEfeito.nome
+          : objEfeitoJson["efeito"];
+      strAcerto = alcance == 3 ? 'Automático' : '+$totalAcerto';
 
-    String nome = objectEfeito.nome.isNotEmpty
-        ? objectEfeito.nome
-        : objEfeitoJson["efeito"];
+      // Rótulo: "Dano" apenas para EfeitoDano, senão "Efeito" (genérico)
+      labelEfeito = objEfeitoJson["class"] == "EfeitoDano" ? 'Dano' : 'Efeito';
+      valorEfeito = '${objEfeitoJson["graduacao"]}';
 
-    String strAlcance = objectEfeito.returnStrAlcance();
-    String strAcerto = alcance == 3 ? 'Automático' : '+$totalAcerto';
+      // CD: a base de dados hoje não guarda qual defesa resiste cada
+      // efeito - "Resistência" é o padrão mais comum (Dano/maioria das
+      // Aflições). Ajuste aqui quando esse dado existir no modelo.
+      if (objEfeitoJson["cd"] != null) {
+        cdValor = '${objEfeitoJson["cd"]} Resistência';
+      }
 
-    // Descrição do efeito: nome do efeito + graduação + CD + condições + crítico
-    StringBuffer descEfeito = StringBuffer();
-    descEfeito.write('${objEfeitoJson["efeito"]} ${objEfeitoJson["graduacao"]}');
+      if (objEfeitoJson["class"] == "EfeitoAflicao" &&
+          objEfeitoJson["condicoes"] != null) {
+        List condicoes = (objEfeitoJson["condicoes"] as List)
+            .where((c) => c != null && c.toString().isNotEmpty)
+            .toList();
+        if (condicoes.isNotEmpty) {
+          cdValor += ' (${condicoes.join(', ')})';
+        }
+      }
 
-    if (objEfeitoJson["cd"] != null) {
-      descEfeito.write(' (CD ${objEfeitoJson["cd"]})');
-    }
-
-    if (objEfeitoJson["class"] == "EfeitoAflicao" &&
-        objEfeitoJson["condicoes"] != null) {
-      List condicoes = (objEfeitoJson["condicoes"] as List)
-          .where((c) => c != null && c.toString().isNotEmpty)
-          .toList();
-      if (condicoes.isNotEmpty) {
-        descEfeito.write(' [${condicoes.join(', ')}]');
+      if (objEfeitoJson["critico"] != null && objEfeitoJson["critico"] > 0) {
+        String critTxt = 'Crítico ${20 - (objEfeitoJson["critico"] as int)}';
+        cdValor = cdValor.isEmpty ? critTxt : '$cdValor - $critTxt';
       }
     }
 
-    if (objEfeitoJson["critico"] != null && objEfeitoJson["critico"] > 0) {
-      descEfeito.write(' - Crítico ${20 - (objEfeitoJson["critico"] as int)}');
-    }
-
-    return pw.TableRow(children: [
-      padded(cellRowTable(nome)),
-      padded(cellRowTable(strAlcance)),
-      padded(cellRowTable(strAcerto)),
-      padded(cellRowTable(descEfeito.toString())),
-    ]);
-  }
-
-  //
-  // Painel de Condições (referência para preenchimento manual durante o jogo)
-  //
-  static pw.Widget condicoes() {
-    const List<String> primeiroGrau = [
-      'Tonto',
-      'Em Transe',
-      'Fadigado',
-      'Impedido',
-      'Prejudicado',
-      'Vulnerável',
-    ];
-    const List<String> segundoGrau = [
-      'Compelido',
-      'Indefeso',
-      'Desabilitado',
-      'Exausto',
-      'Imóvel',
-      'Caído',
-      'Atordoado',
-    ];
-    const List<String> terceiroGrau = [
-      'Adormecido',
-      'Controlado',
-      'Incapacitado',
-      'Paralisado',
-      'Transformado',
-      'Desatento',
-    ];
-
-    pw.Widget checkItem(String txt) => pw.Padding(
-          padding: const pw.EdgeInsets.only(bottom: 2),
-          child: pw.Row(
-            mainAxisSize: pw.MainAxisSize.min,
-            children: [
-              pw.Container(
-                width: 7,
-                height: 7,
-                decoration: pw.BoxDecoration(
-                  border: pw.Border.all(width: 0.75),
-                ),
-              ),
-              pw.SizedBox(width: 3),
-              pw.Text(txt, style: const pw.TextStyle(fontSize: 8)),
-            ],
+    return pw.Padding(
+      padding: const pw.EdgeInsets.only(bottom: 6),
+      child: pw.RichText(
+        overflow: pw.TextOverflow.clip,
+        text: pw.TextSpan(children: [
+          pw.TextSpan(
+            text: '$nome: ',
+            style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
           ),
-        );
-
-    pw.Widget coluna(List<String> lista) => pw.Column(
-          crossAxisAlignment: pw.CrossAxisAlignment.start,
-          children: lista.map(checkItem).toList(),
-        );
-
-    return pw.Container(
-      padding: const pw.EdgeInsets.all(6),
-      decoration: pw.BoxDecoration(
-        border: pw.Border.all(width: 0.75),
-        borderRadius: const pw.BorderRadius.all(pw.Radius.circular(3)),
-      ),
-      child: pw.Column(
-        crossAxisAlignment: pw.CrossAxisAlignment.start,
-        children: [
-          pw.Text('Condições',
-              style: pw.TextStyle(
-                  fontWeight: pw.FontWeight.bold, fontSize: 10)),
-          pw.SizedBox(height: 4),
-          pw.Row(
-            crossAxisAlignment: pw.CrossAxisAlignment.start,
-            children: [
-              coluna(primeiroGrau),
-              pw.SizedBox(width: 10),
-              coluna(segundoGrau),
-              pw.SizedBox(width: 10),
-              coluna(terceiroGrau),
-            ],
+          pw.TextSpan(
+            text: 'Acerto ',
+            style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
           ),
-          pw.SizedBox(height: 6),
-          pw.Row(children: [
-            pw.Text('Ferimentos: ',
-                style: pw.TextStyle(
-                    fontSize: 8, fontWeight: pw.FontWeight.bold)),
-            pw.Container(
-              width: 90,
-              height: 12,
-              decoration: pw.BoxDecoration(border: pw.Border.all(width: 0.5)),
+          pw.TextSpan(text: '$strAcerto | '),
+          pw.TextSpan(
+            text: '$labelEfeito ',
+            style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+          ),
+          pw.TextSpan(text: valorEfeito),
+          if (cdValor.isNotEmpty) const pw.TextSpan(text: '\n'),
+          if (cdValor.isNotEmpty)
+            pw.TextSpan(
+              text: 'CD: ',
+              style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
             ),
-          ]),
-        ],
+          if (cdValor.isNotEmpty) pw.TextSpan(text: cdValor),
+        ]),
       ),
     );
   }
@@ -695,7 +649,7 @@ class Printer {
           pw.SizedBox(height: 4),
           pdfOfensiva,
           pw.SizedBox(height: 6),
-          condicoes(),
+          // condicoes(),
 
           pw.SizedBox(height: 4),
           pdfPoderes,
