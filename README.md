@@ -13,6 +13,6 @@ Engine • revision edd8546116
 Tools • Dart 3.4.3 • DevTools 2.34.3
 
 ### Build para esse repositório
-" flutter build web --output=docs --base-href "/fabrica_do_multiverso/"
+| flutter build web --base-href "/build/web/"
 
 [Deploy de teste do APP](https://b0yediti0n.github.io/fabrica_do_multiverso/build/web/index.html)
