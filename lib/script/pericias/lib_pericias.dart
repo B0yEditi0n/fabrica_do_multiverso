@@ -99,19 +99,20 @@ class PericiaAdiciona extends Pericia {
   bool init(obj) {
     super.init(obj);
 
-    escopo = obj["escopo"];
+    escopo = obj["escopo"] ?? "";
 
     return true;
   }
 
   @override
-  Map returnObj() {    
+  Map returnObj() {
     return ({
       "id": id,
       "nome": nome,
       "valor": _valor,
       "idHab": _idHabilidadeBase,
       "treinado": _apenasTreinado,
+      "bonus": bonus,
       "escopo": escopo,
       "classe": "PericiaAdiciona",
     });
@@ -129,7 +130,7 @@ class PericiaAddAcerto extends PericiaAdiciona {
   bool init(obj) {
     super.init(obj);
 
-    range = obj["range"];
+    range = obj["range"] ?? false;
     if (obj["bonusPoderes"] != null) {
       bonusPoderes = obj["bonusPoderes"];
     }

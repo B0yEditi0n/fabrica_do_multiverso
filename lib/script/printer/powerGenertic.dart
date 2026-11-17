@@ -1,8 +1,6 @@
 import 'package:pdf/widgets.dart' as pw;
-import 'package:pdf/pdf.dart';
 import 'package:fabrica_do_multiverso/script/poderes/lib_efeitos.dart';
 
-import 'dart:developer' as dev;
 //
 // Instnacia Genérica de funcionamento
 //
@@ -12,9 +10,13 @@ class PowerGeneric{
   Map power = {};
   
   bool altenativo = false;
+  String prefixo = ''; // "EA: ", "EAD: ", "Ligado: "
 
   List<pw.TextSpan> title(){
     List<pw.TextSpan> powerTitle = [];
+    if(prefixo.isNotEmpty){
+      powerTitle.add(pw.TextSpan(text: prefixo, style: pw.TextStyle(fontWeight: pw.FontWeight.bold)));
+    }
     // criação do Nome
     if(power["nome"] != ""){
       powerTitle.add(
@@ -36,12 +38,9 @@ class PowerGeneric{
   
   pw.TextSpan modify(Map modify) => pw.TextSpan(
     text:
-    ", ${modify["nome"]}",
-    children:[
-      pw.TextSpan(text: '${(modify["fixo"] || modify["grad"] > 2) ? modify["grad"] : ""}')
-    ]
-    // ${modify["desc"]}
-    
+    ", ${modify["nome"]}"
+    "${(modify["grad"] ?? 0) > 1 ? " ${modify["grad"]}" : ""}"
+    "${"${modify["text_desc"] ?? ''}".isNotEmpty ? " (${modify["text_desc"]})" : ""}",
   );
 
   pw.TextSpan custo() => pw.TextSpan(text: ' - ${ef.custearAlteracoes()} pontos', 
@@ -51,19 +50,11 @@ class PowerGeneric{
     List<pw.TextSpan> powerContent = [];
 
     if(power["class"] == "EfeitoAflicao"){
-      powerContent.add(const pw.TextSpan(text: ' ('));
-      if(power["condicoes"][0] != ""){
-        powerContent.add(pw.TextSpan(text: power["condicoes"][0]));
+      List condicoes = ((power["condicoes"] ?? []) as List)
+          .where((c) => c != null && "$c".isNotEmpty).toList();
+      if(condicoes.isNotEmpty){
+        powerContent.add(pw.TextSpan(text: ' (${condicoes.join(", ")})'));
       }
-          
-      if(power["condicoes"][1] != ""){
-        powerContent.add(pw.TextSpan(text: ", ${power["condicoes"][1]}, "));
-      }
-    
-      if(power["condicoes"][2] != ""){
-        powerContent.add(pw.TextSpan(text: power["condicoes"][2]));
-      }
-      powerContent.add(const pw.TextSpan(text:')'));
       
     }
 
@@ -119,9 +110,8 @@ class PowerGeneric{
 
     if(power["class"] == "EfeitoBonus" || power["class"] == "EfeitoCrescimento"){
       powerContent.add(const pw.TextSpan(text:' ('));
-      for(Map alv in power["alvoAumento"]){
-        powerContent.add(pw.TextSpan(text: "${alv["nome"]}: ${alv["valor"]}"));
-      }
+      List alvos = power["alvoAumento"] ?? [];
+      powerContent.add(pw.TextSpan(text: alvos.map((alv) => "${alv["nome"]}: ${alv["valor"]}").join(", ")));
       powerContent.add(const pw.TextSpan(text:')'));
     }
     
@@ -135,7 +125,7 @@ class PowerGeneric{
       }));
     }
     // Modificadores
-    for (Map m in power["modificadores"] ) {
+    for (Map m in power["modificadores"] ?? [] ) {
       powerContent.add(modify(m));
     }
     // Duração
@@ -149,7 +139,8 @@ class PowerGeneric{
     return powerContent;
   }
 
-  Future<pw.Widget> render(Map power)async{
+  Future<pw.Widget> render(Map power, [String prefixo = ''])async{
+    this.prefixo = prefixo;
     await init(power);
 
     List<pw.TextSpan> powerContent = [];
@@ -172,10 +163,8 @@ class PowerGeneric{
   }
 
   init(powerImport) async{
-    dev.debugger();
     ef = await Efeito.init(powerImport);
-    
-    print(powerImport);
+
     altenativo = powerImport["alternativo"] == true;
     power = ef.retornaObj();
     return this;

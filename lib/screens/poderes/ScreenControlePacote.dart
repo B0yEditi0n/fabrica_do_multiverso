@@ -1,3 +1,4 @@
+import 'package:fabrica_do_multiverso/script/poderes/lib_custos.dart';
 import 'package:flutter/material.dart';
 
 //Screens
@@ -125,7 +126,23 @@ class _ControladorDePacotesState extends State<ControladorDePacotes> {
   //# Widgets
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    // Voltar pelo botão do sistema também devolve o pacote editado
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) {
+        if(!didPop){ Navigator.of(context).pop(pacote.retornaObj()); }
+      },
+      child: Scaffold(
+        bottomNavigationBar: Padding(
+          padding: const EdgeInsets.all(15.0),
+          child: Text(
+            CustoPoderes.eEquipamento(pacote.retornaObj())
+              ? 'Total: ${CustoPoderes.custoBruto(pacote.retornaObj())} pontos de equipamento'
+              : 'Total: ${pacote.custearAlteracoes()} pontos',
+            textAlign: TextAlign.center,
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w800),
+          ),
+        ),
         appBar: AppBar(
           //backgroundColor: Theme.of(context).colorScheme.inversePrimary,          
           title: objPacote["nome"] != "" 
@@ -155,6 +172,21 @@ class _ControladorDePacotesState extends State<ControladorDePacotes> {
                 },
               ),
             ),
+            // Falha Removível: só em pacotes simples que não são equipamento
+            pacote.getType() == "R" && !CustoPoderes.eEquipamento(pacote.retornaObj())
+            ? DropdownButton<int>(
+                value: pacote.removivel,
+                items: const [
+                  DropdownMenuItem(value: 0, child: Text('Não removível')),
+                  DropdownMenuItem(value: 1, child: Text('Removível (-1 a cada 5 pontos)')),
+                  DropdownMenuItem(value: 2, child: Text('Facilmente removível (-2 a cada 5 pontos)')),
+                ],
+                onChanged: (valor) => setState(() {
+                  pacote.removivel = valor ?? 0;
+                  objPacote = pacote.retornaObj();
+                }),
+              )
+            : const SizedBox(),
             Expanded(
               child: ListView.builder(
                 itemCount: poderes.length,
@@ -186,10 +218,11 @@ class _ControladorDePacotesState extends State<ControladorDePacotes> {
                               },
                             ) : const SizedBox(),
                             title: Text(poderes[index]['nome']),
-                            subtitle: Text("${poderes[index]['efeito']} ${poderes[index]['graduacao']}"),
+                            subtitle: Text("${poderes[index]['efeito']} ${poderes[index]['graduacao']} • ${CustoPoderes.custoBruto(poderes[index])} pontos"),
                           ) 
                           : ListTile(
                             title: Text('${poderes[index]["efeito"]}: ${poderes[index]['nome']}'),
+                            subtitle: Text("${CustoPoderes.custoBruto(poderes[index])} pontos"),
                             //subtitle: Text("${poderes[index]['nome']} ${poderes[index]['custo']}"),
                           ),
                       ),
@@ -201,7 +234,8 @@ class _ControladorDePacotesState extends State<ControladorDePacotes> {
                           Map efeitoEnpacotado = pacote.efeitos[index];
                           // Aciona o destrutor
                           if(efeitoEnpacotado["class"] != "PacotesEfeitos"){
-                            Efeito deadPower = Efeito();                
+                            // Classe correta, para que bônus aplicados na ficha sejam retirados
+                            Efeito deadPower = Efeito.porClasse(efeitoEnpacotado["class"]);
                             await deadPower.reinstanciarMetodo(pacote.efeitos[index]);
                             deadPower.destrutor();
                           }else{
@@ -210,7 +244,9 @@ class _ControladorDePacotesState extends State<ControladorDePacotes> {
                             deadPackege.destrutor();
                           }
 
-                          pacote.efeitos.removeAt(index);          
+                          pacote.efeitos.removeAt(index);
+                          // Mantém a lista de ativos alinhada com os efeitos
+                          if(index < activeArry.length){ activeArry.removeAt(index); }
 
                           // Remove actives em pacotes de EA
                           if(["E", "D"].contains(pacote.getType())){
@@ -240,7 +276,7 @@ class _ControladorDePacotesState extends State<ControladorDePacotes> {
                       });
                     }
 
-                    Map returnObjPoder = {};
+                    Map? returnObjPoder;
                     Map inputObjEfeito = poderes[index];
 
                     if(!["EfeitosAlternativos", "PacotesEfeitos"].contains(poderes[index]["class"])){
@@ -255,7 +291,9 @@ class _ControladorDePacotesState extends State<ControladorDePacotes> {
                         MaterialPageRoute(builder: (context) => ControladorDePacotes(objPacote: inputObjEfeito)),
                       );
                     }
-                    pacote.efeitos[index] = returnObjPoder;
+                    if(returnObjPoder != null && returnObjPoder.isNotEmpty){
+                      pacote.efeitos[index] = returnObjPoder;
+                    }
                     atualizarValores();                      
                   },
                   );
@@ -277,13 +315,14 @@ class _ControladorDePacotesState extends State<ControladorDePacotes> {
             objPoder = await Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => DynamicDialog(tipo: objPacote["tipo"], descNome: nomearEfeitos))
-            ),
+            ) ?? {},
             //! Atualiza a Lista de poderes
             if(objPoder.isNotEmpty){
               _addPoderes(objPoder)
             }            
           },
         ),
+      ),
     );
   }
 }

@@ -1,5 +1,6 @@
 import 'package:fabrica_do_multiverso/script/poderes/lib_efeitos.dart';
 import 'package:fabrica_do_multiverso/script/poderes/lib_pacoteEfeitos.dart';
+import 'package:fabrica_do_multiverso/script/poderes/lib_custos.dart';
 import 'package:flutter/material.dart';
 
 // Screens de poderes
@@ -38,7 +39,7 @@ class _ScreenPoderesState extends State<ScreenPoderes> {
     if(!["EfeitosAlternativos", "PacotesEfeitos"].contains(objEfeito["class"])){
       await personagem.poderes.novoPoder(objEfeito["nome"], objEfeito["e_id"], objEfeito["class"]);
     }else{
-      await personagem.poderes.novoPacote(objEfeito["nome"], objEfeito["tipo"], objEfeito["efeito"]);
+      await personagem.poderes.novoPacote(objEfeito["nome"], objEfeito["tipo"], objEfeito["efeito"], objEfeito["removivel"] ?? 0);
     }
     _carregarDados();
   }
@@ -49,6 +50,15 @@ class _ScreenPoderesState extends State<ScreenPoderes> {
         appBar: AppBar(
           //backgroundColor: Theme.of(context).colorScheme.inversePrimary,          
           title: const Text("Poderes"),
+        ),
+
+        bottomNavigationBar: Padding(
+          padding: const EdgeInsets.all(15.0),
+          child: Text(
+            'Total: ${personagem.poderes.calculaTotal()}',
+            textAlign: TextAlign.center,
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w800),
+          ),
         ),
 
         body: ListView.builder(
@@ -67,10 +77,13 @@ class _ScreenPoderesState extends State<ScreenPoderes> {
                         !["EfeitosAlternativos", "PacotesEfeitos"].contains(poderes[index]["class"]) 
                         ? ListTile(
                           title: Text(poderes[index]['nome']),
-                          subtitle: Text("${poderes[index]['efeito']} ${poderes[index]['graduacao']}"),
+                          subtitle: Text("${poderes[index]['efeito']} ${poderes[index]['graduacao']} • ${CustoPoderes.custoItem(personagem.poderes.poderesLista[index])} pontos"),
                         ) 
                         : ListTile(
-                          title: Text('${poderes[index]["efeito"]}: ${poderes[index]['nome']}'),                        
+                          title: Text('${poderes[index]["efeito"]}: ${poderes[index]['nome']}'),
+                          subtitle: Text(CustoPoderes.eEquipamento(personagem.poderes.poderesLista[index])
+                            ? "${CustoPoderes.custoBruto(personagem.poderes.poderesLista[index])} pontos de equipamento"
+                            : "${CustoPoderes.custoItem(personagem.poderes.poderesLista[index])} pontos"),
                         ),
                     ),
                 
@@ -81,17 +94,7 @@ class _ScreenPoderesState extends State<ScreenPoderes> {
                         Map objInit = personagem.poderes.poderesLista[index];
 
                         if(objInit["class"] != "PacotesEfeitos"){
-                          Efeito killPower;
-                          switch (objInit["class"]){
-                            case "EfeitoBonus":
-                              killPower = EfeitoBonus();
-                              break;
-                            case "EfeitoCrescimento":
-                              killPower = EfeitoCrescimento();
-                              break;
-                            default:
-                              killPower = Efeito();
-                          }
+                          Efeito killPower = Efeito.porClasse(objInit["class"]);
                           await killPower.reinstanciarMetodo(objInit);
                           killPower.destrutor();
                         }else{
@@ -135,7 +138,7 @@ class _ScreenPoderesState extends State<ScreenPoderes> {
                   poderes = personagem.poderes.listaDePoderes();
                 });
               }
-              Map returnObjPoder = {};
+              Map? returnObjPoder;
               Map inputObjEfeito = personagem.poderes.poderesLista[index];
               if(!["EfeitosAlternativos", "PacotesEfeitos"].contains(poderes[index]["class"])){
                 returnObjPoder = await Navigator.push(
@@ -148,7 +151,10 @@ class _ScreenPoderesState extends State<ScreenPoderes> {
                   MaterialPageRoute(builder: (context) => ControladorDePacotes(objPacote: inputObjEfeito)),
                 );
               };
-              personagem.poderes.poderesLista[index] = returnObjPoder;
+              // Voltar pelo botão do sistema não devolve nada: mantém o poder
+              if(returnObjPoder != null && returnObjPoder.isNotEmpty){
+                personagem.poderes.poderesLista[index] = returnObjPoder;
+              }
 
               // Atualiza os Poderes
               atualizarValores();
@@ -171,7 +177,7 @@ class _ScreenPoderesState extends State<ScreenPoderes> {
               context,
               MaterialPageRoute(builder: (context) => DynamicDialog(tipo: "", descNome: true),
               )
-            ),
+            ) ?? {},
             //! Atualiza a Lista de poderes
             if(objEfeito.isNotEmpty){
               _addPoderes(objEfeito)

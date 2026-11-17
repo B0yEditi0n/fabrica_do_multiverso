@@ -130,7 +130,6 @@ class Habilidade {
     while(idxA < bonusAlternativo.length){
       idxA = 0; // Incia no primeiro arry
 
-      print('Arry; $lenIdx');
 
       // Calcula o bonus
       int total = bonusFixo + valor;

@@ -19,7 +19,8 @@ class Download{
     // Pega Json e Transforma em File
     // Criando um Zip de Saida
     // Crie uma lista de arquivos para adicionar ao ZIP
-    List<int> fichaByte = utf8.encode(json.encode(personagem.returnObjJson()).replaceAll(r'\"', '"'));
+    // Não remover os escapes de aspas: sem eles um texto com " corrompe o JSON
+    List<int> fichaByte = utf8.encode(json.encode(personagem.returnObjJson()));
 
     // Crie um novo arquivo ZIP
     final archive = Archive();

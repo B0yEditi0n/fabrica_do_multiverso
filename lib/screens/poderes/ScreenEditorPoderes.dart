@@ -63,11 +63,8 @@ class _powerEditState extends State<powerEdit> {
   Future<bool> _startPower() async{
     objPoder = widget.objEfeito;
     // Reinstancia para zerar Objeto
-    etiquetasModificadores = ["gerais"];
-    if(objPoder["class"] == "EfeitoDano"){
-      etiquetasModificadores += ["ofensivos"];
-    }
     poder = await Efeito.init(objPoder);
+    etiquetasModificadores = Efeito.gruposModificadores(poder);
     _updateData();
     //_updateData();
     return true;
@@ -162,7 +159,13 @@ class _powerEditState extends State<powerEdit> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    // Voltar pelo botão do sistema também devolve o poder editado
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) {
+        if(!didPop){ Navigator.of(context).pop(poder.retornaObj()); }
+      },
+      child: Scaffold(
       appBar: AppBar(
         centerTitle: true,
         title: const Text('Edição do Poder'),
@@ -870,7 +873,7 @@ class _powerEditState extends State<powerEdit> {
                           await showDialog(
                             context: context,
                             builder: ((BuildContext context) {
-                              return AddModificadorSelecionador(etiquetas: etiquetasModificadores);
+                              return AddModificadorSelecionador(etiquetas: Efeito.gruposModificadores(poder));
                             })
                           ).then((result)=>{
                             // Atualizar a Lista do Que Saiu
@@ -909,6 +912,7 @@ class _powerEditState extends State<powerEdit> {
             ],
           ),
         ),
+      ),
       ),
     );
   }

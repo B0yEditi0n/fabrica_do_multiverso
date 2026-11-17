@@ -53,8 +53,8 @@ class Efeito{
     int index = efeitos.indexWhere((efeito) => efeito["e_id"] == idEfeito);
     Map efeitoAtual = efeitos[index];
     
-    
-    _padraoEfeito = efeitoAtual;
+    // Cópia: algumas classes alteram o custo-base e o catálogo é compartilhado
+    _padraoEfeito = Map.from(efeitoAtual);
     _nomeEfeito = efeitoAtual["efeito"];
     _acao       = efeitoAtual["acao"];
     _alcance    = efeitoAtual["alcance"];
@@ -75,6 +75,18 @@ class Efeito{
       Return:
         Map Json - o Arquivo json
     */
+    await carregarCatalogo();
+    carregaMapa(objPoder);
+    return true;
+  }
+
+  void carregaMapa(Map objPoder){
+    /*
+      Preenche o objeto a partir do mapa salvo na ficha, sem efeitos
+      colaterais. É síncrono: exige o catálogo já carregado
+      (Efeito.carregarCatalogo), o que permite calcular custos sem await.
+      As classes filhas sobrescrevem este método para seus campos próprios.
+    */
     _idCriacao = objPoder["idCriacao"];
     nome = objPoder["nome"];
     _idEfeito = objPoder["e_id"];
@@ -82,65 +94,76 @@ class Efeito{
     _acao = objPoder["acao"];
     _alcance = objPoder["alcance"];
     _duracao = objPoder["duracao"];
-    _modificador = objPoder["modificadores"];
-    defAtaque = objPoder["defAtaque"];
-    desc = objPoder["descricao"];
+    _modificador = objPoder["modificadores"] ?? [];
+    defAtaque = objPoder["defAtaque"] ?? false;
+    desc = objPoder["descricao"] ?? '';
 
-    List efeitos = await carregaJson();
-    Map efeitoAtual = efeitos[efeitos.indexWhere((efeito) => efeito["e_id"] == objPoder["e_id"])];
+    Map efeitoAtual = _catalogo!.firstWhere((efeito) => efeito["e_id"] == objPoder["e_id"]);
 
     _nomeEfeito = efeitoAtual["efeito"];
-    _padraoEfeito = efeitoAtual;
-
-    return true;
+    // Cópia: algumas classes alteram o custo-base e o catálogo é compartilhado
+    _padraoEfeito = Map.from(efeitoAtual);
   }
-  static Future<Efeito> init(Map objPoder) async{
-    Efeito poder = Efeito();
-    switch (objPoder["class"]) {
+
+  static Efeito porClasse(String? classe){
+    /*
+      Único ponto que relaciona o nome da classe salvo na ficha
+      com a classe de manipulação do efeito.
+    */
+    switch (classe) {
       case "EfeitoCrescimento":
-        poder = EfeitoCrescimento();
-        break;
+        return EfeitoCrescimento();
       case "EfeitoBonus":
-        poder = EfeitoBonus();
-        break;
+        return EfeitoBonus();
       case "EfeitoAflicao":
-        poder = EfeitoAflicao();
-        break;
+        return EfeitoAflicao();
       case "EfeitoDano":
-        poder = EfeitoDano();
-        break;
+        return EfeitoDano();
       case "EfeitoCompra":
-        poder = EfeitoCompra();
-        break;
+        return EfeitoCompra();
       case "EfeitoCustoVaria":
-        poder = EfeitoCustoVaria();
-        break;
+        return EfeitoCustoVaria();
       case "EfeitoOfensivo":
-        poder = EfeitoOfensivo();
-        break;
+        return EfeitoOfensivo();
       case "Efeito":
       default:
-        poder = Efeito();
-        break;
+        return Efeito();
     }
+  }
+
+  static Future<Efeito> init(Map objPoder) async{
+    Efeito poder = porClasse(objPoder["class"]);
     await poder.reinstanciarMetodo(objPoder);
     return poder;
   }
 
+  static Efeito doMapa(Map objPoder){
+    /*
+      Versão síncrona e sem efeitos colaterais de init,
+      usada pelos cálculos de custo. Exige o catálogo carregado.
+    */
+    Efeito poder = porClasse(objPoder["class"]);
+    poder.carregaMapa(objPoder);
+    return poder;
+  }
+
+  // Catálogo de efeitos, lido do JSON uma única vez
+  static List? _catalogo;
+  static bool get catalogoCarregado => _catalogo != null;
+
+  static Future<List> carregarCatalogo() async{
+    if(_catalogo == null){
+      String jsonEfeitos = await rootBundle.loadString('assets/poderes/efeitos.json');
+      _catalogo = jsonDecode(jsonEfeitos);
+    }
+    return _catalogo!;
+  }
+
   Future<List> carregaJson() async{
     /*
-      carrega qualquer arquivo json necessário dentro do projeto
-
-      Args:
-        String json - nome do arquivo sem extensão
-      Return:
-        Map Json - o Arquivo json
+      Retorna o catálogo de efeitos (assets/poderes/efeitos.json)
     */
-    
-    String jsonEfeitos = await rootBundle.loadString('assets/poderes/efeitos.json');
-    List objetoJson = jsonDecode(jsonEfeitos);
-    return(objetoJson);
-
+    return carregarCatalogo();
   }
 
   
@@ -247,6 +270,39 @@ class Efeito{
   void setGrad(valor){
     _graduacao = valor;
   }
+  static List<String> gruposModificadores(Efeito efeito){
+    /*
+      Grupos do modificadores.json que podem ser oferecidos ao efeito:
+        gerais    - sempre
+        ofensivos - efeitos que agem sobre um alvo (ou pessoais usados como ataque)
+        pessoais  - efeitos cujo alcance padrão é pessoal
+      Ação, alcance, duração e Baseado em Força não entram aqui:
+      são opções do próprio efeito, não itens do catálogo.
+    */
+    List<String> grupos = ["gerais"];
+    if(efeito is EfeitoOfensivo || efeito.defAtaque){
+      grupos.add("ofensivos");
+    }
+    if(efeito._padraoEfeito["alcance"] == 0){
+      grupos.add("pessoais");
+    }
+    return grupos;
+  }
+
+  static int limiteModificador(Map modificador, int graduacaoEfeito){
+    /*
+      Quantas graduações o modificador aceita.
+        limite ausente ou 1 - compra única
+        limite -1           - até a graduação do efeito (Penetrante, Dividido, Impenetrável)
+        limite N            - até N
+    */
+    int limite = modificador["limite"] ?? 1;
+    if(limite == -1){
+      return graduacaoEfeito < 1 ? 1 : graduacaoEfeito;
+    }
+    return limite < 1 ? 1 : limite;
+  }
+
   void addModificador(objModificador){
     if(objModificador["grad"] == null){
       objModificador["grad"] = 1;
@@ -505,20 +561,19 @@ class EfeitoEscolha extends Efeito{
   
   // Implementação dos Construtores para os atributos adicionais
   @override
-  Future<bool> reinstanciarMetodo(Map objPoder) async{
-    await super.reinstanciarMetodo(objPoder);
+  void carregaMapa(Map objPoder){
+    super.carregaMapa(objPoder);
     if(objPoder["opt"] != null){
       opt = objPoder["opt"];
     }
     if(_padraoEfeito["unico"] != null){
       _compraUnica = _padraoEfeito["unico"];
     }
-    return true;
   }
 
   @override
   Future<bool> instanciarMetodo(String nome , String idEfeito)  async{
-    super.instanciarMetodo(nome, idEfeito);
+    await super.instanciarMetodo(nome, idEfeito);
     
     if(_padraoEfeito["unico"] != null){
       _compraUnica = _padraoEfeito["unico"];
@@ -605,6 +660,13 @@ class EfeitoCompra extends EfeitoEscolha{
 
 class EfeitoCustoVaria extends EfeitoEscolha{
   /* Efeito de Escolha Define a o custo base e a graduação é definida*/
+  @override
+  void carregaMapa(Map objPoder){
+    super.carregaMapa(objPoder);
+    // O custo-base não é salvo na ficha: é refeito a partir das opções
+    if(opt.isNotEmpty){ optsetCusto(); }
+  }
+
   @override 
   void optsetCusto(){
     int custoBase = 0;
@@ -627,8 +689,8 @@ class EfeitoOfensivo extends Efeito{
   List bonus = [];
   // Implementação dos Construtores para os atributos adicionais
   @override
-  Future<bool> reinstanciarMetodo(Map objPoder) async{
-    await super.reinstanciarMetodo(objPoder);    
+  void carregaMapa(Map objPoder){
+    super.carregaMapa(objPoder);
     if(objPoder["acerto"] != null){
       _bonusAcerto = objPoder["acerto"];
     }
@@ -636,8 +698,6 @@ class EfeitoOfensivo extends Efeito{
     if(objPoder["bonus"] != null){
       bonus = objPoder["bonus"];
     }
-    
-    return true;
   }
 
   void addBonus(bonus){
@@ -767,13 +827,9 @@ class EfeitoDano extends EfeitoOfensivo{
   bool baseadoForca = false;
 
   @override
-  Future<bool> reinstanciarMetodo(Map objPoder) async{
-    await super.reinstanciarMetodo(objPoder);    
-    if(objPoder["baseadoForca"] != null && objPoder["baseadoForca"]){
-      baseadoForca = true;
-    }
-    
-    return true;
+  void carregaMapa(Map objPoder){
+    super.carregaMapa(objPoder);
+    baseadoForca = objPoder["baseadoForca"] == true;
   }
 
   @override
@@ -825,13 +881,11 @@ class EfeitoAflicao extends EfeitoOfensivo{
   ];
 
   @override
-  Future<bool> reinstanciarMetodo(Map objPoder) async{
-    await super.reinstanciarMetodo(objPoder);
+  void carregaMapa(Map objPoder){
+    super.carregaMapa(objPoder);
     if(objPoder["condicoes"] != null){
       _condicoes = objPoder["condicoes"];
     }
-    
-    return true;
   }
 
   void addCondicao(grau, txtCond){
@@ -885,14 +939,14 @@ class EfeitoBonus extends Efeito{
         Map Json - o Arquivo json
     */
     
-    super.instanciarMetodo(nome, idEfeito);
+    await super.instanciarMetodo(nome, idEfeito);
 
     return true;
   }
 
   @override
-  Future<bool> reinstanciarMetodo(Map objPoder) async{
-    await super.reinstanciarMetodo(objPoder);
+  void carregaMapa(Map objPoder){
+    super.carregaMapa(objPoder);
     if(objPoder["alvoAumento"] != null){
       _alvoAumento = objPoder["alvoAumento"];
     }
@@ -901,6 +955,11 @@ class EfeitoBonus extends Efeito{
     }
 
     if(objPoder["active"] != null){active = objPoder["active"];}
+  }
+
+  @override
+  Future<bool> reinstanciarMetodo(Map objPoder) async{
+    await super.reinstanciarMetodo(objPoder);
 
     // Aplica o bonus
     configBonus();
@@ -1014,10 +1073,9 @@ class EfeitoCrescimento extends EfeitoBonus{
   }
   
   @override
-  Future<bool> reinstanciarMetodo(Map objPoder) async{
-    await super.reinstanciarMetodo(objPoder);
+  void carregaMapa(Map objPoder){
+    super.carregaMapa(objPoder);
     _bonusTamanho = _padraoEfeito["bonusTamanho"];
-    return true;
   }
 
   @override

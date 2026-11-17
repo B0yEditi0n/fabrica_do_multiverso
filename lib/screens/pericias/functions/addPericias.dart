@@ -73,9 +73,10 @@ class _PopUpAddSkillState extends State<PopUpAddSkill> {
       periciaSelecionada["nome"] = widget.obj["nome"];
       periciaSelecionada["idHab"] = widget.obj["idHab"];
       periciaSelecionada["treinado"] = widget.obj["treinado"];
-      inputDescrPericia.text = widget.obj["escopo"];
+      inputDescrPericia.text = widget.obj["escopo"] ?? "";
       if(widget.obj["bonusPoderes"] != null){
-        ListIdPoderes = widget.obj["bonusPoderes"];
+        // Fichas carregadas de arquivo trazem List<dynamic>
+        ListIdPoderes = List<String>.from(widget.obj["bonusPoderes"]);
         _addBonusOfensivo();
       }
       

@@ -1,47 +1,48 @@
 import 'package:flutter/material.dart';
 
+/// Lista os problemas de validação da ficha (ValidaNpPersonagem.validacaoGeral).
 class LogPopupError extends StatelessWidget {
-  const LogPopupError({super.key});
+  final List erros;
+  const LogPopupError({super.key, this.erros = const []});
+
+  static const Map<String, String> _secoes = {
+    "P": "Perícia",
+    "D": "Defesa",
+    "E": "Efeito",
+    "T": "Pontos",
+    "Q": "Equipamento",
+  };
 
   @override
   Widget build(BuildContext context) {
-    return Align(
-      alignment: const AlignmentDirectional(0, 0),
-      child: Container(
+    return AlertDialog(
+      title: Text(erros.isEmpty
+          ? 'Validação da ficha'
+          : 'Validação da ficha (${erros.length})'),
+      content: SizedBox(
         width: 400,
-        height: 550,
-        decoration: const BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(12)),
+        child: erros.isEmpty
+            ? const Text('Nenhum problema encontrado.')
+            : ListView.separated(
+                shrinkWrap: true,
+                itemCount: erros.length,
+                separatorBuilder: (context, index) => const Divider(),
+                itemBuilder: (context, index) {
+                  Map erro = erros[index];
+                  return ListTile(
+                    leading: const Icon(Icons.warning_amber),
+                    title: Text(_secoes[erro["tipo"]] ?? 'Ficha'),
+                    subtitle: Text("${erro["msg"]}"),
+                  );
+                },
+              ),
+      ),
+      actions: [
+        TextButton(
+          child: const Text('Fechar'),
+          onPressed: () => Navigator.pop(context),
         ),
-
-        child: Column(
-          children: [
-            // Linha de titulo
-            Row(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text('Editar Registro'),
-                InkWell(
-                  splashColor: Colors.transparent,
-                  focusColor: Colors.transparent,
-                  hoverColor: Colors.transparent,
-                  highlightColor: Colors.transparent,
-                  onTap: () async {
-                    Navigator.pop(context);
-                  },
-                  child: const Icon(
-                    Icons.close,
-                    size: 30,
-                  ),
-                ),
-              ],
-              
-            )
-          ],
-        ),
-      )
+      ],
     );
   }
 }
-

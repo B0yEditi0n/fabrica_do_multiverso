@@ -201,10 +201,17 @@ class _ScreenPericiasState extends State<ScreenPericias> {
 
                               onPressed: (){
                                 // Remove dos Poderes associados a esse bonus
-                                personagem.validador.deletePericiaWhere(listaPercias[index]["idCriacao"]);
+                                // (especialidades não têm idCriacao nem bônus em poderes)
+                                final String? idCriacao = listaPercias[index]["idCriacao"];
+                                if(idCriacao != null){
+                                  personagem.validador.deletePericiaWhere(idCriacao);
+                                }
 
                                 setState(() {
-                                  listaPercias.removeAt(index);  
+                                  listaPercias.removeAt(index);
+                                  // Mantém os campos alinhados com a lista e o custo atualizado
+                                  if(index < listInputs.length){ listInputs.removeAt(index); }
+                                  custoTotal = personagem.pericias.calculaTotal();
                                 });
                                   
                               },
@@ -219,7 +226,7 @@ class _ScreenPericiasState extends State<ScreenPericias> {
                             mapPericiaReturn = await Navigator.push(
                               context,
                               MaterialPageRoute(builder: (context) => PopUpAddSkill(obj: listaPercias[index]))
-                            );
+                            ) ?? {};
                             if(mapPericiaReturn.isNotEmpty){
                               if(mapPericiaReturn["remove"] == null || mapPericiaReturn["remove"] == false){
                                 Pericia mntPericia;
@@ -276,7 +283,7 @@ class _ScreenPericiasState extends State<ScreenPericias> {
             mapPericiaReturn = await Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => PopUpAddSkill(obj: {}))
-            ),
+            ) ?? {},
 
             appendNewListFields()
           }

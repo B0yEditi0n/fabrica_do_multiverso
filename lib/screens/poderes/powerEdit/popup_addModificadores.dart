@@ -82,7 +82,7 @@ class _AddModificadorSelecionadorState extends State<AddModificadorSelecionador>
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Adicionar Poderes'),
+      title: const Text('Adicionar Modificador'),
       content: SingleChildScrollView(
         child: ListBody(
           children: <Widget>[ 
@@ -108,11 +108,11 @@ class _AddModificadorSelecionadorState extends State<AddModificadorSelecionador>
               }).toList(),
             ),
             // Controle de Graduação *se tiver
-            modSelecionado["limite"] != null && modSelecionado["limite"] > 1 ? 
+            modSelecionado.isNotEmpty && Efeito.limiteModificador(modSelecionado, poder.retornaObj()["graduacao"] ?? 1) > 1 ?
             NumberPicker(
               value: modGrad,
               minValue: 1,
-              maxValue: modSelecionado["limite"], // parametrizar pelo NP posteriormente
+              maxValue: Efeito.limiteModificador(modSelecionado, poder.retornaObj()["graduacao"] ?? 1),
               onChanged: (value) => setState(() => modGrad = value),
             )
             : const SizedBox()

@@ -114,13 +114,15 @@ class _ScreenVantagensState extends State<ScreenVantagens> {
                               IconButton(
                               icon: const  Icon(Icons.delete),
                               onPressed: () =>{  
-                                  if(!addVantagens[index]["addByPower"]){
-                                    updateAvaliableAdvantage(),
+                                  // Vantagens concedidas por poder só saem junto com o poder
+                                  if(addVantagens[index]["addByPower"] != true){
                                     setState(() {
-                                      addVantagens.removeAt(index);                                    
+                                      addVantagens.removeAt(index);
                                       cutoTotal = personagem.vantagens.cutoTotal();
+                                      // Devolve a vantagem removida à lista de disponíveis
+                                      updateAvaliableAdvantage();
                                     })
-                                  } 
+                                  }
                                   
                                 }
                               ),
@@ -137,9 +139,10 @@ class _ScreenVantagensState extends State<ScreenVantagens> {
                       objVantagems = {};
                       objVantagems = await Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => PopUpAddVantagem(repertorioVantagens: vantagensDisponiveis, obj: addVantagens[index]),
+                        // Edita uma cópia: cancelar não altera a vantagem da ficha
+                        MaterialPageRoute(builder: (context) => PopUpAddVantagem(repertorioVantagens: vantagensDisponiveis, obj: Map.from(addVantagens[index])),
                         )
-                      );
+                      ) ?? {};
                       
                       if(objVantagems.isNotEmpty){ 
                         addVantagens[index] = objVantagems;
@@ -171,7 +174,7 @@ class _ScreenVantagensState extends State<ScreenVantagens> {
             context,
             MaterialPageRoute(builder: (context) => PopUpAddVantagem(repertorioVantagens: vantagensDisponiveis, obj: {}),
             )
-          ),
+          ) ?? {},
           if(objVantagems.isNotEmpty){ _addNewAdvantage(objVantagems) },
           setState((){
             cutoTotal = personagem.vantagens.cutoTotal();

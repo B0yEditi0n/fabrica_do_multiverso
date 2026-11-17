@@ -40,8 +40,10 @@ class _PopUpAddVantagemState extends State<PopUpAddVantagem> {
       inputIntVantagem.text = '1';
     }else{
       selectVantagem = widget.obj;
-      inputIntVantagem.text = widget.obj["graduacao"].toString();
-      textDesc.text = widget.obj["txtDec"];
+      // Parte da graduação já comprada (antes a edição voltava para 1)
+      valueVantagem = widget.obj["graduacao"] ?? 1;
+      inputIntVantagem.text = valueVantagem.toString();
+      textDesc.text = widget.obj["txtDec"] ?? "";
     }
     
   }
@@ -53,8 +55,7 @@ class _PopUpAddVantagemState extends State<PopUpAddVantagem> {
         title: const Text('Vantagens'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          onPressed: () async => {
-          }),
+          onPressed: () => Navigator.of(context).pop({})),
       ),
 
       body: Column(

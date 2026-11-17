@@ -13,6 +13,7 @@ import 'package:file_picker/file_picker.dart';
 
 // Salvamento de Arquivos
 import 'script/download.dart';
+import 'package:fabrica_do_multiverso/script/armazenamento.dart';
 
 // Temas
 import 'package:fabrica_do_multiverso/theme/theme.dart';
@@ -29,14 +30,16 @@ import 'package:fabrica_do_multiverso/screens/complicacoes/ScreenComplicacoes.da
 import 'package:fabrica_do_multiverso/screens/components/logErros.dart';
 import 'package:fabrica_do_multiverso/screens/components/save_option_component.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  // Catálogos carregados antes da primeira tela
+  await personagem.init();
   runApp(FabricaHerois());
 }
 
 class FabricaHerois extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    personagem.init();
     return MaterialApp(
       title: 'Fabrica de Heróis',
       theme: temaPadrao(), //(
@@ -73,18 +76,135 @@ class _ScreenInicialState extends State<ScreenInicial> {
   TextEditingController txtControlName = TextEditingController();
   TextEditingController txtNP = TextEditingController();
 
+  @override
+  void initState() {
+    super.initState();
+    txtControlName.text = personagem.nomePersonagem;
+    txtNP.text = personagem.np.toString();
+    _abrirUltimaFicha();
+  }
+
   void _validaFicha() {
+    // Chamado ao voltar de qualquer seção: redesenha e guarda a ficha
+    setState(() {});
+    _salvarLocal();
+  }
+
+  Future<void> _salvarLocal() async {
+    try {
+      await Armazenamento.salvar(personagem, fileImg);
+    } catch (e) {
+      // Falha de disco não deve interromper a edição da ficha
+      debugPrint('Falha ao salvar a ficha: $e');
+    }
+  }
+
+  void _mostrarFicha(Uint8List imagem) {
+    // Reflete na tela a ficha que acabou de ser aberta ou criada
     setState(() {
-      logError = validador.validacaoGeral();
+      fileImg = imagem;
+      txtControlName.text = personagem.nomePersonagem;
+      txtNP.text = personagem.np.toString();
     });
+  }
+
+  Future<void> _abrirUltimaFicha() async {
+    // Ao abrir o aplicativo continua da ficha guardada (só existe uma)
+    try {
+      Map? dados = await Armazenamento.carregar();
+      if (dados == null) return;
+      personagem = Ficha();
+      await personagem.init();
+      await personagem.reInit(dados["ficha"]);
+      if (mounted) _mostrarFicha(dados["imagem"]);
+    } catch (e) {
+      debugPrint('Falha ao abrir a ficha guardada: $e');
+    }
+  }
+
+  Future<void> _novaFicha() async {
+    // O aplicativo gerencia uma ficha por vez: começar outra descarta a atual
+    bool confirmou = await showDialog<bool>(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text('Nova ficha'),
+            content: const Text(
+                'A ficha atual será apagada deste aparelho. Use "Baixar Ficha" antes se quiser guardá-la.'),
+            actions: [
+              TextButton(
+                child: const Text('Cancelar'),
+                onPressed: () => Navigator.pop(context, false),
+              ),
+              TextButton(
+                child: const Text('Apagar e começar'),
+                onPressed: () => Navigator.pop(context, true),
+              ),
+            ],
+          ),
+        ) ??
+        false;
+    if (!confirmou) return;
+
+    try {
+      await Armazenamento.limpar();
+    } catch (e) {
+      debugPrint('Falha ao apagar a ficha guardada: $e');
+    }
+    personagem = Ficha();
+    await personagem.init();
+    if (mounted) _mostrarFicha(Uint8List(0));
+  }
+
+  Widget _linhaPontos(String rotulo, int? valor) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 2),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [Text(rotulo), Text('$valor')],
+      ),
+    );
+  }
+
+  Widget _resumoPontos() {
+    Map<String, int> r = personagem.resumoPontos();
+    bool estourou = r["restante"]! < 0;
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(15),
+        child: Column(
+          children: [
+            Text(
+              'Pontos de poder: ${r["total"]} / ${r["disponivel"]}',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w800,
+                color: estourou ? Theme.of(context).colorScheme.error : null,
+              ),
+            ),
+            Text(estourou
+                ? '${-r["restante"]!} acima do disponível'
+                : '${r["restante"]} restantes'),
+            const Divider(),
+            _linhaPontos('Habilidades', r["habilidades"]),
+            _linhaPontos('Defesas', r["defesas"]),
+            _linhaPontos('Perícias', r["pericias"]),
+            _linhaPontos('Vantagens', r["vantagens"]),
+            _linhaPontos('Poderes', r["poderes"]),
+            if (r["equipamentoUsado"]! > 0 || r["equipamentoDisponivel"]! > 0)
+              Padding(
+                padding: const EdgeInsets.only(top: 8),
+                child: Text(
+                    'Pontos de equipamento: ${r["equipamentoUsado"]} / ${r["equipamentoDisponivel"]}'),
+              ),
+          ],
+        ),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    txtControlName.text = personagem.nomePersonagem;
-    txtNP.text = personagem.np.toString();
-
-    _validaFicha();
+    logError = validador.validacaoGeral();
 
     return Scaffold(
       appBar: AppBar(
@@ -94,7 +214,8 @@ class _ScreenInicialState extends State<ScreenInicial> {
       drawer: Drawer(
         child: Padding(
           padding: EdgeInsets.zero,
-          child: Column(children: [
+          // ListView: o menu rola em telas baixas em vez de estourar
+          child: ListView(children: [
             const DrawerHeader(
               child: Text(
                 'Menu',
@@ -151,18 +272,27 @@ class _ScreenInicialState extends State<ScreenInicial> {
               },
             ),
             ListTile(
+              leading: const Icon(Icons.note_add),
+              title: const Text('Nova ficha'),
+              onTap: () {
+                Navigator.pop(context);
+                _novaFicha();
+              },
+            ),
+            ListTile(
               leading: const Icon(BootstrapIcons.upload),
               title: const Text('Upload'),
               onTap: () async {
                 Download upload = Download();
                 var ficha = await upload.uploadFicha();
+                // Upload cancelado ou inválido: mantém ficha e imagem atuais
                 if (ficha.isNotEmpty) {
-                  personagem.reInit(ficha);
+                  personagem = Ficha();
+                  await personagem.init();
+                  await personagem.reInit(ficha);
+                  _mostrarFicha(upload.img);
+                  await _salvarLocal();
                 }
-                // Repassa a imagem
-                setState(() {
-                  fileImg = upload.img;
-                });
               },
             ),
 
@@ -170,15 +300,19 @@ class _ScreenInicialState extends State<ScreenInicial> {
               ListTile(
                 leading: const Icon(BootstrapIcons.exclamation_triangle_fill),
                 title: Text('Erros ${logError.length}'),
-                onTap: () async {
-                  Navigator.pushNamed(context, '/componentLog');
+                onTap: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) => LogPopupError(erros: logError),
+                  );
                 },
               ), // : const SizedBox(),
             const Divider(),
           ]),
         ),
       ),
-      body: Column(
+      body: SingleChildScrollView(
+        child: Column(
         children: [
           //; descomentar quando for colcoar titulo
           // const Text(
@@ -219,6 +353,7 @@ class _ScreenInicialState extends State<ScreenInicial> {
                 setState(() {
                   fileImg = imgUploaded;
                 });
+                _salvarLocal();
               } catch (e) {
                 // typeError
                 print(e.toString());
@@ -228,8 +363,7 @@ class _ScreenInicialState extends State<ScreenInicial> {
 
           const SizedBox(height: 50),
 
-          Expanded(
-            child: Row(
+          Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -242,8 +376,9 @@ class _ScreenInicialState extends State<ScreenInicial> {
                           controller: txtControlName,
                           decoration: const InputDecoration(
                               hintText: "Nome do Personagem"),
-                          onChanged: (value) => {
-                            personagem.nomePersonagem = value,
+                          onChanged: (value) {
+                            personagem.nomePersonagem = value;
+                            _salvarLocal();
                           },
                         ),
                       ),
@@ -261,16 +396,26 @@ class _ScreenInicialState extends State<ScreenInicial> {
                           inputFormatters: <TextInputFormatter>[
                             FilteringTextInputFormatter.digitsOnly
                           ],
-                          onChanged: (value) => {
-                            if (int.tryParse(value) != null)
-                              {personagem.np = int.parse(value)},
+                          onChanged: (value) {
+                            if (int.tryParse(value) != null) {
+                              // Recalcula pontos disponíveis e validação
+                              setState(() => personagem.np = int.parse(value));
+                              _salvarLocal();
+                            }
                           },
                         ),
                       ),
                     ],
                   ),
                 ]),
+
+          const SizedBox(height: 20),
+          Container(
+            constraints: const BoxConstraints(maxWidth: 400),
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: _resumoPontos(),
           ),
+          const SizedBox(height: 80),
 
           //# Lista de notificações
           // logError.isNotEmpty ?
@@ -287,6 +432,7 @@ class _ScreenInicialState extends State<ScreenInicial> {
           //   }
           // ) : const SizedBox(),
         ],
+      ),
       ),
       floatingActionButton: IconButton(
         icon: const Icon(BootstrapIcons.floppy2_fill),

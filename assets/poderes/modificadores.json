@@ -20,7 +20,7 @@
         {
             "m_id": "E018",
             "nome": "Inato",
-            "fixo": false,
+            "fixo": true,
             "custo_base": 1,
             "desc": false
         },
@@ -60,16 +60,6 @@
             "limite": 1,
             "desc": false
         },
-        
-        {
-            "m_id": "E036",
-            "nome": "Dissipação",
-            "fixo": false,
-            "custo_base": -1,
-            "limite": 1,
-            "desc": false
-        },
-    
         {
             "m_id": "E037",
             "nome": "Distração",
@@ -158,24 +148,71 @@
             "custo_base": -1,
             "limite": 1,
             "desc": false
+        },
+
+        {
+            "m_id": "E049",
+            "nome": "Área",
+            "fixo": false,
+            "custo_base": 1,
+            "limite": 10,
+            "desc": true
+        },
+
+        {
+            "m_id": "E050",
+            "nome": "Resistível",
+            "fixo": false,
+            "custo_base": -1,
+            "limite": 1,
+            "desc": true
+        },
+
+        {
+            "m_id": "E051",
+            "nome": "Personalizado (extra por graduação)",
+            "fixo": false,
+            "custo_base": 1,
+            "limite": 10,
+            "desc": true
+        },
+
+        {
+            "m_id": "E052",
+            "nome": "Personalizado (extra fixo)",
+            "fixo": true,
+            "custo_base": 1,
+            "limite": 20,
+            "desc": true
+        },
+
+        {
+            "m_id": "E053",
+            "nome": "Personalizado (falha por graduação)",
+            "fixo": false,
+            "custo_base": -1,
+            "limite": 10,
+            "desc": true
+        },
+
+        {
+            "m_id": "E054",
+            "nome": "Personalizado (falha fixa)",
+            "fixo": true,
+            "custo_base": -1,
+            "limite": 20,
+            "desc": true
         }
         
     ],
 
     "ofensivos": [
         {
-            "m_id": "E006",
-            "nome": "Alcance",
-            "fixo": true,
-            "custo_base": 0,
-            "desc": false
-        },
-
-        {
             "m_id": "E001",
             "nome": "Afeta Corpóreo",
             "fixo": true,
-            "custo_base": -1,
+            "custo_base": 1,
+            "limite": -1,
             "desc": false
         },
     
@@ -217,7 +254,7 @@
             "m_id": "E011",
             "nome": "Dimensional",
             "fixo": true,
-            "custo_base": 0,
+            "custo_base": 1,
             "limite": 3,
             "desc": true
         },
@@ -342,6 +379,78 @@
             "custo_base": -1,
             "limite": 1,
             "desc": false
+        },
+
+        {
+            "m_id": "E055",
+            "nome": "Alcance Estendido",
+            "fixo": true,
+            "custo_base": 1,
+            "limite": 10,
+            "desc": false
+        },
+
+        {
+            "m_id": "E056",
+            "nome": "Incurável",
+            "fixo": true,
+            "custo_base": 1,
+            "limite": 1,
+            "desc": false
+        },
+
+        {
+            "m_id": "E057",
+            "nome": "Resistência Alternativa",
+            "fixo": false,
+            "custo_base": 0,
+            "limite": 1,
+            "desc": true
+        },
+
+        {
+            "m_id": "E058",
+            "nome": "Resistência Alternativa (mais vantajosa)",
+            "fixo": false,
+            "custo_base": 1,
+            "limite": 1,
+            "desc": true
+        },
+
+        {
+            "m_id": "E059",
+            "nome": "Sonífero",
+            "fixo": false,
+            "custo_base": 0,
+            "limite": 1,
+            "desc": false
+        },
+
+        {
+            "m_id": "E060",
+            "nome": "Baseado em Agarrar",
+            "fixo": false,
+            "custo_base": -1,
+            "limite": 1,
+            "desc": false
+        },
+
+        {
+            "m_id": "E061",
+            "nome": "Dependente de Sentido",
+            "fixo": false,
+            "custo_base": -1,
+            "limite": 1,
+            "desc": true
+        },
+
+        {
+            "m_id": "E062",
+            "nome": "Impreciso",
+            "fixo": true,
+            "custo_base": -1,
+            "limite": 10,
+            "desc": false
         }
     ],
     
@@ -350,7 +459,8 @@
             "m_id": "E007",
             "nome": "Aumentar Massa",
             "fixo": true,
-            "custo_base": 0,
+            "custo_base": 1,
+            "limite": 10,
             "desc": false
         },
         
@@ -359,6 +469,24 @@
             "nome": "Limitado a Resistência",
             "fixo": false,
             "custo_base": -1,
+            "desc": false
+        },
+
+        {
+            "m_id": "E063",
+            "nome": "Afeta Outros",
+            "fixo": false,
+            "custo_base": 1,
+            "limite": 1,
+            "desc": false
+        },
+
+        {
+            "m_id": "E064",
+            "nome": "Afeta Apenas Outros",
+            "fixo": false,
+            "custo_base": 0,
+            "limite": 1,
             "desc": false
         }
     ],

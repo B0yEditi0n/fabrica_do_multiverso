@@ -111,26 +111,12 @@
 		"class": "Vantagem"
 	},
 	{
-		"id": "V015",
-		"nome": "ATAQUE DE EQUIPE",
-		"graduado": false,
-		"desc": false,
-		"class": "Vantagem"
-	},
-	{
 		"id": "V016",
 		"nome": "ATAQUE DE EQUIPE VARIÁVEL",
 		"graduado": false,
 		"desc": false,
 		"class": "Vantagem"
 	},
-	{
-		"id": "V017",
-		"nome": "ATAQUE DE EQUIPE VARIÁVEL",
-		"graduado": false,
-		"desc": false,
-		"class": "Vantagem"
-	},	
 	{
 		"id": "V018",
 		"nome": "ATAQUE DEFENSIVO",
@@ -478,7 +464,7 @@
 		"id": "V065",
 		"nome": "OPONENTE FAVORITO",
 		"graduado": false,
-		"desc": false,
+		"desc": true,
 		"class": "Vantagem"
 	},
 	{
@@ -492,7 +478,7 @@
 		"id": "V067",
 		"nome": "PARCEIRO",
 		"graduado": true,
-		"desc": false,
+		"desc": true,
 		"class": "Vantagem"
 	},
 	{
@@ -608,7 +594,7 @@
 		"id": "V083",
 		"nome": "TONTEAR",
 		"graduado": true,
-		"desc": false,
+		"desc": true,
 		"limite": 2,
 		"class": "Vantagem"
 	},
@@ -650,6 +636,13 @@
 	{
 		"id": "V089",
 		"nome": "ZOMBAR",
+		"graduado": false,
+		"desc": false,
+		"class": "Vantagem"
+	},
+	{
+		"id": "V090",
+		"nome": "VELOCIDADE DO PENSAMENTO",
 		"graduado": false,
 		"desc": false,
 		"class": "Vantagem"

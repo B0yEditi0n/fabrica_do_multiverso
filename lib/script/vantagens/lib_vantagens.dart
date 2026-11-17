@@ -39,7 +39,7 @@ class Vantagem {
     }
 
     if(obj["idOrigem"] != null){idOrigem = obj["idOrigem"];}
-    if(obj["addByPower"] != null){ addByPower = true; }
+    addByPower = obj["addByPower"] == true;
     if(obj["bonus"] != null){bonus.addAll(obj["bonus"]);}
 
     return this;

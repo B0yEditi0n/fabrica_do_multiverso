@@ -10,6 +10,7 @@ import 'package:fabrica_do_multiverso/script/habilidades/lib_habilidades.dart';
 //import 'package:fabrica_do_multiverso/screens/screenPoderes/controlePoderes.dart';
 import 'package:fabrica_do_multiverso/script/poderes/lib_efeitos.dart';
 import 'package:fabrica_do_multiverso/script/poderes/lib_pacoteEfeitos.dart';
+import 'package:fabrica_do_multiverso/script/poderes/lib_custos.dart';
 
 import 'dart:developer' as dev;
 
@@ -17,7 +18,8 @@ import 'dart:developer' as dev;
 class ValidaNpPersonagem {
   List logErros = [];
 
-  int np = personagem.np;
+  // Sempre lê o NP atual da ficha (antes ficava preso ao valor da criação)
+  int get np => personagem.np;
 
   List _efeitos() {
     List logEfeitos = [];
@@ -88,7 +90,9 @@ class ValidaNpPersonagem {
         default: // Apenas o limite de NP
       }
 
-      objectEfeito.reinstanciarMetodo(p);
+      // Síncrono: o catálogo já foi carregado em Ficha.init
+      objectEfeito = EfeitoOfensivo();
+      objectEfeito.carregaMapa(p);
 
       // Validação de Erro
       if (bonusVantagem +
@@ -353,6 +357,40 @@ class ValidaNpPersonagem {
     return bonusAlternativoTotal;
   }
 
+  List _pontos() {
+    /*
+      Valida o orçamento da ficha: total de pontos de poder
+      e pontos de equipamento.
+
+      - Args:
+        Return: List [{ tipo: "T" (total) ou "Q" (equipamento), nome, msg, id }]
+    */
+    List logPontos = [];
+    Map<String, int> resumo = personagem.resumoPontos();
+
+    if (resumo["total"]! > resumo["disponivel"]!) {
+      logPontos.add({
+        "tipo": "T",
+        "nome": "Pontos de poder",
+        "msg":
+            "A ficha gasta ${resumo["total"]} pontos de poder, ${resumo["total"]! - resumo["disponivel"]!} acima dos ${resumo["disponivel"]} disponíveis",
+        "id": [],
+      });
+    }
+
+    if (resumo["equipamentoUsado"]! > resumo["equipamentoDisponivel"]!) {
+      logPontos.add({
+        "tipo": "Q",
+        "nome": "Equipamento",
+        "msg":
+            "Os equipamentos usam ${resumo["equipamentoUsado"]} pontos de equipamento, mas a vantagem Equipamento fornece ${resumo["equipamentoDisponivel"]} (5 por graduação)",
+        "id": ["V041"],
+      });
+    }
+
+    return logPontos;
+  }
+
   List validacaoGeral() {
     /*
       Valida a ficha com base nas regras,
@@ -373,6 +411,7 @@ class ValidaNpPersonagem {
     logErros.addAll(_pericias());
     logErros.addAll(_defesas());
     logErros.addAll(_efeitos());
+    logErros.addAll(_pontos());
 
     return logErros;
   }
@@ -576,6 +615,8 @@ class IntercambioModular {
       for (int i = 0; i < getList.length; i++) {
         //Map r in getList){
         Map r = getList[i];
+        // Fichas antigas podem ter itens sem a lista de bonus
+        r["bonus"] ??= [];
         if (r["bonus"].isNotEmpty) {
           int idx = r["bonus"].indexWhere((b) => b["idOrigem"] == id);
           if (idx > -1) {
@@ -601,7 +642,7 @@ class IntercambioModular {
     // Vantagens
     listRef = personagem.vantagens.listaVantagens;
     listRef.removeWhere((r) =>
-        r["addByPower"] &&
+        r["addByPower"] == true &&
         id == r["idOrigem"]); // Remove vantagens adicioadas por poderes
     personagem.vantagens.listaVantagens = removeBonusIdInRange(listRef) as List<Map<dynamic, dynamic>>;
   }
@@ -798,40 +839,13 @@ class ManipulaPoderes {
     */
 
     // Cria um novo Efeito
-    Efeito poder;
-    switch (classe) {
-      case "EfeitoCrescimento":
-        poder = EfeitoCrescimento();
-        break;
-      case "EfeitoBonus":
-        poder = EfeitoBonus();
-        break;
-      case "EfeitoAflicao":
-        poder = EfeitoAflicao();
-        break;
-      case "EfeitoDano":
-        poder = EfeitoDano();
-        break;
-      case "EfeitoCompra":
-        poder = EfeitoCompra();
-        break;
-      case "EfeitoCustoVaria":
-        poder = EfeitoCustoVaria();
-        break;
-      case "EfeitoOfensivo":
-        poder = EfeitoOfensivo();
-        break;
-      case "Efeito":
-      default:
-        poder = Efeito();
-        break;
-    }
+    Efeito poder = Efeito.porClasse(classe);
     await poder.instanciarMetodo(nome, id);
     Map objPoder = poder.retornaObj();
     poderesLista.add(objPoder);
   }
 
-  novoPacote(nome, tipo, efeito) {
+  novoPacote(nome, tipo, efeito, [int removivel = 0]) {
     /*
       inicialização de um pacote de efeitos
       selecionadas pela primeira vez (Provavelmente no add poder)
@@ -848,12 +862,18 @@ class ManipulaPoderes {
       "tipo": tipo,
       "efeito": efeito,
       "efeitos": [],
-      "removivel": 0,
+      "removivel": removivel,
     });
 
     Map objPackge = pacote.retornaObj();
     poderesLista.add(objPackge);
   }
+
+  /// Total em pontos de poder (equipamentos ficam de fora)
+  int calculaTotal() => CustoPoderes.totalPoderes(poderesLista);
+
+  /// Pontos de equipamento usados pelos pacotes de equipamento
+  int pontosEquipamento() => CustoPoderes.pontosEquipamento(poderesLista);
 
   List<dynamic> listaDePoderes() {
     Map poder = {};
@@ -890,36 +910,9 @@ class ManipulaPoderes {
         Objeto Efeito ou qualquer filho de acordo com o objeto
     */
 
-    Efeito poder;
-    switch (mapPoder["class"]) {
-      case "EfeitoCrescimento":
-        poder = EfeitoCrescimento();
-        break;
-      case "EfeitoBonus":
-        poder = EfeitoBonus();
-        break;
-      case "EfeitoAflicao":
-        poder = EfeitoAflicao();
-        break;
-      case "EfeitoDano":
-        poder = EfeitoDano();
-        break;
-      case "EfeitoCompra":
-        poder = EfeitoCompra();
-        break;
-      case "EfeitoCustoVaria":
-        poder = EfeitoCustoVaria();
-        break;
-      case "EfeitoOfensivo":
-        poder = EfeitoOfensivo();
-        break;
-      case "Efeito":
-      default:
-        poder = Efeito();
-        break;
-    }
+    Efeito poder = Efeito.porClasse(mapPoder["class"]);
 
-    poder.instanciarMetodo(mapPoder["nome"], mapPoder["e_id"]);
+    await poder.instanciarMetodo(mapPoder["nome"], mapPoder["e_id"]);
 
     return poder;
   }
@@ -984,9 +977,17 @@ class ManipulaPericias {
       for (Map oPericia in jsonPericias) {
         Pericia pericia;
 
-        oPericia["classe"] == "PericiaAddAcerto"
-            ? pericia = PericiaAddAcerto()
-            : pericia = Pericia();
+        // Mantém a classe original para não perder escopo de especialidades
+        switch (oPericia["classe"]) {
+          case "PericiaAddAcerto":
+            pericia = PericiaAddAcerto();
+            break;
+          case "PericiaAdiciona":
+            pericia = PericiaAdiciona();
+            break;
+          default:
+            pericia = Pericia();
+        }
 
         pericia.init(oPericia);
 
@@ -1101,13 +1102,70 @@ class Ficha {
 
   IntercambioModular validador = IntercambioModular();
 
+  // Pontos de poder recebidos por nível de poder
+  static const int pontosPorNp = 15;
+
   Future<int> init() async {
     await pericias.init();
+    await Efeito.carregarCatalogo();
 
     return 1;
   }
 
+  int iniciativa() {
+    /*
+      Bônus de iniciativa: Agilidade + 4 por graduação de Iniciativa
+      Aprimorada (V054). Com Velocidade do Pensamento (V090) usa Intelecto
+      no lugar de Agilidade.
+    */
+    List lista = vantagens.listaVantagens;
+    String idHabilidade = lista.any((v) => v["id"] == "V090") ? "INT" : "AGI";
+
+    Habilidade objHabilidade = Habilidade();
+    objHabilidade.initObject(habilidades.getItem(idHabilidade));
+    int total = objHabilidade.valorTotal();
+
+    for (Map v in lista.where((v) => v["id"] == "V054")) {
+      total += 4 * (Vantagem().init(v).returnTotalGrad() as int);
+    }
+    return total;
+  }
+
+  Map<String, int> resumoPontos() {
+    /*
+      Orçamento da ficha: quanto cada módulo gasta, o total
+      e o disponível pelo nível de poder.
+    */
+    int hab = habilidades.calculaTotal();
+    int def = defesas.calculaTotal();
+    int per = pericias.calculaTotal();
+    int van = vantagens.cutoTotal();
+    int pod = poderes.calculaTotal();
+
+    // Graduações de Equipamento compradas ou concedidas por poder
+    int gradEquipamento = 0;
+    for (Map v in vantagens.listaVantagens.where((v) => v["id"] == "V041")) {
+      gradEquipamento += Vantagem().init(v).returnTotalGrad() as int;
+    }
+
+    int total = hab + def + per + van + pod;
+    int disponivel = np * pontosPorNp;
+    return {
+      "habilidades": hab,
+      "defesas": def,
+      "pericias": per,
+      "vantagens": van,
+      "poderes": pod,
+      "total": total,
+      "disponivel": disponivel,
+      "restante": disponivel - total,
+      "equipamentoUsado": poderes.pontosEquipamento(),
+      "equipamentoDisponivel": gradEquipamento * 5,
+    };
+  }
+
   Future<int> reInit(Map jsonReInit) async {
+    await Efeito.carregarCatalogo();
     nomePersonagem = jsonReInit["pesonagem"]["nome"];
     np = jsonReInit["pesonagem"]["np"];
 

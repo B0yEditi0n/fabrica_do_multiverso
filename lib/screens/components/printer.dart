@@ -1,106 +1,116 @@
-// Arquivo de Ficha
+// Geração do PDF da ficha.
+//
+// O desenho segue o modelo de ficha em
+//   Desenvolvimento/Repositório de Regras/Alquimista.docx e Prodigio.docx:
+//   nome e imagem, "NP X (gastos / disponíveis pontos)", e as seções
+//   Habilidades, Defesas, Ofensiva, Vantagens, Poderes, Perícias,
+//   Complicações & Notas, Equipamentos e a linha final de totais.
+//   Seções têm barra preta com texto branco; as tabelas de Habilidades e
+//   Defesas têm cabeçalho azul (#2a6099); a letra é Arial (aqui Helvetica).
 import 'package:fabrica_do_multiverso/script/ficha.dart';
 import 'package:fabrica_do_multiverso/script/pericias/lib_pericias.dart';
 import 'package:fabrica_do_multiverso/script/vantagens/lib_vantagens.dart';
 import 'package:fabrica_do_multiverso/script/habilidades/lib_habilidades.dart';
 import 'package:fabrica_do_multiverso/script/poderes/lib_efeitos.dart';
-import 'package:flutter/material.dart';
+import 'package:fabrica_do_multiverso/script/poderes/lib_custos.dart';
 
 // Criação de PDFs
 import 'package:pdf/widgets.dart' as pw;
 import 'package:pdf/pdf.dart';
 import 'package:printing/printing.dart';
 
-import 'package:flutter/services.dart' show rootBundle;
 import 'dart:typed_data';
 
 // Importação da Lógica de processamento dos Widgets
 import 'package:fabrica_do_multiverso/script/printer/poderes.dart';
 
-import 'dart:developer' as dev;
-
 class Printer {
   //
-  // Configurações de Fontes & Texto
+  // Medidas e cores do modelo
   //
-  static pw.Font robotFont = pw.Font();
-  static pw.Font headerFont = pw.Font();
-  static pw.TextStyle headerTxtStyle = const pw.TextStyle();
+  static const double margem = 56.7; // 2 cm
+  static final double contentWidth = PdfPageFormat.a4.width - (margem * 2);
+  static const PdfColor corSecao = PdfColors.black;
+  static const PdfColor corCabecalho = PdfColor.fromInt(0xff2a6099);
+  static const double tamanhoTexto = 11;
 
-  // Largura de conteúdo útil da página (A4 portrait - margens de 25 em cada lado)
-  static final double contentWidth = PdfPageFormat.a4.width - (25 * 2);
-
-  //
-  // Widgets base de Tabela
-  //
-  static pw.Widget headerRowTable(String txt) => pw.Container(
-        decoration: const pw.BoxDecoration(color: PdfColor(0, 0, 0)),
-        padding: const pw.EdgeInsets.symmetric(vertical: 2),
-        child: pw.Text(
-          txt,
-          textAlign: pw.TextAlign.center,
-          style: pw.TextStyle(
-            fontWeight: pw.FontWeight.bold,
-            color: const PdfColor(1, 1, 1),
-          ),
-        ),
-      );
-
-  static pw.Text cellRowTable(String txt) => pw.Text(
-        txt,
-        textAlign: pw.TextAlign.center,
-      );
-
-  // Cabeçalho de seção estilo "Separador" do modelo (fundo preto, texto branco)
-  static pw.Widget sectionHeader(String txt) => pw.Container(
-        width: contentWidth,
-        margin: const pw.EdgeInsets.only(top: 8, bottom: 5),
-        padding: const pw.EdgeInsets.symmetric(horizontal: 6, vertical: 4),
-        decoration: pw.BoxDecoration(
-          color: const PdfColor(0.07, 0.07, 0.07),
-          borderRadius: const pw.BorderRadius.all(pw.Radius.circular(4)),
-        ),
-        child: pw.Text(
-          txt.toUpperCase(),
-          style: pw.TextStyle(
-            font: headerFont,
-            fontSize: 14,
-            color: PdfColors.white,
-          ),
-        ),
-      );
-
-  static const int sizedWidgetColumn = 560;
+  static pw.TextStyle get negrito =>
+      pw.TextStyle(fontWeight: pw.FontWeight.bold);
 
   //
-  // Widgets que compõe o PDF
+  // Textos da ficha (funções puras, cobertas por teste)
   //
 
-  static pw.Widget infoHeader() => pw.Column(
-        crossAxisAlignment: pw.CrossAxisAlignment.start,
-        children: [
-          pw.Text(
-            personagem.nomePersonagem.isNotEmpty
-                ? personagem.nomePersonagem
-                : 'Personagem Sem Nome',
-            style: pw.TextStyle(
-              font: headerFont,
-              fontSize: 22,
-              decoration: pw.TextDecoration.underline,
-            ),
-          ),
-          pw.SizedBox(height: 5),
-          pw.Container(
-            margin: const pw.EdgeInsets.all(1),
-            padding: const pw.EdgeInsets.all(3),
-            decoration: pw.BoxDecoration(
-              border: pw.Border.all(),
-            ),
-            child: pw.Text(
-                "NP ${personagem.np} (${personagem.np * 15} pontos)"),
-          ),
-        ],
-      );
+  static String comSinal(int valor) => valor >= 0 ? '+$valor' : '$valor';
+
+  /// "ATAQUE À DISTÂNCIA" -> "Ataque à Distância"
+  static String nomeProprio(String texto) {
+    const List<String> minusculas = [
+      'de', 'do', 'da', 'dos', 'das', 'a', 'à', 'em', 'no', 'na', 'com', 'e'
+    ];
+    String palavra(String p, bool primeira) {
+      if (p.isEmpty) return p;
+      String baixa = p.toLowerCase();
+      if (!primeira && minusculas.contains(baixa)) return baixa;
+      return baixa[0].toUpperCase() + baixa.substring(1);
+    }
+
+    List<String> palavras = texto.trim().split(' ');
+    List<String> saida = [];
+    for (int i = 0; i < palavras.length; i++) {
+      // Mantém a maiúscula depois do hífen: "Corpo-a-Corpo", "Esconder-se"
+      List<String> partes = palavras[i].split('-');
+      saida.add([
+        for (int j = 0; j < partes.length; j++)
+          palavra(partes[j], i == 0 && j == 0)
+      ].join('-'));
+    }
+    return saida.join(' ');
+  }
+
+  /// "NP 11 (162 / 165 pontos)"
+  static String linhaNp() {
+    Map<String, int> r = personagem.resumoPontos();
+    return 'NP ${personagem.np} (${r["total"]} / ${r["disponivel"]} pontos)';
+  }
+
+  /// "Habilidades 62 + Defesas 27 + Vantagens 9 + Poderes 36 + Perícias 28 : 162 pontos"
+  static String linhaTotais() {
+    Map<String, int> r = personagem.resumoPontos();
+    return 'Habilidades ${r["habilidades"]} + Defesas ${r["defesas"]} + '
+        'Vantagens ${r["vantagens"]} + Poderes ${r["poderes"]} + '
+        'Perícias ${r["pericias"]} : ${r["total"]} pontos';
+  }
+
+  /// "Ataque Preciso (Camuflagem, a Distância) [2]"
+  /// O asterisco marca graduação que inclui bônus de poder.
+  static String textoVantagem(Map mapVantagem) {
+    Vantagem v = Vantagem().init(mapVantagem);
+    String texto = nomeProprio(v.nome);
+    if (v.txtDec.trim().isNotEmpty) {
+      texto += ' (${v.txtDec.trim()})';
+    }
+    if (v.graduado) {
+      texto += ' [${v.grad() != v.returnTotalGrad() ? '*' : ''}${v.returnTotalGrad()}]';
+    }
+    return texto;
+  }
+
+  /// "Furtividade [8] +10"
+  static String textoPericia(Map mapPericia) {
+    Pericia p = Pericia();
+    p.init(mapPericia);
+    return '${p.nome} [${p.onlyGrad()}] ${comSinal(p.bonusTotal())}';
+  }
+
+  /// Perícias que entram na ficha impressa: as que têm graduação
+  static List<Map> periciasImpressas() {
+    return List<Map>.from(personagem.pericias.ListaPercias.where((p) {
+      Pericia obj = Pericia();
+      obj.init(p);
+      return obj.onlyGrad() > 0;
+    }));
+  }
 
   static String totalHabilidades(mapHabi) {
     String retValue = mapHabi["valor"].toString();
@@ -111,99 +121,142 @@ class Printer {
     return retValue;
   }
 
+  //
+  // Widgets base
+  //
+
+  // Barra de seção do modelo: fundo preto, texto branco, largura total
+  static pw.Widget sectionHeader(String txt) => pw.Container(
+        width: contentWidth,
+        margin: const pw.EdgeInsets.only(top: 8, bottom: 4),
+        padding: const pw.EdgeInsets.symmetric(horizontal: 5, vertical: 3),
+        color: corSecao,
+        child: pw.Text(
+          '$txt:',
+          style: pw.TextStyle(
+            fontWeight: pw.FontWeight.bold,
+            color: PdfColors.white,
+          ),
+        ),
+      );
+
+  static pw.Widget headerRowTable(String txt) => pw.Container(
+        color: corCabecalho,
+        padding: const pw.EdgeInsets.symmetric(vertical: 3),
+        child: pw.Text(
+          txt,
+          textAlign: pw.TextAlign.center,
+          style: pw.TextStyle(
+            fontWeight: pw.FontWeight.bold,
+            color: PdfColors.white,
+          ),
+        ),
+      );
+
+  static pw.Widget cellRowTable(String txt) => pw.Padding(
+        padding: const pw.EdgeInsets.symmetric(vertical: 3),
+        child: pw.Text(txt, textAlign: pw.TextAlign.center),
+      );
+
+  // Tabela de rótulos e valores (Habilidades e Defesas)
+  static pw.Widget tabelaValores(List<List<String>> linhas) {
+    List<pw.TableRow> rows = [];
+    for (int i = 0; i < linhas.length; i++) {
+      rows.add(pw.TableRow(children: [
+        for (String txt in linhas[i])
+          i.isEven ? headerRowTable(txt) : cellRowTable(txt)
+      ]));
+    }
+    return pw.Table(
+      border: pw.TableBorder.all(color: PdfColors.white, width: 1),
+      children: rows,
+    );
+  }
+
+  // Lista de textos em duas colunas, preenchida de cima para baixo
+  static pw.Widget duasColunas(List<String> itens) {
+    int metade = (itens.length / 2).ceil();
+    pw.Widget coluna(List<String> parte) => pw.Expanded(
+          child: pw.Column(
+            crossAxisAlignment: pw.CrossAxisAlignment.start,
+            children: [
+              for (String txt in parte)
+                pw.Padding(
+                  padding: const pw.EdgeInsets.only(bottom: 2, right: 6),
+                  child: pw.Text(txt),
+                )
+            ],
+          ),
+        );
+    return pw.Row(
+      crossAxisAlignment: pw.CrossAxisAlignment.start,
+      children: [
+        coluna(itens.sublist(0, metade)),
+        coluna(itens.sublist(metade)),
+      ],
+    );
+  }
+
+  //
+  // Seções
+  //
+
+  static pw.Widget infoHeader() => pw.Column(
+        crossAxisAlignment: pw.CrossAxisAlignment.start,
+        children: [
+          pw.Text(
+            personagem.nomePersonagem.isNotEmpty
+                ? personagem.nomePersonagem
+                : 'Personagem Sem Nome',
+            style: pw.TextStyle(fontSize: 22, fontWeight: pw.FontWeight.bold),
+          ),
+          pw.SizedBox(height: 4),
+          pw.Text(linhaNp(), style: negrito),
+        ],
+      );
+
   static pw.Widget habilidades() => pw.Column(
         crossAxisAlignment: pw.CrossAxisAlignment.start,
         children: [
           sectionHeader('Habilidades'),
-          pw.Table(
-            border: pw.TableBorder.all(),
-            columnWidths: const {
-              0: pw.FixedColumnWidth(70),
-              1: pw.FixedColumnWidth(70),
-              2: pw.FixedColumnWidth(70),
-              3: pw.FixedColumnWidth(70),
-            },
-            children: [
-              pw.TableRow(children: [
-                headerRowTable('Força'),
-                headerRowTable('Agilidade'),
-                headerRowTable('Luta'),
-                headerRowTable('Prontidão'),
-              ]),
-              pw.TableRow(children: [
-                cellRowTable(
-                    totalHabilidades(personagem.habilidades.getItem("FOR"))),
-                cellRowTable(
-                    totalHabilidades(personagem.habilidades.getItem("AGI"))),
-                cellRowTable(
-                    totalHabilidades(personagem.habilidades.getItem("LUT"))),
-                cellRowTable(
-                    totalHabilidades(personagem.habilidades.getItem("PRO"))),
-              ]),
-              pw.TableRow(children: [
-                headerRowTable('Vigor'),
-                headerRowTable('Destreza'),
-                headerRowTable('Intelecto'),
-                headerRowTable('Presença'),
-              ]),
-              pw.TableRow(children: [
-                cellRowTable(
-                    totalHabilidades(personagem.habilidades.getItem("VIG"))),
-                cellRowTable(
-                    totalHabilidades(personagem.habilidades.getItem("DES"))),
-                cellRowTable(
-                    totalHabilidades(personagem.habilidades.getItem("INT"))),
-                cellRowTable(
-                    totalHabilidades(personagem.habilidades.getItem("PRE"))),
-              ]),
+          tabelaValores([
+            ['Força', 'Agilidade', 'Luta', 'Prontidão'],
+            [
+              for (String id in ['FOR', 'AGI', 'LUT', 'PRO'])
+                totalHabilidades(personagem.habilidades.getItem(id))
             ],
-          ),
+            ['Vigor', 'Destreza', 'Intelecto', 'Presença'],
+            [
+              for (String id in ['VIG', 'DES', 'INT', 'PRE'])
+                totalHabilidades(personagem.habilidades.getItem(id))
+            ],
+          ]),
         ],
       );
 
   static pw.Widget defesas() => pw.Column(
-        mainAxisAlignment: pw.MainAxisAlignment.start,
         crossAxisAlignment: pw.CrossAxisAlignment.start,
         children: [
           sectionHeader('Defesas'),
-          pw.Table(
-            border: pw.TableBorder.all(),
-            columnWidths: const {
-              0: pw.FixedColumnWidth(96),
-              1: pw.FixedColumnWidth(96),
-              2: pw.FixedColumnWidth(96),
-              3: pw.FixedColumnWidth(96),
-              4: pw.FixedColumnWidth(96),
-            },
-            children: [
-              pw.TableRow(children: [
-                headerRowTable('Aparar'),
-                headerRowTable('Esquiva'),
-                headerRowTable('Fortitude'),
-                headerRowTable('Resistência'),
-                headerRowTable('Vontade'),
-              ]),
-              pw.TableRow(children: [
-                cellRowTable(personagem.defesas.returnForPrint('D002')),
-                cellRowTable(personagem.defesas.returnForPrint('D001')),
-                cellRowTable(personagem.defesas.returnForPrint('D003')),
-                cellRowTable(personagem.defesas.returnForPrint('D004')),
-                cellRowTable(personagem.defesas.returnForPrint('D005')),
-              ]),
+          tabelaValores([
+            ['Aparar', 'Esquiva', 'Fortitude', 'Resistência', 'Vontade'],
+            [
+              for (String id in ['D002', 'D001', 'D003', 'D004', 'D005'])
+                personagem.defesas.returnForPrint(id)
             ],
-          ),
+          ]),
         ],
       );
 
   //
-  // Ofensiva - resumo de ataque de cada efeito ofensivo/dano/aflição
+  // Ofensiva - iniciativa e uma entrada por ataque:
+  //   Nome: Acerto +11 | Dano 11
+  //   CD: 26 Resistência
   // (mesma regra de bônus usada em ValidaNpPersonagem._efeitos())
   //
-
-static Future<pw.Widget> ofensiva() async {
+  static Future<pw.Widget> ofensiva() async {
     List<pw.Widget> itens = [];
 
-    // Bônus de Habilidades
     Habilidade objectHabilidade = Habilidade();
     objectHabilidade.initObject(personagem.habilidades.getItem("LUT"));
     int luta = objectHabilidade.valorTotal();
@@ -213,9 +266,6 @@ static Future<pw.Widget> ofensiva() async {
 
     objectHabilidade.initObject(personagem.habilidades.getItem("FOR"));
     int forca = objectHabilidade.valorTotal();
-
-    objectHabilidade.initObject(personagem.habilidades.getItem("AGI"));
-    int agilidade = objectHabilidade.valorTotal();
 
     // Bônus de Vantagens (Ataque Corpo a Corpo / a Distância)
     List vantagens = personagem.vantagens.listaVantagens;
@@ -233,19 +283,6 @@ static Future<pw.Widget> ofensiva() async {
       vantagemADistancia = objectVantagem.returnTotalGrad();
     }
 
-    // Iniciativa = Agilidade + 4x graduação de "Iniciativa Aprimorada" (se houver)
-    // Obs: não há um ID fixo para essa vantagem no modelo de dados hoje,
-    // então a busca é feita pelo nome. Ajuste aqui se o ID for conhecido.
-    int bonusIniciativa = 0;
-    Map? vantagemIniciativa = vantagens.cast<Map>().firstWhere(
-        (v) => (v["nome"] ?? '').toString().toLowerCase().contains('iniciativa'),
-        orElse: () => {});
-    if (vantagemIniciativa != null && vantagemIniciativa.isNotEmpty) {
-      objectVantagem.init(vantagemIniciativa);
-      bonusIniciativa = objectVantagem.returnTotalGrad() * 4;
-    }
-    int iniciativa = agilidade + bonusIniciativa;
-
     // Efeitos Ofensivos: junta os de Perto (+ Desarmado) e a Distância (+ Arremesso)
     List poderes = [];
     poderes.addAll(personagem.pericias.returnOfensiveEfeitos(1));
@@ -262,56 +299,38 @@ static Future<pw.Widget> ofensiva() async {
           vantagemCorpoACorpo, vantagemADistancia));
     }
 
-    if (itens.isEmpty) {
-      itens.add(pw.Text('Nenhum efeito ofensivo cadastrado.'));
-    }
-
     return pw.Column(
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: [
         sectionHeader('Ofensiva'),
-        pw.Align(
-          alignment: pw.Alignment.centerRight,
-          child: pw.RichText(
-            text: pw.TextSpan(children: [
-              pw.TextSpan(
-                text: 'Iniciativa ',
-                style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
-              ),
-              pw.TextSpan(text: iniciativa >= 0 ? '+$iniciativa' : '$iniciativa'),
-            ]),
-          ),
+        pw.RichText(
+          text: pw.TextSpan(children: [
+            pw.TextSpan(text: 'Iniciativa: ', style: negrito),
+            pw.TextSpan(text: comSinal(personagem.iniciativa())),
+          ]),
         ),
         pw.SizedBox(height: 4),
-        pw.Column(
-          crossAxisAlignment: pw.CrossAxisAlignment.start,
-          children: itens,
-        ),
+        ...itens,
       ],
     );
   }
 
-  // Monta um bloco de duas linhas: "Nome: Acerto +X | Dano/Efeito Y" e
-  // "CD: Z Resistência" (quando houver CD calculável).
   static Future<pw.Widget> _blocoAtaque(Map p, int luta, int destreza,
       int forca, int vantagemCorpoACorpo, int vantagemADistancia) async {
     String nome;
     String strAcerto;
-    String labelEfeito;
-    String valorEfeito;
+    String efeito;
     String cdValor = '';
 
     // Ataques "genéricos" que não vem de um poder cadastrado (Desarmado / Arremesso)
     if (p["noPower"] == true) {
       bool ePerto = p["idCriacao"] == "F1";
-      int bonusAcerto = ePerto
-          ? luta + vantagemCorpoACorpo
-          : destreza + vantagemADistancia;
+      int bonusAcerto =
+          ePerto ? luta + vantagemCorpoACorpo : destreza + vantagemADistancia;
 
       nome = p["nome"];
-      strAcerto = '+$bonusAcerto';
-      labelEfeito = 'Dano';
-      valorEfeito = '$forca';
+      strAcerto = comSinal(bonusAcerto);
+      efeito = 'Dano $forca';
       cdValor = '${forca + 15} Resistência';
     } else {
       // Instancia o efeito real de acordo com a classe salva no Map
@@ -319,31 +338,28 @@ static Future<pw.Widget> ofensiva() async {
       Map objEfeitoJson = objectEfeito.retornaObj();
 
       int alcance = p["alcance"] ?? objEfeitoJson["alcance"];
-      int bonusVantagem = alcance == 1
+      int totalAcerto = alcance == 1
           ? luta + vantagemCorpoACorpo
           : alcance == 2
               ? destreza + vantagemADistancia
               : 0;
-
-      int totalAcerto = bonusVantagem;
       if (objectEfeito is EfeitoOfensivo) {
         totalAcerto += objectEfeito.totalBonusAcerto();
       }
 
       nome = objectEfeito.nome.isNotEmpty
           ? objectEfeito.nome
-          : objEfeitoJson["efeito"];
-      strAcerto = alcance == 3 ? 'Automático' : '+$totalAcerto';
+          : "${objEfeitoJson["efeito"]}";
+      strAcerto = alcance == 3 ? 'Automático' : comSinal(totalAcerto);
+      efeito = '${objEfeitoJson["efeito"]} ${objEfeitoJson["graduacao"]}';
 
-      // Rótulo: "Dano" apenas para EfeitoDano, senão "Efeito" (genérico)
-      labelEfeito = objEfeitoJson["class"] == "EfeitoDano" ? 'Dano' : 'Efeito';
-      valorEfeito = '${objEfeitoJson["graduacao"]}';
-
-      // CD: a base de dados hoje não guarda qual defesa resiste cada
-      // efeito - "Resistência" é o padrão mais comum (Dano/maioria das
-      // Aflições). Ajuste aqui quando esse dado existir no modelo.
+      // A ficha só sabe qual defesa resiste ao Dano (Resistência).
+      // Para os demais efeitos o PDF mostra apenas o valor da CD.
       if (objEfeitoJson["cd"] != null) {
-        cdValor = '${objEfeitoJson["cd"]} Resistência';
+        cdValor = '${objEfeitoJson["cd"]}';
+        if (objEfeitoJson["class"] == "EfeitoDano") {
+          cdValor += ' Resistência';
+        }
       }
 
       if (objEfeitoJson["class"] == "EfeitoAflicao" &&
@@ -357,235 +373,131 @@ static Future<pw.Widget> ofensiva() async {
       }
 
       if (objEfeitoJson["critico"] != null && objEfeitoJson["critico"] > 0) {
-        String critTxt = 'Crítico ${20 - (objEfeitoJson["critico"] as int)}';
-        cdValor = cdValor.isEmpty ? critTxt : '$cdValor - $critTxt';
+        cdValor +=
+            ' Crítico (${20 - (objEfeitoJson["critico"] as int)}-20)';
       }
     }
 
     return pw.Padding(
       padding: const pw.EdgeInsets.only(bottom: 6),
       child: pw.RichText(
-        overflow: pw.TextOverflow.clip,
         text: pw.TextSpan(children: [
-          pw.TextSpan(
-            text: '$nome: ',
-            style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
-          ),
-          pw.TextSpan(
-            text: 'Acerto ',
-            style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
-          ),
-          pw.TextSpan(text: '$strAcerto | '),
-          pw.TextSpan(
-            text: '$labelEfeito ',
-            style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
-          ),
-          pw.TextSpan(text: valorEfeito),
-          if (cdValor.isNotEmpty) const pw.TextSpan(text: '\n'),
-          if (cdValor.isNotEmpty)
-            pw.TextSpan(
-              text: 'CD: ',
-              style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
-            ),
-          if (cdValor.isNotEmpty) pw.TextSpan(text: cdValor),
+          pw.TextSpan(text: '$nome: ', style: negrito),
+          pw.TextSpan(text: 'Acerto $strAcerto | $efeito'),
+          if (cdValor.isNotEmpty) pw.TextSpan(text: '\nCD: ', style: negrito),
+          if (cdValor.isNotEmpty) pw.TextSpan(text: cdValor.trim()),
         ]),
       ),
     );
   }
 
   static pw.Widget vantagens() {
-    List<pw.TableRow> tablesRows = [];
-    List<pw.Widget> contentRows;
-
-    // Ordena Vantagens por Ordem Alfábetica
-    personagem.vantagens.listaVantagens
-        .sort((a, b) => a["nome"].compareTo(b["nome"]));
-
-    pw.Widget descVantagem(mapVantagem) {
-      Vantagem objVantagem = Vantagem().init(mapVantagem);
-      return pw.Padding(
-        padding: const pw.EdgeInsets.only(bottom: 2),
-        child: pw.Text(
-          "${objVantagem.nome} ${objVantagem.graduado ? "[${objVantagem.grad() != objVantagem.returnTotalGrad() ? "*" : ''}${objVantagem.returnTotalGrad()}]" : ''}",
-        ),
-      );
-    }
-
-    int nMax = personagem.vantagens.listaVantagens.length;
-
-    for (int i = 0; i < nMax / 2; i++) {
-      contentRows = [];
-
-      Map leftVantagem = personagem.vantagens.listaVantagens[i];
-      contentRows.add(descVantagem(leftVantagem));
-
-      if ((nMax / 2).ceil() + i < nMax) {
-        Map rightVantagem =
-            personagem.vantagens.listaVantagens[(nMax / 2).ceil() + i];
-        contentRows.add(descVantagem(rightVantagem));
-      } else {
-        contentRows.add(pw.SizedBox());
-      }
-      tablesRows.add(pw.TableRow(children: contentRows));
-    }
+    // Ordena uma cópia: a ordem da ficha não deve mudar ao gerar o PDF
+    final List<Map> vantagensOrdenadas =
+        List<Map>.from(personagem.vantagens.listaVantagens)
+          ..sort((a, b) => "${a["nome"]}".compareTo("${b["nome"]}"));
 
     return pw.Column(
-      mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
       crossAxisAlignment: pw.CrossAxisAlignment.start,
-      mainAxisSize: pw.MainAxisSize.max,
       children: [
         sectionHeader('Vantagens'),
-        nMax > 0
-            ? pw.Table(
-                columnWidths: const {
-                  0: pw.FlexColumnWidth(1),
-                  1: pw.FlexColumnWidth(1),
-                },
-                children: tablesRows,
-              )
+        vantagensOrdenadas.isNotEmpty
+            ? duasColunas(vantagensOrdenadas.map(textoVantagem).toList())
             : pw.Text('Nenhuma vantagem cadastrada.'),
       ],
     );
   }
 
   static pw.Widget pericias() {
-    List<pw.TableRow> tablesRows = [];
-    List<pw.Widget> contentRows;
-
-    int nMax = personagem.pericias.ListaPercias.length;
-
-    pw.Widget descPericia(Map mapPericia) {
-      Pericia objPericia = Pericia();
-      objPericia.init(mapPericia);
-
-      return pw.Padding(
-        padding: const pw.EdgeInsets.only(bottom: 2),
-        child: pw.Text(
-          "${objPericia.nome}(${objPericia.onlyGrad()}) +${objPericia.bonusTotal()}",
-        ),
-      );
-    }
-
-    for (int i = 0; i < nMax / 2; i++) {
-      contentRows = [];
-
-      Map mapPericiaEsquerda = personagem.pericias.ListaPercias[i];
-      contentRows.add(descPericia(mapPericiaEsquerda));
-
-      if ((nMax / 2).ceil() + i < nMax) {
-        Map mapPericiaDireita =
-            personagem.pericias.ListaPercias[(nMax / 2).ceil() + i];
-        contentRows.add(descPericia(mapPericiaDireita));
-      } else {
-        contentRows.add(pw.SizedBox());
-      }
-
-      tablesRows.add(pw.TableRow(children: contentRows));
-    }
-
+    List<Map> lista = periciasImpressas();
     return pw.Column(
-      mainAxisAlignment: pw.MainAxisAlignment.start,
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: [
         sectionHeader('Perícias'),
-        nMax > 0
-            ? pw.Table(
-                columnWidths: const {
-                  0: pw.FlexColumnWidth(1),
-                  1: pw.FlexColumnWidth(1),
-                },
-                children: tablesRows,
-              )
-            : pw.Text('Nenhuma perícia cadastrada.'),
+        lista.isNotEmpty
+            ? duasColunas(lista.map(textoPericia).toList())
+            : pw.Text('Nenhuma perícia com graduação.'),
       ],
     );
   }
 
   static Future<pw.Widget> poderes() async {
-    List<pw.Widget> content = [];
-
-    content.add(sectionHeader('Poderes'));
-
-    if (personagem.poderes.poderesLista.isEmpty) {
-      content.add(pw.Text('Nenhum poder cadastrado.'));
-    } else {
-      content.addAll(
-          await WidPdgPoderes.classificador(personagem.poderes.poderesLista));
-    }
+    // Equipamentos saem em seção própria, como no modelo
+    List lista = personagem.poderes.poderesLista
+        .where((p) => !CustoPoderes.eEquipamento(p))
+        .toList();
 
     return pw.Column(
-      mainAxisAlignment: pw.MainAxisAlignment.start,
-      crossAxisAlignment: pw.CrossAxisAlignment.start,
-      children: content,
-    );
-  }
-
-  static pw.Widget complicacoes() {
-    List<pw.Widget> containerRows = [];
-
-    for (int i = 0; i < personagem.complicacoes.length; i++) {
-      containerRows.add(
-        pw.Padding(
-          padding: const pw.EdgeInsets.symmetric(vertical: 2, horizontal: 5),
-          child: pw.RichText(
-            overflow: pw.TextOverflow.clip,
-            text: pw.TextSpan(text: "", children: [
-              pw.TextSpan(
-                text: "${personagem.complicacoes[i]["titulo"]}: ",
-                style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
-              ),
-              pw.TextSpan(text: personagem.complicacoes[i]["desc"]),
-            ]),
-          ),
-        ),
-      );
-    }
-
-    return pw.Column(
-      mainAxisAlignment: pw.MainAxisAlignment.start,
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: [
-        sectionHeader('Complicações'),
-        personagem.complicacoes.isEmpty
-            ? pw.Text('Nenhuma complicação cadastrada.')
-            : pw.Container(
-                decoration: pw.BoxDecoration(
-                  border: pw.Border.all(
-                    color: const PdfColor(0, 0, 0),
-                    style: pw.BorderStyle.solid,
-                    width: 1,
-                  ),
-                ),
-                width: contentWidth,
-                child: pw.Column(
-                  crossAxisAlignment: pw.CrossAxisAlignment.start,
-                  mainAxisSize: pw.MainAxisSize.max,
-                  children: containerRows,
-                ),
-              ),
+        sectionHeader('Poderes'),
+        if (lista.isEmpty) pw.Text('Nenhum poder cadastrado.'),
+        if (lista.isNotEmpty) ...await WidPdgPoderes.classificador(lista),
       ],
     );
   }
 
+  static Future<pw.Widget> equipamentos() async {
+    List lista = personagem.poderes.poderesLista
+        .where((p) => CustoPoderes.eEquipamento(p))
+        .toList();
+    if (lista.isEmpty) return pw.SizedBox();
+
+    Map<String, int> r = personagem.resumoPontos();
+    return pw.Column(
+      crossAxisAlignment: pw.CrossAxisAlignment.start,
+      children: [
+        sectionHeader('Equipamentos'),
+        ...await WidPdgPoderes.classificador(lista),
+        pw.Text(
+            'Pontos de equipamento: ${r["equipamentoUsado"]} / ${r["equipamentoDisponivel"]}'),
+      ],
+    );
+  }
+
+  static pw.Widget complicacoes() {
+    return pw.Column(
+      crossAxisAlignment: pw.CrossAxisAlignment.start,
+      children: [
+        sectionHeader('Complicações & Notas'),
+        if (personagem.complicacoes.isEmpty)
+          pw.Text('Nenhuma complicação cadastrada.'),
+        for (Map c in personagem.complicacoes)
+          pw.Padding(
+            padding: const pw.EdgeInsets.only(bottom: 2),
+            child: pw.RichText(
+              text: pw.TextSpan(children: [
+                pw.TextSpan(text: "${c["titulo"]}: ", style: negrito),
+                pw.TextSpan(text: "${c["desc"] ?? ''}"),
+              ]),
+            ),
+          ),
+      ],
+    );
+  }
+
+  static List<pw.Widget> _linhas(pw.Widget secao) =>
+      secao is pw.Column ? secao.children : [secao];
+
   //
   // Montagem final do PDF
   //
-  static void generatePDF(Uint8List fileImg) async {
-    pw.Document doc = pw.Document();
-
-    // Carrega as Fontes
-    headerFont = pw.Font.ttf(await rootBundle.load('fonts/Impact.ttf'));
-    robotFont = await PdfGoogleFonts.robotoLight();
-    headerTxtStyle = pw.TextStyle(font: headerFont, fontSize: 20);
+  static Future<pw.Document> montar(Uint8List fileImg) async {
+    pw.Document doc = pw.Document(
+      theme: pw.ThemeData.base().copyWith(
+        defaultTextStyle: const pw.TextStyle(fontSize: tamanhoTexto),
+      ),
+    );
 
     // Pré-processa os widgets assíncronos antes de montar o documento
     pw.Widget pdfOfensiva = await ofensiva();
     pw.Widget pdfPoderes = await poderes();
+    pw.Widget pdfEquipamentos = await equipamentos();
 
     doc.addPage(
       pw.MultiPage(
         pageFormat: PdfPageFormat.a4.portrait,
-        margin: const pw.EdgeInsets.all(25),
+        margin: const pw.EdgeInsets.all(margem),
         header: (pw.Context context) {
           // Repete o nome do personagem discretamente a partir da 2ª página
           if (context.pageNumber == 1) return pw.SizedBox();
@@ -594,7 +506,7 @@ static Future<pw.Widget> ofensiva() async {
             margin: const pw.EdgeInsets.only(bottom: 6),
             child: pw.Text(
               personagem.nomePersonagem,
-              style: pw.TextStyle(font: headerFont, fontSize: 10, color: PdfColors.grey700),
+              style: const pw.TextStyle(fontSize: 9, color: PdfColors.grey700),
             ),
           );
         },
@@ -607,65 +519,55 @@ static Future<pw.Widget> ofensiva() async {
           ),
         ),
         build: (pw.Context context) => [
-          // Cabeçalho: Nome, NP, Habilidades <-> Imagem
+          // Nome, NP e Habilidades à esquerda; imagem à direita
           pw.Row(
-            mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
             crossAxisAlignment: pw.CrossAxisAlignment.start,
             children: [
               pw.Expanded(
-                flex: 3,
                 child: pw.Column(
                   crossAxisAlignment: pw.CrossAxisAlignment.start,
                   children: [
                     infoHeader(),
-                    pw.SizedBox(height: 4),
                     habilidades(),
                   ],
                 ),
               ),
-              fileImg.isNotEmpty
-                  ? pw.Padding(
-                      padding: const pw.EdgeInsets.only(left: 10),
-                      child: pw.Container(
-                        width: 130,
-                        height: 165,
-                        padding: const pw.EdgeInsets.all(3),
-                        decoration: pw.BoxDecoration(
-                          border: pw.Border.all(width: 2),
-                        ),
-                        child: pw.Image(
-                          pw.MemoryImage(fileImg),
-                          fit: pw.BoxFit.cover,
-                        ),
-                      ),
-                    )
-                  : pw.SizedBox(),
+              if (fileImg.isNotEmpty)
+                pw.Padding(
+                  padding: const pw.EdgeInsets.only(left: 10),
+                  child: pw.SizedBox(
+                    width: 130,
+                    height: 165,
+                    child: pw.Image(
+                      pw.MemoryImage(fileImg),
+                      fit: pw.BoxFit.cover,
+                    ),
+                  ),
+                ),
             ],
           ),
-
-          defesas(),
-
-          // Ofensiva + Painel de Condições lado a lado
-          pw.SizedBox(height: 4),
-          pdfOfensiva,
-          pw.SizedBox(height: 6),
-          // condicoes(),
-
-          pw.SizedBox(height: 4),
-          pdfPoderes,
-
-          pw.SizedBox(height: 4),
-          vantagens(),
-
-          pw.SizedBox(height: 4),
-          pericias(),
-
-          pw.SizedBox(height: 4),
-          complicacoes(),
+          // Cada seção entra linha a linha, para poder quebrar de página
+          for (pw.Widget secao in [
+            defesas(),
+            pdfOfensiva,
+            vantagens(),
+            pdfPoderes,
+            pericias(),
+            complicacoes(),
+            pdfEquipamentos,
+          ])
+            ..._linhas(secao),
+          pw.SizedBox(height: 10),
+          pw.Text(linhaTotais(), style: negrito),
         ],
       ),
     );
 
+    return doc;
+  }
+
+  static Future<void> generatePDF(Uint8List fileImg) async {
+    pw.Document doc = await montar(fileImg);
     await Printing.layoutPdf(onLayout: (format) async => await doc.save());
   }
 }

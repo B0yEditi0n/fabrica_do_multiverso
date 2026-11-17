@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:fabrica_do_multiverso/script/poderes/lib_efeitos.dart';
+import 'package:fabrica_do_multiverso/script/poderes/lib_custos.dart';
 import 'package:uuid/uuid.dart';
 
 class PacotesEfeitos {
@@ -167,42 +168,19 @@ class PacotesEfeitos {
         int | custo do pacote
     */
 
-    return 0;
+    return CustoPoderes.custoItem({
+      "class": "PacotesEfeitos",
+      "efeito": _efeito,
+      "tipo": getType(),
+      "removivel": removivel,
+      "efeitos": efeitos,
+    });
   }
 
   void destrutor() {
     for (var e in efeitos) {
       if(e["class"] != "PacotesEfeitos"){
-        switch (e["class"]) {
-          case "EfeitoCrescimento":
-            poder = EfeitoCrescimento();
-            break;
-          case "EfeitoBonus":
-            poder = EfeitoBonus();
-            break;
-          case "EfeitoAflicao":
-            poder = EfeitoAflicao();
-            break;
-          case "EfeitoDano":
-            poder = EfeitoDano();
-            break;
-          case "EfeitoCompra":
-            poder = EfeitoCompra();
-            break;
-          case "EfeitoCustoVaria":
-            poder = EfeitoCustoVaria();
-            break;
-          case "EfeitoOfensivo":
-            poder = EfeitoOfensivo();
-            break;
-          case "PacotesEfeitos": // Efeitos Alternativos podem conter
-            break;
-          case "Efeito":
-          default:
-            poder = Efeito();
-            break;
-        }
-
+        poder = Efeito.porClasse(e["class"]);
         poder.reinstanciarMetodo(e);
         poder.destrutor();
 
