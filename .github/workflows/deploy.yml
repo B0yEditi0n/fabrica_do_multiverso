@@ -61,12 +61,18 @@ jobs:
         run: |
           node -e '
             const linhas = require("fs").readFileSync("test-report.json", "utf8").split("\n");
-            const nomes = {}, erros = {};
+            const nomes = {}, erros = {}, saidas = {};
             for (const l of linhas) {
               if (!l.trim()) continue;
               const e = JSON.parse(l);
               if (e.type === "testStart") nomes[e.test.id] = e.test.name;
+              // Exceções de testWidgets saem como "print" antes do erro
+              if (e.type === "print") saidas[e.testID] = (saidas[e.testID] || "") + e.message + "\n";
               if (e.type === "error") erros[e.testID] = (erros[e.testID] || "") + e.error + "\n" + (e.stackTrace || "").split("\n").slice(0, 6).join("\n");
+            }
+            for (const id in erros) {
+              const s = (saidas[id] || "").split("\n").filter(x => !/^[═╡╞]+$/.test(x.trim()));
+              if (s.length) erros[id] = s.slice(0, 40).join("\n") + "\n" + erros[id];
             }
             const esc = s => s.replace(/%/g, "%25").replace(/\r/g, "").replace(/\n/g, "%0A");
             for (const id in erros) {
