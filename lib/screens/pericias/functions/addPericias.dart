@@ -42,6 +42,9 @@ class _PopUpAddSkillState extends State<PopUpAddSkill> {
     _carregarDados(); // Carrega os dados ao iniciar o estado
   }
 
+  String _nomePoder(Map value) =>
+    "${value["nome"]}${value["nome"].isNotEmpty ? ":" : ""} ${value["efeito"]}";
+
   void _addBonusOfensivo(){
     // Evita que o mesmo efeito seja add 2 vezes
     if(addOfensivePoderes.length != ListIdPoderes.length){
@@ -151,59 +154,80 @@ class _PopUpAddSkillState extends State<PopUpAddSkill> {
               //? Perícia baseada ou Poderes selecionado
               ofensivePoderes.isNotEmpty && ["PA01", "PA02"].contains(periciaSelecionada["id"]) ?
               Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   //? Seleciona poder a Ser adicionado
-                  MultiSelectDialogField(
-                    items: ofensivePoderes.map<MultiSelectItem>((value) {
-                      return MultiSelectItem(
-                        value["idCriacao"],
-                        "${value["nome"]}${value["nome"].isNotEmpty ? ":" : ""} ${value["efeito"]}"
-                      );
-                    }).toList(),
-                    listType: MultiSelectListType.LIST,
-                    initialValue: ListIdPoderes,
-
-                    // Pop UP
-                    title: const Text("Poderes"),
-                    searchable: true,
-                    checkColor: const Color.fromARGB(255, 243, 243, 243),
-                    selectedColor: Theme.of(context).primaryColorDark,
-                    itemsTextStyle: const TextStyle(
-                      color: Colors.white
-                    ),
-                    selectedItemsTextStyle: const TextStyle(
-                      color: Colors.white
-                    ),
-
-                    decoration: BoxDecoration(
-                      //color: PrimaryScrollController.withOpacity(0.1),
-                      borderRadius: const BorderRadius.all(Radius.circular(40)),
-                      border: Border.all(
-                        color: const Color.fromARGB(255, 255, 8, 0),
+                  // Botão próprio (o do MultiSelectDialogField tem texto que não
+                  // encolhe e estoura a largura com fonte grande); a janela de
+                  // seleção continua sendo a do pacote.
+                  OutlinedButton.icon(
+                    style: OutlinedButton.styleFrom(
+                      minimumSize: const Size.fromHeight(52),
+                      shape: const StadiumBorder(),
+                      side: const BorderSide(
+                        color: Color.fromARGB(255, 255, 8, 0),
                         width: 2,
                       ),
                     ),
-                    buttonIcon: const Icon(
+                    icon: const Icon(
                       BootstrapIcons.fire,
                       color: Color.fromARGB(255, 255, 8, 0),
                     ),
-                    buttonText: const Text(
-                      "Selecionar Poderes",
-                      style: TextStyle(
-                        //color: Colors.blue[800],
-                        fontSize: 16,
-                      ),
-                    ),  
-
-                    onConfirm: (results) {
-                      setState(() {
-                        // Evita Repetições ao adicionar
-                        ListIdPoderes = [];
-                        ListIdPoderes.addAll(results.cast<String>());                        
-                      });
-                      _addBonusOfensivo();
+                    label: Text(
+                      ListIdPoderes.isEmpty
+                        ? "Selecionar Poderes"
+                        : "Poderes selecionados: ${ListIdPoderes.length}",
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 2,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(fontSize: 16),
+                    ),
+                    onPressed: () async {
+                      await showDialog(
+                        context: context,
+                        builder: (context) => MultiSelectDialog(
+                          items: ofensivePoderes.map<MultiSelectItem>((value) {
+                            return MultiSelectItem(
+                              value["idCriacao"],
+                              _nomePoder(value),
+                            );
+                          }).toList(),
+                          listType: MultiSelectListType.LIST,
+                          initialValue: ListIdPoderes,
+                          title: const Text("Poderes"),
+                          searchable: true,
+                          checkColor: const Color.fromARGB(255, 243, 243, 243),
+                          selectedColor: Theme.of(context).primaryColorDark,
+                          itemsTextStyle: const TextStyle(color: Colors.white),
+                          selectedItemsTextStyle: const TextStyle(color: Colors.white),
+                          onConfirm: (results) {
+                            setState(() {
+                              // Evita Repetições ao adicionar
+                              ListIdPoderes = [];
+                              ListIdPoderes.addAll(results.cast<String>());
+                            });
+                            _addBonusOfensivo();
+                          },
+                        ),
+                      );
                     },
-                  )
+                  ),
+
+                  // Poderes escolhidos (o campo antigo mostrava em chips)
+                  if(ListIdPoderes.isNotEmpty)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 8),
+                      child: Wrap(
+                        spacing: 6,
+                        runSpacing: 6,
+                        children: [
+                          for (Map p in ofensivePoderes.where((o) => ListIdPoderes.contains(o["idCriacao"])))
+                            Chip(
+                              label: Text(_nomePoder(p), overflow: TextOverflow.ellipsis),
+                            ),
+                        ],
+                      ),
+                    ),
                 ],
               ) : const SizedBox(),
             ]
