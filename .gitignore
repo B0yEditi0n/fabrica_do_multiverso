@@ -19,3 +19,4 @@ build/
 android/key.properties
 **/*.jks
 **/*.keystore
+test-report.json
