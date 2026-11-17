@@ -37,6 +37,8 @@ class LogPopupError extends StatelessWidget {
                 },
               ),
       ),
+      actionsAlignment: MainAxisAlignment.center,
+      actionsOverflowAlignment: OverflowBarAlignment.center,
       actions: [
         TextButton(
           child: const Text('Fechar'),

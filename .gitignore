@@ -1,0 +1,21 @@
+# Gerados pelo Flutter/Dart (o build web e o APK são feitos pelo GitHub Actions)
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+build/
+.widget_preview/
+
+# Logs locais
+*.log
+
+# IDEs
+.idea/
+*.iml
+
+# Assinatura Android (nunca publicar)
+android/key.properties
+**/*.jks
+**/*.keystore

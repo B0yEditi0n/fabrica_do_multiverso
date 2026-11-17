@@ -86,6 +86,8 @@ class _PoupInputIntValueState extends State<PoupInputIntValue> {
         )
       ),
 
+      actionsAlignment: MainAxisAlignment.center,
+      actionsOverflowAlignment: OverflowBarAlignment.center,
       actions: <Widget>[
         TextButton(
           child: const Text('Ok'),

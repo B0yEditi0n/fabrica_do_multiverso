@@ -12,6 +12,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:universal_html/html.dart' as html;
 
 import 'package:fabrica_do_multiverso/script/ficha.dart';
+import 'package:fabrica_do_multiverso/script/importacao/importa_poder_supremo.dart';
 
 class Download{
   Uint8List img = Uint8List(0);
@@ -78,9 +79,44 @@ class Download{
     }
   }
 
-  Future<dynamic> uploadFicha() async{
-    // Upload de Ficha
-    const List<String> extension = ["zip", "ZIP"];
+  // Preenchidos quando o arquivo é um portfólio do Poder Supremo
+  bool importadoPoderSupremo = false;
+  List<String> avisos = [];
+  String erro = '';
+
+  Future<Map> _interpretaJson(Map json,
+      Future<int?> Function(List<String> nomes)? escolherPersonagem) async {
+    /*
+      Ficha da Fábrica: devolve como está.
+      Portfólio do Poder Supremo: converte o personagem escolhido.
+    */
+    if (!PoderSupremo.reconhece(json)) return json;
+
+    String? recusa = PoderSupremo.motivoRecusa(json);
+    if (recusa != null) {
+      erro = recusa;
+      return {};
+    }
+
+    int indice = 0;
+    List<String> nomes = PoderSupremo.nomesPersonagens(json);
+    if (nomes.length > 1 && escolherPersonagem != null) {
+      int? escolhido = await escolherPersonagem(nomes);
+      if (escolhido == null) return {}; // cancelado
+      indice = escolhido;
+    }
+
+    ResultadoImportacao resultado = await PoderSupremo.converter(json, indice);
+    importadoPoderSupremo = true;
+    avisos = resultado.avisos;
+    if (img.isEmpty) img = resultado.imagem;
+    return resultado.ficha;
+  }
+
+  Future<dynamic> uploadFicha(
+      {Future<int?> Function(List<String> nomes)? escolherPersonagem}) async{
+    // Upload de Ficha: ZIP da Fábrica ou JSON (Fábrica ou Poder Supremo)
+    const List<String> extension = ["zip", "ZIP", "json", "JSON"];
     Map jsonFicha = {};
     
     try {
@@ -109,13 +145,25 @@ class Download{
         // já Plataformas leam a path e precisam coletar o byte de outra forma
         //
 
+        List<int> bytes;
         if(!kIsWeb){
           String pathFile = respostaPath.files.first.path as String;
-          archive = ZipDecoder().decodeBytes(File(pathFile).readAsBytesSync());
+          bytes = File(pathFile).readAsBytesSync();
         }else{
-          archive = ZipDecoder().decodeBytes(respostaPath.files.first.bytes!);
+          bytes = respostaPath.files.first.bytes!;
         }
-        
+
+        // Arquivo JSON solto (portfólio do Poder Supremo ou ficha da Fábrica)
+        if (respostaPath.files.first.name.toLowerCase().endsWith('.json')) {
+          var json = jsonDecode(utf8.decode(bytes));
+          if (json is Map) {
+            jsonFicha = await _interpretaJson(json, escolherPersonagem);
+          }
+          return jsonFicha;
+        }
+
+        archive = ZipDecoder().decodeBytes(bytes);
+
         
         for (final entry in archive) {
         if (entry.isFile && entry.name.contains(RegExp(r'\.jpg$'))) {
@@ -131,9 +179,15 @@ class Download{
           jsonFicha = jsonDecode(txtFicha);
         }
         }
+        if (jsonFicha.isNotEmpty) {
+          jsonFicha = await _interpretaJson(jsonFicha, escolherPersonagem);
+        }
       }
+    } on FormatException catch (e) {
+      erro = 'Arquivo inválido: ${e.message}';
+      jsonFicha = {};
     } catch (e) {
-      // Type Error 
+      // Type Error
       print(e.toString());
     }
 

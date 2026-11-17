@@ -61,9 +61,12 @@ android {
 
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig = signingConfigs.release
+            // Com android/key.properties (local ou criado pelo GitHub Actions a
+            // partir dos secrets) assina com a chave de publicação; sem ele usa
+            // a chave de debug, para o build de release não falhar.
+            signingConfig = keystorePropertiesFile.exists()
+                ? signingConfigs.release
+                : signingConfigs.debug
         }
     }
 }

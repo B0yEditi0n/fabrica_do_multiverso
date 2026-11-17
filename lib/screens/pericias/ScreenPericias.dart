@@ -109,7 +109,7 @@ class _ScreenPericiasState extends State<ScreenPericias> {
                     Navigator.of(context).pop()
                   }),
         ),
-        body: Center(
+        body: SafeArea(child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -119,13 +119,16 @@ class _ScreenPericiasState extends State<ScreenPericias> {
               child: Container(
                 constraints: const BoxConstraints(maxWidth: 1200),
                 child: GridView.builder(
+                  // Espaço no fim para o botão flutuante não cobrir o último item
+                  padding: const EdgeInsets.only(bottom: 88),
                   //; configurações de grid
                   //; para deixar mais proximo de uma ficha 2 colunas de pericias
                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: crossAxisCount, // Define o número de colunas
                     crossAxisSpacing: 8,  // Espaço horizontal entre os itens
                     mainAxisSpacing: 1.0,  // Espaço vertical entre os itens
-                    childAspectRatio: 2.5,
+                    // Altura fixa: a proporção cortava o item em celulares estreitos
+                    mainAxisExtent: 150,
                                 
                     
                   ),
@@ -138,26 +141,36 @@ class _ScreenPericiasState extends State<ScreenPericias> {
                       padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
                                 
                       child: GestureDetector(
+                        // Área inteira do item responde ao toque
+                        behavior: HitTestBehavior.opaque,
                         child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            //# Titulo da Perícia 
-                            Column(
+                            //# Titulo da Perícia
+                            Flexible(child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                
-                                listaPercias[index]["escopo"] != null
-                                  ? Text("${listaPercias[index]["nome"]}: (${listaPercias[index]["escopo"]})")
-                                  : Text(listaPercias[index]["nome"]),
+
+                                Text(
+                                  listaPercias[index]["escopo"] != null
+                                    ? "${listaPercias[index]["nome"]}: (${listaPercias[index]["escopo"]})"
+                                    : listaPercias[index]["nome"],
+                                  textAlign: TextAlign.center,
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
                                 const SizedBox(height: 1),
                                 SizedBox(
-                                  width: 150,
-                                  height: 100,
+                                  height: 80,
                                   child: Row(
+                                    // Largura conforme o conteúdo: o total não é cortado
+                                    mainAxisSize: MainAxisSize.min,
+                                    mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                  
+
                                       SizedBox(
-                                        width: 50,
+                                        width: 80,
                                         // # preenchimento da graduação
                                         child: index < listInputs.length ? 
                                         TextField(
@@ -194,7 +207,7 @@ class _ScreenPericiasState extends State<ScreenPericias> {
                                   ),
                                 ),
                               ],
-                            ),
+                            )),
                             listaPercias[index]["classe"] != "Pericia" ?
                             IconButton(
                               icon: const Icon(Icons.delete),
@@ -272,7 +285,7 @@ class _ScreenPericiasState extends State<ScreenPericias> {
             )
           ]
                 ),
-        ),
+        )),
 
       //# Botão de Adicionar novas Perícias
       floatingActionButton: FloatingActionButton(

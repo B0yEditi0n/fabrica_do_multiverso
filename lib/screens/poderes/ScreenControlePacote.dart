@@ -10,6 +10,7 @@ import 'package:fabrica_do_multiverso/screens/poderes/poderes/popup_addPoderes.d
 import 'package:fabrica_do_multiverso/script/ficha.dart';
 import 'package:fabrica_do_multiverso/script/poderes/lib_efeitos.dart';
 import 'package:fabrica_do_multiverso/script/poderes/lib_pacoteEfeitos.dart';
+import 'package:fabrica_do_multiverso/script/poderes/lib_areaCopia.dart';
 
 class ControladorDePacotes extends StatefulWidget {
   final Map objPacote;
@@ -31,9 +32,6 @@ class _ControladorDePacotesState extends State<ControladorDePacotes> {
   List poderes = [];
   bool nomearEfeitos = true;
 
-  // Variável exclusiva de Arry
-  List<bool> activeArry = [];
-
   // Controle de texto
   TextEditingController nomePoder = TextEditingController();
   @override
@@ -47,18 +45,7 @@ class _ControladorDePacotesState extends State<ControladorDePacotes> {
     pacote.addPoder(efeito.retornaObj());
     setState(() {
       objPacote = pacote.retornaObj();
-      if(["E", "D"].contains(pacote.getType())){
-        if(activeArry.isEmpty){
-          activeArry.add(true);
-        }else{
-          activeArry.add(false);
-        }
-      }
     });
-
-    if(["E", "D"].contains(pacote.getType())){
-      await pacote.defineActive(activeArry.indexWhere((a) => a == true));
-    }
 
     setState((){
       poderes = pacote.efeitos;
@@ -66,8 +53,41 @@ class _ControladorDePacotesState extends State<ControladorDePacotes> {
     
   }
 
+  void _aviso(String msg) {
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(SnackBar(content: Text(msg)));
+  }
+
+  void _copiar(int index) {
+    AreaDeCopia.copiar(pacote.efeitos[index]);
+    _aviso('Poder copiado: ${AreaDeCopia.nomeCopia}');
+  }
+
+  void _colar() {
+    // Mesmas regras de aninhamento do "Adicionar"
+    String? recusa = AreaDeCopia.motivoRecusa(pacote.getType());
+    if (recusa != null) {
+      _aviso(recusa);
+      return;
+    }
+    pacote.addPoder(AreaDeCopia.colar(
+      idPacoteDestino: pacote.idCriacao(),
+      tipoDestino: pacote.getType(),
+    ));
+    setState(() {
+      objPacote = pacote.retornaObj();
+      poderes = pacote.efeitos;
+    });
+    _aviso('Poder colado: ${AreaDeCopia.nomeCopia}');
+  }
+
   Future<void> _addPoderes(Map objEfeito) async{
-    
+    if(objEfeito["colar"] == true){
+      _colar();
+      return;
+    }
+
     if(!["EfeitosAlternativos", "PacotesEfeitos"].contains(objEfeito["class"])){
       await personagem.poderes.instanciaPoder(objEfeito)
       .then((Efeito efeito)=>
@@ -81,18 +101,7 @@ class _ControladorDePacotesState extends State<ControladorDePacotes> {
         pacote.efeitos.add(enpacotado.retornaObj()),
         setState(() {
           objPacote = pacote.retornaObj();
-          if(["E", "D"].contains(pacote.getType())){
-            if(activeArry.isEmpty){
-              activeArry.add(true);
-            }else{
-              activeArry.add(false);
-            }
-          }
         }),
-        
-        if(["E", "D"].contains(pacote.getType())){
-          await pacote.defineActive(activeArry.indexWhere((a) => a == true)),
-        },
 
         setState(() {
           poderes = pacote.efeitos;
@@ -112,15 +121,6 @@ class _ControladorDePacotesState extends State<ControladorDePacotes> {
     if(["L"].contains(pacote.getType())){ nomearEfeitos = false; }
 
     nomePoder.text = pacote.nomePacote;
-
-    // Inicializa o Arry Ativo
-    if(["E", "D"].contains(pacote.getType())){ 
-      for(var i=0; i < objPacote["efeitos"].length; i++){
-        if(pacote.activeEfeito() < objPacote["efeitos"].length && pacote.activeEfeito() == i){activeArry.add(true);} 
-        else if(i == 0 && pacote.activeEfeito() >= objPacote["efeitos"].length){activeArry.add(true);}
-        else{activeArry.add(false);}
-      }
-    }
   }
 
   //# Widgets
@@ -133,7 +133,7 @@ class _ControladorDePacotesState extends State<ControladorDePacotes> {
         if(!didPop){ Navigator.of(context).pop(pacote.retornaObj()); }
       },
       child: Scaffold(
-        bottomNavigationBar: Padding(
+        bottomNavigationBar: SafeArea(child: Padding(
           padding: const EdgeInsets.all(15.0),
           child: Text(
             CustoPoderes.eEquipamento(pacote.retornaObj())
@@ -142,7 +142,7 @@ class _ControladorDePacotesState extends State<ControladorDePacotes> {
             textAlign: TextAlign.center,
             style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w800),
           ),
-        ),
+        )),
         appBar: AppBar(
           //backgroundColor: Theme.of(context).colorScheme.inversePrimary,          
           title: objPacote["nome"] != "" 
@@ -174,7 +174,12 @@ class _ControladorDePacotesState extends State<ControladorDePacotes> {
             ),
             // Falha Removível: só em pacotes simples que não são equipamento
             pacote.getType() == "R" && !CustoPoderes.eEquipamento(pacote.retornaObj())
-            ? DropdownButton<int>(
+            ? Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10.0),
+              // isExpanded: o texto longo quebra em vez de estourar a largura
+              child: DropdownButton<int>(
+                isExpanded: true,
+                itemHeight: 56,
                 value: pacote.removivel,
                 items: const [
                   DropdownMenuItem(value: 0, child: Text('Não removível')),
@@ -185,10 +190,12 @@ class _ControladorDePacotesState extends State<ControladorDePacotes> {
                   pacote.removivel = valor ?? 0;
                   objPacote = pacote.retornaObj();
                 }),
-              )
+              ))
             : const SizedBox(),
             Expanded(
               child: ListView.builder(
+                // Espaço no fim para o botão flutuante não cobrir o último item
+                padding: const EdgeInsets.only(bottom: 88),
                 itemCount: poderes.length,
                 itemBuilder: (BuildContext context, int index){
                   return InkWell(
@@ -204,19 +211,6 @@ class _ControladorDePacotesState extends State<ControladorDePacotes> {
                           // Exibe os poderes ativos
                           !["EfeitosAlternativos", "PacotesEfeitos"].contains(poderes[index]["class"])
                           ? ListTile(
-                            leading: ["E", "D"].contains(pacote.getType()) 
-                              ? Checkbox(
-                              value: activeArry[index],
-                              onChanged: (bool? value) async => {
-                                if(activeArry[index] != true){
-                                  setState(() {
-                                    activeArry[activeArry.indexWhere((a) => a == true)] = false;
-                                    activeArry[index] = true;                                    
-                                  })
-                                },
-                                await pacote.defineActive(activeArry.indexWhere((a) => a == true))
-                              },
-                            ) : const SizedBox(),
                             title: Text(poderes[index]['nome']),
                             subtitle: Text("${poderes[index]['efeito']} ${poderes[index]['graduacao']} • ${CustoPoderes.custoBruto(poderes[index])} pontos"),
                           ) 
@@ -227,6 +221,12 @@ class _ControladorDePacotesState extends State<ControladorDePacotes> {
                           ),
                       ),
               
+                      IconButton(
+                        tooltip: 'Copiar poder',
+                        icon: const Icon(Icons.content_copy),
+                        onPressed: () => _copiar(index),
+                      ),
+
                       IconButton(
                         icon: const  Icon(Icons.delete),
                         onPressed: () async {
@@ -245,19 +245,6 @@ class _ControladorDePacotesState extends State<ControladorDePacotes> {
                           }
 
                           pacote.efeitos.removeAt(index);
-                          // Mantém a lista de ativos alinhada com os efeitos
-                          if(index < activeArry.length){ activeArry.removeAt(index); }
-
-                          // Remove actives em pacotes de EA
-                          if(["E", "D"].contains(pacote.getType())){
-                            setState(() {
-                              if(!activeArry.any((e)=> e) && activeArry.isNotEmpty){
-                                activeArry[0] = true;
-                              }                                                         
-                            });
-                            
-                            await pacote.defineActive(activeArry.indexWhere((a) => a == true));
-                          }
                           setState(() {
                             
                             poderes = pacote.efeitos;

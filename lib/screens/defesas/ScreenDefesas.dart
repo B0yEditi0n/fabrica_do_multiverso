@@ -79,7 +79,7 @@ class _ScreenDefesasState extends State<ScreenDefesas> {
                     Navigator.of(context).pop()
                   }),
         ),
-        body: Column(
+        body: SafeArea(child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
@@ -108,7 +108,7 @@ class _ScreenDefesasState extends State<ScreenDefesas> {
                           // Evita que resistência tenha um input
                           listDefesa[index]["id"] != "D004"
                           ? SizedBox(
-                            width: 50,                            
+                            width: 90, // campo largo o bastante para tocar
                             child: 
                               TextField(
                               controller: listInputs[index],
@@ -139,7 +139,7 @@ class _ScreenDefesasState extends State<ScreenDefesas> {
                           Text("Total: ${defesa.bonusTotal()}"),
                         ],
                       ),
-                      const SizedBox(height: 60),
+                      const SizedBox(height: 28),
                     ],
                   ),
                 );
@@ -153,7 +153,7 @@ class _ScreenDefesasState extends State<ScreenDefesas> {
             ),
           )
         ]
-      )
+      ))
     );
   }
 }

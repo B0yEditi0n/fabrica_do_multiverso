@@ -27,9 +27,6 @@ class PacotesEfeitos {
   // Id de Criação
   String _idCriacao = "";
 
-  // Controle de Efeitos Ativos (EAs)
-  int _indexPoderAtivo = 0;
-
   // ***************************
   // Methodos de Inicialização *
   // ***************************
@@ -63,10 +60,6 @@ class PacotesEfeitos {
       _idCriacao = "A${uuid.v4()}";
     }
 
-    if(mapObject["active"] != null){
-      _indexPoderAtivo = mapObject["active"];      
-    }
-
     return true;
   }
 
@@ -82,6 +75,8 @@ class PacotesEfeitos {
 
     _groupType = char.codeUnitAt(0);
   }
+
+  String idCriacao() => _idCriacao;
 
   String getType() {
     /*
@@ -111,53 +106,6 @@ class PacotesEfeitos {
     }
 
     efeitos.add(objPoder);
-  }
-
-  int activeEfeito() => _indexPoderAtivo;
-  Future<bool> defineActive(int index) async{
-    /*
-      define qual o efeito ativo
-      e faz a validação correta dentre os Ids.
-    */
-
-    // Replica alteração em efeitos de Bonus
-    EfeitoBonus poderActive = EfeitoBonus();
-    // - Limpa o Atual (se houver)
-    while(efeitos.any(
-      (e) => e["active"] == true && ["EfeitoBonus", "EfeitoCrescimento"].contains(e["class"])
-    )){
-    int eIdx = efeitos.indexWhere(
-      (e) => e["active"] == true && ["EfeitoBonus", "EfeitoCrescimento"].contains(e["class"])
-    );
-    // if(eIdx > -1){
-    switch(efeitos[eIdx]["class"]){
-      case "EfeitoCrescimento":
-        poderActive = EfeitoCrescimento();
-        break;
-      case "EfeitoBonus":
-        poderActive = EfeitoBonus();
-        break;
-      // }
-    }
-      await poderActive.reinstanciarMetodo(efeitos[eIdx]);
-      poderActive.active = false;
-      poderActive.configBonus(); // Recarrega os Bonus
-      efeitos[eIdx] = poderActive.retornaObj();
-    }
-
-    // - Ativa se for bonus
-    if(index > -1){
-      if(["EfeitoBonus", "EfeitoCrescimento"].contains(efeitos[index]["class"])){
-        await poderActive.reinstanciarMetodo(efeitos[index]);
-        poderActive.active = true;
-        poderActive.configBonus(); // Recarrega os Bonus
-        efeitos[index] = poderActive.retornaObj();
-      }
-    }
-
-    _indexPoderAtivo = index;
-
-    return true;
   }
 
   int custearAlteracoes() {
@@ -208,7 +156,6 @@ class PacotesEfeitos {
       "class": "PacotesEfeitos",
       "efeitos": efeitos,
       "idCriacao": _idCriacao,
-      "active": _indexPoderAtivo,
     };
   }
 }

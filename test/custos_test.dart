@@ -64,6 +64,38 @@ void main() {
       expect(CustoPoderes.custoItem(arranjo), 15);
     });
 
+    test('alternativo dinâmico com marca por efeito (importado do React)',
+        () async {
+      // Base dinâmico 10 (+1) + alternativo comum (+1) + dinâmico (+2)
+      Map base = await dano(10)..["dinamico"] = true;
+      Map comum = await dano(8)..["dinamico"] = false;
+      Map dinamico = await dano(5)..["dinamico"] = true;
+      expect(CustoPoderes.custoItem(pacote("D", [base, comum, dinamico])), 14);
+      // Base não dinâmico: só os alternativos pagam
+      Map baseComum = await dano(10)..["dinamico"] = false;
+      expect(CustoPoderes.custoItem(pacote("D", [baseComum, dinamico])), 12);
+    });
+
+    test('Imunidade: graduação vem da soma das opções', () async {
+      Map imunidade = {
+        "nome": "Imunidade",
+        "idCriacao": "PTesteImunidade",
+        "e_id": "E020",
+        "efeito": "Imunidade",
+        "graduacao": 0,
+        "acao": 0,
+        "alcance": 0,
+        "duracao": 0,
+        "modificadores": [],
+        "class": "EfeitoCompra",
+        "opt": [
+          {"ID": "OP10", "desc": "sufocamento", "valor": 2, "espec": false},
+          {"ID": "OP01", "desc": "Envelhecimento", "valor": 1, "espec": false},
+        ],
+      };
+      expect(CustoPoderes.custoEfeito(imunidade), 3);
+    });
+
     test('alternativo formado por efeitos ligados', () async {
       Map ligados = pacote("L", [await dano(4), await dano(5)]);
       Map arranjo = pacote("E", [await dano(10), ligados]);

@@ -1,6 +1,6 @@
 # Matriz de cobertura — repertório de regras × aplicativo
 
-Fase 2 do guia de desenvolvimento. Data: 2026-11-16.
+Fase 2 do guia de desenvolvimento. Data: 2026-11-16. Atualizada em 2026-11-17 (importação do Poder Supremo, arranjos sem efeito ativo, custo dinâmico por efeito, Imunidade/Movimento, PDF e interface para celular).
 
 Repertório de referência: `React-Mutants-Masterminds-Character-Sheet` (`docs/rules/mm3-effects.md` e os enums em `packages/core/src/model/enums/`). O repositório React também contém material da 4ª edição e de suplementos; aqui só conta o que é da 3ª edição.
 
@@ -12,7 +12,7 @@ Legenda: **OK** implementado; **Parcial** existe com lacuna; **Ausente** não ex
 |---|---|---|---|
 | Efeitos-base | 40 | 40 | Todos presentes por nome; 27 com lacunas de opções ou modificadores próprios |
 | Modificadores genéricos | cerca de 65 | 57 | Catálogo completo; os que não aparecem como item são opções do efeito ou do pacote (seção 3.1) |
-| Modificadores próprios de efeito | cerca de 125 | 1 (Impenetrável) | Ausente |
+| Modificadores próprios de efeito | cerca de 125 | Impenetrável + 14 (Mover Objetos 4, Teleporte 10) | Parcial |
 | Vantagens | 95 identificadores | 88 entradas | Catálogo completo (Velocidade do Pensamento incluída, duplicadas removidas); subtipos continuam como uma entrada com descrição |
 | Perícias | 16 | 13 fixas + 3 adicionáveis | OK |
 | Habilidades | 8 | 8 | OK |
@@ -44,13 +44,13 @@ Arquivo: `assets/poderes/efeitos.json`. Classe em `lib/script/poderes/lib_efeito
 | Escavação | E017 | Efeito | OK | — |
 | Ilusão | E018 | EfeitoCustoVaria | Parcial | 4 opções; sem Independente, Seletiva, Limitada a Um Alvo |
 | Imortalidade | E019 | Efeito | OK | — |
-| Imunidade | E020 | EfeitoCompra | Parcial | 25 opções; não marca a defesa como imune na ficha; sem Limitado à Metade do Efeito |
+| Imunidade | E020 | EfeitoCompra | Parcial | 25 opções; graduação = soma das opções, recalculada ao carregar (2026-11-17); não marca a defesa como imune na ficha; sem Limitado à Metade do Efeito |
 | Intangibilidade | E021 | EfeitoCompra | Parcial | 4 graus; sem Afeta Tangível, Força Ausente |
 | Invocar | E022 | Efeito | Parcial | Sem Ativo, Capangas Múltiplos, Controlado, Elo Mental, Heroico, Horda, Sacrifício, Tipo Variável, Atitude |
 | Leitura Mental | E023 | EfeitoOfensivo | Parcial | Sem Elo Sensorial, Sem Esforço e as limitações de conteúdo |
 | Membros Extras | E024 | Efeito | OK | — |
 | Morfar | E025 | Efeito | Parcial | Sem os 4 graus de abrangência; sem Metamorfose |
-| Mover Objetos | E026 | EfeitoOfensivo | Parcial | Sem Dano, Direção Limitada, Limitação Material |
+| Mover Objetos | E026 | EfeitoOfensivo | OK | Modificadores da wiki incluídos em 2026-11-17 (Arma Improvisada ou Maestria em Arremesso, Dano, Direção Limitada, Limitação Material); dano total entra no limite de NP |
 | Movimento | E027 | EfeitoCompra | Parcial | Classe de compra sem nenhuma opção cadastrada (a referência tem cerca de 12) |
 | Natação | E028 | Efeito | OK | — |
 | Nulificar | E029 | EfeitoOfensivo | Parcial | Sem Aleatório, Amplo, Simultâneo, Sem Esforço |
@@ -60,7 +60,7 @@ Arquivo: `assets/poderes/efeitos.json`. Classe em `lib/script/poderes/lib_efeito
 | Salto | E033 | Efeito | OK | — |
 | Sentido Remoto | E034 | EfeitoCustoVaria | Parcial | 4 opções; sem Não Condutor, Simultânea, Meio |
 | Sentidos | E035 | EfeitoCompra | OK | 34 opções |
-| Teleporte | E036 | Efeito | Parcial | Sem Acurado, Estendido, Fácil, Giro, Mudar Direção, Mudar Velocidade, Portal, Meio |
+| Teleporte | E036 | Efeito | OK | Modificadores da wiki incluídos em 2026-11-17 (Acurado, Estendido, Fácil, Giro, Mudar a Direção, Mudar a Velocidade, Portal, Limitado a Estendido, Meio, Tempo de Transporte); Limitado a Estendido exige Estendido |
 | Transformar | E037 | EfeitoCustoVaria | OK | 4 opções |
 | Variável | E038 | Efeito | Parcial | Sem controle dos 5 pontos por graduação; sem Lento |
 | Velocidade | E039 | Efeito | OK | — |
@@ -110,7 +110,7 @@ Arquivo: `assets/poderes/modificadores.json`, com quatro grupos (`gerais`, `ofen
 
 ### 3.3 Próprios de efeito
 
-A referência tem cerca de 125 modificadores próprios, distribuídos por 25 efeitos. O aplicativo tem apenas Impenetrável. As lacunas estão na coluna "Lacuna" da seção 2. O JSON de efeitos já aceita um campo `modificadores` por efeito (usado em Compreender, Dano, Sentidos, Defesa Aumentada e Proteção), então o cadastro pode ser feito sem mudar o modelo.
+A referência tem cerca de 125 modificadores próprios, distribuídos por 25 efeitos. O aplicativo tem Impenetrável e, desde 2026-11-17, os de Mover Objetos (4) e Teleporte (10). As lacunas estão na coluna "Lacuna" da seção 2. O JSON de efeitos já aceita um campo `modificadores` por efeito (usado em Compreender, Dano, Sentidos, Defesa Aumentada e Proteção), então o cadastro pode ser feito sem mudar o modelo.
 
 ## 4. Vantagens, perícias e características
 
@@ -142,7 +142,10 @@ A referência tem cerca de 125 modificadores próprios, distribuídos por 25 efe
 | Ataque + graduação ≤ 2 × NP | Parcial | `ficha.dart:22` |
 | Efeito sem teste de ataque (área, percepção) ≤ NP | Ausente | — |
 | Defesa imune ou habilidade ausente nos pares de defesa | Ausente | — |
-| Bônus de arranjo: só o efeito ativo soma | Parcial | `lib_pacoteEfeitos.dart:116`; `_calculaBonusTotal` não é usado |
+| Bônus de arranjo | OK (regra alterada em 2026-11-17) | Todos os efeitos do arranjo são ativos e somam o bônus; não há mais seleção de efeito ativo. Fichas antigas com `"active": false` são corrigidas em `ManipulaPoderes.ativarBonusInativos` (`ficha.dart`) |
+| Arranjo dinâmico com marca por efeito | OK | `CustoPoderes._custoDinamico` (`lib_custos.dart`): maior + 1 se dinâmico, +2 por alternativo dinâmico, +1 por comum; sem a marca `dinamico` todos contam como dinâmicos |
+| Importação de ficha do Poder Supremo (M&M 3ª) | OK | `lib/script/importacao/importa_poder_supremo.dart`; o que não tem equivalente vira Característica ou modificador Personalizado com o mesmo custo, com aviso |
+| Interface sem estouro em celular (320×568 e 360×740) | OK | `theme.dart` e telas; verificado em `test/responsividade_test.dart` |
 
 ## 6. Dependências e ordem proposta
 
@@ -155,7 +158,10 @@ A referência tem cerca de 125 modificadores próprios, distribuídos por 25 efe
 | 5 | Modificadores próprios e parâmetros por efeito (resistência, condições, alvo) | 4 | Pendente |
 | 6 | Vantagens: subtipos, Equipamento, Idiomas, bônus na ficha | 3 | Parcial: catálogo, Equipamento e iniciativa feitos; faltam subtipos, compra repetida, Idiomas e Crítico Aprimorado |
 | 7 | Persistência local e salvamento automático de uma única ficha (sem lista de personagens, por decisão de 2026-11-16) | 1 | Feito (`armazenamento.dart`); sem persistência no navegador |
-| 8 | PDF completo e consulta de regras | 3, 5 | Parcial: PDF no formato do modelo (Alquimista.docx, Prodigio.docx); falta a consulta de regras |
+| 8 | PDF completo e consulta de regras | 3, 5 | Parcial: PDF no formato do modelo (Alquimista.docx, Prodigio.docx), com visual "ficha preta" desde 2026-11-17; falta a consulta de regras |
 | 9 | Catálogos de equipamento (armas, armaduras, veículos, quartéis-generais) | 8 | Pendente, sem prioridade |
+| 10 | Importação de fichas do Poder Supremo (RF015) | 2, 6 | Feito em 2026-11-17. Pendências: Perícia Aumentada (custo 0,5) e poderes internos de veículo/quartel-general entram só como custo |
+| 11 | Interface para celular (RF016) | — | Feito em 2026-11-17 (tema, `SafeArea`, grades com altura fixa, testes de estouro de layout) |
+| 12 | Modificadores próprios de Mover Objetos e Teleporte; copiar e colar poderes (RF017) | 4 | Feito em 2026-11-17 (`efeitos.json`, `lib_areaCopia.dart`) |
 
-Compatibilidade com fichas salvas: todas as etapas acrescentam campos opcionais ao JSON; nenhuma renomeia ou remove campo existente.
+Compatibilidade com fichas salvas: as etapas acrescentam campos opcionais ao JSON (ex.: `dinamico` nos efeitos de arranjo). Exceção de 2026-11-17: a chave `active` deixou de ser gravada em `PacotesEfeitos` e passou a ser ignorada em `EfeitoBonus`. Fichas antigas continuam abrindo; os bônus que estavam desligados passam a valer.

@@ -68,6 +68,8 @@ class _AddOptCompraState extends State<AddOptCompra> {
           children: <Widget>[ 
             // Escolha do modificador
             DropdownButton<String>(
+              isExpanded: true,
+              itemHeight: 56,
               value: optionCompraSelecionado,
               //icon: const Icon(Icons.arrow_downward),
               //elevation: 16,
@@ -104,6 +106,8 @@ class _AddOptCompraState extends State<AddOptCompra> {
           ]
         )
       ),
+      actionsAlignment: MainAxisAlignment.center,
+      actionsOverflowAlignment: OverflowBarAlignment.center,
       actions: <Widget>[
         TextButton(
           child: const Text('Adicionar'),

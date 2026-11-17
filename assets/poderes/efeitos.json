@@ -619,6 +619,40 @@
         "duracao": 3,
         "ofensivo": true,
         "desc": false,
+        "modificadores":[
+            {
+                "m_id": "ED001",
+                "nome": "Arma Improvisada ou Maestria em Arremesso",
+                "fixo": true,
+                "custo_base": 1,
+                "desc": false,
+                "limite": 20
+            },
+            {
+                "m_id": "ED002",
+                "nome": "Dano",
+                "fixo": false,
+                "custo_base": 1,
+                "desc": false,
+                "limite": 1
+            },
+            {
+                "m_id": "ED003",
+                "nome": "Direção Limitada",
+                "fixo": false,
+                "custo_base": -1,
+                "desc": true,
+                "limite": 1
+            },
+            {
+                "m_id": "ED004",
+                "nome": "Limitação Material",
+                "fixo": false,
+                "custo_base": -1,
+                "desc": true,
+                "limite": 1
+            }
+        ],
         "class": "EfeitoOfensivo"
     },
     {
@@ -1011,6 +1045,88 @@
         "duracao": 1,
         "ofensivo": false,
         "desc": false,
+        "modificadores":[
+            {
+                "m_id": "ED001",
+                "nome": "Acurado",
+                "fixo": false,
+                "custo_base": 1,
+                "desc": false,
+                "limite": 1
+            },
+            {
+                "m_id": "ED002",
+                "nome": "Estendido",
+                "fixo": false,
+                "custo_base": 1,
+                "desc": false,
+                "limite": 1
+            },
+            {
+                "m_id": "ED003",
+                "nome": "Fácil",
+                "fixo": false,
+                "custo_base": 1,
+                "desc": false,
+                "limite": 1
+            },
+            {
+                "m_id": "ED004",
+                "nome": "Giro",
+                "fixo": true,
+                "custo_base": 1,
+                "desc": false,
+                "limite": 1
+            },
+            {
+                "m_id": "ED005",
+                "nome": "Mudar a Direção",
+                "fixo": true,
+                "custo_base": 1,
+                "desc": false,
+                "limite": 1
+            },
+            {
+                "m_id": "ED006",
+                "nome": "Mudar a Velocidade",
+                "fixo": true,
+                "custo_base": 1,
+                "desc": false,
+                "limite": 1
+            },
+            {
+                "m_id": "ED007",
+                "nome": "Portal",
+                "fixo": false,
+                "custo_base": 2,
+                "desc": false,
+                "limite": 1
+            },
+            {
+                "m_id": "ED008",
+                "nome": "Limitado a Estendido",
+                "fixo": false,
+                "custo_base": -1,
+                "desc": false,
+                "limite": 1
+            },
+            {
+                "m_id": "ED009",
+                "nome": "Meio",
+                "fixo": false,
+                "custo_base": -1,
+                "desc": true,
+                "limite": 1
+            },
+            {
+                "m_id": "ED010",
+                "nome": "Tempo de Transporte",
+                "fixo": true,
+                "custo_base": -1,
+                "desc": false,
+                "limite": 20
+            }
+        ],
         "class": "Efeito"
     },
     {

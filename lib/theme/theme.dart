@@ -25,6 +25,38 @@ ThemeData temaPadrao(){
         primarySwatch: purpleSwatch,
         secondaryHeaderColor: const Color.fromARGB(255, 53, 53, 53),
         visualDensity: VisualDensity.adaptivePlatformDensity,
+        // Área de toque mínima de 48px em qualquer plataforma
+        materialTapTargetSize: MaterialTapTargetSize.padded,
+
+        // Botões maiores para uso com o dedo (texto centralizado por padrão)
+        textButtonTheme: TextButtonThemeData(
+          style: TextButton.styleFrom(
+            minimumSize: const Size(120, 52),
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+            textStyle: const TextStyle(fontSize: 17, fontWeight: FontWeight.w600),
+          ),
+        ),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            minimumSize: const Size(160, 56),
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+            textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+          ),
+        ),
+        iconButtonTheme: IconButtonThemeData(
+          style: IconButton.styleFrom(
+            minimumSize: const Size(52, 52),
+            iconSize: 28,
+          ),
+        ),
+        // Diálogos usam quase toda a largura em celulares (padrão: 40 de margem)
+        dialogTheme: const DialogThemeData(
+          insetPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+        ),
+        floatingActionButtonTheme: const FloatingActionButtonThemeData(
+          sizeConstraints: BoxConstraints.tightFor(width: 64, height: 64),
+          iconSize: 30,
+        ),
 
         drawerTheme: const DrawerThemeData(          
           //box: Color.fromARGB(255, 89, 15, 216),

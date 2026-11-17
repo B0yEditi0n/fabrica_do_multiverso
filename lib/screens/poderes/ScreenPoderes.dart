@@ -1,6 +1,7 @@
 import 'package:fabrica_do_multiverso/script/poderes/lib_efeitos.dart';
 import 'package:fabrica_do_multiverso/script/poderes/lib_pacoteEfeitos.dart';
 import 'package:fabrica_do_multiverso/script/poderes/lib_custos.dart';
+import 'package:fabrica_do_multiverso/script/poderes/lib_areaCopia.dart';
 import 'package:flutter/material.dart';
 
 // Screens de poderes
@@ -35,7 +36,33 @@ class _ScreenPoderesState extends State<ScreenPoderes> {
       poderes = personagem.poderes.listaDePoderes();  
     });
   }
+  void _aviso(String msg) {
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(SnackBar(content: Text(msg)));
+  }
+
+  void _copiar(int index) {
+    AreaDeCopia.copiar(personagem.poderes.poderesLista[index]);
+    _aviso('Poder copiado: ${AreaDeCopia.nomeCopia}');
+  }
+
+  void _colar() {
+    String? recusa = AreaDeCopia.motivoRecusa(null);
+    if (recusa != null) {
+      _aviso(recusa);
+      return;
+    }
+    personagem.poderes.poderesLista.add(AreaDeCopia.colar());
+    _carregarDados();
+    _aviso('Poder colado: ${AreaDeCopia.nomeCopia}');
+  }
+
   Future _addPoderes(Map objPoder) async{
+    if(objEfeito["colar"] == true){
+      _colar();
+      return;
+    }
     if(!["EfeitosAlternativos", "PacotesEfeitos"].contains(objEfeito["class"])){
       await personagem.poderes.novoPoder(objEfeito["nome"], objEfeito["e_id"], objEfeito["class"]);
     }else{
@@ -52,16 +79,18 @@ class _ScreenPoderesState extends State<ScreenPoderes> {
           title: const Text("Poderes"),
         ),
 
-        bottomNavigationBar: Padding(
+        bottomNavigationBar: SafeArea(child: Padding(
           padding: const EdgeInsets.all(15.0),
           child: Text(
             'Total: ${personagem.poderes.calculaTotal()}',
             textAlign: TextAlign.center,
             style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w800),
           ),
-        ),
+        )),
 
         body: ListView.builder(
+          // Espaço no fim para o botão flutuante não cobrir o último item
+          padding: const EdgeInsets.only(bottom: 88),
           itemCount: poderes.length,
           itemBuilder: (BuildContext context, int index){
             return InkWell(
@@ -87,6 +116,12 @@ class _ScreenPoderesState extends State<ScreenPoderes> {
                         ),
                     ),
                 
+                    IconButton(
+                      tooltip: 'Copiar poder',
+                      icon: const Icon(Icons.content_copy),
+                      onPressed: () => _copiar(index),
+                    ),
+
                     IconButton(
                       icon: const  Icon(Icons.delete),
                       onPressed: ()async {

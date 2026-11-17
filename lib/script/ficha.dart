@@ -93,12 +93,10 @@ class ValidaNpPersonagem {
       // Síncrono: o catálogo já foi carregado em Ficha.init
       objectEfeito = EfeitoOfensivo();
       objectEfeito.carregaMapa(p);
+      int dano = danoTotal(p, objectEfeito.returnGraduacao());
 
       // Validação de Erro
-      if (bonusVantagem +
-              objectEfeito.totalBonusAcerto() +
-              objectEfeito.returnGraduacao() >
-          2 * np) {
+      if (bonusVantagem + objectEfeito.totalBonusAcerto() + dano > 2 * np) {
         // Limite Estourado
         logEfeitos.add({
           "tipo": "E",
@@ -106,13 +104,13 @@ class ValidaNpPersonagem {
               ? objectEfeito.nome
               : objectEfeito.returnObjDefault()["efeito"],
           "msg":
-              "${objectEfeito.nome.isNotEmpty ? objectEfeito.nome : objectEfeito.returnObjDefault()["efeito"]}, se econtram com ${bonusVantagem + objectEfeito.totalBonusAcerto() + objectEfeito.returnGraduacao() - (np * 2)} pontos fora do limite",
+              "${objectEfeito.nome.isNotEmpty ? objectEfeito.nome : objectEfeito.returnObjDefault()["efeito"]}, se econtram com ${bonusVantagem + objectEfeito.totalBonusAcerto() + dano - (np * 2)} pontos fora do limite",
           "id": [objectEfeito.returnObjDefault()["efeito"]]
         });
       }
       // Considera os limites de 50% de troca
       else if (bonusVantagem + objectEfeito.totalBonusAcerto() > np * 1.5 ||
-          objectEfeito.returnGraduacao() > np * 1.5) {
+          dano > np * 1.5) {
         // Limite Estourado
         logEfeitos.add({
           "tipo": "E",
@@ -124,6 +122,51 @@ class ValidaNpPersonagem {
     }
 
     return logEfeitos;
+  }
+
+  /// Dano usado no limite de NP (acerto + dano <= 2 x NP).
+  /// Mover Objetos (E026): graduação do efeito + graduações do extra
+  /// "Arma Improvisada ou Maestria em Arremesso" (ED001) + graduações da
+  /// vantagem Armas Improvisadas (V007). Demais efeitos: a graduação.
+  static int danoTotal(Map efeito, int graduacao) {
+    if (efeito["e_id"] != "E026") return graduacao;
+    int dano = graduacao;
+    for (Map m in efeito["modificadores"] ?? []) {
+      if (m["m_id"] == "ED001") dano += (m["grad"] ?? 1) as int;
+    }
+    for (Map v in personagem.vantagens.listaVantagens) {
+      if (v["id"] == "V007") {
+        Vantagem vantagem = Vantagem();
+        vantagem.init(v);
+        dano += vantagem.returnTotalGrad();
+      }
+    }
+    return dano;
+  }
+
+  /// Modificadores que dependem de outro no mesmo efeito.
+  /// Teleporte (E036): Limitado a Estendido (ED008) exige Estendido (ED002).
+  List _dependenciasModificadores([List? lista]) {
+    List log = [];
+    for (Map p in lista ?? personagem.poderes.poderesLista) {
+      if (p["class"] == "PacotesEfeitos") {
+        log.addAll(_dependenciasModificadores(p["efeitos"] ?? []));
+        continue;
+      }
+      if (p["e_id"] != "E036") continue;
+      List mods = p["modificadores"] ?? [];
+      bool tem(String id) => mods.any((m) => m["m_id"] == id);
+      if (tem("ED008") && !tem("ED002")) {
+        String nome = "${p["nome"] ?? ""}".isNotEmpty ? "${p["nome"]}" : "Teleporte";
+        log.add({
+          "tipo": "E",
+          "nome": nome,
+          "msg": "$nome tem a falha Limitado a Estendido sem o extra Estendido",
+          "id": ["Teleporte"]
+        });
+      }
+    }
+    return log;
   }
 
   List _defesas() {
@@ -411,6 +454,7 @@ class ValidaNpPersonagem {
     logErros.addAll(_pericias());
     logErros.addAll(_defesas());
     logErros.addAll(_efeitos());
+    logErros.addAll(_dependenciasModificadores());
     logErros.addAll(_pontos());
 
     return logErros;
@@ -827,6 +871,33 @@ class ManipulaPoderes {
     poderesLista = jsonPoderes as List;
   }
 
+  /// Todos os efeitos são sempre ativos. Fichas salvas quando ainda havia
+  /// a opção "Efeito Ativo" podem ter efeitos de bônus desligados
+  /// ("active": false) em arranjos; aqui eles são ligados e o bônus aplicado.
+  /// Retorna true se algum bônus foi aplicado.
+  bool ativarBonusInativos([List? lista]) {
+    bool alterou = false;
+    for (Map p in lista ?? poderesLista) {
+      if (["PacotesEfeitos", "EfeitosAlternativos"].contains(p["class"])) {
+        alterou = ativarBonusInativos(p["efeitos"] ?? []) || alterou;
+        continue;
+      }
+      if (!["EfeitoBonus", "EfeitoCrescimento"].contains(p["class"])) continue;
+      if (p["active"] != false) continue;
+
+      p["active"] = true;
+      EfeitoBonus efeito = Efeito.doMapa(p) as EfeitoBonus;
+      personagem.validador.removeBonusId("${p["idCriacao"]}");
+      if (efeito is EfeitoCrescimento) {
+        p["alvoAumento"] = efeito.returnBonusList();
+      } else {
+        efeito.configBonus();
+      }
+      alterou = true;
+    }
+    return alterou;
+  }
+
   novoPoder(nome, id, classe) async {
     /*
       inicialização das classes de efeito
@@ -1176,6 +1247,11 @@ class Ficha {
     vantagens.reInit(jsonReInit["vantagens"]);
 
     complicacoes = jsonReInit["complicacoes"].toList();
+
+    // Bônus de efeitos que estavam desligados passam a valer
+    if (identical(personagem, this) && poderes.ativarBonusInativos()) {
+      validador.updatePericiaBonus();
+    }
 
     return 1;
   }

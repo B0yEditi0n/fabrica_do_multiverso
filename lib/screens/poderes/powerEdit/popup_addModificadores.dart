@@ -88,6 +88,8 @@ class _AddModificadorSelecionadorState extends State<AddModificadorSelecionador>
           children: <Widget>[ 
             // Escolha do modificador
             DropdownButton<String>(
+              isExpanded: true,
+              itemHeight: 56,
               value: modificadorSelecionado,
               style: const TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
               onChanged: (String? value) {
@@ -119,6 +121,8 @@ class _AddModificadorSelecionadorState extends State<AddModificadorSelecionador>
           ]
         )
       ),
+      actionsAlignment: MainAxisAlignment.center,
+      actionsOverflowAlignment: OverflowBarAlignment.center,
       actions: <Widget>[
         TextButton(
           child: const Text('Adicionar'),

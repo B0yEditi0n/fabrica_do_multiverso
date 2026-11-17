@@ -142,3 +142,54 @@ A base é aproveitável: o modelo de dados, a fórmula de custo de efeito indivi
 5. Não há testes.
 
 A ordem de implementação proposta está em `MATRIZ_COBERTURA.md`, seção 6.
+
+## 8. Atualização de 2026-11-17
+
+Alterações feitas no código depois do commit `e940c58` (ainda não commitadas). As regras estão descritas em `Desenvolvimento/Especificação Técnica.md`.
+
+| Área | O que mudou | Arquivos |
+|---|---|---|
+| Importação | Upload aceita `.json` solto e reconhece o portfólio do Poder Supremo (app React). Converte um personagem de M&M 3ª edição, pergunta qual personagem importar quando há vários, mostra os avisos da conversão e recusa M&M 4ª edição. | `lib/script/importacao/importa_poder_supremo.dart` (novo), `lib/script/download.dart`, `lib/main.dart` |
+| Arranjos | Fim do "efeito ativo": todos os efeitos de um arranjo somam o bônus. Removidos `activeEfeito`/`defineActive` e a caixa de seleção da tela. Fichas antigas com bônus desligado são religadas ao carregar. | `lib_pacoteEfeitos.dart`, `lib_efeitos.dart`, `ficha.dart`, `ScreenControlePacote.dart` |
+| Custo dinâmico | Marca opcional `dinamico` por efeito: maior + 1 se dinâmico, +2 por alternativo dinâmico, +1 por comum. Sem a marca, o custo continua o de antes. | `lib_custos.dart` |
+| EfeitoCompra | A graduação é recalculada pela soma das opções ao carregar (Imunidade, Movimento, Sentidos). | `lib_efeitos.dart` |
+| PDF | Visual "ficha preta": fundo preto, texto branco, barras azuis arredondadas, tabelas com moldura arredondada. | `lib/screens/components/printer.dart` |
+| Celular | Tema com áreas de toque maiores, `SafeArea`, grades com altura fixa, dropdowns expandidos, diálogos centralizados, `SavePopUp` como `Dialog` e botão flutuante de salvar. | `lib/theme/theme.dart`, telas em `lib/screens/` |
+
+Defeitos da seção 6 resolvidos por essas mudanças:
+
+- "Excluir efeito de um arranjo não encolhe a lista de ativos" (`ScreenControlePacote.dart`): a lista de ativos não existe mais.
+- Regra de negócio na tela "Controle do efeito ativo do arranjo" (seção 5): removida.
+
+Testes (`flutter test`, Flutter 3.47.1):
+
+| Arquivo | Conteúdo |
+|---|---|
+| `test/custos_test.dart` | Custos de efeitos e pacotes. Novos casos: arranjo dinâmico com marca por efeito; graduação de Imunidade pela soma das opções. |
+| `test/importacao_poder_supremo_test.dart` (novo) | Reconhecimento e recusa de M&M 4ª; habilidades, defesas, perícias e vantagens; poderes e custos; segundo personagem do portfólio; ficha Lenan com os mesmos custos do app React; três arquivos de exemplo (`test/fixtures/poder_supremo_{lenan,sentinela,legado}.json`). |
+| `test/responsividade_test.dart` (novo) | Cada rota, o diálogo de salvar, os popups de inclusão e o editor de poder sem estouro de layout em 320×568 e 360×740. |
+
+Resultado em 2026-11-17: os três arquivos juntos rodam 45 testes, todos aprovados. A suíte completa (`flutter test` sem argumentos) não foi executada nesta atualização.
+
+Pendências abertas por estas mudanças:
+
+- Perícia Aumentada continua sem cálculo (custo 0,5). Na importação, ela entra como Característica com o mesmo custo.
+- Poderes internos de veículos e quartéis-generais do Poder Supremo não são importados; só o custo é mantido.
+- `.dart_tool/`, `.flutter-plugins-dependencies` e `build/` continuam fora do `.gitignore`.
+
+## 9. Atualização de 2026-11-17 (segunda rodada)
+
+| Área | O que mudou | Arquivos |
+|---|---|---|
+| Catálogo | Modificadores próprios de Mover Objetos (4) e Teleporte (10), conforme `wiki_mm3_markdown`. Tempo de Transporte vem do Perfil de Poder "Poderes de Teleporte". | `assets/poderes/efeitos.json` |
+| Validação de NP | O dano total de Mover Objetos (graduação + extra Arma Improvisada ou Maestria em Arremesso + vantagem Armas Improvisadas) entra no limite acerto + dano ≤ 2 × NP. Limitado a Estendido sem Estendido gera erro. | `lib/script/ficha.dart` (`danoTotal`, `_dependenciasModificadores`) |
+| Copiar e colar | Área de cópia de um poder, botão de copiar nos poderes e nos efeitos de pacote, "Colar" na janela de adicionar, com as regras de aninhamento, ids novos e bônus aplicados. | `lib/script/poderes/lib_areaCopia.dart` (novo), `lib_pacoteEfeitos.dart` (`idCriacao()`), `ScreenPoderes.dart`, `ScreenControlePacote.dart`, `popup_addPoderes.dart` |
+| Importação | Apelido "Massa Aumentada" → "Aumentar Massa". Os novos modificadores são encontrados pelo nome. | `importa_poder_supremo.dart` |
+
+Testes: novo `test/modificadores_copia_test.dart` (12 testes: catálogo, custos, dano total, limite de NP, dependência do Teleporte, copiar e colar). Junto com `custos_test`, `importacao_poder_supremo_test` e `responsividade_test`: 57 testes, todos aprovados. `flutter analyze` não acusou erros nos arquivos alterados.
+
+Pendências:
+
+- O limite de NP de Mover Objetos usa a vantagem Armas Improvisadas (V007), como pedido. Maestria em Arremesso (V060) não entra na soma, e no catálogo da Fábrica ela não é graduada.
+- Fácil depende, na prática, de Estendido, mas a wiki não exige isso; não há validação.
+- A cópia fica só na memória e some ao fechar o aplicativo.

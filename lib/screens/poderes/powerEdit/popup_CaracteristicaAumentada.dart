@@ -81,6 +81,8 @@ class _AddCaractAumetState extends State<AddCaractAumet> {
 
             // Escolha da Caracteristica 
             DropdownButton(
+              isExpanded: true,
+              itemHeight: 56,
               value: caractSel,
               style: const TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
               items: caractCompra.map<DropdownMenuItem<Map>>((value) {
@@ -100,6 +102,8 @@ class _AddCaractAumetState extends State<AddCaractAumet> {
           ]
         )
       ),
+      actionsAlignment: MainAxisAlignment.center,
+      actionsOverflowAlignment: OverflowBarAlignment.center,
       actions: <Widget>[
         TextButton(
           child: const Text('Adicionar'),

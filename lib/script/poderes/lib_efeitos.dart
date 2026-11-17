@@ -647,7 +647,15 @@ class EfeitoEscolha extends Efeito{
 
 class EfeitoCompra extends EfeitoEscolha{
   /* Efeito de Escolha Define a Graduação e o custo é fixo */
-  @override 
+  @override
+  void carregaMapa(Map objPoder){
+    super.carregaMapa(objPoder);
+    // A graduação é a soma das opções escolhidas (Imunidade, Movimento...).
+    // Sem opções (ex.: Intangibilidade) vale a graduação salva na ficha.
+    if(opt.isNotEmpty){ optsetCusto(); }
+  }
+
+  @override
   void optsetCusto(){
     _graduacao = 0;
     for(Map option in opt){
@@ -921,9 +929,10 @@ class EfeitoBonus extends Efeito{
   List grupoOpt = [];
   List opt = [];
 
-  // caso esteja encapsulado em um arry
-  // Ele só deve somar se estiver ativo
-  bool active = true; 
+  // Todos os efeitos são considerados sempre ativos, inclusive os
+  // efeitos alternativos de um arranjo: o bônus sempre é aplicado.
+  // O campo continua gravado na ficha só por compatibilidade.
+  bool active = true;
 
   @override
   Future<bool> instanciarMetodo(String nome , String idEfeito) async{
@@ -954,7 +963,8 @@ class EfeitoBonus extends Efeito{
       _idArranjo = objPoder["idArranjo"];
     }
 
-    if(objPoder["active"] != null){active = objPoder["active"];}
+    // Fichas antigas podem ter "active": false; o valor é ignorado
+    active = true;
   }
 
   @override

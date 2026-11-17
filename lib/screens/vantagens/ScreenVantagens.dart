@@ -74,10 +74,12 @@ class _ScreenVantagensState extends State<ScreenVantagens> {
             }),
       ),
 
-      body: Column(
+      body: SafeArea(child: Column(
         children: [
           Expanded(
             child: ListView.builder(
+              // Espaço no fim para o botão flutuante não cobrir o último item
+              padding: const EdgeInsets.only(bottom: 88),
               itemCount: addVantagens.length,
               itemBuilder: (BuildContext context, int index){
 
@@ -88,10 +90,10 @@ class _ScreenVantagensState extends State<ScreenVantagens> {
                   child: Column(
                     children: [
                       Padding(
-                        padding: const EdgeInsets.all(10.0),
+                        padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 10.0),
                         child: Card(
                           child: Padding(
-                            padding: const EdgeInsets.all(15.0),
+                            padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 15.0),
                             child: Row(children:[
                               Expanded(
                                 child: 
@@ -161,9 +163,12 @@ class _ScreenVantagensState extends State<ScreenVantagens> {
             ),
           ),
 
-          Text("Total ${cutoTotal.toString()}")
+          Padding(
+            padding: const EdgeInsets.all(15.0),
+            child: Text("Total: ${cutoTotal.toString()}", style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w800)),
+          )
         ],
-      ),
+      )),
 
       floatingActionButton: FloatingActionButton(
         tooltip: 'Adicionar Vantagem',

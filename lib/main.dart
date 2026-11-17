@@ -14,6 +14,7 @@ import 'package:file_picker/file_picker.dart';
 // Salvamento de Arquivos
 import 'script/download.dart';
 import 'package:fabrica_do_multiverso/script/armazenamento.dart';
+import 'package:fabrica_do_multiverso/script/importacao/importa_poder_supremo.dart';
 
 // Temas
 import 'package:fabrica_do_multiverso/theme/theme.dart';
@@ -108,6 +109,51 @@ class _ScreenInicialState extends State<ScreenInicial> {
     });
   }
 
+  Future<int?> _escolherPersonagem(List<String> nomes) {
+    // Portfólio do Poder Supremo com vários personagens
+    return showDialog<int>(
+      context: context,
+      builder: (context) => SimpleDialog(
+        title: const Text('Qual personagem importar?'),
+        children: [
+          for (int i = 0; i < nomes.length; i++)
+            SimpleDialogOption(
+              child: Text(nomes[i]),
+              onPressed: () => Navigator.pop(context, i),
+            ),
+        ],
+      ),
+    );
+  }
+
+  void _mostrarMensagens(String titulo, List<String> mensagens) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(titulo),
+        content: SizedBox(
+          width: 400,
+          child: ListView(
+            shrinkWrap: true,
+            children: [
+              for (String m in mensagens)
+                ListTile(
+                  leading: const Icon(Icons.info_outline),
+                  title: Text(m),
+                ),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            child: const Text('Fechar'),
+            onPressed: () => Navigator.pop(context),
+          ),
+        ],
+      ),
+    );
+  }
+
   Future<void> _abrirUltimaFicha() async {
     // Ao abrir o aplicativo continua da ficha guardada (só existe uma)
     try {
@@ -130,6 +176,8 @@ class _ScreenInicialState extends State<ScreenInicial> {
             title: const Text('Nova ficha'),
             content: const Text(
                 'A ficha atual será apagada deste aparelho. Use "Baixar Ficha" antes se quiser guardá-la.'),
+            actionsAlignment: MainAxisAlignment.center,
+            actionsOverflowAlignment: OverflowBarAlignment.center,
             actions: [
               TextButton(
                 child: const Text('Cancelar'),
@@ -284,14 +332,22 @@ class _ScreenInicialState extends State<ScreenInicial> {
               title: const Text('Upload'),
               onTap: () async {
                 Download upload = Download();
-                var ficha = await upload.uploadFicha();
+                var ficha = await upload.uploadFicha(
+                    escolherPersonagem: _escolherPersonagem);
                 // Upload cancelado ou inválido: mantém ficha e imagem atuais
                 if (ficha.isNotEmpty) {
                   personagem = Ficha();
                   await personagem.init();
                   await personagem.reInit(ficha);
+                  if (upload.importadoPoderSupremo) PoderSupremo.finalizar();
                   _mostrarFicha(upload.img);
                   await _salvarLocal();
+                }
+                if (!mounted) return;
+                if (upload.erro.isNotEmpty) {
+                  _mostrarMensagens('Não foi possível importar', [upload.erro]);
+                } else if (upload.avisos.isNotEmpty) {
+                  _mostrarMensagens('Ficha importada do Poder Supremo', upload.avisos);
                 }
               },
             ),
@@ -434,8 +490,9 @@ class _ScreenInicialState extends State<ScreenInicial> {
         ],
       ),
       ),
-      floatingActionButton: IconButton(
-        icon: const Icon(BootstrapIcons.floppy2_fill),
+      floatingActionButton: FloatingActionButton(
+        tooltip: 'Salvar / exportar ficha',
+        child: const Icon(BootstrapIcons.floppy2_fill),
         onPressed: () async {
           showDialog(
             context: context,

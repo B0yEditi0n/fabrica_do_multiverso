@@ -59,13 +59,37 @@ class CustoPoderes {
         return _maiorCusto(efeitos) + (efeitos.length - 1);
       case "D": // Efeitos Alternativos Dinâmicos
         if (efeitos.length == 1) return _maiorCusto(efeitos);
-        return _maiorCusto(efeitos) + 1 + 2 * (efeitos.length - 1);
+        return _custoDinamico(efeitos);
       default: // Ligados, Removível, Formas e pacotes simples
         int soma = somaInterna(item);
         if (eEquipamento(item)) return soma;
         int removivel = item["removivel"] ?? 0;
         return soma - removivel * (soma ~/ 5);
     }
+  }
+
+  /// Arranjo dinâmico: o mais caro + 1 se ele for dinâmico,
+  /// + 2 por alternativo dinâmico e + 1 por alternativo comum.
+  /// Sem a marca "dinamico" (fichas feitas na Fábrica) todos os efeitos
+  /// são dinâmicos; fichas importadas do app React trazem a marca efeito
+  /// a efeito e são cobradas como no app de origem.
+  static int _custoDinamico(List efeitos) {
+    bool dinamico(Map e) => e["dinamico"] != false;
+    int iMaior = 0;
+    int maior = -1;
+    for (int i = 0; i < efeitos.length; i++) {
+      int custo = custoBruto(efeitos[i]);
+      if (custo > maior) {
+        maior = custo;
+        iMaior = i;
+      }
+    }
+    int total = maior + (dinamico(efeitos[iMaior]) ? 1 : 0);
+    for (int i = 0; i < efeitos.length; i++) {
+      if (i == iMaior) continue;
+      total += dinamico(efeitos[i]) ? 2 : 1;
+    }
+    return total;
   }
 
   static int _maiorCusto(List efeitos) {

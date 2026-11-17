@@ -184,10 +184,10 @@ class _powerEditState extends State<powerEdit> {
       ),
 
 
-      body: SingleChildScrollView(
+      body: SafeArea(child: SingleChildScrollView(
         child: Padding(
-          
-          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+
+          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             
@@ -319,7 +319,7 @@ class _powerEditState extends State<powerEdit> {
                     crossAxisAlignment: WrapCrossAlignment.center,
                     children: [
                       IconButton(
-                        icon: const Icon(Icons.arrow_circle_left),
+                        icon: const Icon(Icons.arrow_circle_left, size: 38),
                         onPressed: (){
                           // Chama função externa devido ao tamanho
                           // da lógica de validação
@@ -343,7 +343,7 @@ class _powerEditState extends State<powerEdit> {
                       ),                      
                 
                       IconButton(
-                        icon: const Icon(Icons.arrow_circle_right),
+                        icon: const Icon(Icons.arrow_circle_right, size: 38),
                         onPressed: (){
                           // Chama função externa devido ao tamanho
                           // da lógica de validação
@@ -369,7 +369,7 @@ class _powerEditState extends State<powerEdit> {
                     crossAxisAlignment: WrapCrossAlignment.center,
                     children: [
                       IconButton(
-                        icon: const Icon(Icons.arrow_circle_left),
+                        icon: const Icon(Icons.arrow_circle_left, size: 38),
                         onPressed: (){
                           int novoValor = alteraAlcance(objPoder["alcance"], -1);
                           setState(() {
@@ -391,7 +391,7 @@ class _powerEditState extends State<powerEdit> {
                       ),                      
                 
                       IconButton(
-                        icon: const Icon(Icons.arrow_circle_right),
+                        icon: const Icon(Icons.arrow_circle_right, size: 38),
                         onPressed: (){
                           // Chama função externa devido ao tamanho
                           // da lógica de validação
@@ -416,7 +416,7 @@ class _powerEditState extends State<powerEdit> {
                     crossAxisAlignment: WrapCrossAlignment.center,
                     children: [
                       IconButton(
-                        icon: const Icon(Icons.arrow_circle_left),
+                        icon: const Icon(Icons.arrow_circle_left, size: 38),
                         onPressed: (){
                           int novoValor = alteraDuracao(objPoder["duracao"], -1);
                           setState(() {
@@ -440,7 +440,7 @@ class _powerEditState extends State<powerEdit> {
                       ),                      
                 
                       IconButton(
-                        icon: const Icon(Icons.arrow_circle_right),
+                        icon: const Icon(Icons.arrow_circle_right, size: 38),
                         onPressed: (){
                           // Chama função externa devido ao tamanho
                           // da lógica de validação
@@ -557,7 +557,7 @@ class _powerEditState extends State<powerEdit> {
               //***************************************************
 
               poder is EfeitoAflicao ? Wrap(
-                alignment: WrapAlignment.spaceBetween,
+                alignment: WrapAlignment.spaceEvenly,
                 direction: Axis.horizontal,
                 spacing: 10.0, // Espaço horizontal entre os itens
                 runSpacing: 15.0, // Espaço vertical entre as linhas                  
@@ -626,14 +626,13 @@ class _powerEditState extends State<powerEdit> {
                             title: Row(
                               children: [
                                 // Identifica a opção comprada
-                                Text('${compra[index]["desc"]} ${compra[index]["valor"]}'),
+                                Flexible(child: Text('${compra[index]["desc"]} ${compra[index]["valor"]}')),
 
-                                // Input de Descrição *se tiver   
-                                compra[index]["espec"] != null && compra[index]["espec"] ? Row(
-                                  children: [
+                                // Input de Descrição *se tiver
+                                // (divide a linha com o nome em vez de 20% da tela)
+                                if(compra[index]["espec"] != null && compra[index]["espec"]) ...[
                                     const SizedBox(width: 5),
-                                    SizedBox(
-                                      width: MediaQuery.of(context).size.width * 0.20,
+                                    Expanded(
                                       child: TextField(
                                         controller: listInputOption[index],
                                         onChanged: (String value){
@@ -648,8 +647,7 @@ class _powerEditState extends State<powerEdit> {
                                       
                                       ),
                                     ),
-                                  ],
-                                ) : const SizedBox(),
+                                ],
                               ]
                             ),
                             trailing: IconButton(
@@ -823,14 +821,13 @@ class _powerEditState extends State<powerEdit> {
                             title: Row(
                               children: [
                                 // Identifica o Modificador
-                                Text('${modificadores[index]["nome"]} ${modificadores[index]["grad"] > 1 ? modificadores[index]["grad"] : ''}'),
+                                Flexible(child: Text('${modificadores[index]["nome"]} ${modificadores[index]["grad"] > 1 ? modificadores[index]["grad"] : ''}')),
 
-                                // Input de Descrição *se tiver   
-                                Row(
-                                  children: modificadores[index]["desc"] ? [
+                                // Input de Descrição *se tiver
+                                // (divide a linha com o nome em vez de 20% da tela)
+                                if(modificadores[index]["desc"]) ...[
                                     const SizedBox(width: 5),
-                                    SizedBox(
-                                      width: MediaQuery.of(context).size.width * 0.20,
+                                    Expanded(
                                       child: TextField(
                                         controller: listInputModText[index],
                                         onChanged: (value){
@@ -844,8 +841,7 @@ class _powerEditState extends State<powerEdit> {
                                       
                                       ),
                                     ),
-                                  ]: [], 
-                                ),
+                                ],
                               ]
                             ),
                             trailing: IconButton(
@@ -912,7 +908,7 @@ class _powerEditState extends State<powerEdit> {
             ],
           ),
         ),
-      ),
+      )),
       ),
     );
   }

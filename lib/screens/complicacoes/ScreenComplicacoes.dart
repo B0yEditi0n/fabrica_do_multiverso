@@ -33,6 +33,8 @@ class _ScreenComplicacoesState extends State<ScreenComplicacoes> {
         ),
 
         body: ListView.builder(
+          // Espaço no fim para o botão flutuante não cobrir o último item
+          padding: const EdgeInsets.only(bottom: 88),
           itemCount: editComplicacoes.length,
           itemBuilder: (BuildContext context, int index){
             return InkWell(
@@ -182,6 +184,7 @@ class _PopUpAddComplicacaoState extends State<PopUpAddComplicacao> {
               ]
             ),
           ),
+          actionsAlignment: MainAxisAlignment.center,
           actions: [
             //? Botões de cancelar e adicionar
             TextButton(

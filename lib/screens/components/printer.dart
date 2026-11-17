@@ -5,8 +5,10 @@
 //   nome e imagem, "NP X (gastos / disponíveis pontos)", e as seções
 //   Habilidades, Defesas, Ofensiva, Vantagens, Poderes, Perícias,
 //   Complicações & Notas, Equipamentos e a linha final de totais.
-//   Seções têm barra preta com texto branco; as tabelas de Habilidades e
-//   Defesas têm cabeçalho azul (#2a6099); a letra é Arial (aqui Helvetica).
+//   A ficha é preta: fundo preto e texto branco em todas as páginas.
+//   Seções têm barra azul (#2a6099) com título em destaque; as tabelas de
+//   Habilidades e Defesas têm moldura com cantos arredondados, cabeçalho
+//   azul e células escuras; a letra é Arial (aqui Helvetica).
 import 'package:fabrica_do_multiverso/script/ficha.dart';
 import 'package:fabrica_do_multiverso/script/pericias/lib_pericias.dart';
 import 'package:fabrica_do_multiverso/script/vantagens/lib_vantagens.dart';
@@ -30,9 +32,20 @@ class Printer {
   //
   static const double margem = 56.7; // 2 cm
   static final double contentWidth = PdfPageFormat.a4.width - (margem * 2);
-  static const PdfColor corSecao = PdfColors.black;
-  static const PdfColor corCabecalho = PdfColor.fromInt(0xff2a6099);
+  // Ficha preta
+  static const PdfColor corFundo = PdfColors.black;
+  static const PdfColor corTexto = PdfColors.white;
+  static const PdfColor corTextoSecundario = PdfColors.grey400;
+  static const PdfColor corSecao = PdfColor.fromInt(0xff2a6099);
+  static const PdfColor corCabecalho = PdfColor.fromInt(0xff1d4570);
+  static const PdfColor corCelula = PdfColor.fromInt(0xff1a1a1a);
+  // Moldura das tabelas (Habilidades e Defesas)
+  static const PdfColor corMoldura = PdfColor.fromInt(0xff5b8fc7);
+  static const PdfColor corDivisoria = PdfColor.fromInt(0xff3d3d3d);
+  static const double raioMoldura = 6;
   static const double tamanhoTexto = 11;
+  static const double tamanhoTitulo = 14; // barras de seção
+  static const double tamanhoNome = 26; // nome do personagem
 
   static pw.TextStyle get negrito =>
       pw.TextStyle(fontWeight: pw.FontWeight.bold);
@@ -125,17 +138,21 @@ class Printer {
   // Widgets base
   //
 
-  // Barra de seção do modelo: fundo preto, texto branco, largura total
+  // Barra de seção: fundo azul, título branco em destaque, largura total
   static pw.Widget sectionHeader(String txt) => pw.Container(
         width: contentWidth,
-        margin: const pw.EdgeInsets.only(top: 8, bottom: 4),
-        padding: const pw.EdgeInsets.symmetric(horizontal: 5, vertical: 3),
-        color: corSecao,
+        margin: const pw.EdgeInsets.only(top: 10, bottom: 5),
+        padding: const pw.EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+        decoration: const pw.BoxDecoration(
+          color: corSecao,
+          borderRadius: pw.BorderRadius.all(pw.Radius.circular(3)),
+        ),
         child: pw.Text(
           '$txt:',
           style: pw.TextStyle(
+            fontSize: tamanhoTitulo,
             fontWeight: pw.FontWeight.bold,
-            color: PdfColors.white,
+            color: corTexto,
           ),
         ),
       );
@@ -148,12 +165,13 @@ class Printer {
           textAlign: pw.TextAlign.center,
           style: pw.TextStyle(
             fontWeight: pw.FontWeight.bold,
-            color: PdfColors.white,
+            color: corTexto,
           ),
         ),
       );
 
-  static pw.Widget cellRowTable(String txt) => pw.Padding(
+  static pw.Widget cellRowTable(String txt) => pw.Container(
+        color: corCelula,
         padding: const pw.EdgeInsets.symmetric(vertical: 3),
         child: pw.Text(txt, textAlign: pw.TextAlign.center),
       );
@@ -167,9 +185,23 @@ class Printer {
           i.isEven ? headerRowTable(txt) : cellRowTable(txt)
       ]));
     }
-    return pw.Table(
-      border: pw.TableBorder.all(color: PdfColors.white, width: 1),
-      children: rows,
+    // Moldura decorada: borda contínua com cantos arredondados por fora
+    // e divisórias finas entre as células
+    return pw.Container(
+      foregroundDecoration: pw.BoxDecoration(
+        borderRadius: const pw.BorderRadius.all(pw.Radius.circular(raioMoldura)),
+        border: pw.Border.all(color: corMoldura, width: 1.5),
+      ),
+      child: pw.ClipRRect(
+        horizontalRadius: raioMoldura,
+        verticalRadius: raioMoldura,
+        child: pw.Table(
+          border: pw.TableBorder.symmetric(
+            inside: pw.BorderSide(color: corDivisoria, width: 0.5),
+          ),
+          children: rows,
+        ),
+      ),
     );
   }
 
@@ -208,7 +240,8 @@ class Printer {
             personagem.nomePersonagem.isNotEmpty
                 ? personagem.nomePersonagem
                 : 'Personagem Sem Nome',
-            style: pw.TextStyle(fontSize: 22, fontWeight: pw.FontWeight.bold),
+            style: pw.TextStyle(
+                fontSize: tamanhoNome, fontWeight: pw.FontWeight.bold),
           ),
           pw.SizedBox(height: 4),
           pw.Text(linhaNp(), style: negrito),
@@ -483,11 +516,7 @@ class Printer {
   // Montagem final do PDF
   //
   static Future<pw.Document> montar(Uint8List fileImg) async {
-    pw.Document doc = pw.Document(
-      theme: pw.ThemeData.base().copyWith(
-        defaultTextStyle: const pw.TextStyle(fontSize: tamanhoTexto),
-      ),
-    );
+    pw.Document doc = pw.Document();
 
     // Pré-processa os widgets assíncronos antes de montar o documento
     pw.Widget pdfOfensiva = await ofensiva();
@@ -496,8 +525,19 @@ class Printer {
 
     doc.addPage(
       pw.MultiPage(
-        pageFormat: PdfPageFormat.a4.portrait,
-        margin: const pw.EdgeInsets.all(margem),
+        // Ficha preta: fundo preto na página inteira e texto branco
+        pageTheme: pw.PageTheme(
+          pageFormat: PdfPageFormat.a4.portrait,
+          margin: const pw.EdgeInsets.all(margem),
+          theme: pw.ThemeData.base().copyWith(
+            defaultTextStyle:
+                const pw.TextStyle(fontSize: tamanhoTexto, color: corTexto),
+          ),
+          buildBackground: (pw.Context context) => pw.FullPage(
+            ignoreMargins: true,
+            child: pw.Container(color: corFundo),
+          ),
+        ),
         header: (pw.Context context) {
           // Repete o nome do personagem discretamente a partir da 2ª página
           if (context.pageNumber == 1) return pw.SizedBox();
@@ -506,7 +546,7 @@ class Printer {
             margin: const pw.EdgeInsets.only(bottom: 6),
             child: pw.Text(
               personagem.nomePersonagem,
-              style: const pw.TextStyle(fontSize: 9, color: PdfColors.grey700),
+              style: const pw.TextStyle(fontSize: 9, color: corTextoSecundario),
             ),
           );
         },
@@ -515,7 +555,7 @@ class Printer {
           margin: const pw.EdgeInsets.only(top: 6),
           child: pw.Text(
             '${context.pageNumber} / ${context.pagesCount}',
-            style: const pw.TextStyle(fontSize: 8, color: PdfColors.grey600),
+            style: const pw.TextStyle(fontSize: 8, color: corTextoSecundario),
           ),
         ),
         build: (pw.Context context) => [

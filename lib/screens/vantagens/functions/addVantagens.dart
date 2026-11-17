@@ -148,19 +148,20 @@ class _PopUpAddVantagemState extends State<PopUpAddVantagem> {
                   ],
                 ),
               
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center, 
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Column(
+                // Largura limitada e lista expandida: nomes longos não estouram a tela
+                ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 600),
+                  child: Column(
                       children: [
                         const SizedBox(
                           height: 15,
                         ),
-                        
+
                         //? Seleciona a Vantagem
                         widget.obj.isEmpty ?
                         DropdownButton<Map>(
+                          isExpanded: true,
+                          itemHeight: 56,
                           value: selectVantagem,
                           icon: const Icon(Icons.arrow_downward),
                           elevation: 16,
@@ -182,11 +183,12 @@ class _PopUpAddVantagemState extends State<PopUpAddVantagem> {
                         ) : const SizedBox(),
                       ],
                     ),
-                  ],
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center, 
-                  crossAxisAlignment: CrossAxisAlignment.center,
+                const SizedBox(height: 24),
+                Wrap(
+                  alignment: WrapAlignment.center,
+                  spacing: 16,
+                  runSpacing: 8,
                   children: [
                     TextButton(
                       child: const Text("Cancelar"),

@@ -115,6 +115,8 @@ class _PopUpAddSkillState extends State<PopUpAddSkill> {
               //? Input de Perícia
               widget.obj.isEmpty ?
               DropdownButton<Map>(
+                isExpanded: true,
+                itemHeight: 56,
                 value: periciaSelecionada,
                 icon: const Icon(Icons.arrow_downward),
                 elevation: 16,
@@ -207,6 +209,8 @@ class _PopUpAddSkillState extends State<PopUpAddSkill> {
             ]
           ),
         ),
+        actionsAlignment: MainAxisAlignment.center,
+        actionsOverflowAlignment: OverflowBarAlignment.center,
         actions: [
           //? Botões de remover(se tiver) cancelar e adicionar
           TextButton(

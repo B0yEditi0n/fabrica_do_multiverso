@@ -4,6 +4,7 @@ import 'dart:convert';
 
 // Instancia de Poderes
 import 'package:fabrica_do_multiverso/script/ficha.dart';
+import 'package:fabrica_do_multiverso/script/poderes/lib_areaCopia.dart';
 
 //# Dialogo Adicionar Poderes
 
@@ -113,6 +114,8 @@ class _DynamicDialogState extends State<DynamicDialog> {
             const SizedBox(height: 15,),
 
             DropdownButton<String>(
+              isExpanded: true,
+              itemHeight: 56,
               value: efeitoSelecionado,
               icon: const Icon(Icons.arrow_downward),
               elevation: 16,
@@ -139,7 +142,18 @@ class _DynamicDialogState extends State<DynamicDialog> {
         )
       ),
       
+      actionsAlignment: MainAxisAlignment.center,
+      actionsOverflowAlignment: OverflowBarAlignment.center,
       actions: <Widget>[
+        // Colar o poder copiado (área de cópia em lib_areaCopia.dart)
+        if(AreaDeCopia.temCopia)
+          TextButton.icon(
+            icon: const Icon(Icons.content_paste),
+            label: Text('Colar: ${AreaDeCopia.nomeCopia}',
+              overflow: TextOverflow.ellipsis),
+            onPressed: () => Navigator.of(context).pop({"colar": true}),
+          ),
+
         TextButton(
           child: const Text('Adicionar'),
           onPressed: () async{

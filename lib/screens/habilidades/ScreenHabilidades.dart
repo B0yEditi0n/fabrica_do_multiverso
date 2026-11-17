@@ -88,17 +88,18 @@ class _ScreenHabilidadesState extends State<ScreenHabilidades> {
                     Navigator.of(context).pop()
                   }),
         ),
-        body: Column(
+        body: SafeArea(child: Column(
           children: [
           // Grid de habilidades
           Expanded(
             child: GridView.builder(
-              padding: const EdgeInsets.all(2.0),
+              padding: const EdgeInsets.symmetric(vertical: 2.0, horizontal: 16.0),
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: crossAxisCount, // Define o número de colunas
                 mainAxisSpacing: 2.8,
-                crossAxisSpacing: 2.5,
-                childAspectRatio: 4, // Controla o tamanho das células
+                crossAxisSpacing: 16,
+                // Altura fixa: em celulares estreitos a proporção cortava o conteúdo
+                mainAxisExtent: 110,
               ),
               itemCount: listHabilidade.length,
               itemBuilder: (context, index) {
@@ -159,7 +160,7 @@ class _ScreenHabilidadesState extends State<ScreenHabilidades> {
             ),
           )
         ]
-      )
+      ))
     );
   }
 }
