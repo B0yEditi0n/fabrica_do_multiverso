@@ -339,6 +339,7 @@
 		"nome": "FASCINAR",
 		"graduado": true,
 		"desc": true,
+		"limite": 3,
 		"class": "Vantagem"
 	},
 	{
@@ -574,6 +575,7 @@
 		"nome": "SORTE",
 		"graduado": true,
 		"desc": true,
+		"limite_meio_np": true,
 		"class": "VantagemSorte"
 	},
 	{

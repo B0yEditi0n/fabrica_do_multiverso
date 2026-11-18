@@ -48,8 +48,26 @@ class _PopUpAddVantagemState extends State<PopUpAddVantagem> {
     
   }
 
+  // Teto oficial da vantagem selecionada (null: sem teto)
+  int? _graduacaoMaxima() => Vantagem().init(selectVantagem).graduacaoMaxima();
+
+  void _defineGraduacao(int valor) {
+    valor = Vantagem().init(selectVantagem).limitaGraduacao(valor);
+    setState(() {
+      valueVantagem = valor;
+      if (inputIntVantagem.text != '$valor') {
+        // Mantém o cursor no fim ao corrigir o valor digitado
+        inputIntVantagem.value = TextEditingValue(
+          text: '$valor',
+          selection: TextSelection.collapsed(offset: '$valor'.length),
+        );
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    final int? teto = _graduacaoMaxima();
     return Scaffold(
       appBar: AppBar(
         title: const Text('Vantagens'),
@@ -94,56 +112,45 @@ class _PopUpAddVantagemState extends State<PopUpAddVantagem> {
                                   
                     //; se for graduado
                     selectVantagem["graduado"] ? 
-                    SizedBox(
-                      width: 80,
-                      child: TextField(
-                        controller: inputIntVantagem,
-                        keyboardType: TextInputType.number,
-                        inputFormatters: <TextInputFormatter>[
-                          FilteringTextInputFormatter.digitsOnly
-                        ],
-
-                        onChanged: (value) => {                          
-                          // Tem que ser numérico
-                          if(RegExp(r'^[0-9]').hasMatch(value)){
-
-                            // Minimo                            
-                            if(int.parse(value) >= 1 && selectVantagem["limite"] != null){
-                              // Dentro do Máximo                              
-                              if ( selectVantagem["limite"] == 0 || int.parse(value) <= selectVantagem["limite"] ){
-                                setState(() {
-                                  valueVantagem = int.parse(value);
-                                })
-                              } else{ // Fora do Máximo
-                                setState(() {
-                                  valueVantagem = selectVantagem["limite"];
-                                })
-                              }
-                            }
-                            else if(selectVantagem["limite"] == null && selectVantagem["graduado"]){
-                              // é graduado mas o limite não é defnido
-                              // Valor provavelmente será alertado nos limites de NP
-                              setState(() {
-                                valueVantagem = int.parse(value);
-                              })
-                              
-                            }
-                            else{ // Fora do minimo
-                              setState(() {
-                                valueVantagem = 1;
-                              })
-                            }
-                          //   || int.parse(value) <= selectVantagem["limite"] )
-                          // && int.parse(value) >= 1){
-                            
-                          },
-                        },
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
-                          //hintText: 'Nº Grad.',
-                          helperText: 'Nº Grad.',
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          tooltip: 'Diminuir graduação',
+                          icon: const Icon(Icons.remove),
+                          onPressed: valueVantagem > 1
+                            ? () => _defineGraduacao(valueVantagem - 1)
+                            : null,
                         ),
-                      ),
+                        SizedBox(
+                          width: 80,
+                          child: TextField(
+                            controller: inputIntVantagem,
+                            keyboardType: TextInputType.number,
+                            textAlign: TextAlign.center,
+                            inputFormatters: <TextInputFormatter>[
+                              FilteringTextInputFormatter.digitsOnly
+                            ],
+                            onChanged: (value) {
+                              if (value.isNotEmpty) _defineGraduacao(int.parse(value));
+                            },
+                            decoration: InputDecoration(
+                              border: const OutlineInputBorder(),
+                              helperText: teto == null
+                                ? 'Nº Grad.'
+                                : 'Máx. $teto',
+                            ),
+                          ),
+                        ),
+                        IconButton(
+                          tooltip: 'Aumentar graduação',
+                          icon: const Icon(Icons.add),
+                          // Desabilitado ao atingir o teto oficial
+                          onPressed: teto == null || valueVantagem < teto
+                            ? () => _defineGraduacao(valueVantagem + 1)
+                            : null,
+                        ),
+                      ],
                     ) : const SizedBox(),
                   ],
                 ),
@@ -173,6 +180,7 @@ class _PopUpAddVantagemState extends State<PopUpAddVantagem> {
                             setState(() {
                               selectVantagem = value!;
                             });
+                            _defineGraduacao(1);
                           },
                           items: repertorioVantagens.map<DropdownMenuItem<Map>>((value) {
                             return DropdownMenuItem<Map>(

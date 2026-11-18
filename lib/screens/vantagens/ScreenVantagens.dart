@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'; 
-import 'dart:convert';
 // Bibliotecas
 import 'package:fabrica_do_multiverso/script/ficha.dart';
 import 'package:fabrica_do_multiverso/script/vantagens/lib_vantagens.dart';
@@ -30,9 +29,9 @@ class _ScreenVantagensState extends State<ScreenVantagens> {
     _carregaDados();
   }
   void _carregaDados() async {
-    // Puxa dados json
-    String jsonEfeitos = await rootBundle.loadString('assets/vantagens.json');
-    repertorioVantagens = jsonDecode(jsonEfeitos).toList();
+    // Mesmo catálogo usado pelo motor (tetos de graduação)
+    // Cópias: o popup escreve nos mapas e o catálogo é compartilhado
+    repertorioVantagens = (await Vantagem.carregarCatalogo()).map((v) => Map.from(v)).toList();
     
     // Checa o que já foi adicionado
     setState(() {

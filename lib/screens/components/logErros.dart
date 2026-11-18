@@ -10,6 +10,7 @@ class LogPopupError extends StatelessWidget {
     "D": "Defesa",
     "E": "Efeito",
     "T": "Pontos",
+    "V": "Vantagem",
     "Q": "Equipamento",
   };
 

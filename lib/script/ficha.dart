@@ -456,8 +456,38 @@ class ValidaNpPersonagem {
     logErros.addAll(_efeitos());
     logErros.addAll(_dependenciasModificadores());
     logErros.addAll(_pontos());
+    logErros.addAll(_vantagens());
 
     return logErros;
+  }
+
+  List _vantagens() {
+    /*
+      Vantagens acima do teto oficial de graduação
+      (fichas antigas não são corrigidas, só sinalizadas).
+    */
+    List logVantagens = [];
+    for (Map v in personagem.vantagens.listaVantagens) {
+      Vantagem vantagem = Vantagem().init(v);
+      if (vantagem.acimaDoLimite()) {
+        logVantagens.add({
+          "tipo": "V",
+          "nome": vantagem.nome,
+          "msg":
+              "${vantagem.nome} está com graduação ${vantagem.grad()}, acima do máximo de ${vantagem.graduacaoMaxima()}",
+          "id": [vantagem.id],
+        });
+      }
+    }
+    for (Map v in personagem.vantagens.repetidas()) {
+      logVantagens.add({
+        "tipo": "V",
+        "nome": v["nome"],
+        "msg": "${v["nome"]} não é graduada e só pode ser comprada uma vez",
+        "id": [v["id"]],
+      });
+    }
+    return logVantagens;
   }
 }
 
@@ -1003,7 +1033,9 @@ class ManipulaVantagens {
   int cutoTotal() {
     // calcula o custo total das vantagens
     int totalCusto = 0;
+    List<Map> repetidasLista = repetidas();
     for (Map v in listaVantagens) {
+      if (repetidasLista.contains(v)) continue; // só a primeira compra custa
       Vantagem currentVantagem = Vantagem();
       currentVantagem.init(v);
 
@@ -1011,6 +1043,14 @@ class ManipulaVantagens {
     }
 
     return totalCusto;
+  }
+
+  List<Map> repetidas() {
+    // Vantagens não graduadas compradas de novo (a partir da segunda)
+    Set ids = {};
+    return listaVantagens
+        .where((v) => v["graduado"] != true && !ids.add(v["id"]))
+        .toList();
   }
 }
 
@@ -1179,6 +1219,7 @@ class Ficha {
   Future<int> init() async {
     await pericias.init();
     await Efeito.carregarCatalogo();
+    await Vantagem.carregarCatalogo();
 
     return 1;
   }
@@ -1237,6 +1278,7 @@ class Ficha {
 
   Future<int> reInit(Map jsonReInit) async {
     await Efeito.carregarCatalogo();
+    await Vantagem.carregarCatalogo();
     nomePersonagem = jsonReInit["pesonagem"]["nome"];
     np = jsonReInit["pesonagem"]["np"];
 
