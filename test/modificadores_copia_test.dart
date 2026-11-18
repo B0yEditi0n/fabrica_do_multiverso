@@ -127,6 +127,26 @@ void main() {
           isTrue);
     });
 
+    test('Maestria em Arremesso graduada soma no limite de NP de Mover Objetos',
+        () async {
+      personagem.np = 5;
+      Map mo = await _efeito("EfeitoOfensivo", "E026", 8);
+      personagem.poderes.poderesLista.add(mo);
+      bool foraDoLimite() => ValidaNpPersonagem()
+          .validacaoGeral()
+          .any((e) => "${e["msg"]}".contains("fora do limite"));
+      expect(foraDoLimite(), isFalse);
+
+      Map maestria = Map.from(
+          (jsonDecode(File('assets/vantagens.json').readAsStringSync()) as List)
+              .firstWhere((v) => v["id"] == "V060"));
+      personagem.vantagens.listaVantagens
+          .add({...maestria, "graduacao": 3, "txtDec": ""});
+      expect(foraDoLimite(), isTrue);
+      // Graduada: as 3 graduações custam e não geram alerta de excesso
+      expect(personagem.resumoPontos()["vantagens"], 3);
+    });
+
     test('Limitado a Estendido exige Estendido', () async {
       Map t = await _efeito("Efeito", "E036", 4,
           [_modDoEfeito("E036", "Limitado a Estendido")]);

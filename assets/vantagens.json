@@ -426,7 +426,7 @@
 	{
 		"id": "V060",
 		"nome": "MAESTRIA EM ARREMESSO",
-		"graduado": false,
+		"graduado": true,
 		"desc": false,
 		"alvo_bonus": [
 			"DAMAGE_RANGE"

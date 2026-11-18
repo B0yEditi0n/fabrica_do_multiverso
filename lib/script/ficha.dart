@@ -126,8 +126,9 @@ class ValidaNpPersonagem {
 
   /// Dano usado no limite de NP (acerto + dano <= 2 x NP).
   /// Mover Objetos (E026): graduação do efeito + graduações do extra
-  /// "Arma Improvisada ou Maestria em Arremesso" (ED001) + graduações da
-  /// vantagem Armas Improvisadas (V007). Demais efeitos: a graduação.
+  /// "Arma Improvisada ou Maestria em Arremesso" (ED001) + graduações das
+  /// vantagens Armas Improvisadas (V007) e Maestria em Arremesso (V060).
+  /// Demais efeitos: a graduação.
   static int danoTotal(Map efeito, int graduacao) {
     if (efeito["e_id"] != "E026") return graduacao;
     int dano = graduacao;
@@ -135,7 +136,7 @@ class ValidaNpPersonagem {
       if (m["m_id"] == "ED001") dano += (m["grad"] ?? 1) as int;
     }
     for (Map v in personagem.vantagens.listaVantagens) {
-      if (v["id"] == "V007") {
+      if (v["id"] == "V007" || v["id"] == "V060") {
         Vantagem vantagem = Vantagem();
         vantagem.init(v);
         dano += vantagem.returnTotalGrad();
