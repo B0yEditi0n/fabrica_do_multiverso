@@ -26,6 +26,8 @@ import 'package:fabrica_do_multiverso/screens/defesas/ScreenDefesas.dart';
 import 'package:fabrica_do_multiverso/screens/poderes/ScreenPoderes.dart';
 // Screen de Poderes
 import 'package:fabrica_do_multiverso/screens/complicacoes/ScreenComplicacoes.dart';
+// Screen de Ofensiva
+import 'package:fabrica_do_multiverso/screens/ofensiva/ScreenOfensiva.dart';
 
 // Compnentes
 import 'package:fabrica_do_multiverso/screens/components/logErros.dart';
@@ -55,6 +57,7 @@ class FabricaHerois extends StatelessWidget {
         '/vantagens': (context) => const ScreenVantagens(),
         '/pericias': (context) => const ScreenPericias(),
         '/complicacoes': (context) => const ScreenComplicacoes(),
+        '/ofensiva': (context) => const ScreenOfensiva(),
         '/componentLog': (context) => const LogPopupError(),
       },
     );
@@ -292,6 +295,14 @@ class _ScreenInicialState extends State<ScreenInicial> {
               title: const Text('Poderes'),
               onTap: () {
                 Navigator.pushNamed(context, '/poderes')
+                    .then((value) => _validaFicha());
+              },
+            ),
+            ListTile(
+              leading: const Icon(BootstrapIcons.lightning),
+              title: const Text('Ofensiva'),
+              onTap: () {
+                Navigator.pushNamed(context, '/ofensiva')
                     .then((value) => _validaFicha());
               },
             ),

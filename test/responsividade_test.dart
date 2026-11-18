@@ -85,6 +85,7 @@ void main() {
       '/vantagens',
       '/pericias',
       '/complicacoes',
+      '/ofensiva',
     ]) {
       testWidgets('$rota cabe em $rotulo', (tester) async {
         await usarTela(tester, tamanho);

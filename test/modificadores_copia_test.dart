@@ -95,7 +95,7 @@ void main() {
   });
 
   group('Validação de NP', () {
-    test('dano de Mover Objetos soma o extra e Armas Improvisadas', () async {
+    test('dano de Mover Objetos soma só o extra, não as vantagens', () async {
       Map mo = await _efeito("EfeitoOfensivo", "E026", 6, [
         _modDoEfeito("E026", "Arma Improvisada ou Maestria em Arremesso", 2),
       ]);
@@ -109,7 +109,9 @@ void main() {
         "graduacao": 3,
         "class": "Vantagem",
       });
-      expect(ValidaNpPersonagem.danoTotal(mo, 6), 11);
+      // Wiki: a vantagem vale para armas improvisadas corpo a corpo;
+      // em Mover Objetos só o extra do poder soma
+      expect(ValidaNpPersonagem.danoTotal(mo, 6), 8);
 
       // Outros efeitos: só a graduação
       Map dano = await _efeito("EfeitoDano", "E013", 6);
@@ -127,7 +129,7 @@ void main() {
           isTrue);
     });
 
-    test('Maestria em Arremesso graduada soma no limite de NP de Mover Objetos',
+    test('Maestria em Arremesso é graduada e não soma em Mover Objetos',
         () async {
       personagem.np = 5;
       Map mo = await _efeito("EfeitoOfensivo", "E026", 8);
@@ -142,7 +144,7 @@ void main() {
               .firstWhere((v) => v["id"] == "V060"));
       personagem.vantagens.listaVantagens
           .add({...maestria, "graduacao": 3, "txtDec": ""});
-      expect(foraDoLimite(), isTrue);
+      expect(foraDoLimite(), isFalse);
       // Graduada: as 3 graduações custam e não geram alerta de excesso
       expect(personagem.resumoPontos()["vantagens"], 3);
     });

@@ -316,16 +316,7 @@ class Printer {
       vantagemADistancia = objectVantagem.returnTotalGrad();
     }
 
-    // Efeitos Ofensivos: junta os de Perto (+ Desarmado) e a Distância (+ Arremesso)
-    List poderes = [];
-    poderes.addAll(personagem.pericias.returnOfensiveEfeitos(1));
-    poderes.addAll(personagem.pericias.returnOfensiveEfeitos(2));
-
-    // Desarmado/Arremesso sempre primeiro na lista, como no modelo
-    List nativos = poderes.where((p) => p["noPower"] == true).toList()
-      ..sort((a, b) => a["idCriacao"] == "F1" ? -1 : 1);
-    List outros = poderes.where((p) => p["noPower"] != true).toList();
-    poderes = [...nativos, ...outros];
+    List poderes = ataquesOfensiva();
 
     for (int i = 0; i < poderes.length; i++) {
       itens.add(await _blocoAtaque(poderes[i], luta, destreza, forca,
@@ -346,6 +337,23 @@ class Printer {
         ...itens,
       ],
     );
+  }
+
+  /// Ataques listados na Ofensiva: Desarmado (se incluído no menu
+  /// Ofensiva) e Arremesso primeiro, como no modelo, depois os poderes.
+  static List ataquesOfensiva() {
+    // Efeitos Ofensivos: junta os de Perto (+ Desarmado) e a Distância (+ Arremesso)
+    List poderes = [];
+    poderes.addAll(personagem.pericias.returnOfensiveEfeitos(1));
+    poderes.addAll(personagem.pericias.returnOfensiveEfeitos(2));
+
+    List nativos = poderes
+        .where((p) => p["noPower"] == true)
+        .where((p) => p["idCriacao"] != "F1" || personagem.incluirDesarmado)
+        .toList()
+      ..sort((a, b) => a["idCriacao"] == "F1" ? -1 : 1);
+    List outros = poderes.where((p) => p["noPower"] != true).toList();
+    return [...nativos, ...outros];
   }
 
   static Future<pw.Widget> _blocoAtaque(Map p, int luta, int destreza,

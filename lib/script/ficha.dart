@@ -95,52 +95,63 @@ class ValidaNpPersonagem {
       objectEfeito.carregaMapa(p);
       int dano = danoTotal(p, objectEfeito.returnGraduacao());
 
-      // Validação de Erro
-      if (bonusVantagem + objectEfeito.totalBonusAcerto() + dano > 2 * np) {
-        // Limite Estourado
-        logEfeitos.add({
-          "tipo": "E",
-          "nome": objectEfeito.nome.isNotEmpty
-              ? objectEfeito.nome
-              : objectEfeito.returnObjDefault()["efeito"],
-          "msg":
-              "${objectEfeito.nome.isNotEmpty ? objectEfeito.nome : objectEfeito.returnObjDefault()["efeito"]}, se econtram com ${bonusVantagem + objectEfeito.totalBonusAcerto() + dano - (np * 2)} pontos fora do limite",
-          "id": [objectEfeito.returnObjDefault()["efeito"]]
-        });
-      }
-      // Considera os limites de 50% de troca
-      else if (bonusVantagem + objectEfeito.totalBonusAcerto() > np * 1.5 ||
-          dano > np * 1.5) {
-        // Limite Estourado
-        logEfeitos.add({
-          "tipo": "E",
-          "nome": objectEfeito.nome,
-          "msg": "${objectEfeito.nome}, passa do limite de troca 50% NP",
-          "id": [objectEfeito.returnObjDefault()["efeito"]]
-        });
-      }
+      String nome = objectEfeito.nome.isNotEmpty
+          ? objectEfeito.nome
+          : objectEfeito.returnObjDefault()["efeito"];
+      logEfeitos.addAll(_limiteAtaque(nome,
+          bonusVantagem + objectEfeito.totalBonusAcerto(), dano,
+          objectEfeito.returnObjDefault()["efeito"]));
+    }
+
+    // Ataque desarmado incluído no menu Ofensiva: acerto Luta + Ataque
+    // Corpo-a-Corpo, dano Força
+    if (personagem.incluirDesarmado) {
+      objectHabilidade.initObject(
+          personagem.habilidades.listHab.firstWhere((e) => e["id"] == "FOR"));
+      logEfeitos.addAll(_limiteAtaque("Desarmado", luta + vantagemCorpoACorpo,
+          objectHabilidade.valorTotal(), "Desarmado"));
     }
 
     return logEfeitos;
   }
 
+  /// Limite de NP de um ataque: acerto + dano <= 2 x NP e, na troca,
+  /// nenhum dos dois acima de 1,5 x NP.
+  List _limiteAtaque(String nome, int acerto, int dano, String id) {
+    if (acerto + dano > 2 * np) {
+      return [
+        {
+          "tipo": "E",
+          "nome": nome,
+          "msg": "$nome, se econtram com ${acerto + dano - (np * 2)} pontos fora do limite",
+          "id": [id]
+        }
+      ];
+    }
+    if (acerto > np * 1.5 || dano > np * 1.5) {
+      return [
+        {
+          "tipo": "E",
+          "nome": nome,
+          "msg": "$nome, passa do limite de troca 50% NP",
+          "id": [id]
+        }
+      ];
+    }
+    return [];
+  }
+
   /// Dano usado no limite de NP (acerto + dano <= 2 x NP).
   /// Mover Objetos (E026): graduação do efeito + graduações do extra
-  /// "Arma Improvisada ou Maestria em Arremesso" (ED001) + graduações das
-  /// vantagens Armas Improvisadas (V007) e Maestria em Arremesso (V060).
+  /// "Arma Improvisada ou Maestria em Arremesso" (ED001). As vantagens
+  /// Armas Improvisadas e Maestria em Arremesso não somam aqui: valem para
+  /// armas improvisadas corpo a corpo e armas arremessadas (wiki Vantagens).
   /// Demais efeitos: a graduação.
   static int danoTotal(Map efeito, int graduacao) {
     if (efeito["e_id"] != "E026") return graduacao;
     int dano = graduacao;
     for (Map m in efeito["modificadores"] ?? []) {
       if (m["m_id"] == "ED001") dano += (m["grad"] ?? 1) as int;
-    }
-    for (Map v in personagem.vantagens.listaVantagens) {
-      if (v["id"] == "V007" || v["id"] == "V060") {
-        Vantagem vantagem = Vantagem();
-        vantagem.init(v);
-        dano += vantagem.returnTotalGrad();
-      }
     }
     return dano;
   }
@@ -1212,6 +1223,9 @@ class Ficha {
   ManipulaVantagens vantagens = ManipulaVantagens();
   List complicacoes = [];
 
+  // Menu Ofensiva: ataque desarmado (Força) na Ofensiva do PDF e no limite de NP
+  bool incluirDesarmado = true;
+
   IntercambioModular validador = IntercambioModular();
 
   // Pontos de poder recebidos por nível de poder
@@ -1290,6 +1304,8 @@ class Ficha {
     vantagens.reInit(jsonReInit["vantagens"]);
 
     complicacoes = jsonReInit["complicacoes"].toList();
+    // Ausente em fichas antigas: o PDF continua trazendo o desarmado
+    incluirDesarmado = jsonReInit["ofensiva"]?["desarmado"] ?? true;
 
     // Bônus de efeitos que estavam desligados passam a valer
     if (identical(personagem, this) && poderes.ativarBonusInativos()) {
@@ -1311,6 +1327,7 @@ class Ficha {
       "pericias": pericias.ListaPercias,
       "vantagens": vantagens.listaVantagens,
       "complicacoes": complicacoes,
+      "ofensiva": {"desarmado": incluirDesarmado},
     };
   }
 }

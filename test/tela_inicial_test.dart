@@ -41,6 +41,7 @@ void main() {
       (tester) async {
     personagem.np = 1;
     personagem.habilidades.getItem("FOR")["valor"] = 10; // 20 > 15
+    personagem.incluirDesarmado = false; // só o alerta de pontos
 
     await tester.pumpWidget(FabricaHerois());
     await tester.pump();
@@ -75,6 +76,8 @@ void main() {
         of: find.byType(Drawer), matching: find.byType(Scrollable));
     await tester.scrollUntilVisible(find.text('Nova ficha'), 100,
         scrollable: rolagem);
+    await tester.ensureVisible(find.text('Nova ficha'));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Nova ficha'));
     await tester.pumpAndSettle();
 
@@ -87,6 +90,8 @@ void main() {
     await tester.pumpAndSettle();
     await tester.scrollUntilVisible(find.text('Nova ficha'), 100,
         scrollable: rolagem);
+    await tester.ensureVisible(find.text('Nova ficha'));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Nova ficha'));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Apagar e começar'));
