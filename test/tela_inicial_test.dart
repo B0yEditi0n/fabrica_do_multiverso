@@ -42,6 +42,7 @@ void main() {
     personagem.np = 1;
     personagem.habilidades.getItem("FOR")["valor"] = 10; // 20 > 15
     personagem.incluirDesarmado = false; // só o alerta de pontos
+    personagem.incluirArremesso = false;
 
     await tester.pumpWidget(FabricaHerois());
     await tester.pump();

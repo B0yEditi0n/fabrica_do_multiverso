@@ -193,3 +193,23 @@ Pendências:
 - O limite de NP de Mover Objetos usa a vantagem Armas Improvisadas (V007), como pedido. Maestria em Arremesso (V060) não entra na soma, e no catálogo da Fábrica ela não é graduada.
 - Fácil depende, na prática, de Estendido, mas a wiki não exige isso; não há validação.
 - A cópia fica só na memória e some ao fechar o aplicativo.
+
+## 10. Atualização de 2026-11-19
+
+Lote "arremesso opcional + Perigoso e margem de crítico" (ticket 2 da `SPEC_VANTAGENS_EQUIPAMENTOS_CONVERSOR.md`), sobre a base 38c2cd7. Os commits c7409c1 (limites oficiais de graduação), 8929cd8 (Maestria em Arremesso graduada) e 38c2cd7 (menu Ofensiva com desarmado opcional) vieram antes desta seção e não tinham registro aqui; com eles, a pendência da seção 9 sobre Maestria em Arremesso não graduada deixou de valer.
+
+| Área | O que mudou | Arquivos |
+|---|---|---|
+| Ofensiva (motor) | Lista única de ataques e linhas prontas (acerto, efeito, CD, ameaça e texto do crítico) saíram do PDF para o motor; o PDF e a tela só formatam. Resumo no formato `Garras +12 (Dano 8, CD 23, Crítico 18-20)`. | `lib/script/ofensiva/lib_ofensiva.dart` (novo), `lib/screens/components/printer.dart` |
+| Arremesso opcional | Opção `ofensiva.arremesso`, independente do desarmado; ausente vale ligada. Incluído, entra no PDF e no limite de NP (acerto Destreza + Ataque à Distância, dano Força). Nome corrigido de "Arremeço" para "Arremesso" (id F2 mantido). | `lib/script/ficha.dart`, `lib/screens/ofensiva/ScreenOfensiva.dart` |
+| Margem de crítico | Modificador Perigoso (E065, extra fixo de 1 PP por graduação, até 4, só ofensivos). Cálculo único em `EfeitoOfensivo.melhoriaCritico/ameacaCritico/textoCritico`: Perigoso e Crítico Aprimorado somam; soma acima de 4 gera erro de validação. Removidos `_critico`, `getCritico()` (o `int.parse` sobre lista apontado na seção 6) e `defineCritic()`; a chave `critico` deixou de ser gravada (nunca era lida). | `assets/poderes/modificadores.json`, `lib/script/poderes/lib_efeitos.dart`, `lib/script/ficha.dart` |
+| Tela | Menu Ofensiva com o botão "Incluir arremesso na ofensiva" e os ataques mostrados pelo resumo do motor. | `lib/screens/ofensiva/ScreenOfensiva.dart` |
+
+Testes: `test/ofensiva_test.dart` ganhou 13 casos (arremesso no PDF, no limite de NP e na persistência; Perigoso 1→4; soma com Crítico Aprimorado; erro acima de 4; resumo; chave legada; dois widget tests do menu). `test/catalogo_pdf_test.dart` ganhou o caso do Perigoso e o PDF completo passou a ter um poder Perigoso. `test/tela_inicial_test.dart` desliga também o arremesso para isolar o alerta de pontos. Suíte completa: 132 testes aprovados (base 119). `flutter analyze`: 0 errors, 41 warnings, 64 infos (igual à base).
+
+Pendências:
+
+- O vínculo do Crítico Aprimorado a um ataque é o ticket 3; até lá as linhas usam 0 graduações da vantagem.
+- Fichas antigas com Força alta passam a mostrar alerta de NP do arremesso (comportamento pedido pela spec).
+- Maestria em Arremesso ainda não soma no dano da linha Arremesso (spec: entra com as linhas de armas).
+- `(m["grad"] ?? 1) as int` em `melhoriaCritico` quebra se a graduação vier como double; mesmo padrão de `danoTotal`.

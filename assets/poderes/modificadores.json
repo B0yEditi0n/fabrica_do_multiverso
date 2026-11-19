@@ -451,6 +451,15 @@
             "custo_base": -1,
             "limite": 10,
             "desc": false
+        },
+
+        {
+            "m_id": "E065",
+            "nome": "Perigoso",
+            "fixo": true,
+            "custo_base": 1,
+            "limite": 4,
+            "desc": false
         }
     ],
     

@@ -101,15 +101,35 @@ class ValidaNpPersonagem {
       logEfeitos.addAll(_limiteAtaque(nome,
           bonusVantagem + objectEfeito.totalBonusAcerto(), dano,
           objectEfeito.returnObjDefault()["efeito"]));
+
+      // Perigoso + Crítico Aprimorado: no máximo 4 (16-20)
+      int melhoria = EfeitoOfensivo.melhoriaCritico(p);
+      if (melhoria > EfeitoOfensivo.limiteMelhoriaCritico) {
+        logEfeitos.add({
+          "tipo": "E",
+          "nome": nome,
+          "msg": "$nome, margem de crítico com $melhoria graduações; "
+              "o máximo é ${EfeitoOfensivo.limiteMelhoriaCritico} (16-20)",
+          "id": [objectEfeito.returnObjDefault()["efeito"]]
+        });
+      }
     }
 
     // Ataque desarmado incluído no menu Ofensiva: acerto Luta + Ataque
     // Corpo-a-Corpo, dano Força
+    objectHabilidade.initObject(
+        personagem.habilidades.listHab.firstWhere((e) => e["id"] == "FOR"));
+    int forca = objectHabilidade.valorTotal();
     if (personagem.incluirDesarmado) {
-      objectHabilidade.initObject(
-          personagem.habilidades.listHab.firstWhere((e) => e["id"] == "FOR"));
-      logEfeitos.addAll(_limiteAtaque("Desarmado", luta + vantagemCorpoACorpo,
-          objectHabilidade.valorTotal(), "Desarmado"));
+      logEfeitos.addAll(_limiteAtaque(
+          "Desarmado", luta + vantagemCorpoACorpo, forca, "Desarmado"));
+    }
+
+    // Arremesso incluído no menu Ofensiva: acerto Destreza + Ataque à
+    // Distância, dano Força
+    if (personagem.incluirArremesso) {
+      logEfeitos.addAll(_limiteAtaque(
+          "Arremesso", destreza + vantagemADistancia, forca, "Arremesso"));
     }
 
     return logEfeitos;
@@ -1191,10 +1211,10 @@ class ManipulaPericias {
       });
     }
 
-    // Adicona Aremeço (a Distância)
+    // Adiciona Arremesso (a Distância)
     if (distancia == 2) {
       poderesFilter.add({
-        "nome": "Arremeço",
+        "nome": "Arremesso",
         "noPower": true,
         "efeito": "Força",
         "idCriacao": "F2"
@@ -1225,6 +1245,8 @@ class Ficha {
 
   // Menu Ofensiva: ataque desarmado (Força) na Ofensiva do PDF e no limite de NP
   bool incluirDesarmado = true;
+  // Menu Ofensiva: arremesso (Destreza, dano Força), independente do desarmado
+  bool incluirArremesso = true;
 
   IntercambioModular validador = IntercambioModular();
 
@@ -1306,6 +1328,8 @@ class Ficha {
     complicacoes = jsonReInit["complicacoes"].toList();
     // Ausente em fichas antigas: o PDF continua trazendo o desarmado
     incluirDesarmado = jsonReInit["ofensiva"]?["desarmado"] ?? true;
+    // Ausente em fichas antigas (ou salvas antes da opção): arremesso incluído
+    incluirArremesso = jsonReInit["ofensiva"]?["arremesso"] ?? true;
 
     // Bônus de efeitos que estavam desligados passam a valer
     if (identical(personagem, this) && poderes.ativarBonusInativos()) {
@@ -1327,7 +1351,10 @@ class Ficha {
       "pericias": pericias.ListaPercias,
       "vantagens": vantagens.listaVantagens,
       "complicacoes": complicacoes,
-      "ofensiva": {"desarmado": incluirDesarmado},
+      "ofensiva": {
+        "desarmado": incluirDesarmado,
+        "arremesso": incluirArremesso,
+      },
     };
   }
 }

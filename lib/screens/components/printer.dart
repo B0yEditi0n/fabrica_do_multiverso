@@ -10,10 +10,10 @@
 //   Habilidades e Defesas têm moldura com cantos arredondados, cabeçalho
 //   azul e células escuras; a letra é Arial (aqui Helvetica).
 import 'package:fabrica_do_multiverso/script/ficha.dart';
+import 'package:fabrica_do_multiverso/script/ofensiva/lib_ofensiva.dart';
 import 'package:fabrica_do_multiverso/script/pericias/lib_pericias.dart';
 import 'package:fabrica_do_multiverso/script/vantagens/lib_vantagens.dart';
 import 'package:fabrica_do_multiverso/script/habilidades/lib_habilidades.dart';
-import 'package:fabrica_do_multiverso/script/poderes/lib_efeitos.dart';
 import 'package:fabrica_do_multiverso/script/poderes/lib_custos.dart';
 
 // Criação de PDFs
@@ -283,45 +283,14 @@ class Printer {
 
   //
   // Ofensiva - iniciativa e uma entrada por ataque:
-  //   Nome: Acerto +11 | Dano 11
+  //   Nome: Acerto +11 | Dano 11 | Crítico 18-20
   //   CD: 26 Resistência
-  // (mesma regra de bônus usada em ValidaNpPersonagem._efeitos())
+  // As linhas vêm do motor (Ofensiva.linhas); aqui só se desenha.
   //
   static Future<pw.Widget> ofensiva() async {
-    List<pw.Widget> itens = [];
-
-    Habilidade objectHabilidade = Habilidade();
-    objectHabilidade.initObject(personagem.habilidades.getItem("LUT"));
-    int luta = objectHabilidade.valorTotal();
-
-    objectHabilidade.initObject(personagem.habilidades.getItem("DES"));
-    int destreza = objectHabilidade.valorTotal();
-
-    objectHabilidade.initObject(personagem.habilidades.getItem("FOR"));
-    int forca = objectHabilidade.valorTotal();
-
-    // Bônus de Vantagens (Ataque Corpo a Corpo / a Distância)
-    List vantagens = personagem.vantagens.listaVantagens;
-    Vantagem objectVantagem = Vantagem();
-
-    int vantagemCorpoACorpo = 0;
-    if (vantagens.any((e) => e["id"] == "V013")) {
-      objectVantagem.init(vantagens.firstWhere((v) => v["id"] == "V013"));
-      vantagemCorpoACorpo = objectVantagem.returnTotalGrad();
-    }
-
-    int vantagemADistancia = 0;
-    if (vantagens.any((e) => e["id"] == "V011")) {
-      objectVantagem.init(vantagens.firstWhere((v) => v["id"] == "V011"));
-      vantagemADistancia = objectVantagem.returnTotalGrad();
-    }
-
-    List poderes = ataquesOfensiva();
-
-    for (int i = 0; i < poderes.length; i++) {
-      itens.add(await _blocoAtaque(poderes[i], luta, destreza, forca,
-          vantagemCorpoACorpo, vantagemADistancia));
-    }
+    List<pw.Widget> itens = [
+      for (Map linha in Ofensiva.linhas()) _blocoAtaque(linha)
+    ];
 
     return pw.Column(
       crossAxisAlignment: pw.CrossAxisAlignment.start,
@@ -339,92 +308,30 @@ class Printer {
     );
   }
 
-  /// Ataques listados na Ofensiva: Desarmado (se incluído no menu
-  /// Ofensiva) e Arremesso primeiro, como no modelo, depois os poderes.
-  static List ataquesOfensiva() {
-    // Efeitos Ofensivos: junta os de Perto (+ Desarmado) e a Distância (+ Arremesso)
-    List poderes = [];
-    poderes.addAll(personagem.pericias.returnOfensiveEfeitos(1));
-    poderes.addAll(personagem.pericias.returnOfensiveEfeitos(2));
+  /// Ataques listados na Ofensiva (lista única, no motor).
+  static List ataquesOfensiva() => Ofensiva.ataques();
 
-    List nativos = poderes
-        .where((p) => p["noPower"] == true)
-        .where((p) => p["idCriacao"] != "F1" || personagem.incluirDesarmado)
-        .toList()
-      ..sort((a, b) => a["idCriacao"] == "F1" ? -1 : 1);
-    List outros = poderes.where((p) => p["noPower"] != true).toList();
-    return [...nativos, ...outros];
+  /// Primeira linha do ataque no PDF: "Acerto +12 | Dano 8 | Crítico 18-20"
+  static String textoAtaque(Map linha) {
+    String acerto =
+        linha["acerto"] == null ? 'Automático' : comSinal(linha["acerto"]);
+    return [
+      'Acerto $acerto',
+      "${linha["efeito"]}",
+      if ("${linha["critico"]}".isNotEmpty) "${linha["critico"]}",
+    ].join(' | ');
   }
 
-  static Future<pw.Widget> _blocoAtaque(Map p, int luta, int destreza,
-      int forca, int vantagemCorpoACorpo, int vantagemADistancia) async {
-    String nome;
-    String strAcerto;
-    String efeito;
-    String cdValor = '';
-
-    // Ataques "genéricos" que não vem de um poder cadastrado (Desarmado / Arremesso)
-    if (p["noPower"] == true) {
-      bool ePerto = p["idCriacao"] == "F1";
-      int bonusAcerto =
-          ePerto ? luta + vantagemCorpoACorpo : destreza + vantagemADistancia;
-
-      nome = p["nome"];
-      strAcerto = comSinal(bonusAcerto);
-      efeito = 'Dano $forca';
-      cdValor = '${forca + 15} Resistência';
-    } else {
-      // Instancia o efeito real de acordo com a classe salva no Map
-      Efeito objectEfeito = await Efeito.init(p);
-      Map objEfeitoJson = objectEfeito.retornaObj();
-
-      int alcance = p["alcance"] ?? objEfeitoJson["alcance"];
-      int totalAcerto = alcance == 1
-          ? luta + vantagemCorpoACorpo
-          : alcance == 2
-              ? destreza + vantagemADistancia
-              : 0;
-      if (objectEfeito is EfeitoOfensivo) {
-        totalAcerto += objectEfeito.totalBonusAcerto();
-      }
-
-      nome = objectEfeito.nome.isNotEmpty
-          ? objectEfeito.nome
-          : "${objEfeitoJson["efeito"]}";
-      strAcerto = alcance == 3 ? 'Automático' : comSinal(totalAcerto);
-      efeito = '${objEfeitoJson["efeito"]} ${objEfeitoJson["graduacao"]}';
-
-      // A ficha só sabe qual defesa resiste ao Dano (Resistência).
-      // Para os demais efeitos o PDF mostra apenas o valor da CD.
-      if (objEfeitoJson["cd"] != null) {
-        cdValor = '${objEfeitoJson["cd"]}';
-        if (objEfeitoJson["class"] == "EfeitoDano") {
-          cdValor += ' Resistência';
-        }
-      }
-
-      if (objEfeitoJson["class"] == "EfeitoAflicao" &&
-          objEfeitoJson["condicoes"] != null) {
-        List condicoes = (objEfeitoJson["condicoes"] as List)
-            .where((c) => c != null && c.toString().isNotEmpty)
-            .toList();
-        if (condicoes.isNotEmpty) {
-          cdValor += ' (${condicoes.join(', ')})';
-        }
-      }
-
-      if (objEfeitoJson["critico"] != null && objEfeitoJson["critico"] > 0) {
-        cdValor +=
-            ' Crítico (${20 - (objEfeitoJson["critico"] as int)}-20)';
-      }
-    }
+  static pw.Widget _blocoAtaque(Map linha) {
+    String nome = "${linha["nome"]}";
+    String cdValor = "${linha["cdTexto"]}";
 
     return pw.Padding(
       padding: const pw.EdgeInsets.only(bottom: 6),
       child: pw.RichText(
         text: pw.TextSpan(children: [
           pw.TextSpan(text: '$nome: ', style: negrito),
-          pw.TextSpan(text: 'Acerto $strAcerto | $efeito'),
+          pw.TextSpan(text: textoAtaque(linha)),
           if (cdValor.isNotEmpty) pw.TextSpan(text: '\nCD: ', style: negrito),
           if (cdValor.isNotEmpty) pw.TextSpan(text: cdValor.trim()),
         ]),

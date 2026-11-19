@@ -1,6 +1,6 @@
 # Matriz de cobertura — repertório de regras × aplicativo
 
-Fase 2 do guia de desenvolvimento. Data: 2026-11-16. Atualizada em 2026-11-17 (importação do Poder Supremo, arranjos sem efeito ativo, custo dinâmico por efeito, Imunidade/Movimento, PDF e interface para celular).
+Fase 2 do guia de desenvolvimento. Data: 2026-11-16. Atualizada em 2026-11-19 (importação do Poder Supremo, arranjos sem efeito ativo, custo dinâmico por efeito, Imunidade/Movimento, PDF e interface para celular; arremesso opcional, modificador Perigoso e margem de crítico na Ofensiva e no PDF).
 
 Repertório de referência: `React-Mutants-Masterminds-Character-Sheet` (`docs/rules/mm3-effects.md` e os enums em `packages/core/src/model/enums/`). O repositório React também contém material da 4ª edição e de suplementos; aqui só conta o que é da 3ª edição.
 
@@ -11,7 +11,7 @@ Legenda: **OK** implementado; **Parcial** existe com lacuna; **Ausente** não ex
 | Catálogo | Referência | No aplicativo | Situação |
 |---|---|---|---|
 | Efeitos-base | 40 | 40 | Todos presentes por nome; 27 com lacunas de opções ou modificadores próprios |
-| Modificadores genéricos | cerca de 65 | 57 | Catálogo completo; os que não aparecem como item são opções do efeito ou do pacote (seção 3.1) |
+| Modificadores genéricos | cerca de 65 | 58 | Catálogo completo (Perigoso incluído em 2026-11-19); os que não aparecem como item são opções do efeito ou do pacote (seção 3.1) |
 | Modificadores próprios de efeito | cerca de 125 | Impenetrável + 14 (Mover Objetos 4, Teleporte 10) | Parcial |
 | Vantagens | 95 identificadores | 88 entradas | Catálogo completo (Velocidade do Pensamento incluída, duplicadas removidas); subtipos continuam como uma entrada com descrição |
 | Perícias | 16 | 13 fixas + 3 adicionáveis | OK |
@@ -119,7 +119,7 @@ A referência tem cerca de 125 modificadores próprios, distribuídos por 25 efe
 | Vantagens | Parcial | Catálogo completo: Velocidade do Pensamento incluída (V090), duplicadas V015 e V017 removidas, descrição pedida em Oponente Favorito, Tontear e Parceiro. Benefício, Ataque Preciso e Tontear continuam como uma entrada com descrição. Não é possível comprar a mesma vantagem duas vezes com descrições diferentes |
 | Equipamento | OK | 5 pontos de equipamento por graduação, com validação |
 | Idiomas | Parcial | Sem a progressão de idiomas por graduação |
-| Bônus de vantagens na ficha | Parcial | Ataque Corpo-a-Corpo, Ataque à Distância, Rolamento Defensivo, Iniciativa Aprimorada e Velocidade do Pensamento entram nas contas (`Ficha.iniciativa`). Falta Crítico Aprimorado |
+| Bônus de vantagens na ficha | Parcial | Ataque Corpo-a-Corpo, Ataque à Distância, Rolamento Defensivo, Iniciativa Aprimorada e Velocidade do Pensamento entram nas contas (`Ficha.iniciativa`). Margem de crítico calculada (Perigoso; o Crítico Aprimorado entra quando for ligado a um ataque, ticket 3) |
 | Perícias | OK | Campo `treinado` não é usado |
 | Habilidades | OK | — |
 | Defesas | Parcial | Sem marcar imunidade pela tela |

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:fabrica_do_multiverso/script/ficha.dart';
-import 'package:fabrica_do_multiverso/screens/components/printer.dart';
+import 'package:fabrica_do_multiverso/script/ofensiva/lib_ofensiva.dart';
 
 /// Menu Ofensiva: escolhe o que entra na Ofensiva da ficha (PDF).
 class ScreenOfensiva extends StatefulWidget {
@@ -13,7 +13,8 @@ class ScreenOfensiva extends StatefulWidget {
 class _ScreenOfensivaState extends State<ScreenOfensiva> {
   @override
   Widget build(BuildContext context) {
-    List ataques = Printer.ataquesOfensiva();
+    // Linhas prontas do motor (acerto, efeito, CD e margem de crítico)
+    List<Map> linhas = Ofensiva.linhas();
 
     return Scaffold(
       appBar: AppBar(
@@ -38,19 +39,25 @@ class _ScreenOfensivaState extends State<ScreenOfensiva> {
                   onChanged: (valor) =>
                       setState(() => personagem.incluirDesarmado = valor),
                 ),
+                SwitchListTile(
+                  title: const Text('Incluir arremesso na ofensiva'),
+                  subtitle: const Text(
+                      'Arremesso com Força no PDF e no limite de NP'),
+                  value: personagem.incluirArremesso,
+                  onChanged: (valor) =>
+                      setState(() => personagem.incluirArremesso = valor),
+                ),
                 const Divider(),
                 const Padding(
                   padding: EdgeInsets.symmetric(vertical: 8),
                   child: Text('Ataques na ficha',
                       style: TextStyle(fontWeight: FontWeight.w800)),
                 ),
-                for (Map ataque in ataques)
+                // Resumo: "Garras +12 (Dano 8, CD 23, Crítico 18-20)"
+                for (Map linha in linhas)
                   Card(
                     child: ListTile(
-                      title: Text("${ataque["nome"]}"),
-                      subtitle: Text(ataque["noPower"] == true
-                          ? 'Ataque com Força'
-                          : "${ataque["efeito"] ?? ''}"),
+                      title: Text(Ofensiva.resumo(linha)),
                     ),
                   ),
               ],

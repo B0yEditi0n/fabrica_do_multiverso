@@ -692,7 +692,6 @@ class EfeitoCustoVaria extends EfeitoEscolha{
 //# classe Ofensiva
 class EfeitoOfensivo extends Efeito{
   int _bonusAcerto = 0;
-  int _critico = 0;
   // Bonus de Efeito vindo de outros lugares
   List bonus = [];
   // Implementação dos Construtores para os atributos adicionais
@@ -725,19 +724,31 @@ class EfeitoOfensivo extends Efeito{
     return _bonusAcerto + bonusTotal;
   }
 
-  int getCritico(){
-    /*
-      contabiliza o critico total 
-    */
-    int bCritico = int.parse("${bonus.where((b) => b["alvo"] == "critico")}");
-    return bCritico + _critico;
+  //; Margem de crítico — cálculo único usado pela Ofensiva, pelo PDF e
+  //; pelo validador. Perigoso (E065) e Crítico Aprimorado ligado ao ataque
+  //; somam +1 de ameaça por graduação; a soma vai até 4 (16-20) e acima
+  //; disso é erro de validação (wiki Poderes/Armas.md e Vantagens.md).
+  static const String idPerigoso = "E065";
+  static const int limiteMelhoriaCritico = 4;
+
+  /// Graduações de melhoria de crítico do ataque: Perigoso do poder +
+  /// Crítico Aprimorado ligado a ele (ticket 3; hoje sempre 0).
+  static int melhoriaCritico(Map poder, {int graduacoesVantagem = 0}){
+    int total = graduacoesVantagem;
+    for(Map m in poder["modificadores"] ?? []){
+      if(m["m_id"] == idPerigoso) total += (m["grad"] ?? 1) as int;
+    }
+    return total;
   }
-  
-  void defineCritic(int crit){ 
-    // checa se ah bonus na lista
-    if(getCritico() + crit <= 4){
-      _critico = crit;
-    }    
+
+  /// Menor resultado do d20 que ameaça crítico (20 = sem melhoria).
+  static int ameacaCritico(Map poder, {int graduacoesVantagem = 0}){
+    return 20 - melhoriaCritico(poder, graduacoesVantagem: graduacoesVantagem);
+  }
+
+  /// "Crítico 18-20"; vazio quando não há melhoria.
+  static String textoCritico(int ameaca){
+    return ameaca < 20 ? "Crítico $ameaca-20" : "";
   }
 
   @override
@@ -819,7 +830,6 @@ class EfeitoOfensivo extends Efeito{
     Map<String, dynamic> objReturn = super.retornaObj();
 
     objReturn["bonus"] = bonus;
-    objReturn["critico"] = _critico;
     objReturn["acerto"] = _bonusAcerto;
     objReturn["cd"] = (_graduacao + 10);
     objReturn["custo"] = custearAlteracoes();

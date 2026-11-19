@@ -140,6 +140,24 @@ void main() {
       expect(Efeito.limiteModificador({"limite": -1}, 7), 7);
       expect(Efeito.limiteModificador({"limite": -1}, 0), 1);
     });
+
+    // Perigoso: +1 de margem de crítico por graduação, 1 PP cada, até 4
+    // (wiki Poderes/Armas.md; teto 16-20 em Vantagens.md, Crítico Aprimorado)
+    test('Perigoso: extra fixo de 1 PP por graduação, até 4, só para ofensivos',
+        () async {
+      EfeitoDano e = await dano(10);
+      e.addModificador(mod('Perigoso', 3));
+      expect(e.custearAlteracoes(), 13);
+
+      expect(mod('Perigoso')["m_id"], 'E065');
+      expect(Efeito.limiteModificador(mod('Perigoso'), 10), 4);
+      expect((catalogoMods()["ofensivos"] as List)
+          .any((m) => m["nome"] == 'Perigoso'), isTrue);
+      for (String grupo in ['gerais', 'pessoais']) {
+        expect((catalogoMods()[grupo] as List)
+            .any((m) => m["nome"] == 'Perigoso'), isFalse);
+      }
+    });
   });
 
   group('Catálogo de vantagens', () {
@@ -243,8 +261,10 @@ void main() {
       raio.addModificador(mod('Área')..["text_desc"] = 'Explosão');
       Map a = raio.retornaObj();
       Map b = (await dano(4)).retornaObj();
+      EfeitoDano perigoso = await dano(8);
+      perigoso.addModificador(mod('Perigoso', 2));
       personagem.poderes.poderesLista
-        ..add((await dano(8)).retornaObj())
+        ..add(perigoso.retornaObj())
         ..add({
           "nome": "Controle de Energia",
           "efeito": "Pacote",
