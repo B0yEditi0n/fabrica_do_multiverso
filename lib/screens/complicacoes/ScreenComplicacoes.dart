@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fabrica_do_multiverso/screens/components/abrir_popup.dart';
 
 // Instancia de Poderes
 import 'package:fabrica_do_multiverso/script/ficha.dart';
@@ -73,15 +74,16 @@ class _ScreenComplicacoesState extends State<ScreenComplicacoes> {
                   editComplicacoes = personagem.complicacoes;
                 });
               }
-              complicacaoObj = {};
-              complicacaoObj = await Navigator.push(
+              Map<String, String>? editada = await abrirPopup<Map<String, String>>(
                 context,
-                MaterialPageRoute(builder: (context) => PopUpAddComplicacao(
-                  title: editComplicacoes[index]["titulo"].toString(), 
+                PopUpAddComplicacao(
+                  title: editComplicacoes[index]["titulo"].toString(),
                   desc: editComplicacoes[index]["desc"].toString()
-                )),
+                ),
               );
-              personagem.complicacoes[index] = complicacaoObj;   
+              // Cancelar ou voltar do sistema devolve null: mantém a complicação
+              if(editada == null) return;
+              personagem.complicacoes[index] = editada;   
               atualizarValores();
             },
             );
@@ -97,11 +99,10 @@ class _ScreenComplicacoesState extends State<ScreenComplicacoes> {
           // Ação e PopUP
           onPressed: () async => {
             complicacaoObj = {},
-            complicacaoObj = await Navigator.push(
+            complicacaoObj = await abrirPopup<Map<String, String>>(
               context,
-              MaterialPageRoute(builder: (context) => PopUpAddComplicacao(title: "", desc: ""),
-              )
-            ),
+              PopUpAddComplicacao(title: "", desc: ""),
+            ) ?? {},
             //! Atualiza a Lista de poderes
             if(complicacaoObj.isNotEmpty){
               personagem.complicacoes.add(complicacaoObj),
@@ -150,9 +151,8 @@ class _PopUpAddComplicacaoState extends State<PopUpAddComplicacao> {
 
   @override
   Widget build(BuildContext context) {
-    return ConstrainedBox(
-      constraints: const BoxConstraints(maxHeight: 1200),
-      child: AlertDialog(
+    // Tamanho e centralização vêm de abrirPopup
+    return AlertDialog(
         title: const Text('Complicação'),
         content: SingleChildScrollView(
           child: 
@@ -188,6 +188,10 @@ class _PopUpAddComplicacaoState extends State<PopUpAddComplicacao> {
           actions: [
             //? Botões de cancelar e adicionar
             TextButton(
+              child: const Text('Cancelar'),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+            TextButton(
               child: const Text('Adicionar'),
               onPressed: () async{
                 //? Pont de Atenção
@@ -197,8 +201,7 @@ class _PopUpAddComplicacaoState extends State<PopUpAddComplicacao> {
               },
             ),
           ],
-        ),
-    );
+        );
   }
 }
 

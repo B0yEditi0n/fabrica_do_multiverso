@@ -13,6 +13,7 @@ import 'package:fabrica_do_multiverso/main.dart';
 import 'package:fabrica_do_multiverso/script/armazenamento.dart';
 import 'package:fabrica_do_multiverso/script/ficha.dart';
 import 'package:fabrica_do_multiverso/theme/theme.dart';
+import 'package:fabrica_do_multiverso/screens/components/abrir_popup.dart';
 import 'package:fabrica_do_multiverso/screens/components/save_option_component.dart';
 import 'package:fabrica_do_multiverso/screens/complicacoes/ScreenComplicacoes.dart';
 import 'package:fabrica_do_multiverso/screens/pericias/functions/addPericias.dart';
@@ -41,6 +42,22 @@ Future<void> assentar(WidgetTester tester) async {
 
 Widget embrulhar(Widget tela) => MaterialApp(theme: temaPadrao(), home: tela);
 
+/// Abre o popup como no app: por abrirPopup, sobre uma tela.
+Future<void> abrirComoPopup(WidgetTester tester, Widget popup) async {
+  await tester.pumpWidget(embrulhar(Builder(
+    builder: (context) => Scaffold(
+      body: Center(
+        child: TextButton(
+          child: const Text('abrir'),
+          onPressed: () => abrirPopup(context, popup),
+        ),
+      ),
+    ),
+  )));
+  await tester.tap(find.text('abrir'));
+  await assentar(tester);
+}
+
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
@@ -68,6 +85,8 @@ void main() {
     Armazenamento.pastaTeste = pasta;
     personagem = Ficha();
     await personagem.init();
+    // Leituras em cache de um teste anterior não completam no seguinte
+    rootBundle.clear();
   });
 
   tearDown(() async {
@@ -134,9 +153,7 @@ void main() {
     testWidgets('popups de inclusão cabem em $rotulo', (tester) async {
       await usarTela(tester, tamanho);
 
-      await tester.pumpWidget(
-          embrulhar(DynamicDialog(tipo: "", descNome: true)));
-      await assentar(tester);
+      await abrirComoPopup(tester, DynamicDialog(tipo: "", descNome: true));
       expect(tester.takeException(), isNull);
       // Ações do diálogo centralizadas: par simétrico em relação ao meio
       final double esquerda = tester.getRect(find.text('Adicionar')).left;
@@ -150,16 +167,19 @@ void main() {
               .height,
           greaterThanOrEqualTo(48));
 
-      await tester.pumpWidget(embrulhar(PopUpAddSkill(obj: const {})));
+      await tester.binding.handlePopRoute();
       await assentar(tester);
+      await abrirComoPopup(tester, PopUpAddSkill(obj: const {}));
       expect(tester.takeException(), isNull);
 
-      await tester.pumpWidget(
-          embrulhar(PopUpAddComplicacao(title: "", desc: "")));
+      await tester.binding.handlePopRoute();
       await assentar(tester);
+      await abrirComoPopup(tester, PopUpAddComplicacao(title: "", desc: ""));
       expect(tester.takeException(), isNull);
 
-      await tester.pumpWidget(embrulhar(PopUpAddVantagem(
+      await tester.binding.handlePopRoute();
+      await assentar(tester);
+      await abrirComoPopup(tester, PopUpAddVantagem(
         repertorioVantagens: [
           {
             "id": "V999",
@@ -170,8 +190,7 @@ void main() {
           }
         ],
         obj: const {},
-      )));
-      await assentar(tester);
+      ));
       expect(tester.takeException(), isNull);
     });
 

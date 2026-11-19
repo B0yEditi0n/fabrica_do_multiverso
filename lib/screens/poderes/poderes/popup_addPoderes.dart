@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fabrica_do_multiverso/screens/components/dropdown_com_busca.dart';
 import 'package:flutter/services.dart'; 
 import 'dart:convert';
 
@@ -82,6 +83,9 @@ class _DynamicDialogState extends State<DynamicDialog> {
       }
     }
 
+    // O popup pode ter sido fechado durante a leitura
+    if(!mounted) return;
+
     // Converte o JSON em objetos
     setState(() {
       Map efeito = {};
@@ -89,8 +93,11 @@ class _DynamicDialogState extends State<DynamicDialog> {
         efeitos.add(efeito);
       }
 
-      efeitoSelecionado = efeitos.first["e_id"];
-      objEfeito = efeitos.first;
+      // Lista vazia: o seletor fica desabilitado
+      if(efeitos.isNotEmpty){
+        efeitoSelecionado = efeitos.first["e_id"];
+        objEfeito = efeitos.first;
+      }
     });
   }
 
@@ -113,30 +120,20 @@ class _DynamicDialogState extends State<DynamicDialog> {
 
             const SizedBox(height: 15,),
 
-            DropdownButton<String>(
-              isExpanded: true,
-              itemHeight: 56,
-              value: efeitoSelecionado,
-              icon: const Icon(Icons.arrow_downward),
-              elevation: 16,
-              style: const TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
-              underline: Container(
-                height: 2,
-              ),
-              onChanged: (value) {
+            DropdownComBusca<String>(
+              opcoes: efeitos.map((value) => OpcaoDropdown<String>(
+                valor: value["e_id"].toString(),
+                rotulo: value["efeito"].toString(),
+              )).toList(),
+              valor: efeitoSelecionado.isEmpty ? null : efeitoSelecionado,
+              aoMudar: (value) {
                 setState(() {
-                  efeitoSelecionado = value!;
+                  efeitoSelecionado = value;
                   // Atualiza o selecionado
                   int index = efeitos.indexWhere((mod) => mod["e_id"] == efeitoSelecionado);
-                  objEfeito = efeitos[index];
+                  if(index >= 0) objEfeito = efeitos[index];
                 });
               },
-              items: efeitos.map<DropdownMenuItem<String>>((value) {
-                return DropdownMenuItem<String>(
-                  value: value["e_id"].toString(),
-                  child: Text(value["efeito"].toString()),
-                );
-              }).toList(),
             )
           ]
         )

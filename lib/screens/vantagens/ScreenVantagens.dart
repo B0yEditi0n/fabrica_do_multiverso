@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fabrica_do_multiverso/screens/components/abrir_popup.dart';
 import 'package:flutter/services.dart'; 
 // Bibliotecas
 import 'package:fabrica_do_multiverso/script/ficha.dart';
@@ -138,11 +139,10 @@ class _ScreenVantagensState extends State<ScreenVantagens> {
                     if(addVantagens[index]["desc"] 
                     || addVantagens[index]["graduado"]){
                       objVantagems = {};
-                      objVantagems = await Navigator.push(
+                      objVantagems = await abrirPopup<Map>(
                         context,
                         // Edita uma cópia: cancelar não altera a vantagem da ficha
-                        MaterialPageRoute(builder: (context) => PopUpAddVantagem(repertorioVantagens: vantagensDisponiveis, obj: Map.from(addVantagens[index])),
-                        )
+                        PopUpAddVantagem(repertorioVantagens: vantagensDisponiveis, obj: Map.from(addVantagens[index]))
                       ) ?? {};
                       
                       if(objVantagems.isNotEmpty){ 
@@ -174,10 +174,9 @@ class _ScreenVantagensState extends State<ScreenVantagens> {
         child: const Icon(Icons.add),
         onPressed: () async => {
           objVantagems = {},
-          objVantagems = await Navigator.push(
+          objVantagems = await abrirPopup<Map>(
             context,
-            MaterialPageRoute(builder: (context) => PopUpAddVantagem(repertorioVantagens: vantagensDisponiveis, obj: {}),
-            )
+            PopUpAddVantagem(repertorioVantagens: vantagensDisponiveis, obj: {})
           ) ?? {},
           if(objVantagems.isNotEmpty){ _addNewAdvantage(objVantagems) },
           setState((){

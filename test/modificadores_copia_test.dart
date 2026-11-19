@@ -230,4 +230,28 @@ void main() {
           colado["idCriacao"]);
     });
   });
+
+  group('Grupos de modificadores (busca)', () {
+    test(
+        'grupoModificador: custo negativo é falha, zero e positivo são extras, '
+        'próprios do efeito têm grupo próprio', () {
+      // Wiki Modificadores.md: "# Extras" (l.65), "# Falhas" (l.467);
+      // modificadores de +0 ficam em Extras.
+      expect(Efeito.grupoModificador({"nome": "Ativação", "custo_base": -1}),
+          "Falhas");
+      expect(Efeito.grupoModificador({"nome": "Sutil", "custo_base": 1}),
+          "Extras");
+      expect(
+          Efeito.grupoModificador(
+              {"nome": "Afeta Objetos Apenas", "custo_base": 0}),
+          "Extras");
+      expect(Efeito.grupoModificador({"nome": "Sem custo"}), "Extras");
+      expect(Efeito.grupoModificador({"nome": "Meio fracionário", "custo_base": -0.5}),
+          "Falhas");
+      expect(
+          Efeito.grupoModificador({"nome": "Dissipação", "custo_base": -1},
+              proprioDoEfeito: true),
+          "Próprios do efeito");
+    });
+  });
 }

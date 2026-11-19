@@ -3,6 +3,7 @@ import 'package:numberpicker/numberpicker.dart';
 
 import 'package:fabrica_do_multiverso/script/poderes/lib_efeitos.dart';
 import 'package:flutter/material.dart';
+import 'package:fabrica_do_multiverso/screens/components/dropdown_com_busca.dart';
 import 'package:flutter/services.dart'; 
 import 'dart:convert';
 
@@ -21,6 +22,7 @@ class AddModificadorSelecionador extends StatefulWidget {
 
 class _AddModificadorSelecionadorState extends State<AddModificadorSelecionador> {
   List modificadores = [];
+  List<OpcaoDropdown<Map>> opcoes = [];
   Map modSelecionado = {};
   int modGrad = 1;
 
@@ -69,13 +71,27 @@ class _AddModificadorSelecionadorState extends State<AddModificadorSelecionador>
 
     List efeitosMod = await pegaEfeito();
     List modsGerais = await pegaModificadores();
+    // O popup pode ter sido fechado durante a leitura
+    if(!mounted) return;
     
     setState(() {
-      modificadores = efeitosMod;
-      modificadores += modsGerais;
+      // Grupos da busca: próprios do efeito primeiro, depois extras e falhas
+      opcoes = [
+        for(Map mod in efeitosMod)
+          OpcaoDropdown<Map>(valor: mod, rotulo: mod["nome"].toString(),
+            grupo: Efeito.grupoModificador(mod, proprioDoEfeito: true)),
+        // O seletor junta os itens do mesmo grupo (extras, depois falhas)
+        for(Map mod in modsGerais)
+          OpcaoDropdown<Map>(valor: mod, rotulo: mod["nome"].toString(),
+            grupo: Efeito.grupoModificador(mod)),
+      ];
+      modificadores = opcoes.map((o) => o.valor).toList();
 
-      modSelecionado = modificadores.first;
-      modificadorSelecionado = modificadores.first["m_id"];
+      if(modificadores.isNotEmpty){
+        modSelecionado = modificadores.first;
+        // Alguns modificadores próprios usam e_id em vez de m_id (EC001, ES01, E044/E045)
+        modificadorSelecionado = modSelecionado["m_id"] ?? modSelecionado["e_id"] ?? '';
+      }
     });
   }
 
@@ -87,27 +103,17 @@ class _AddModificadorSelecionadorState extends State<AddModificadorSelecionador>
         child: ListBody(
           children: <Widget>[ 
             // Escolha do modificador
-            DropdownButton<String>(
-              isExpanded: true,
-              itemHeight: 56,
-              value: modificadorSelecionado,
-              style: const TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
-              onChanged: (String? value) {
+            DropdownComBusca<Map>(
+              opcoes: opcoes,
+              valor: modSelecionado.isEmpty ? null : modSelecionado,
+              aoMudar: (Map value) {
                 setState(() {
-                  modificadorSelecionado = value!;
-                  // Atualiza o selecionado
-                  var index = modificadores.indexWhere((mod) => mod["m_id"] == modificadorSelecionado);
-                  modSelecionado = modificadores[index];
+                  modSelecionado = value;
+                  modificadorSelecionado = value["m_id"] ?? value["e_id"] ?? '';
                   // Resta a Graduação
                   modGrad = 1;
                 });
               },
-              items: modificadores.map<DropdownMenuItem<String>>((value) {
-                return DropdownMenuItem<String>(
-                  value: value["m_id"], 
-                  child: Text(value["nome"].toString()),
-                );
-              }).toList(),
             ),
             // Controle de Graduação *se tiver
             modSelecionado.isNotEmpty && Efeito.limiteModificador(modSelecionado, poder.retornaObj()["graduacao"] ?? 1) > 1 ?
@@ -127,7 +133,8 @@ class _AddModificadorSelecionadorState extends State<AddModificadorSelecionador>
         TextButton(
           child: const Text('Adicionar'),
           onPressed: () async{
-            // Atualiza a Classe
+            // Lista vazia: nada a adicionar
+            if(modSelecionado.isEmpty) return;
 
             // Define a graduação
             modSelecionado["grad"] = modGrad;

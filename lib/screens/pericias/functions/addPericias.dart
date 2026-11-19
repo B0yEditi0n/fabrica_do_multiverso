@@ -2,6 +2,7 @@
 
 import 'package:bootstrap_icons/bootstrap_icons.dart';
 import 'package:flutter/material.dart';
+import 'package:fabrica_do_multiverso/screens/components/dropdown_com_busca.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 
 // Biblioteca de Pericias
@@ -117,38 +118,26 @@ class _PopUpAddSkillState extends State<PopUpAddSkill> {
               
               //? Input de Perícia
               widget.obj.isEmpty ?
-              DropdownButton<Map>(
-                isExpanded: true,
-                itemHeight: 56,
-                value: periciaSelecionada,
-                icon: const Icon(Icons.arrow_downward),
-                elevation: 16,
-                style: const TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
-                underline: Container(
-                  height: 2,
-                ),
-                onChanged: (value) {
+              DropdownComBusca<Map>(
+                opcoes: periciaListAdd.map((value) => OpcaoDropdown<Map>(
+                  valor: value,
+                  rotulo: value["nome"].toString(),
+                )).toList(),
+                valor: periciaSelecionada,
+                aoMudar: (value) {
                   // caso seja um retorno atualiza a lista de Poderes
-                  // Atualiza o estado das variáveis
-                  
-                    periciaSelecionada = value!;     
-                    if(["PA01", "PA02"].contains(periciaSelecionada["id"])){ // Em caso de ofensivo estruturar lista
-                      int rangeOfensive = 0;
-                      periciaSelecionada["id"] == "PA01" ? rangeOfensive = 1 : null;
-                      periciaSelecionada["id"] == "PA02" ? rangeOfensive = 2 : null;
-                      setState(() {
-                        ofensivePoderes = personagem.pericias.returnOfensiveEfeitos(rangeOfensive);
-                      });
-                    }
-                    
-                  
+                  setState(() {
+                    periciaSelecionada = value;
+                  });
+                  if(["PA01", "PA02"].contains(periciaSelecionada["id"])){ // Em caso de ofensivo estruturar lista
+                    int rangeOfensive = 0;
+                    periciaSelecionada["id"] == "PA01" ? rangeOfensive = 1 : null;
+                    periciaSelecionada["id"] == "PA02" ? rangeOfensive = 2 : null;
+                    setState(() {
+                      ofensivePoderes = personagem.pericias.returnOfensiveEfeitos(rangeOfensive);
+                    });
+                  }
                 },
-                items: periciaListAdd.map<DropdownMenuItem<Map>>((value) {
-                  return DropdownMenuItem<Map>(
-                    value: value,
-                    child: Text(value["nome"].toString()),
-                  );
-                }).toList(),
               ): const SizedBox(),
           
               //? Perícia baseada ou Poderes selecionado

@@ -1,6 +1,6 @@
 # Matriz de cobertura — repertório de regras × aplicativo
 
-Fase 2 do guia de desenvolvimento. Data: 2026-11-16. Atualizada em 2026-11-19 (importação do Poder Supremo, arranjos sem efeito ativo, custo dinâmico por efeito, Imunidade/Movimento, PDF e interface para celular; arremesso opcional, modificador Perigoso e margem de crítico na Ofensiva e no PDF).
+Fase 2 do guia de desenvolvimento. Data: 2026-11-16. Atualizada em 2026-11-19 (importação do Poder Supremo, arranjos sem efeito ativo, custo dinâmico por efeito, Imunidade/Movimento, PDF e interface para celular; arremesso opcional, modificador Perigoso e margem de crítico na Ofensiva e no PDF; popups sobre a tela de origem, centralizados e com busca).
 
 Repertório de referência: `React-Mutants-Masterminds-Character-Sheet` (`docs/rules/mm3-effects.md` e os enums em `packages/core/src/model/enums/`). O repositório React também contém material da 4ª edição e de suplementos; aqui só conta o que é da 3ª edição.
 
@@ -146,6 +146,7 @@ A referência tem cerca de 125 modificadores próprios, distribuídos por 25 efe
 | Arranjo dinâmico com marca por efeito | OK | `CustoPoderes._custoDinamico` (`lib_custos.dart`): maior + 1 se dinâmico, +2 por alternativo dinâmico, +1 por comum; sem a marca `dinamico` todos contam como dinâmicos |
 | Importação de ficha do Poder Supremo (M&M 3ª) | OK | `lib/script/importacao/importa_poder_supremo.dart`; o que não tem equivalente vira Característica ou modificador Personalizado com o mesmo custo, com aviso |
 | Interface sem estouro em celular (320×568 e 360×740) | OK | `theme.dart` e telas; verificado em `test/responsividade_test.dart` |
+| Popups sobre a tela de origem, centralizados, com busca nos seletores | OK (2026-11-19) | `abrir_popup.dart`, `dropdown_com_busca.dart`; verificado em `test/popups_test.dart` (320×568, 360×740 e 1280×800) |
 
 ## 6. Dependências e ordem proposta
 
@@ -163,5 +164,6 @@ A referência tem cerca de 125 modificadores próprios, distribuídos por 25 efe
 | 10 | Importação de fichas do Poder Supremo (RF015) | 2, 6 | Feito em 2026-11-17. Pendências: Perícia Aumentada (custo 0,5) e poderes internos de veículo/quartel-general entram só como custo |
 | 11 | Interface para celular (RF016) | — | Feito em 2026-11-17 (tema, `SafeArea`, grades com altura fixa, testes de estouro de layout) |
 | 12 | Modificadores próprios de Mover Objetos e Teleporte; copiar e colar poderes (RF017) | 4 | Feito em 2026-11-17 (`efeitos.json`, `lib_areaCopia.dart`) |
+| 13 | Popups: tela de origem visível, caixas centralizadas, busca nos seletores | 11 | Feito em 2026-11-19 (`abrir_popup.dart`, `dropdown_com_busca.dart`) |
 
 Compatibilidade com fichas salvas: as etapas acrescentam campos opcionais ao JSON (ex.: `dinamico` nos efeitos de arranjo). Exceção de 2026-11-17: a chave `active` deixou de ser gravada em `PacotesEfeitos` e passou a ser ignorada em `EfeitoBonus`. Fichas antigas continuam abrindo; os bônus que estavam desligados passam a valer.

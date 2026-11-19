@@ -3,6 +3,7 @@ import 'package:fabrica_do_multiverso/script/poderes/lib_pacoteEfeitos.dart';
 import 'package:fabrica_do_multiverso/script/poderes/lib_custos.dart';
 import 'package:fabrica_do_multiverso/script/poderes/lib_areaCopia.dart';
 import 'package:flutter/material.dart';
+import 'package:fabrica_do_multiverso/screens/components/abrir_popup.dart';
 
 // Screens de poderes
 import 'package:fabrica_do_multiverso/screens/poderes/ScreenEditorPoderes.dart';
@@ -208,10 +209,9 @@ class _ScreenPoderesState extends State<ScreenPoderes> {
           // Ação e PopUP
           onPressed: () async => {
             objEfeito = {},
-            objEfeito = await Navigator.push(
+            objEfeito = await abrirPopup<Map>(
               context,
-              MaterialPageRoute(builder: (context) => DynamicDialog(tipo: "", descNome: true),
-              )
+              DynamicDialog(tipo: "", descNome: true),
             ) ?? {},
             //! Atualiza a Lista de poderes
             if(objEfeito.isNotEmpty){

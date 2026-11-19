@@ -4,6 +4,7 @@ import 'package:numberpicker/numberpicker.dart';
 
 import 'package:fabrica_do_multiverso/script/poderes/lib_efeitos.dart';
 import 'package:flutter/material.dart';
+import 'package:fabrica_do_multiverso/screens/components/dropdown_com_busca.dart';
 import 'package:flutter/services.dart'; 
 import 'dart:convert';
 //
@@ -36,6 +37,8 @@ class _AddOptCompraState extends State<AddOptCompra> {
     // Carrega o Efeitos
     String jsonEfeitos = await rootBundle.loadString('assets/poderes/efeitos.json');
     List objEfeitos = jsonDecode(jsonEfeitos);
+    // O popup pode ter sido fechado durante a leitura
+    if(!mounted) return false;
     
     // força um cast na classe para acessar os metodos sem problemas
     // de sintaxe
@@ -52,8 +55,13 @@ class _AddOptCompraState extends State<AddOptCompra> {
     //}
     optionsCompra = efeitosOpt;
     // Define o inicial da lista
-    optionCompraSelecionado = optionsCompra.first["ID"];
-    optSelecionado = optionsCompra.first;
+    // Lista vazia: o seletor fica desabilitado
+    if(optionsCompra.isNotEmpty){
+      setState(() {
+        optionCompraSelecionado = optionsCompra.first["ID"].toString();
+        optSelecionado = optionsCompra.first;
+      });
+    }
     
     return true;
 
@@ -67,32 +75,22 @@ class _AddOptCompraState extends State<AddOptCompra> {
         child: ListBody(
           children: <Widget>[ 
             // Escolha do modificador
-            DropdownButton<String>(
-              isExpanded: true,
-              itemHeight: 56,
-              value: optionCompraSelecionado,
-              //icon: const Icon(Icons.arrow_downward),
-              //elevation: 16,
-              style: const TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
-              /*underline: Container(
-                height: 2,
-              ),*/
-              onChanged: (String? value) {
+            DropdownComBusca<String>(
+              opcoes: optionsCompra.map((value) => OpcaoDropdown<String>(
+                valor: value["ID"].toString(),
+                rotulo: value["desc"].toString(),
+              )).toList(),
+              valor: optSelecionado.isEmpty ? null : optionCompraSelecionado,
+              aoMudar: (String value) {
                 setState(() {
-                  optionCompraSelecionado = value!;
+                  optionCompraSelecionado = value;
                   // Atualiza o selecionado
-                  int index = optionsCompra.indexWhere((mod) => mod["ID"] == optionCompraSelecionado);
-                  optSelecionado = optionsCompra[index];
+                  int index = optionsCompra.indexWhere((mod) => mod["ID"].toString() == optionCompraSelecionado);
+                  if(index >= 0) optSelecionado = optionsCompra[index];
                   // Resta a Graduação
                   optGrad = 1;
                 });
               },
-              items: optionsCompra.map<DropdownMenuItem<String>>((value) {
-                return DropdownMenuItem<String>(
-                  value: value["ID"], 
-                  child: Text(value["desc"].toString()),
-                );
-              }).toList(),
             ),
             // Controle de Graduação *se tiver
             /*optSelecionado["limite"] != null && optSelecionado["limite"] > 1 ? 
@@ -114,7 +112,9 @@ class _AddOptCompraState extends State<AddOptCompra> {
           onPressed: () async{
             // Atualiza a Classe
             
-            poderCompra.addOpt(optSelecionado); 
+            // Lista vazia: nada a adicionar
+            if(optSelecionado.isEmpty) return;
+            poderCompra.addOpt(optSelecionado);
 
             // Fecha o Popup
             Navigator.of(context).pop();

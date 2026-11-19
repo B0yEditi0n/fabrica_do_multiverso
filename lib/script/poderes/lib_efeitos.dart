@@ -289,6 +289,20 @@ class Efeito{
     return grupos;
   }
 
+  static String grupoModificador(Map modificador, {bool proprioDoEfeito = false}){
+    /*
+      Grupo em que o modificador aparece na lista "Adicionar Modificador".
+        proprioDoEfeito - vem do campo "modificadores" do próprio efeito
+        custo < 0       - Falhas
+        custo >= 0      - Extras (os de +0 são extras, wiki Modificadores.md)
+    */
+    if(proprioDoEfeito){
+      return "Próprios do efeito";
+    }
+    num custo = (modificador["custo_base"] as num?) ?? 0;
+    return custo < 0 ? "Falhas" : "Extras";
+  }
+
   static int limiteModificador(Map modificador, int graduacaoEfeito){
     /*
       Quantas graduações o modificador aceita.

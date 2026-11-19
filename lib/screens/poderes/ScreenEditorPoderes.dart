@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fabrica_do_multiverso/screens/components/abrir_popup.dart';
 
 // Instancia de Poderes
 import 'package:fabrica_do_multiverso/script/ficha.dart' ;
@@ -224,17 +225,16 @@ class _powerEditState extends State<powerEdit> {
                         // Garante que jogador não escolha graduações de efeitos de compra ou bonus
                         if(poder is! EfeitoCompra 
                         && poder.retornaObj()["class"] != "EfeitoBonus"){ 
-                          if(objPoder["graduacao"] == 0){
-                            objPoder["graduacao"] = 1
-                          },
-                          poder.setGrad( await Navigator.push(
+                          // Voltar do sistema devolve null: mantém a graduação
+                          poder.setGrad( await abrirPopup<int>(
                             context,
-                            MaterialPageRoute(builder: (context) => PoupInputIntValue(
-                              intValue: objPoder["graduacao"], 
+                            PoupInputIntValue(
+                              // Graduação 0 abre em 1 (sem gravar: o voltar mantém 0)
+                              intValue: objPoder["graduacao"] == 0 ? 1 : objPoder["graduacao"],
                               titulo: 'Valor de Graduação',
                               iniValor: 1,
-                            )),
-                          ) ),
+                            ),
+                          ) ?? objPoder["graduacao"] ),
                           //! Atualiza a Lista de poderes
                           setState(() {
                             objPoder = poder.retornaObj();
@@ -499,10 +499,13 @@ class _powerEditState extends State<powerEdit> {
                           
                           if(poder is EfeitoOfensivo){
                             // chama um popupItem
-                            acurado = await Navigator.push(
+                            int? valor = await abrirPopup<int>(
                                 context,
-                                MaterialPageRoute(builder: (context) => PoupInputIntValue(intValue: acurado, titulo: 'Valor de Acerto')),
+                                PoupInputIntValue(intValue: acurado, titulo: 'Valor de Acerto'),
                             );
+                            // Voltar do sistema devolve null: mantém o acerto
+                            if(valor == null) return;
+                            acurado = valor;
                             setState(() {
                               EfeitoOfensivo poderOfensivo = poder as EfeitoOfensivo;
                               poderOfensivo.addBonus(acurado);
@@ -676,12 +679,7 @@ class _powerEditState extends State<powerEdit> {
                       child: TextButton(
                         child: Text('Adicionar Compra de ${objPoder["efeito"]}'),
                         onPressed: () async => {
-                          await showDialog(
-                            context: context,
-                            builder: ((BuildContext context) {
-                              return AddOptCompra();
-                            })
-                          ).then((result)=>{
+                          await abrirPopup(context, AddOptCompra()).then((result)=>{
                             // Atualizar a Lista do Que Saiu
                             setState(() {
                               compra = poder.retornaObj()["opt"];
@@ -721,18 +719,16 @@ class _powerEditState extends State<powerEdit> {
                                   child: Text('${caractAumentada[index]["nome"]} ${caractAumentada[index]["valor"]}'),
                                   onPressed: () async{
                                       EfeitoBonus poderBonus = poder as EfeitoBonus;
-                                      await showDialog(
-                                        context: context,
-                                        builder: ((BuildContext context) {
-                                          return PoupInputIntValue(
-                                            iniValor: 0, 
-                                            intValue: caractAumentada[index]["valor"],
-                                            titulo: "Valor de ${caractAumentada[index]["nome"]}"
-                                          );
-                                        })
+                                      await abrirPopup<int>(
+                                        context,
+                                        PoupInputIntValue(
+                                          iniValor: 0,
+                                          intValue: caractAumentada[index]["valor"],
+                                          titulo: "Valor de ${caractAumentada[index]["nome"]}"
+                                        ),
                                       ).then((result){
-                                        // Atualizar a Lista do Que Saiu
-                                        if (poder is! EfeitoCrescimento){
+                                        // Atualizar a Lista do Que Saiu (voltar do sistema: null, nada muda)
+                                        if (result != null && poder is! EfeitoCrescimento){
                                           caractAumentada[index]["valor"] = result;
                                           poderBonus.addBonus(caractAumentada[index]);
                                           setState(() {                                            
@@ -774,14 +770,9 @@ class _powerEditState extends State<powerEdit> {
 
                           EfeitoBonus poderBonus = poder as EfeitoBonus;
 
-                          await showDialog(
-                            context: context,
-                            builder: ((BuildContext context) {
-                              return AddCaractAumet(caracteristica:{});
-                            })
-                          ).then((result){
-                            // Atualizar a Lista do Que Saiu
-                            if(result.isNotEmpty ){
+                          await abrirPopup<Map>(context, AddCaractAumet(caracteristica:{})).then((result){
+                            // Atualizar a Lista do Que Saiu (voltar do sistema: null, nada muda)
+                            if(result != null && result.isNotEmpty ){
                               // Verifica se já foi adicionado
                               poderBonus.addBonus(result);
                               setState(() {
@@ -866,12 +857,7 @@ class _powerEditState extends State<powerEdit> {
                       child: TextButton(
                         child: const Text('Adicionar Modificador'),
                         onPressed: () async => {
-                          await showDialog(
-                            context: context,
-                            builder: ((BuildContext context) {
-                              return AddModificadorSelecionador(etiquetas: Efeito.gruposModificadores(poder));
-                            })
-                          ).then((result)=>{
+                          await abrirPopup(context, AddModificadorSelecionador(etiquetas: Efeito.gruposModificadores(poder))).then((result)=>{
                             // Atualizar a Lista do Que Saiu
                             setState(() {
                               modificadores = objPoder["modificadores"];

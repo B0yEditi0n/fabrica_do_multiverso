@@ -4,6 +4,7 @@ import 'package:numberpicker/numberpicker.dart';
 
 import 'package:fabrica_do_multiverso/script/poderes/lib_efeitos.dart';
 import 'package:flutter/material.dart';
+import 'package:fabrica_do_multiverso/screens/components/dropdown_com_busca.dart';
 import 'package:flutter/services.dart'; 
 import 'dart:convert';
 //
@@ -40,10 +41,15 @@ class _AddCaractAumetState extends State<AddCaractAumet> {
     poderCompra = poder as EfeitoBonus;
 
     List listTemp = await poderCompra.returnListOpt();  
+    // O popup pode ter sido fechado durante a leitura
+    if(!mounted) return false;
     setState(() {   
       caractCompra = listTemp;
-      caractSel = caractCompra.first;
-      caractSel["valor"] = 1;
+      // Lista vazia: o seletor fica desabilitado
+      if(caractCompra.isNotEmpty){
+        caractSel = caractCompra.first;
+        caractSel["valor"] = 1;
+      }
     });
 
     return true;
@@ -80,24 +86,17 @@ class _AddCaractAumetState extends State<AddCaractAumet> {
             const SizedBox(height: 30),
 
             // Escolha da Caracteristica 
-            DropdownButton(
-              isExpanded: true,
-              itemHeight: 56,
-              value: caractSel,
-              style: const TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
-              items: caractCompra.map<DropdownMenuItem<Map>>((value) {
-                return DropdownMenuItem(
-                  value: value, 
-                  child: Text(value["nome"].toString()),
-                );
-              }).toList(),
-
-              onChanged: (value) {
+            DropdownComBusca<Map>(
+              opcoes: caractCompra.map((value) => OpcaoDropdown<Map>(
+                valor: value,
+                rotulo: value["nome"].toString(),
+              )).toList(),
+              valor: caractSel.isEmpty ? null : caractSel,
+              aoMudar: (value) {
                 setState(() {
-                  caractSel = value!;
+                  caractSel = value;
                 });
               },
-
             ),            
           ]
         )

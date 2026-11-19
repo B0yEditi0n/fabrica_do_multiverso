@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fabrica_do_multiverso/screens/components/abrir_popup.dart';
 import 'package:flutter/services.dart';
 
 // Popups
@@ -236,9 +237,8 @@ class _ScreenPericiasState extends State<ScreenPericias> {
                           //? efetua o loading novament para alteração de pericias adicionais
                           if(["PericiaAdiciona", "PericiaAddAcerto"].contains(listaPercias[index]["classe"])){
                             Map mapPericiaReturn;
-                            mapPericiaReturn = await Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => PopUpAddSkill(obj: listaPercias[index]))
+                            mapPericiaReturn = await abrirPopup<Map>(
+                              context, PopUpAddSkill(obj: listaPercias[index])
                             ) ?? {};
                             if(mapPericiaReturn.isNotEmpty){
                               if(mapPericiaReturn["remove"] == null || mapPericiaReturn["remove"] == false){
@@ -293,9 +293,8 @@ class _ScreenPericiasState extends State<ScreenPericias> {
           child: const Icon(Icons.add),
           // Ação e PopUP
           onPressed: () async => {
-            mapPericiaReturn = await Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => PopUpAddSkill(obj: {}))
+            mapPericiaReturn = await abrirPopup<Map>(
+              context, PopUpAddSkill(obj: {})
             ) ?? {},
 
             appendNewListFields()

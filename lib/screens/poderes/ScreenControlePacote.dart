@@ -1,5 +1,6 @@
 import 'package:fabrica_do_multiverso/script/poderes/lib_custos.dart';
 import 'package:flutter/material.dart';
+import 'package:fabrica_do_multiverso/screens/components/abrir_popup.dart';
 
 //Screens
 import 'package:fabrica_do_multiverso/screens/poderes/ScreenEditorPoderes.dart';
@@ -299,9 +300,9 @@ class _ControladorDePacotesState extends State<ControladorDePacotes> {
           // Ação e PopUP
           onPressed: () async => {
             objPoder = {},            
-            objPoder = await Navigator.push(
+            objPoder = await abrirPopup<Map>(
               context,
-              MaterialPageRoute(builder: (context) => DynamicDialog(tipo: objPacote["tipo"], descNome: nomearEfeitos))
+              DynamicDialog(tipo: objPacote["tipo"], descNome: nomearEfeitos)
             ) ?? {},
             //! Atualiza a Lista de poderes
             if(objPoder.isNotEmpty){

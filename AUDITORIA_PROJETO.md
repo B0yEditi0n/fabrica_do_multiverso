@@ -213,3 +213,27 @@ Pendências:
 - Fichas antigas com Força alta passam a mostrar alerta de NP do arremesso (comportamento pedido pela spec).
 - Maestria em Arremesso ainda não soma no dano da linha Arremesso (spec: entra com as linhas de armas).
 - `(m["grad"] ?? 1) as int` em `melhoriaCritico` quebra se a graduação vier como double; mesmo padrão de `danoTotal`.
+
+## 11. Atualização de 2026-11-19 (popups)
+
+Lote "popups de inclusão e edição" (Especificação Técnica, seção "Popups de inclusão e edição"), sobre a base 081b2d5.
+
+| Área | O que mudou | Arquivos |
+|---|---|---|
+| Bug: tela anterior sumia | Os popups eram abertos com `Navigator.push(MaterialPageRoute)`, rota opaca que tira a tela de baixo do desenho. Agora todos abrem por `abrirPopup` (`showDialog`, véu `black54`, sem fechar ao tocar fora). `MaterialPageRoute` ficou só para as telas `powerEdit` e `ControladorDePacotes`. | `lib/screens/components/abrir_popup.dart` (novo), `ScreenPericias.dart`, `ScreenVantagens.dart`, `ScreenComplicacoes.dart`, `ScreenPoderes.dart`, `ScreenControlePacote.dart`, `ScreenEditorPoderes.dart` |
+| Caixas centralizadas | `restricoesPopup`: largura min(tela − 32, 560), altura até 85% da tela, aplicada pelo `dialogTheme.constraints` dentro de `abrirPopup`. | `abrir_popup.dart` |
+| Vantagem | `PopUpAddVantagem` deixou de ser `Scaffold` de tela cheia e virou `AlertDialog` (título, seletor, descrição/graduação, Cancelar/Adicionar). A tela Vantagens só trocou as linhas de abertura. | `lib/screens/vantagens/functions/addVantagens.dart` |
+| Busca nos seletores | `DropdownComBusca<T>`: sub-diálogo com "Buscar…" com foco, filtro sem acento nem caixa, cabeçalhos de grupo, "Nenhum resultado". Usado em perícia, vantagem, efeito, modificador, Característica Aumentada e opções de compra. | `lib/screens/components/dropdown_com_busca.dart` (novo) e os 6 popups |
+| Grupos de modificador (motor) | `Efeito.grupoModificador`: "Próprios do efeito", "Extras" (custo ≥ 0) e "Falhas" (custo < 0), conforme wiki `Modificadores.md`. | `lib/script/poderes/lib_efeitos.dart` |
+| Robustez | Voltar do sistema não grava mais `null` (complicação, graduação, acerto, Característica Aumentada); graduação 0 não vira 1 ao voltar; Complicação ganhou "Cancelar"; `.first` com guarda de lista vazia; `if(!mounted)` após leituras assíncronas; modificadores próprios sem `m_id` (EC001, ES01, E044/E045) usam `e_id`. | popups e `ScreenEditorPoderes.dart`, `ScreenComplicacoes.dart` |
+
+Da seção 6, deixam de valer: "Voltar pelo botão do sistema devolve `null`…" nos popups de `ScreenComplicacoes` e `ScreenEditorPoderes` (graduação, acerto, Característica Aumentada), e os `.first` de `addVantagens.dart`, `popup_OptPoderes.dart`, `popup_CaracteristicaAumentada.dart` e `popup_addModificadores.dart`.
+
+Testes: `test/popups_test.dart` (novo, 33 casos: tela de origem visível em 6 telas, voltar do sistema, centralização em 320×568/360×740/1280×800, teclado, busca e grupos, vantagem como diálogo); `test/modificadores_copia_test.dart` ganhou o caso de `grupoModificador`; `test/responsividade_test.dart` abre os popups por `abrirPopup`. Suíte completa: 166 testes aprovados (base 132). `flutter analyze`: 0 errors, 41 warnings, 105 issues (igual à base).
+
+Pendências:
+
+- `responsividade_test` ainda não mede Modificador, Característica e Opção de compra em 320×568.
+- A chave `e_id` nos modificadores próprios de EC001, ES01, E044/E045 em `efeitos.json` deveria ser `m_id` (corrigir num lote de catálogo).
+- Normalização de acentos duplicada entre `dropdown_com_busca.dart` e `importa_poder_supremo.dart`.
+- Diálogos da tela inicial (`main.dart`) já usam `showDialog`, mas não `abrirPopup` (tamanho não padronizado).
