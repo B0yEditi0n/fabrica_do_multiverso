@@ -3,8 +3,6 @@ import 'package:fabrica_do_multiverso/script/vantagens/lib_vantagens.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'; // Biblioteca de Load files
 import 'dart:convert'; // Biblitoeca de conversão de json
-// Armazenamento em Local Storage
-import 'package:shared_preferences/shared_preferences.dart';
 
 // Bibliotecas
 import 'package:fabrica_do_multiverso/script/defesas/lib_defesas.dart';
@@ -14,7 +12,6 @@ import 'package:fabrica_do_multiverso/script/poderes/lib_efeitos.dart';
 import 'package:fabrica_do_multiverso/script/poderes/lib_pacoteEfeitos.dart';
 import 'package:fabrica_do_multiverso/script/poderes/lib_custos.dart';
 
-import 'dart:developer' as dev;
 
 //# Classe de Validação de NP
 class ValidaNpPersonagem {
@@ -1260,14 +1257,6 @@ class Ficha {
     await Efeito.carregarCatalogo();
     await Vantagem.carregarCatalogo();
 
-    // busca personagem do local storage
-    dev.debugger();
-    final storage = await SharedPreferences.getInstance();
-    final localFicha = storage.getString('mainPersonagem');
-    if(localFicha != null){
-      reInit(json.decode( localFicha ));
-    }
-
     return 1;
   }
 
@@ -1295,8 +1284,6 @@ class Ficha {
       Orçamento da ficha: quanto cada módulo gasta, o total
       e o disponível pelo nível de poder.
     */
-    storageLocalMemory();
-
     int hab = habilidades.calculaTotal();
     int def = defesas.calculaTotal();
     int per = pericias.calculaTotal();
@@ -1368,18 +1355,6 @@ class Ficha {
         "arremesso": incluirArremesso,
       },
     };
-  }
-
-  void storageLocalMemory() async{
-    /*
-      caso o app caia ou o usuário feche sem quere ele armazena 
-      a ficha no local storage do aapp
-    */
-    final objFicha = returnObjJson();
-    if(objFicha.isNotEmpty){
-      final storage = await SharedPreferences.getInstance();
-      await storage.setString('mainPersonagem', json.encode(returnObjJson()));
-    }   
   }
 }
 

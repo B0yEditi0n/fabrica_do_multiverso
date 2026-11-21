@@ -51,12 +51,12 @@ void main() {
 
     await tester.tap(find.byTooltip('Open navigation menu'));
     await tester.pumpAndSettle();
-    await tester.scrollUntilVisible(find.text('Erros 1'), 100,
+    await tester.scrollUntilVisible(find.text('Avisos 1'), 100,
         scrollable: find.descendant(
             of: find.byType(Drawer), matching: find.byType(Scrollable)));
-    expect(find.text('Erros 1'), findsOneWidget);
+    expect(find.text('Avisos 1'), findsOneWidget);
 
-    await tester.tap(find.text('Erros 1'));
+    await tester.tap(find.text('Avisos 1'));
     await tester.pumpAndSettle();
     expect(find.textContaining('5 acima dos 15 disponíveis'), findsOneWidget);
   });
