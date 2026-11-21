@@ -19,6 +19,7 @@ const MaterialColor purpleSwatch = MaterialColor(
 
 ThemeData temaPadrao(){
   return (ThemeData(
+        fontFamily: 'Roboto',
         primaryColorLight: const Color.fromARGB(255, 89, 15, 216),
         primaryColorDark: const Color.fromARGB(255, 152, 97, 248),
         brightness: Brightness.dark,

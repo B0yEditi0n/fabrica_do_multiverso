@@ -8,6 +8,9 @@ import 'package:fabrica_do_multiverso/script/ficha.dart';
 import 'package:fabrica_do_multiverso/script/poderes/lib_custos.dart';
 import 'package:fabrica_do_multiverso/script/poderes/lib_efeitos.dart';
 
+// Teste
+import 'dart:developer' as dev;
+
 /*
   Importação de fichas do "Poder Supremo"
   (React-Mutants-Masterminds-Character-Sheet).
@@ -488,6 +491,7 @@ class PoderSupremo {
   }
 
   List _converteVantagens(dynamic advantages, dynamic languages) {
+    dev.debugger();
     List lista = [];
     String idiomas = [
       for (var l in _lista(languages))

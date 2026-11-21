@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:fabrica_do_multiverso/script/ficha.dart';
 import 'package:flutter/material.dart';
 import 'package:bootstrap_icons/bootstrap_icons.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 // Import de imagens
 import 'dart:io';
@@ -260,177 +261,194 @@ class _ScreenInicialState extends State<ScreenInicial> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Visão Geral do Pesonagem'),
-
       ),
       drawer: Drawer(
-        child: Padding(
-          padding: EdgeInsets.zero,
-          // ListView: o menu rola em telas baixas em vez de estourar
-          child: ListView(children: [
-            const DrawerHeader(
-              child: Text(
-                'Menu',
+        // Navegação presa no topo e Upload/Nova ficha presos embaixo;
+        // em telas baixas o menu inteiro rola em vez de estourar.
+        child: SafeArea(
+          child: LayoutBuilder(
+            builder: (context, constraints) => SingleChildScrollView(
+              child: ConstrainedBox(
+                constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      children: [
+                        const SizedBox(height: 25),
+                        ListTile(
+                          leading: const Icon(BootstrapIcons.yin_yang),
+                          title: const Text('Habilidades'),
+                          onTap: () {
+                            Navigator.pushNamed(context, '/habilidades')
+                                .then((value) => _validaFicha());
+                          },
+                        ),
+                        ListTile(
+                          leading: const Icon(Icons.shield),
+                          title: const Text('Defesas'),
+                          onTap: () {
+                            Navigator.pushNamed(context, '/defesas')
+                                .then((value) => _validaFicha());
+                          },
+                        ),
+                        ListTile(
+                          leading: const Icon(Symbols.swords),
+                          title: const Text('Ofensiva'),
+                          onTap: () {
+                            Navigator.pushNamed(context, '/ofensiva')
+                                .then((value) => _validaFicha());
+                          },
+                        ),
+                        ListTile(
+                          leading: const Icon(BootstrapIcons.battery_charging),
+                          title: const Text('Poderes'),
+                          onTap: () {
+                            Navigator.pushNamed(context, '/poderes')
+                                .then((value) => _validaFicha());
+                          },
+                        ),
+                        ListTile(
+                          leading: const Icon(Icons.paid),
+                          title: const Text('Vantagens'),
+                          onTap: () {
+                            Navigator.pushNamed(context, '/vantagens')
+                                .then((value) => _validaFicha());
+                          },
+                        ),
+                        ListTile(
+                          leading: const Icon(BootstrapIcons.tools),
+                          title: const Text('Perícias'),
+                          onTap: () {
+                            Navigator.pushNamed(context, '/pericias')
+                                .then((value) => _validaFicha());
+                          },
+                        ),
+                        ListTile(
+                          leading: const Icon(Icons.personal_injury),
+                          title: const Text('Complicações'),
+                          onTap: () {
+                            Navigator.pushNamed(context, '/complicacoes')
+                                .then((value) => _validaFicha());
+                          },
+                        ),
+                        ListTile(
+                          leading: const Icon(
+                              BootstrapIcons.exclamation_triangle_fill),
+                          title: Text('Avisos ${logError.length}'),
+                          onTap: () {
+                            showDialog(
+                              context: context,
+                              builder: (context) =>
+                                  LogPopupError(erros: logError),
+                            );
+                          },
+                        ),
+                      ],
+                    ),
+                    Column(
+                      children: [
+                        const Divider(),
+                        ListTile(
+                          leading:
+                              const Icon(BootstrapIcons.file_arrow_up_fill),
+                          title: const Text('Upload'),
+                          onTap: () async {
+                            Download upload = Download();
+                            var ficha = await upload.uploadFicha(
+                                escolherPersonagem: _escolherPersonagem);
+                            // Upload cancelado ou inválido: mantém ficha e imagem atuais
+                            if (ficha.isNotEmpty) {
+                              personagem = Ficha();
+                              await personagem.init();
+                              await personagem.reInit(ficha);
+                              if (upload.importadoPoderSupremo)
+                                PoderSupremo.finalizar();
+                              _mostrarFicha(upload.img);
+                              await _salvarLocal();
+                            }
+                            if (!mounted) return;
+                            if (upload.erro.isNotEmpty) {
+                              _mostrarMensagens(
+                                  'Não foi possível importar', [upload.erro]);
+                            } else if (upload.avisos.isNotEmpty) {
+                              _mostrarMensagens(
+                                  'Ficha importada do Poder Supremo',
+                                  upload.avisos);
+                            }
+                          },
+                        ),
+                        ListTile(
+                          leading: const Icon(BootstrapIcons.arrow_clockwise),
+                          title: const Text('Nova ficha'),
+                          onTap: () {
+                            Navigator.pop(context);
+                            _novaFicha();
+                          },
+                        ),
+                        const Divider(),
+                        const SizedBox(height: 25)
+                      ],
+                    )
+                  ],
+                ),
               ),
             ),
-            const Divider(),
-            ListTile(
-              leading: const Icon(BootstrapIcons.yin_yang),
-              title: const Text('Habilidades'),
-              onTap: () {
-                Navigator.pushNamed(context, '/habilidades')
-                    .then((value) => _validaFicha());
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.shield_outlined),
-              title: const Text('Defesas'),
-              onTap: () {
-                Navigator.pushNamed(context, '/defesas')
-                    .then((value) => _validaFicha());
-              },
-            ),
-            ListTile(
-              leading: const Icon(
-                  BootstrapIcons.battery_charging /*(BootstrapIcons.fire*/),
-              title: const Text('Poderes'),
-              onTap: () {
-                Navigator.pushNamed(context, '/poderes')
-                    .then((value) => _validaFicha());
-              },
-            ),
-            ListTile(
-              leading: const Icon(BootstrapIcons.lightning),
-              title: const Text('Ofensiva'),
-              onTap: () {
-                Navigator.pushNamed(context, '/ofensiva')
-                    .then((value) => _validaFicha());
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.paid),
-              title: const Text('Vantagens'),
-              onTap: () {
-                Navigator.pushNamed(context, '/vantagens')
-                    .then((value) => _validaFicha());
-              },
-            ),
-            ListTile(
-              leading: const Icon(BootstrapIcons.tools),
-              title: const Text('Perícias'),
-              onTap: () {
-                Navigator.pushNamed(context, '/pericias')
-                    .then((value) => _validaFicha());
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.personal_injury),
-              title: const Text('Complicações'),
-              onTap: () {
-                Navigator.pushNamed(context, '/complicacoes')
-                    .then((value) => _validaFicha());
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.note_add),
-              title: const Text('Nova ficha'),
-              onTap: () {
-                Navigator.pop(context);
-                _novaFicha();
-              },
-            ),
-            ListTile(
-              leading: const Icon(BootstrapIcons.upload),
-              title: const Text('Upload'),
-              onTap: () async {
-                Download upload = Download();
-                var ficha = await upload.uploadFicha(
-                    escolherPersonagem: _escolherPersonagem);
-                // Upload cancelado ou inválido: mantém ficha e imagem atuais
-                if (ficha.isNotEmpty) {
-                  personagem = Ficha();
-                  await personagem.init();
-                  await personagem.reInit(ficha);
-                  if (upload.importadoPoderSupremo) PoderSupremo.finalizar();
-                  _mostrarFicha(upload.img);
-                  await _salvarLocal();
-                }
-                if (!mounted) return;
-                if (upload.erro.isNotEmpty) {
-                  _mostrarMensagens('Não foi possível importar', [upload.erro]);
-                } else if (upload.avisos.isNotEmpty) {
-                  _mostrarMensagens('Ficha importada do Poder Supremo', upload.avisos);
-                }
-              },
-            ),
-
-            //logError.isNotEmpty ?
-              ListTile(
-                leading: const Icon(BootstrapIcons.exclamation_triangle_fill),
-                title: Text('Erros ${logError.length}'),
-                onTap: () {
-                  showDialog(
-                    context: context,
-                    builder: (context) => LogPopupError(erros: logError),
-                  );
-                },
-              ), // : const SizedBox(),
-            const Divider(),
-          ]),
+          ),
         ),
       ),
       body: SingleChildScrollView(
         child: Column(
-        children: [
-          //; descomentar quando for colcoar titulo
-          // const Text(
-          //   'Fabrica de Heróis',
-          //   style: TextStyle(
-          //     fontFamily: 'Impact',
-          //     fontSize: 20,
-          //   ),
-          // ),
+          children: [
+            //; descomentar quando for colcoar titulo
+            // const Text(
+            //   'Fabrica de Heróis',
+            //   style: TextStyle(
+            //     fontFamily: 'Impact',
+            //     fontSize: 20,
+            //   ),
+            // ),
 
-          IconButton(
-            icon: fileImg.isNotEmpty
-                ? Image.memory(
-                    fileImg,
-                    height: 300,
-                  )
-                : const Icon(BootstrapIcons.image, size: 50),
-            onPressed: () async {
-              try {
-                FilePickerResult respostaPath =
-                    await FilePicker.platform.pickFiles(
-                  type: FileType.image,
-                  allowMultiple: false,
-                  dialogTitle: "Imagem de Herói",
-                  initialDirectory: "",
-                  lockParentWindow: false,
-                ) as FilePickerResult;
+            IconButton(
+              icon: fileImg.isNotEmpty
+                  ? Image.memory(
+                      fileImg,
+                      height: 300,
+                    )
+                  : const Icon(BootstrapIcons.image, size: 50),
+              onPressed: () async {
+                try {
+                  FilePickerResult respostaPath =
+                      await FilePicker.platform.pickFiles(
+                    type: FileType.image,
+                    allowMultiple: false,
+                    dialogTitle: "Imagem de Herói",
+                    initialDirectory: "",
+                    lockParentWindow: false,
+                  ) as FilePickerResult;
 
-                final Uint8List imgUploaded;
-                if(kIsWeb){
-                  imgUploaded = respostaPath.files.first.bytes!;
-                }else{
-                  String pathFile = respostaPath.files.first.path as String;
-                  imgUploaded = File(pathFile).readAsBytesSync();
+                  final Uint8List imgUploaded;
+                  if (kIsWeb) {
+                    imgUploaded = respostaPath.files.first.bytes!;
+                  } else {
+                    String pathFile = respostaPath.files.first.path as String;
+                    imgUploaded = File(pathFile).readAsBytesSync();
+                  }
+
+                  setState(() {
+                    fileImg = imgUploaded;
+                  });
+                  _salvarLocal();
+                } catch (e) {
+                  // typeError
+                  print(e.toString());
                 }
-                  
+              },
+            ),
 
-                setState(() {
-                  fileImg = imgUploaded;
-                });
-                _salvarLocal();
-              } catch (e) {
-                // typeError
-                print(e.toString());
-              }
-            },
-          ),
+            const SizedBox(height: 50),
 
-          const SizedBox(height: 50),
-
-          Row(
+            Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -476,39 +494,23 @@ class _ScreenInicialState extends State<ScreenInicial> {
                   ),
                 ]),
 
-          const SizedBox(height: 20),
-          Container(
-            constraints: const BoxConstraints(maxWidth: 400),
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: _resumoPontos(),
-          ),
-          const SizedBox(height: 80),
-
-          //# Lista de notificações
-          // logError.isNotEmpty ?
-          // ListView.builder(
-          //   itemCount: logError.length,
-          //   itemBuilder: (BuildContext context, int index){
-          //     InkWell(
-          //       child: Column(
-          //         children: [
-          //           //Card(child: Text(logError[index]["msg"]))
-          //         ]
-          //       )
-          //     );
-          //   }
-          // ) : const SizedBox(),
-        ],
-      ),
+            const SizedBox(height: 20),
+            Container(
+              constraints: const BoxConstraints(maxWidth: 400),
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: _resumoPontos(),
+            ),
+            const SizedBox(height: 80),
+          ],
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         tooltip: 'Salvar / exportar ficha',
         child: const Icon(BootstrapIcons.floppy2_fill),
         onPressed: () async {
           showDialog(
-            context: context,
-            builder: (context) => SavePopUp(fileImg: fileImg)
-          );
+              context: context,
+              builder: (context) => SavePopUp(fileImg: fileImg));
         },
       ),
     );

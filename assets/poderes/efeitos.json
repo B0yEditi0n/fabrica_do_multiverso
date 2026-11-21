@@ -7,8 +7,58 @@
         "alcance": 1,
         "duracao": 1,
         "desc": false,
-        "class": "EfeitoAflicao"
+        "class": "EfeitoAflicao",
+        "modificadores":[
+            {
+                "e_id": "EC001",
+                "nome": "Condição Extra",
+                "fixo": false,
+                "custo_base": 1,
+                "limite": 1,
+                "desc": false
+            },
+            {
+                "e_id": "EC002",
+                "nome": "Condição Variável 1ª (Apenas 1 Grau)",
+                "fixo": false,
+                "custo_base": 1,
+                "limite": 1,
+                "desc": true
+            },
+            {
+                "e_id": "EC003",
+                "nome": "Condição Variável",
+                "fixo": false,
+                "custo_base": 2,
+                "limite": 1,
+                "desc": false
+            },
+            {
+                "e_id": "EC004",
+                "nome": "Cumulativo",
+                "fixo": false,
+                "custo_base": 1,
+                "limite": 1,
+                "desc": false
+            },
+            {
+                "e_id": "EC005",
+                "nome": "Progressivo",
+                "fixo": false,
+                "custo_base": 2,
+                "limite": 1,
+                "desc": false
+            },
+            {
+                "e_id": "EC006",
+                "nome": "Recuperação Instantânea",
+                "fixo": false,
+                "custo_base": 2,
+                "limite": 1,
+                "desc": false
+            }
 
+        ]
     },
     {
         "e_id": "E002",

@@ -158,6 +158,48 @@ class _powerEditState extends State<powerEdit> {
   //# * WIDGETs  *
   //# ************
 
+  // Checkbox de limitação de grau da Aflição. As opções são exclusivas:
+  // marcar uma troca a anterior; desmarcar remove a falha.
+  Widget _checkLimiteGrau(int opcao, String titulo, String regra){
+    EfeitoAflicao aflicao = poder as EfeitoAflicao;
+    // Largura fixa: dentro do Wrap o tile precisa de limite, e 300 cabe
+    // num celular (uma por linha) e põe as três lado a lado no desktop.
+    return SizedBox(
+      width: 300,
+      child: CheckboxListTile(
+      dense: true,
+      controlAffinity: ListTileControlAffinity.leading,
+      title: Text(titulo),
+      subtitle: Text(regra),
+      value: aflicao.limiteGrau() == opcao,
+      onChanged: (bool? marcado){
+        setState(() {
+          aflicao.setLimiteGrau(marcado == true ? opcao : EfeitoAflicao.semLimite);
+          _sincronizaModificadores();
+          priCondica.text = objPoder["condicoes"][0];
+          segCondica.text = objPoder["condicoes"][1];
+          terCondica.text = objPoder["condicoes"][2];
+        });
+      },
+      ),
+    );
+  }
+
+  // Refaz a lista de modificadores e seus campos de descrição depois de
+  // uma alteração feita fora do popup (os índices podem ter mudado).
+  void _sincronizaModificadores(){
+    objPoder = poder.retornaObj();
+    modificadores = objPoder["modificadores"];
+    List<TextEditingController> antigos = listInputModText;
+    listInputModText = [
+      for(Map mod in modificadores)
+        TextEditingController(text: mod["text_desc"] ?? '')
+    ];
+    WidgetsBinding.instance.addPostFrameCallback((_){
+      for(var c in antigos){ c.dispose(); }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     // Voltar pelo botão do sistema também devolve o poder editado
@@ -569,6 +611,7 @@ class _powerEditState extends State<powerEdit> {
                     width: 200,
                     child: TextField(
                       controller: priCondica,
+                      enabled: (poder as EfeitoAflicao).condicaoAtiva(0),
                       onChanged: (String value){
                         // Força o cast
                         EfeitoAflicao poderCompra = poder as EfeitoAflicao;
@@ -582,6 +625,7 @@ class _powerEditState extends State<powerEdit> {
                     width: 200,
                     child: TextField(
                       controller: segCondica,
+                      enabled: (poder as EfeitoAflicao).condicaoAtiva(1),
                       onChanged: (String value){
                         // Força o cast
                         EfeitoAflicao poderCompra = poder as EfeitoAflicao;
@@ -595,6 +639,7 @@ class _powerEditState extends State<powerEdit> {
                     width: 200,
                     child: TextField(
                       controller: terCondica,
+                      enabled: (poder as EfeitoAflicao).condicaoAtiva(2),
                       onChanged: (String value){
                         // Força o cast
                         EfeitoAflicao poderCompra = poder as EfeitoAflicao;
@@ -876,6 +921,25 @@ class _powerEditState extends State<powerEdit> {
                   ],
                 ),
               ),
+
+              //********************************
+              //# Limitação de Grau (Aflição)
+              //********************************
+              if(poder is EfeitoAflicao) ...[
+                // Uma linha só em telas largas; quebra em lista no celular
+                Wrap(
+                  alignment: WrapAlignment.spaceEvenly,
+                  spacing: 10.0,
+                  children: [
+                    _checkLimiteGrau(EfeitoAflicao.semTerceira,
+                      'Remover 3ª condição', 'Grau Limitado (-1 por graduação)'),
+                    _checkLimiteGrau(EfeitoAflicao.semSegundaTerceira,
+                      'Remover 2ª e 3ª condição', 'Grau Limitado 2 (-2 por graduação)'),
+                    _checkLimiteGrau(EfeitoAflicao.apenasTerceira,
+                      'Remover 1ª e 2ª condição', 'Limitado a Terceiro Grau (-1 por graduação)'),
+                  ],
+                )
+              ],
 
               const SizedBox(height: 30),
 

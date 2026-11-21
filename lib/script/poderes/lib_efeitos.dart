@@ -926,6 +926,74 @@ class EfeitoAflicao extends EfeitoOfensivo{
     }
   }
 
+  //; Falhas de grau (wiki: Grau Limitado e Limitado a Terceiro Grau).
+  //; Ficam na lista de modificadores do poder para entrar no custo e na
+  //; ficha, mas são escolhidas por checkbox na tela, não pelo popup.
+  static const String idGrauLimitado = "EC007";
+  static const String idTerceiroGrau = "EC008";
+
+  static const int semLimite = 0;
+  static const int semTerceira = 1;          // Grau Limitado: -1/grad
+  static const int semSegundaTerceira = 2;   // Grau Limitado 2: -2/grad
+  static const int apenasTerceira = 3;       // Limitado a Terceiro Grau: -1/grad
+
+  /// Qual limitação de grau o poder tem hoje (lida dos modificadores).
+  int limiteGrau(){
+    for(Map mod in _modificador){
+      if(mod["m_id"] == idTerceiroGrau) return apenasTerceira;
+      if(mod["m_id"] == idGrauLimitado){
+        return (mod["grad"] ?? 1) >= 2 ? semSegundaTerceira : semTerceira;
+      }
+    }
+    return semLimite;
+  }
+
+  /// Condição do grau (0, 1 ou 2) ainda existe com a limitação atual.
+  bool condicaoAtiva(int grau){
+    switch(limiteGrau()){
+      case semTerceira:        return grau != 2;
+      case semSegundaTerceira: return grau == 0;
+      case apenasTerceira:     return grau == 2;
+      default:                 return true;
+    }
+  }
+
+  /// Troca a limitação de grau (uma por vez) e apaga as condições removidas.
+  void setLimiteGrau(int opcao){
+    _modificador.removeWhere((m) =>
+        m["m_id"] == idGrauLimitado || m["m_id"] == idTerceiroGrau);
+
+    switch(opcao){
+      case semTerceira:
+      case semSegundaTerceira:
+        _modificador.add({
+          "m_id": idGrauLimitado,
+          "nome": "Grau Limitado",
+          "fixo": false,
+          "custo_base": -1,
+          "grad": opcao == semSegundaTerceira ? 2 : 1,
+          "limite": 2,
+          "desc": false,
+        });
+        break;
+      case apenasTerceira:
+        _modificador.add({
+          "m_id": idTerceiroGrau,
+          "nome": "Limitado a Terceiro Grau",
+          "fixo": false,
+          "custo_base": -1,
+          "grad": 1,
+          "limite": 1,
+          "desc": false,
+        });
+        break;
+    }
+
+    for(int grau = 0; grau < 3; grau++){
+      if(!condicaoAtiva(grau)) _condicoes[grau] = "";
+    }
+  }
+
   @override
   Map<String, dynamic> retornaObj(){
     /*

@@ -46,6 +46,8 @@ dependencies:
   printing: ^5.14.2
   universal_html: ^2.2.4
   uuid: ^4.5.1
+  shared_preferences: ^2.5.6
+  material_symbols_icons: ^4.2960.0
 
 flutter_icons:
   android: "launcher_icon"
@@ -107,6 +109,9 @@ flutter:
   # list giving the asset and other descriptors for the font. For
   # example:
   fonts:
+    - family: Roboto
+      fonts:
+        - asset: fonts/Roboto-Regular.ttf
     - family: Impact
       fonts:
         - asset: fonts/Impact.ttf

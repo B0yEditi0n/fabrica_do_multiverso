@@ -25,7 +25,7 @@ Arquivo: `assets/poderes/efeitos.json`. Classe em `lib/script/poderes/lib_efeito
 
 | Efeito | ID | Classe | Situação | Lacuna |
 |---|---|---|---|---|
-| Aflição | E001 | EfeitoAflicao | Parcial | Sem escolha da resistência (Fortitude ou Vontade); condições em texto livre; sem Condição Extra, Cumulativo, Progressivo, Grau Limitado, Recuperação Instantânea; modificadores ofensivos não são oferecidos na tela |
+| Aflição | E001 | EfeitoAflicao | Parcial | Sem escolha da resistência (Fortitude ou Vontade); condições em texto livre; sem Condição Extra, Cumulativo, Progressivo, Recuperação Instantânea (Grau Limitado e Limitado a Terceiro Grau já existem, por checkbox); modificadores ofensivos não são oferecidos na tela |
 | Alongamento | E002 | Efeito | OK | — |
 | Ambiente | E003 | EfeitoCustoVaria | OK | 8 opções |
 | Camuflagem | E004 | EfeitoCompra | Parcial | Sem Mesclar, Parcial, Passiva, Resistível |
