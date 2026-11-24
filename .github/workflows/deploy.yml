@@ -177,11 +177,11 @@ jobs:
           echo "assinado=true" >> "$GITHUB_OUTPUT"
 
       - name: Build APK
-        run: flutter build apk --release --build-number=${{ github.run_number }}
+        run: flutter build apk --release --build-number=${{ github.run_number }} --android-skip-build-dependency-validation
 
       - name: Build AAB (Play Store)
         if: steps.assinatura.outputs.assinado == 'true'
-        run: flutter build appbundle --release --build-number=${{ github.run_number }}
+        run: flutter build appbundle --release --build-number=${{ github.run_number }} --android-skip-build-dependency-validation
 
       - name: Nomear arquivos
         run: |
