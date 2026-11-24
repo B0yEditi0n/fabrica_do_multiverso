@@ -141,10 +141,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@v5
         with:
           distribution: temurin
-          java-version: "17"
+          java-version: "21"
 
       - uses: subosito/flutter-action@v2
         with:
@@ -177,7 +177,21 @@ jobs:
           echo "assinado=true" >> "$GITHUB_OUTPUT"
 
       - name: Build APK
-        run: flutter build apk --release --build-number=${{ github.run_number }} --android-skip-build-dependency-validation
+        run: |
+          set -o pipefail
+          flutter build apk --release --build-number=${{ github.run_number }} --android-skip-build-dependency-validation 2>&1 | tee build-android.log
+
+      # O log completo só aparece logado no GitHub; o trecho "What went wrong"
+      # do Gradle vira uma anotação visível no resumo da execução.
+      - name: Detalhar erro do build Android
+        if: failure() && hashFiles('build-android.log') != ''
+        run: |
+          trecho=$(grep -A40 -E "What went wrong|FAILURE:|Error:|error:" build-android.log | head -80)
+          [ -z "$trecho" ] && trecho=$(tail -60 build-android.log)
+          trecho=${trecho//'%'/'%25'}
+          trecho=${trecho//$'\r'/}
+          trecho=${trecho//$'\n'/'%0A'}
+          echo "::error title=Build Android::${trecho:0:3500}"
 
       - name: Build AAB (Play Store)
         if: steps.assinatura.outputs.assinado == 'true'
