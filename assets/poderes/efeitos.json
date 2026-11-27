@@ -402,7 +402,57 @@
                                 
             }
         ],
-        "class": "EfeitoCustoVaria"
+        "class": "EfeitoCustoVaria",
+        "modificadores":[
+            {
+                "m_id": "ED001",
+                "nome": "Independente",
+                "fixo": false,
+                "custo_base": 1,
+                "desc": false,
+                "limite": 1
+            },
+            {
+                "m_id": "ED002",
+                "nome": "Psíquica",
+                "fixo": false,
+                "custo_base": 1,
+                "desc": false,
+                "limite": 1
+            },
+            {
+                "m_id": "ED003",
+                "nome": "Seletiva",
+                "fixo": false,
+                "custo_base": 1,
+                "desc": false,
+                "limite": 1
+            },
+            {
+                "m_id": "FD003",
+                "nome": "Limitada a Um Alvo",
+                "fixo": false,
+                "custo_base": -1,
+                "desc": false,
+                "limite": 1
+            },
+            {
+                "m_id": "FD004",
+                "nome": "Resistível",
+                "fixo": false,
+                "custo_base": -1,
+                "desc": false,
+                "limite": 1
+            },
+            {
+                "m_id": "FD005",
+                "nome": "Retroalimentação",
+                "fixo": false,
+                "custo_base": -1,
+                "desc": false,
+                "limite": 1
+            }
+        ]
     },
     {
         "e_id": "E019",
@@ -635,7 +685,81 @@
         "duracao": 3,
         "ofensivo": true,
         "desc": false,
-        "class": "EfeitoOfensivo"
+        "class": "EfeitoOfensivo",
+        "modificadores":[
+            {
+                "e_id": "EC001",
+                "nome": "Condição Extra",
+                "fixo": false,
+                "custo_base": 1,
+                "limite": 1,
+                "desc": false
+            },
+            {
+                "e_id": "EC002",
+                "nome": "Ligação Sensorial",
+                "fixo": false,
+                "custo_base": 1,
+                "limite": 1,
+                "desc": false
+            },
+            {
+                "e_id": "EC003",
+                "nome": "Sem Esforço",
+                "fixo": false,
+                "custo_base": 1,
+                "limite": 1,
+                "desc": false
+            },
+            {
+                "e_id": "FC001",
+                "nome": "Dependente de Sentido",
+                "fixo": false,
+                "custo_base": -1,
+                "limite": 1,
+                "desc": true
+            },
+            {
+                "e_id": "FC002",
+                "nome": "Limitado pelo Idioma",
+                "fixo": false,
+                "custo_base": -1,
+                "limite": 1,
+                "desc": false
+            },
+            {
+                "e_id": "FC003",
+                "nome": "Limitado pelas Emoções",
+                "fixo": false,
+                "custo_base": -1,
+                "limite": 1,
+                "desc": false
+            },
+            {
+                "e_id": "FC004",
+                "nome": "Limitado pela Ligação Sensorial",
+                "fixo": false,
+                "custo_base": -1,
+                "limite": 1,
+                "desc": false
+            },
+            {
+                "e_id": "FC005",
+                "nome": "Limitado a Pensamentos Superficiais",
+                "fixo": false,
+                "custo_base": -1,
+                "limite": 1,
+                "desc": false
+            },
+            {
+                "e_id": "FC006",
+                "nome": "Retroalimentação",
+                "fixo": false,
+                "custo_base": -1,
+                "limite": 1,
+                "desc": false
+            }
+        ]
     },
     {
         "e_id": "E024",
